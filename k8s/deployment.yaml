@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: impresslola-deployment
+  labels:
+    app: impresslola
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: impresslola
+  template:
+    metadata:
+      labels:
+        app: impresslola
+    spec:
+      containers:
+      - name: impresslola
+        image: walidbenhamid1/impresslola:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5 
