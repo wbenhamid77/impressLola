@@ -22,6 +22,7 @@ spec:
       containers:
         - name: impresslola
           image: walidbenhamid1/impresslola-app:latest
+          imagePullPolicy: Always
           command: ["nginx", "-g", "daemon off;"]
           args: ["-c", "/etc/nginx/nginx.conf"]
           volumeMounts:
