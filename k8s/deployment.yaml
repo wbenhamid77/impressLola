@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: impresslola-deployment
+  namespace: impresslola
   labels:
     app: impresslola
 spec:
@@ -14,27 +15,37 @@ spec:
       labels:
         app: impresslola
     spec:
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
       containers:
-      - name: impresslola
-        image: walidbenhamid1/impresslola:latest
-        ports:
-        - containerPort: 3000
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5 
+        - name: impresslola
+          image: walidbenhamid1/impresslola-app:latest
+          command: ["nginx", "-g", "daemon off;"]
+          args: ["-c", "/etc/nginx/nginx.conf"]
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
