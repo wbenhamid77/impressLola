@@ -1,0 +1,39 @@
+name: Test Simple Workflow
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Test Node.js
+      run: |
+        echo "Test du workflow GitHub Actions"
+        echo "Branche: ${{ github.ref }}"
+        echo "Commit: ${{ github.sha }}"
+        echo "Auteur: ${{ github.actor }}"
+        
+    - name: List files
+      run: |
+        echo "Fichiers dans le repository:"
+        ls -la
+        echo "Fichiers dans src/app:"
+        ls -la src/app/
+        
+    - name: Test build
+      run: |
+        echo "Test de la construction..."
+        npm install
+        npm run build
+        echo "Build terminé!"
+        
+    - name: Success message
+      run: |
+        echo "✅ Workflow GitHub Actions fonctionne!"
+        echo "📦 Prochaine étape: configurer les secrets pour Docker et AWS" 
