@@ -1,0 +1,63 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Dashboard</h1>
+      <div class="user-info">
+        <span class="welcome-text">Bienvenue, {{ username }} !</span>
+        <button class="logout-button" (click)="logout()">
+          Se déconnecter
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="dashboard-content">
+      <div class="welcome-card">
+        <h2>🎉 Connexion réussie !</h2>
+        <p>Vous êtes maintenant connecté à votre tableau de bord.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <h3>Statistiques</h3>
+          <p>Visualisez vos données importantes</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">⚙️</div>
+          <h3>Paramètres</h3>
+          <p>Configurez vos préférences</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <h3>Rapports</h3>
+          <p>Générez des rapports détaillés</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <h3>Utilisateurs</h3>
+          <p>Gérez les utilisateurs du système</p>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h3>Informations système</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Statut :</strong> Connecté
+          </div>
+          <div class="info-item">
+            <strong>Utilisateur :</strong> {{ username }}
+          </div>
+          <div class="info-item">
+            <strong>Dernière connexion :</strong> {{ connectionDate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div> 
