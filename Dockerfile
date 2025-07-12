@@ -24,15 +24,20 @@ COPY --from=build /app/dist/impress-lola/* /usr/share/nginx/html/
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Create a non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+# Create nginx cache directories with proper permissions
+RUN mkdir -p /var/cache/nginx/client_temp \
+    && mkdir -p /var/cache/nginx/proxy_temp \
+    && mkdir -p /var/cache/nginx/fastcgi_temp \
+    && mkdir -p /var/cache/nginx/uwsgi_temp \
+    && mkdir -p /var/cache/nginx/scgi_temp \
+    && chown -R nginx:nginx /var/cache/nginx \
+    && chown -R nginx:nginx /var/log/nginx \
+    && chown -R nginx:nginx /etc/nginx/conf.d \
+    && touch /var/run/nginx.pid \
+    && chown -R nginx:nginx /var/run/nginx.pid
 
-# Change ownership of the web root
-RUN chown -R nextjs:nodejs /usr/share/nginx/html
-
-# Switch to non-root user
-USER nextjs
+# Switch to nginx user
+USER nginx
 
 # Expose port 3000
 EXPOSE 3000
