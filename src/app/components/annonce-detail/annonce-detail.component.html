@@ -1,0 +1,213 @@
+<div class="detail-container">
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des détails...</p>
+  </div>
+
+  <!-- Accès non autorisé -->
+  <div *ngIf="!isLocataire && !loading" class="access-denied">
+    <div class="denied-icon">🚫</div>
+    <h2>Accès réservé</h2>
+    <p>{{ error }}</p>
+    <button (click)="retourDashboard()" class="retour-btn">Retour au dashboard</button>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading && isLocataire" class="error">
+    <p>{{ error }}</p>
+    <button (click)="retourListe()" class="retry-btn">Retour à la liste</button>
+  </div>
+
+  <!-- Annonce Detail -->
+  <div *ngIf="annonce && !loading && isLocataire" class="annonce-detail">
+    <!-- CAF Header -->
+    <div class="caf-detail-header">
+      <div class="header-content">
+        <div class="caf-logo">
+          <div class="logo-circle">
+            <span class="logo-text">CAF</span>
+          </div>
+          <div class="logo-year">2025</div>
+        </div>
+        <div class="header-text">
+          <h1>🏆 Coupe d'Afrique 2025</h1>
+          <h2>Détails de la location</h2>
+        </div>
+        <div class="header-actions">
+          <button class="btn-back" (click)="retourListe()">
+            <span>←</span> Retour
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="detail-content">
+      <!-- Left Column -->
+      <div class="detail-left">
+        <!-- Image -->
+        <div class="detail-image">
+          <div class="image-placeholder">
+            <div class="caf-badge">
+              <span class="caf-icon">🏆</span>
+              <span class="caf-text">CAN 2025</span>
+            </div>
+            <span class="icon">🏠</span>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="basic-info">
+          <h1 class="detail-titre">{{ annonce.titre }}</h1>
+          
+          <div class="detail-location">
+            <span class="location-icon">📍</span>
+            <span>{{ annonce.adresse.numero }} {{ annonce.adresse.rue }}, {{ annonce.adresse.codePostal }} {{ annonce.adresse.ville }}</span>
+          </div>
+
+          <div class="detail-stade">
+            <span class="stade-icon">⚽</span>
+            <span>{{ annonce.stadePlusProche }} ({{ annonce.distanceStade }}km)</span>
+          </div>
+
+          <div class="detail-description">
+            <p>{{ annonce.description }}</p>
+          </div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="pricing-section">
+          <h3>Tarifs</h3>
+          <div class="pricing-grid">
+            <div class="pricing-item">
+              <span class="pricing-label">Par nuit</span>
+              <span class="pricing-amount">{{ annonce.prixParNuit }}€</span>
+            </div>
+            <div class="pricing-item">
+              <span class="pricing-label">Par semaine</span>
+              <span class="pricing-amount">{{ annonce.prixParSemaine }}€</span>
+            </div>
+            <div class="pricing-item">
+              <span class="pricing-label">Par mois</span>
+              <span class="pricing-amount">{{ annonce.prixParMois }}€</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="detail-right">
+        <!-- Capacity & Rooms -->
+        <div class="capacity-section">
+          <h3>Capacité et chambres</h3>
+          <div class="capacity-grid">
+            <div class="capacity-item">
+              <span class="capacity-icon">👥</span>
+              <div class="capacity-info">
+                <span class="capacity-value">{{ annonce.capacite }}</span>
+                <span class="capacity-label">Personnes max</span>
+              </div>
+            </div>
+            <div class="capacity-item">
+              <span class="capacity-icon">🛏️</span>
+              <div class="capacity-info">
+                <span class="capacity-value">{{ annonce.nombreChambres }}</span>
+                <span class="capacity-label">Chambres</span>
+              </div>
+            </div>
+            <div class="capacity-item">
+              <span class="capacity-icon">🚿</span>
+              <div class="capacity-info">
+                <span class="capacity-value">{{ annonce.nombreSallesDeBain }}</span>
+                <span class="capacity-label">Salles de bain</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Equipment -->
+        <div class="equipment-section" *ngIf="annonce.equipements && annonce.equipements.length > 0">
+          <h3>🛠️ Équipements disponibles</h3>
+          <div class="equipment-grid">
+            <div *ngFor="let equipement of annonce.equipements" class="equipment-item">
+              <span class="equipment-icon">✓</span>
+              <span class="equipment-text">{{ equipement }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rules -->
+        <div class="rules-section" *ngIf="annonce.regles && annonce.regles.length > 0">
+          <h3>📋 Règles de la maison</h3>
+          <div class="rules-grid">
+            <div *ngFor="let regle of annonce.regles" class="rule-item">
+              <span class="rule-icon">📋</span>
+              <span class="rule-text">{{ regle }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Host Info -->
+        <div class="host-section">
+          <h3>Propriétaire</h3>
+          <div class="host-info">
+            <div class="host-avatar">
+              <span class="avatar-icon">👤</span>
+            </div>
+            <div class="host-details">
+              <span class="host-name">{{ annonce.nomLocateur }}</span>
+              <span class="host-label">Propriétaire vérifié</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rating -->
+        <div class="rating-section" *ngIf="annonce.nombreAvis > 0">
+          <h3>Évaluations</h3>
+          <div class="rating-info">
+            <div class="rating-stars">
+              <span *ngFor="let etoile of getNoteEtoiles(annonce.noteMoyenne)" class="rating-star">{{ etoile }}</span>
+            </div>
+            <span class="rating-text">{{ annonce.noteMoyenne }}/5 ({{ annonce.nombreAvis }} avis)</span>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="dates-section">
+          <h3>Informations</h3>
+          <div class="dates-info">
+            <div class="date-item">
+              <span class="date-label">Créée le:</span>
+              <span class="date-value">{{ formaterDate(annonce.dateCreation) }}</span>
+            </div>
+            <div class="date-item">
+              <span class="date-label">Modifiée le:</span>
+              <span class="date-value">{{ formaterDate(annonce.dateModification) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn-primary">Réserver maintenant</button>
+      <button class="btn-secondary">Contacter le propriétaire</button>
+    </div>
+
+    <!-- CAF Footer -->
+    <div class="caf-footer">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span class="caf-text">CAF 2025</span>
+          <span class="footer-subtitle">Coupe d'Afrique des Nations</span>
+        </div>
+        <div class="footer-info">
+          <p>Vivez l'expérience unique de la CAN 2025</p>
+          <p>Logements de qualité près des stades</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

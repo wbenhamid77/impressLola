@@ -1,0 +1,12 @@
+<div class="layout-container">
+  <!-- Sidebar fixe -->
+  <app-sidebar 
+    [currentPage]="currentPage" 
+    (navigationEvent)="onNavigation($event)">
+  </app-sidebar>
+
+  <!-- Contenu principal -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div> 

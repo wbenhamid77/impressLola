@@ -1,55 +1,172 @@
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <h1>Connexion</h1>
-      <p>Connectez-vous à votre compte</p>
+<div class="login-page">
+  <!-- Background avec images du Maroc et CAN 2025 -->
+  <div class="login-background">
+    <div class="background-overlay"></div>
+    <div class="background-images">
+      <img src="/assets/images/morocco-can2025/morocco-landscape.jpg" alt="Paysage marocain" class="bg-image landscape">
+      <img src="/assets/images/morocco-can2025/football-stadium.jpg" alt="Stade de football" class="bg-image stadium">
     </div>
+    <div class="floating-elements">
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="0">
+        <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="floating-icon">
+      </div>
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="500">
+        <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="floating-icon">
+      </div>
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1000">
+        <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Drapeau Maroc" class="floating-icon flag">
+      </div>
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1500">⚽</div>
+    </div>
+  </div>
 
-    <form (ngSubmit)="onSubmit()" class="login-form">
-      <div class="form-group">
-        <label for="username">Nom d'utilisateurr</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          [(ngModel)]="username"
-          placeholder="Entrez votre nom d'utilisateur"
-          required
-          [disabled]="isLoading"
-        />
+  <!-- Container principal -->
+  <div class="login-container">
+    <!-- Header avec badge CAN 2025 -->
+    <header class="login-header" data-aos="fade-down" data-aos-duration="800">
+      <div class="header-badge">
+        <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée CAN" class="badge-icon">
+        <span>CAN 2025 - Maroc</span>
+      </div>
+      <h1 class="main-title">Bienvenue au Maroc</h1>
+      <p class="main-subtitle">Connectez-vous à votre espace personnel pour la Coupe d'Afrique des Nations 2025</p>
+    </header>
+
+    <!-- Carte de connexion -->
+    <div class="login-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+      <div class="card-header">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="logo-flag">
+          </div>
+          <div class="logo-text">
+            <h2>Connexion</h2>
+            <p>Accédez à votre compte CAN 2025</p>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          [(ngModel)]="password"
-          placeholder="Entrez votre mot de passe"
-          required
-          [disabled]="isLoading"
-        />
-      </div>
+      <!-- Formulaire de connexion -->
+      <form (ngSubmit)="onSubmit()" class="login-form" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+        <div class="form-group" data-aos="fade-right" data-aos-duration="800" data-aos-delay="600">
+          <label for="email" class="form-label">
+            <i class="fas fa-envelope"></i>
+            Adresse email
+          </label>
+          <div class="input-wrapper">
+            <input 
+              type="email" 
+              id="email"
+              [(ngModel)]="email" 
+              name="email"
+              class="form-input"
+              placeholder="votre@email.com"
+              required
+            >
+            <i class="fas fa-envelope input-icon"></i>
+          </div>
+        </div>
 
-      <div *ngIf="errorMessage" class="error-message">
+        <div class="form-group" data-aos="fade-left" data-aos-duration="800" data-aos-delay="800">
+          <label for="password" class="form-label">
+            <i class="fas fa-lock"></i>
+            Mot de passe
+          </label>
+          <div class="input-wrapper">
+            <input 
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              [(ngModel)]="password" 
+              name="password"
+              class="form-input"
+              placeholder="Votre mot de passe"
+              required
+            >
+            <i class="fas fa-lock input-icon"></i>
+            <button 
+              type="button" 
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+            >
+              <i class="fas" [class]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary login-btn"
+          [disabled]="isLoading"
+          data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1000"
+        >
+          <span *ngIf="!isLoading">
+            <i class="fas fa-sign-in-alt"></i>
+            Se connecter
+          </span>
+          <span *ngIf="isLoading">
+            <div class="spinner"></div>
+            Connexion...
+          </span>
+        </button>
+      </form>
+
+      <!-- Message d'erreur -->
+      <div *ngIf="errorMessage" class="error-message" data-aos="shake" data-aos-duration="800">
+        <i class="fas fa-exclamation-triangle"></i>
         {{ errorMessage }}
       </div>
 
-      <button 
-        type="submit" 
-        class="login-button"
-        [disabled]="isLoading"
-      >
-        <span *ngIf="!isLoading">Se connecter</span>
-        <span *ngIf="isLoading">Connexion en cours...</span>
-      </button>
-    </form>
-
-    <div class="login-footer">
-      <p><strong>Identifiants de test :</strong></p>
-      <p>Nom d'utilisateur : <code>admin</code></p>
-      <p>Mot de passe : <code>password</code></p>
+      <!-- Footer de la carte -->
+      <div class="card-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1200">
+        <p class="footer-text">Pas encore de compte ?</p>
+        <button class="btn btn-secondary" (click)="navigateToInscription()">
+          <i class="fas fa-user-plus"></i>
+          Créer un compte gratuitement
+        </button>
+      </div>
     </div>
+
+    <!-- Section d'informations -->
+    <div class="info-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1400">
+      <div class="info-card">
+        <div class="info-header">
+                      <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="info-icon">
+          <h3>CAN 2025 - Maroc</h3>
+        </div>
+        <p class="info-description">
+          Vivez l'expérience unique de la Coupe d'Afrique des Nations au Maroc, 
+          terre d'hospitalité et de passion footballistique
+        </p>
+        <div class="features-grid">
+          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1600">
+            <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="feature-icon">
+            <span>Hospitalité marocaine</span>
+          </div>
+          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1800">
+            <img src="/assets/images/morocco-can2025/football-stadium.jpg" alt="Stade" class="feature-icon">
+            <span>Stades modernes</span>
+          </div>
+          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="2000">
+            <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="feature-icon">
+            <span>Championnat d'Afrique</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer de la page -->
+    <footer class="page-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="2200">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="CAN 2025" class="footer-icon">
+          <span>CAN 2025</span>
+        </div>
+        <p>Coupe d'Afrique des Nations - Maroc</p>
+        <div class="footer-flags">
+                     <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="footer-flag">
+           <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="footer-flag">
+        </div>
+      </div>
+    </footer>
   </div>
 </div> 

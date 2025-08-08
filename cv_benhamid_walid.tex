@@ -1,0 +1,231 @@
+\documentclass[10pt,a4paper,ragged2e,withhyper]{altacv}
+
+
+\geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
+
+\usepackage{paracol}
+\usepackage[hidelinks]{hyperref}
+
+\iftutex
+
+  \setmainfont{Lato}
+\else
+  \usepackage[default]{lato}
+\fi
+
+\definecolor{VividPurple}{HTML}{3E0097}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+% \colorlet{name}{black}
+% \colorlet{tagline}{PastelRed}
+\colorlet{heading}{VividPurple}
+\colorlet{headingrule}{VividPurple}
+% \colorlet{subheading}{PastelRed}
+\colorlet{accent}{VividPurple}
+\colorlet{emphasis}{SlateGrey}
+%\colorlet{body}{Black}
+
+\renewcommand{\cvItemMarker}{{\small\textbullet}}
+
+
+\begin{document}
+\name{BEN-HAMID Walid}
+\tagline{Ingénieur en Développement Logiciel – Full Stack & Systèmes Web}
+
+\photoR{5cm}{DSC_9057.JPG}
+% \photoL{2cm}{Yacht_High,Suitcase_High}
+\personalinfo{%
+  % Not all of these are required!
+  % You can add your own with \printinfo{symbol}{detail}
+  \email{wbenhamid4@gmail.com}
+   \phone{+212600018820}
+  \location{Maroc}
+ % \homepage{marissamayr.tumblr.com}
+  % \twitter{@marissamayer}
+  %\xtwitter{@marissamayer}
+  \linkedin{benhamidwalid}
+
+}
+
+\makecvheader
+
+%% Depending on your tastes, you may want to make fonts of itemize environments slightly smaller
+\AtBeginEnvironment{itemize}{\small}
+
+%% Set the left/right column width ratio to 6:4.
+\columnratio{0.6}
+
+% Start a 2-column paracol. Both the left and right columns will automatically
+% break across pages if things get too long.
+\begin{paracol}{2}
+
+\cvsection{Expériences Professionnelles et Projets Académiques}
+\cvevent{PFE – SonarTec v2 \& Lancement de la plateforme SonarTec-IA}{AXONE SYSTEMS}{Janvier 2025 -- Juillet 2025}{Rabat, Maroc}
+\begin{itemize}
+  \item Refonte complète de la plateforme \textbf{SonarTec} initiée en PFA, avec une nouvelle architecture logicielle, de nouveaux diagrammes UML et BPMN, et une amélioration du backend avec \textbf{Spring Boot} (remplaçant le code initial généré par \textbf{JHipster}).
+  \item Développement d'une interface frontend entièrement repensée avec \textbf{Angular}, pour une meilleure expérience utilisateur.
+  \item Intégration du service \textbf{Zoho Recruit} pour importer automatiquement des offres d'emploi, gérer les candidatures et permettre la signature électronique des contrats.
+  \item Création de la plateforme complémentaire \textbf{SonarTec-IA} dédiée à l'automa-tisation des entretiens :
+  \begin{itemize}
+    \item Ajout d'offres et de candidats depuis une interface moderne développée avec \textbf{React}.
+    \item Génération dynamique des questions d'entretien via \textbf{OpenAI}.
+    \item Enregistrement des réponses vidéos des candidats directement dans la plateforme.
+    \item Analyse automatique des performances du candidat (expressions faciales, stress, mouvements) à l'aide de l'IA.
+    \item Transcription des réponses et génération d'un rapport d'évaluation intelligent, envoyé aux clients ayant publié l'offre sur \textbf{SonarTec}.
+  \end{itemize}
+  \item Utilisation de \textbf{Node.js} pour le backend de SonarTec-IA, avec \textbf{Supabase} et \textbf{MySQL} pour la gestion des données.
+  \item Collaboration agile avec une équipe interdisciplinaire pour garantir qualité, scalabilité et intégration cohérente entre les deux plateformes.
+  \item Gestion de version collaborative avec \textbf{GitHub} et mise en place de workflows CI/CD pour l'automatisation des tests et du déploiement.
+\end{itemize}
+\cvtag{Spring Boot} \cvtag{Angular} \cvtag{Flowable} \cvtag{Zoho Recruit} \cvtag{React} \cvtag{Node.js} \cvtag{OpenAI} \cvtag{Supabase} \cvtag{MySQL} \cvtag{Vision AI} \cvtag{GitHub} \cvtag{CI/CD}
+
+
+\divider
+
+\cvevent{PFA – Version 1 : Conception et création de la plateforme \textit{SonarTec}}{AXONE SYSTEMS}{Avril 2024 -- Novembre 2024}{Rabat, Maroc}
+\begin{itemize}
+\item Conception et modélisation de l'architecture du projet à l'aide de diagrammes UML, y compris des cas d'utilisation, des diagrammes de classes et des workflows BPMN avec \textbf{Flowable}.  
+\item Développement du backend en utilisant le framework \textbf{Spring Boot}, avec des outils comme \textbf{JHipster} pour la génération d'applications, et intégration de \textbf{SpringAI} pour les fonctionnalités d'intelligence artificielle.  
+\item Création de l'interface utilisateur en \textbf{Angular}, avec une attention particulière à l'ergonomie et à l'expérience utilisateur.  
+\item Gestion de la base de données avec \textbf{MySQL}, en assurant une structuration optimale des données pour des performances accrues.  
+\item Déploiement d'une plateforme en ligne de recrutement, intégrant des workflows de bout en bout pour simplifier et automatiser les processus RH.  
+\item Collaboration avec une équipe multidisciplinaire pour respecter les délais et garantir la qualité du livrable.
+\item Utilisation de \textbf{GitLab} pour la gestion de version et la collaboration en équipe, avec mise en place de pipelines CI/CD pour l'automatisation des tests et du déploiement.
+\end{itemize}
+\cvtag{SpringBoot} \cvtag{Angular} \cvtag{MySQL} \cvtag{SpringAI} \cvtag{GitLab} \cvtag{CI/CD}
+
+\divider
+
+
+
+
+\cvevent{Développement d'une application de gestion des clients}{Java, Spring Boot}{2023}{}
+\begin{itemize}
+\item Création d'une application web complète pour gérer les profils clients, incluant :
+  \begin{itemize}
+    \item Gestion des utilisateurs avec rôles et permissions.
+    \item Intégration de Spring Security pour l'authentification.
+    \item Utilisation de MySQL pour la persistance des données.
+  \end{itemize}
+\end{itemize}
+
+\divider
+
+\cvevent{Application de gestion des étudiants}{JEE, Hibernate, MySQL}{2024}{}
+\begin{itemize}
+\item Conception et implémentation d'une plateforme pour la gestion des étudiants :
+  \begin{itemize}
+    \item Ajout, modification et suppression des informations des étudiants.
+    \item Interface utilisateur développée avec JSP et servlets.
+    \item Utilisation de Hibernate pour l'accès et la manipulation des données.
+  \end{itemize}
+\end{itemize}
+
+\divider
+
+\cvevent{Système de gestion des stocks basé sur les automates}{Python, Théorie des Automates}{2024}{}
+\begin{itemize}
+\item Conception et développement d'un système de gestion des stocks utilisant les automates finis :
+  \begin{itemize}
+    \item Modélisation des états et transitions pour la gestion des flux d'entrées et de sorties.
+    \item Implémentation de la déterminisation, complétion et minimisation des automates.
+    \item Visualisation graphique des graphes de transition avec des bibliothèques Python.
+    \item Simulation des scénarios réels pour assurer l'optimisation et la robustesse du système.
+  \end{itemize}
+\end{itemize}
+
+
+
+% use ONLY \newpage if you want to force a page break for
+% ONLY the currentc column
+
+
+\switchcolumn
+
+
+
+
+\cvsection{Compétences}
+
+% Frameworks et outils back/front
+{\LaTeXraggedright 
+\cvtag{SpringBoot} \cvtag{Angular} \cvtag{React} \cvtag{Node.js} \cvtag{Express.js} 
+\cvtag{Hibernate/JPA} \cvtag{JHipster} \cvtag{SpringAI} \par}
+
+\divider\smallskip
+
+% Langages de programmation
+{\LaTeXraggedright 
+\cvtag{C} \cvtag{HTML/CSS} \cvtag{JavaScript} \cvtag{Python} \cvtag{JEE/Java} 
+\cvtag{PHP} \cvtag{R} \par}
+
+\divider\smallskip
+
+% Bases de données et Backend as a Service
+{\LaTeXraggedright 
+\cvtag{MySQL} \cvtag{PostgreSQL} \cvtag{Supabase} \par}
+
+\divider\smallskip
+
+% DevOps et outils de versioning
+{\LaTeXraggedright 
+\cvtag{Git} \cvtag{GitHub} \cvtag{GitLab} \cvtag{Docker} \cvtag{CI/CD} \par}
+
+\divider\smallskip
+
+% Intelligence Artificielle et Cloud
+{\LaTeXraggedright 
+\cvtag{GCP} \cvtag{Vertex AI} \cvtag{Speech-to-Text} 
+\cvtag{Vision AI} \cvtag{OpenAI} \par}
+
+\divider\smallskip
+
+% Modélisation
+{\LaTeXraggedright 
+\cvtag{UML} \cvtag{BPMN} \par}
+
+\cvsection{Langues}
+
+\vspace{0.5em}
+\begin{tabular}{@{}ll@{}}
+\textbf{Français} & Courant \\
+\textbf{Anglais} & Intermédiaire \\
+\end{tabular}
+
+
+
+
+\cvsection{Formation}
+
+\cvevent{Cycle d'ingénieur en Génie Mathématiques et Informatiques}{Faculté des sciences et techniques Mohammedia}{2022 -- 2025}{Mohammedia}
+
+\divider
+
+\cvevent{Diplôme d'Études Universitaires Scientifiques et Techniques (DEUST), Option MIP}{Faculté des sciences et techniques Mohammedia}{2020 -- 2022}{Mohammedia}
+
+\divider
+
+\cvevent{Baccalauréat Sciences physiques}{Lycée Hassan 2, Benslimane}{2019 -- 2020}{Benslimane}
+
+
+
+\cvsection{Centres d'intérêt}
+
+\cvevent{Membre du club de bénévolat}{Rotaract}{2021 -- 2025}{Mohammedia}
+
+\divider
+
+\cvevent{Participation à des cours de soutien en anglais}{Centre Américain}{2023 -- 2024}{Mohammedia}
+
+
+\cvsection{Loisirs}
+
+{\LaTeXraggedright \cvtag{Football}
+\cvtag{Musculation}
+\cvtag{Écoute de podcasts}
+\cvtag{Voyages et exploration culturelle}
+\par}
+
+\end{paracol}
+
+\end{document} 

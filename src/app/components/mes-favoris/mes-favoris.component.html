@@ -1,0 +1,203 @@
+<div class="mes-favoris-container">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <button class="btn-back" (click)="retourAccueil()">
+        <i class="fas fa-arrow-left"></i>
+        <span>Retour</span>
+      </button>
+      <h1 class="page-title">
+        <i class="fas fa-heart"></i>
+        Mes Annonces Favorites
+        <i class="fas fa-futbol"></i>
+      </h1>
+      <div class="header-subtitle">
+        <i class="fas fa-star"></i>
+        <span>CAF 2025 - Maroc</span>
+        <i class="fas fa-star"></i>
+      </div>
+    </div>
+    <div class="football-decoration">
+      <i class="fas fa-futbol"></i>
+      <i class="fas fa-trophy"></i>
+      <i class="fas fa-futbol"></i>
+    </div>
+  </header>
+
+  <!-- Barre de recherche -->
+  <div class="search-section">
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Rechercher dans vos favoris..."
+        [(ngModel)]="searchTerm"
+        (input)="filterAnnonces()"
+      >
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-section">
+    <div class="stats-card">
+      <div class="stat-item">
+        <i class="fas fa-heart"></i>
+        <div class="stat-content">
+          <span class="stat-number">{{ annoncesFavoris.length }}</span>
+          <span class="stat-label">Favoris</span>
+        </div>
+      </div>
+      <div class="stats-decoration">
+        <i class="fas fa-futbol"></i>
+        <i class="fas fa-trophy"></i>
+        <i class="fas fa-star"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <main class="main-content">
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Chargement de vos favoris...</p>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div *ngIf="errorMessage" class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Liste des annonces favorites -->
+    <section *ngIf="!isLoading && !errorMessage" class="annonces-section">
+      <!-- Annonces trouvées -->
+      <div *ngIf="filteredAnnonces.length > 0" class="annonces-grid">
+        <div 
+          *ngFor="let annonce of filteredAnnonces; trackBy: trackByAnnonceId" 
+          class="annonce-card"
+          data-aos="fade-up"
+        >
+          <!-- Image de l'annonce -->
+          <div class="card-image">
+            <img 
+              *ngIf="annonce.images && annonce.images.length > 0"
+              [src]="getImagePath(annonce.images[0])"
+              [alt]="annonce.titre"
+              (error)="onImageError($event)"
+              (load)="onImageLoad($event)"
+              class="annonce-image"
+            >
+            <div class="image-placeholder" style="display: none;">
+              <i class="fas fa-home"></i>
+              <span>Aucune image</span>
+            </div>
+            
+            <!-- Badges -->
+            <div class="card-badges">
+              <!-- Badge de statut -->
+              <div class="status-badge" [class]="annonce.estActive ? 'status-active' : 'status-inactive'">
+                <i class="fas" [class]="annonce.estActive ? 'fa-check-circle' : 'fa-pause-circle'"></i>
+                <span>{{ annonce.estActive ? 'Active' : 'Inactive' }}</span>
+              </div>
+
+              <!-- Badge de proximité stade -->
+              <div class="stade-badge" *ngIf="annonce.stadePlusProche">
+                <i class="fas fa-futbol"></i>
+                <span>{{ annonce.distanceStade }}km</span>
+              </div>
+
+              <!-- Badge de nombre d'images -->
+              <div class="images-count-badge" *ngIf="annonce.images && annonce.images.length > 0">
+                <i class="fas fa-images"></i>
+                <span>{{ annonce.images.length }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contenu de la carte -->
+          <div class="card-content">
+            <div class="annonce-header">
+              <h3 class="annonce-title">{{ annonce.titre || 'Annonce sans titre' }}</h3>
+              <div class="annonce-prix">{{ formaterPrix(annonce.prixParNuit) }}</div>
+            </div>
+
+            <div class="annonce-info">
+              <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ annonce.adresse?.numero }} {{ annonce.adresse?.rue }}, {{ annonce.adresse?.ville }}</span>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-home"></i>
+                <span>{{ getTypeMaisonLabel(annonce.typeMaison) }}</span>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-users"></i>
+                <span>{{ annonce.capacite || 0 }} personne{{ (annonce.capacite || 0) > 1 ? 's' : '' }}</span>
+              </div>
+              <div class="info-item" *ngIf="annonce.stadePlusProche">
+                <i class="fas fa-futbol"></i>
+                <span>{{ annonce.stadePlusProche }} ({{ annonce.distanceStade }}km)</span>
+              </div>
+            </div>
+
+            <div class="annonce-description">
+              <p>{{ annonce.description || 'Aucune description disponible' }}</p>
+            </div>
+
+            <div class="annonce-stats" *ngIf="annonce.nombreAvis > 0">
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <span>{{ annonce.noteMoyenne }}/5</span>
+                <span class="reviews-count">({{ annonce.nombreAvis }} avis)</span>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="date-creation">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Créée le {{ formaterDate(annonce.dateCreation) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions de la carte -->
+          <div class="card-actions">
+            <button class="action-btn btn-view" (click)="voirDetails(annonce.id)">
+              <i class="fas fa-eye"></i>
+              <span>Voir détails</span>
+            </button>
+            <button class="action-btn btn-remove-favorite" (click)="retirerDesFavoris(annonce.id)">
+              <i class="fas fa-times"></i>
+              <span>Retirer</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aucune annonce trouvée -->
+      <div *ngIf="filteredAnnonces.length === 0 && !isLoading && !errorMessage" class="no-annonces" data-aos="zoom-in">
+        <div class="no-annonces-icon">
+          <i class="fas fa-heart-broken"></i>
+        </div>
+        <h3>Aucun favori trouvé</h3>
+        <p *ngIf="searchTerm">
+          Aucune annonce ne correspond à votre recherche dans vos favoris.
+        </p>
+        <p *ngIf="!searchTerm">
+          Vous n'avez pas encore d'annonces favorites. Parcourez les annonces et ajoutez-les à vos favoris !
+        </p>
+        <div class="football-motivation">
+          <i class="fas fa-futbol"></i>
+          <span>Prêt pour la CAF 2025 ?</span>
+          <i class="fas fa-futbol"></i>
+        </div>
+        <button class="btn-browse-annonces" (click)="retourAccueil()">
+          <i class="fas fa-search"></i>
+          Parcourir les annonces
+        </button>
+      </div>
+    </section>
+  </main>
+</div> 

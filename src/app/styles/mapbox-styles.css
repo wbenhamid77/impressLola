@@ -1,0 +1,358 @@
+/* Styles pour la carte Mapbox professionnelle */
+
+/* Conteneur de la carte */
+.mapbox-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e5e9;
+}
+
+/* Marqueur personnalisé */
+.custom-marker {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.custom-marker:hover {
+  transform: scale(1.1);
+}
+
+.marker-pin {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.marker-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  border: 3px solid #ffffff;
+}
+
+.marker-icon i {
+  color: white;
+  font-size: 18px;
+  transform: rotate(45deg);
+}
+
+.marker-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* Popup personnalisé */
+.mapboxgl-popup {
+  max-width: 320px;
+}
+
+.mapboxgl-popup-content {
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border: none;
+  overflow: hidden;
+}
+
+.marker-popup {
+  padding: 20px;
+  background: white;
+}
+
+.marker-popup h4 {
+  margin: 0 0 15px 0;
+  color: #2d3748;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.marker-popup h4 i {
+  color: #667eea;
+}
+
+.marker-popup p {
+  margin: 8px 0;
+  color: #4a5568;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.marker-popup p strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.marker-popup small {
+  display: block;
+  margin-top: 12px;
+  color: #718096;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Bouton de fermeture du popup */
+.mapboxgl-popup-close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  color: #4a5568;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.mapboxgl-popup-close-button:hover {
+  background: #f7fafc;
+  color: #2d3748;
+  transform: scale(1.1);
+}
+
+/* Contrôles de la carte */
+.mapboxgl-ctrl-group {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e5e9;
+  background: white;
+}
+
+.mapboxgl-ctrl-group button {
+  border-radius: 0;
+  transition: background-color 0.2s ease;
+}
+
+.mapboxgl-ctrl-group button:hover {
+  background-color: #f7fafc;
+}
+
+.mapboxgl-ctrl-group button:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.mapboxgl-ctrl-group button:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* Barre de recherche d'adresse */
+.address-search-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.address-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.address-search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.address-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.address-search-result {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.2s ease;
+}
+
+.address-search-result:hover {
+  background-color: #f7fafc;
+}
+
+.address-search-result:last-child {
+  border-bottom: none;
+}
+
+.address-search-result .address-text {
+  font-size: 14px;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+
+.address-search-result .address-details {
+  font-size: 12px;
+  color: #718096;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mapbox-container {
+    height: 400px;
+  }
+  
+  .address-search-container {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  
+  .address-search-input {
+    padding: 10px 14px;
+    font-size: 16px; /* Évite le zoom sur iOS */
+  }
+}
+
+/* Animation d'entrée pour la carte */
+.mapbox-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles pour les champs de coordonnées */
+.coordinates-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.coordinate-field {
+  position: relative;
+}
+
+.coordinate-field input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f8fafc;
+  color: #4a5568;
+  transition: border-color 0.2s ease;
+}
+
+.coordinate-field input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+}
+
+.coordinate-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+.coordinate-field small {
+  display: block;
+  margin-top: 4px;
+  color: #718096;
+  font-size: 12px;
+}
+
+/* Indicateur de chargement */
+.map-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.map-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e1e5e9;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.map-loading-text {
+  text-align: center;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 500;
+} 

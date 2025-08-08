@@ -1,1 +1,365 @@
-/* You can add global styles to this file, and also import other style files */
+/* Import des frameworks */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+/* Variables CSS globales pour le thème Maroc-CAF 2025 */
+:root {
+  /* Couleurs principales Maroc */
+  --morocco-red: #c1272d;
+  --morocco-green: #006233;
+  --morocco-gold: #ffd700;
+  
+  /* Couleurs CAF */
+  --caf-blue: #0066cc;
+  --caf-dark-blue: #004499;
+  
+  /* Couleurs de base */
+  --primary-color: #ffffff;
+  --secondary-color: #f8f9fa;
+  --accent-color: var(--morocco-red);
+  --accent-secondary: var(--morocco-green);
+  --accent-gold: var(--morocco-gold);
+  
+  /* Couleurs de texte */
+  --text-primary: #1a202c;
+  --text-secondary: #2d3748;
+  --text-muted: #4a5568;
+  --text-light: #ffffff;
+  
+  /* Couleurs de bordure et ombres */
+  --border-color: #e2e8f0;
+  --shadow-light: 0 2px 8px rgba(193, 39, 45, 0.1);
+  --shadow-medium: 0 4px 16px rgba(193, 39, 45, 0.15);
+  --shadow-heavy: 0 8px 32px rgba(193, 39, 45, 0.2);
+  --shadow-green: 0 4px 16px rgba(0, 98, 51, 0.15);
+  --shadow-gold: 0 4px 16px rgba(255, 215, 0, 0.15);
+  
+  /* Bordures */
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  
+  /* Couleurs de statut */
+  --success-color: var(--morocco-green);
+  --warning-color: var(--morocco-gold);
+  --danger-color: var(--morocco-red);
+  --info-color: var(--caf-blue);
+  
+  /* Gradients */
+  --gradient-morocco: linear-gradient(135deg, var(--morocco-red) 0%, var(--morocco-green) 100%);
+  --gradient-morocco-reverse: linear-gradient(135deg, var(--morocco-green) 0%, var(--morocco-red) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--morocco-gold) 0%, #ffed4e 100%);
+  --gradient-caf: linear-gradient(135deg, var(--caf-blue) 0%, #0088ff 100%);
+}
+
+/* Override Bootstrap avec thème Maroc */
+.btn-primary {
+  background: var(--gradient-morocco) !important;
+  border: none !important;
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.btn-primary:hover {
+  background: var(--gradient-morocco-reverse) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+.btn-success {
+  background: var(--gradient-morocco-reverse) !important;
+  border: none !important;
+  box-shadow: var(--shadow-green) !important;
+}
+
+.btn-success:hover {
+  background: var(--gradient-morocco) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+.btn-warning {
+  background: var(--gradient-gold) !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-gold) !important;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #ffed4e 0%, var(--morocco-gold) 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+.btn-info {
+  background: var(--gradient-caf) !important;
+  border: none !important;
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.btn-info:hover {
+  background: linear-gradient(135deg, #0088ff 0%, var(--caf-blue) 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+/* Cards avec thème Maroc */
+.card {
+  border: 2px solid var(--border-color) !important;
+  border-radius: var(--border-radius-xl) !important;
+  box-shadow: var(--shadow-light) !important;
+  transition: all 0.3s ease !important;
+}
+
+.card:hover {
+  border-color: var(--morocco-red) !important;
+  box-shadow: var(--shadow-medium) !important;
+  transform: translateY(-4px) !important;
+}
+
+.card-header {
+  background: var(--gradient-morocco) !important;
+  color: var(--text-light) !important;
+  border-bottom: 2px solid var(--morocco-gold) !important;
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0 !important;
+}
+
+/* Formulaires avec thème Maroc */
+.form-control:focus {
+  border-color: var(--morocco-red) !important;
+  box-shadow: 0 0 0 0.2rem rgba(193, 39, 45, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: var(--morocco-green) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 98, 51, 0.25) !important;
+}
+
+/* Alertes avec thème Maroc */
+.alert-primary {
+  background: var(--gradient-morocco) !important;
+  color: var(--text-light) !important;
+  border: none !important;
+}
+
+.alert-success {
+  background: var(--gradient-morocco-reverse) !important;
+  color: var(--text-light) !important;
+  border: none !important;
+}
+
+.alert-warning {
+  background: var(--gradient-gold) !important;
+  color: var(--text-primary) !important;
+  border: none !important;
+}
+
+.alert-info {
+  background: var(--gradient-caf) !important;
+  color: var(--text-light) !important;
+  border: none !important;
+}
+
+/* Badges avec thème Maroc */
+.badge.bg-primary {
+  background: var(--gradient-morocco) !important;
+}
+
+.badge.bg-success {
+  background: var(--gradient-morocco-reverse) !important;
+}
+
+.badge.bg-warning {
+  background: var(--gradient-gold) !important;
+  color: var(--text-primary) !important;
+}
+
+.badge.bg-info {
+  background: var(--gradient-caf) !important;
+}
+
+/* Navigation avec thème Maroc */
+.navbar {
+  background: var(--gradient-morocco) !important;
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.navbar-brand {
+  color: var(--text-light) !important;
+  font-weight: 700 !important;
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--morocco-gold) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Pagination avec thème Maroc */
+.page-link {
+  color: var(--morocco-red) !important;
+  border-color: var(--border-color) !important;
+}
+
+.page-link:hover {
+  background-color: var(--morocco-red) !important;
+  color: var(--text-light) !important;
+  border-color: var(--morocco-red) !important;
+}
+
+.page-item.active .page-link {
+  background: var(--gradient-morocco) !important;
+  border-color: var(--morocco-red) !important;
+}
+
+/* Progress bars avec thème Maroc */
+.progress-bar {
+  background: var(--gradient-morocco) !important;
+}
+
+/* Spinners avec thème Maroc */
+.spinner-border.text-primary {
+  color: var(--morocco-red) !important;
+}
+
+.spinner-border.text-success {
+  color: var(--morocco-green) !important;
+}
+
+.spinner-border.text-warning {
+  color: var(--morocco-gold) !important;
+}
+
+.spinner-border.text-info {
+  color: var(--caf-blue) !important;
+}
+
+/* Styles de base pour Leaflet */
+.leaflet-container {
+  font-family: inherit !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.leaflet-control-zoom {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--gradient-morocco) !important;
+  color: var(--text-light) !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--gradient-morocco-reverse) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: var(--text-secondary) !important;
+  font-size: 11px !important;
+}
+
+/* Animations personnalisées */
+@keyframes moroccoPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes moroccoSlide {
+  0% { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes moroccoFade {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Classes utilitaires */
+.morocco-gradient {
+  background: var(--gradient-morocco) !important;
+}
+
+.morocco-gradient-reverse {
+  background: var(--gradient-morocco-reverse) !important;
+}
+
+.morocco-gold-gradient {
+  background: var(--gradient-gold) !important;
+}
+
+.caf-gradient {
+  background: var(--gradient-caf) !important;
+}
+
+.morocco-shadow {
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.morocco-shadow-heavy {
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+.morocco-border {
+  border: 2px solid var(--morocco-red) !important;
+}
+
+.morocco-border-gold {
+  border: 2px solid var(--morocco-gold) !important;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .btn {
+    font-size: 14px !important;
+    padding: 8px 16px !important;
+  }
+  
+  .card {
+    margin-bottom: 20px !important;
+  }
+  
+  .navbar-brand {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* Reset et base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: 100vh;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-morocco);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-morocco-reverse);
+}

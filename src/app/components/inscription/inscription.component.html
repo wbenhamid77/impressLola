@@ -1,0 +1,476 @@
+<div class="inscription-page">
+  <!-- Background avec images du Maroc et CAN 2025 -->
+  <div class="inscription-background">
+    <div class="background-overlay"></div>
+    <div class="background-images">
+      <img src="//assets/images/morocco-can2025/morocco-landscape.jpg" alt="Paysage marocain" class="bg-image landscape">
+      <img src="//assets/images/morocco-can2025/football-stadium.jpg" alt="Stade de football" class="bg-image stadium">
+    </div>
+    <div class="floating-elements">
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="0">
+        <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="floating-icon">
+      </div>
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="500">
+        <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="floating-icon">
+      </div>
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1000">
+        <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Drapeau Maroc" class="floating-icon flag">
+      </div>
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1500">⚽</div>
+      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="2000">🏠</div>
+    </div>
+  </div>
+
+  <!-- Container principal -->
+  <div class="inscription-container">
+    <!-- Header avec badge CAN 2025 -->
+    <header class="inscription-header" data-aos="fade-down" data-aos-duration="800">
+      <div class="header-badge">
+        <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée CAN" class="badge-icon">
+        <span>CAN 2025 - Maroc</span>
+      </div>
+      <h1 class="main-title">Rejoignez le Maroc</h1>
+      <p class="main-subtitle">Créez votre compte pour vivre l'expérience unique de la Coupe d'Afrique des Nations 2025</p>
+    </header>
+
+    <!-- Carte d'inscription -->
+    <div class="inscription-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+      <!-- Header de la carte -->
+      <div class="card-header">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="logo-flag">
+          </div>
+          <div class="logo-text">
+            <h2>Inscription</h2>
+            <p>Choisissez votre profil et créez votre compte CAN 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sélection du type d'utilisateur -->
+      <div class="user-type-selector" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+        <h3 class="type-selector-title">
+          <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="title-icon">
+          Choisissez votre profil
+        </h3>
+        <div class="type-buttons">
+          <button 
+            class="type-button" 
+            [class.active]="userType === 'locataire'"
+            (click)="setUserType('locataire')"
+            data-aos="zoom-in" data-aos-duration="800" data-aos-delay="600"
+          >
+            <div class="type-icon">
+              <img src="/assets/images/morocco-can2025/football-stadium.jpg" alt="Stade" class="type-image">
+            </div>
+            <div class="type-content">
+              <span class="type-text">Locataire</span>
+              <span class="type-description">Rechercher un logement près des stades</span>
+            </div>
+          </button>
+          <button 
+            class="type-button" 
+            [class.active]="userType === 'locateur'"
+            (click)="setUserType('locateur')"
+            data-aos="zoom-in" data-aos-duration="800" data-aos-delay="800"
+          >
+            <div class="type-icon">
+              <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="type-image">
+            </div>
+            <div class="type-content">
+              <span class="type-text">Locateur</span>
+              <span class="type-description">Proposer un logement pour la CAN 2025</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div *ngIf="errorMessage" class="error-message" data-aos="shake" data-aos-duration="800">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="success-message" data-aos="fade-up" data-aos-duration="800">
+        <i class="fas fa-check-circle"></i>
+        {{ successMessage }}
+      </div>
+
+      <!-- Formulaire Locataire -->
+      <form *ngIf="userType === 'locataire'" [formGroup]="locataireForm" (ngSubmit)="onSubmit()" class="inscription-form" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1000">
+        <div class="form-section" data-aos="fade-right" data-aos-duration="800" data-aos-delay="1200">
+          <h3 class="section-title">
+            <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="section-icon">
+            Informations personnelles
+          </h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">Prénom *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="prenom" 
+                  formControlName="prenom"
+                  [class.invalid]="isFieldInvalid('prenom')"
+                  placeholder="Jean"
+                >
+                <i class="fas fa-user input-icon"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="nom">Nom *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="nom" 
+                  formControlName="nom"
+                  [class.invalid]="isFieldInvalid('nom')"
+                  placeholder="Dupont"
+                >
+                <i class="fas fa-user input-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email"
+                  [class.invalid]="isFieldInvalid('email')"
+                  placeholder="jean.dupont@example.com"
+                >
+                <i class="fas fa-envelope input-icon"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="telephone">Téléphone *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="tel" 
+                  id="telephone" 
+                  formControlName="telephone"
+                  [class.invalid]="isFieldInvalid('telephone')"
+                  placeholder="0123456789"
+                >
+                <i class="fas fa-phone input-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="motDePasse">Mot de passe *</label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="motDePasse" 
+                formControlName="motDePasse"
+                [class.invalid]="isFieldInvalid('motDePasse')"
+                placeholder="password123"
+              >
+              <i class="fas fa-lock input-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" data-aos="fade-left" data-aos-duration="800" data-aos-delay="1400">
+          <h3 class="section-title">
+            <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="section-icon">
+            Informations professionnelles
+          </h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profession">Profession *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="profession" 
+                  formControlName="profession"
+                  [class.invalid]="isFieldInvalid('profession')"
+                  placeholder="Développeur Full Stack"
+                >
+                <i class="fas fa-briefcase input-icon"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="employeur">Employeur *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="employeur" 
+                  formControlName="employeur"
+                  [class.invalid]="isFieldInvalid('employeur')"
+                  placeholder="TechCorp Solutions"
+                >
+                <i class="fas fa-building input-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="revenuAnnuel">Revenu annuel (€) *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="number" 
+                  id="revenuAnnuel" 
+                  formControlName="revenuAnnuel"
+                  [class.invalid]="isFieldInvalid('revenuAnnuel')"
+                  placeholder="45000"
+                >
+                <i class="fas fa-euro-sign input-icon"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="dateEmbauche">Date d'embauche *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="date" 
+                  id="dateEmbauche" 
+                  formControlName="dateEmbauche"
+                  [class.invalid]="isFieldInvalid('dateEmbauche')"
+                >
+                <i class="fas fa-calendar input-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary submit-button"
+          [disabled]="isLoading || locataireForm.invalid"
+          data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1600"
+        >
+          <span *ngIf="!isLoading">
+            <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="btn-icon">
+            Créer mon compte locataire
+          </span>
+          <span *ngIf="isLoading">
+            <div class="spinner"></div>
+            Inscription en cours...
+          </span>
+        </button>
+      </form>
+
+      <!-- Formulaire Locateur -->
+      <form *ngIf="userType === 'locateur'" [formGroup]="locateurForm" (ngSubmit)="onSubmit()" class="inscription-form" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1000">
+        <div class="form-section" data-aos="fade-right" data-aos-duration="800" data-aos-delay="1200">
+          <h3 class="section-title">
+            <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="section-icon">
+            Informations personnelles
+          </h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom-locateur">Prénom *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="prenom-locateur" 
+                  formControlName="prenom"
+                  [class.invalid]="isFieldInvalid('prenom')"
+                  placeholder="Pierre"
+                >
+                <i class="fas fa-user input-icon"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="nom-locateur">Nom *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="nom-locateur" 
+                  formControlName="nom"
+                  [class.invalid]="isFieldInvalid('nom')"
+                  placeholder="Martin"
+                >
+                <i class="fas fa-user input-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email-locateur">Email *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="email" 
+                  id="email-locateur" 
+                  formControlName="email"
+                  [class.invalid]="isFieldInvalid('email')"
+                  placeholder="pierre.martin@immobilier.fr"
+                >
+                <i class="fas fa-envelope input-icon"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="telephone-locateur">Téléphone *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="tel" 
+                  id="telephone-locateur" 
+                  formControlName="telephone"
+                  [class.invalid]="isFieldInvalid('telephone')"
+                  placeholder="0123456789"
+                >
+                <i class="fas fa-phone input-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="motDePasse-locateur">Mot de passe *</label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="motDePasse-locateur" 
+                formControlName="motDePasse"
+                [class.invalid]="isFieldInvalid('motDePasse')"
+                placeholder="proprietaire2024"
+              >
+              <i class="fas fa-lock input-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" data-aos="fade-left" data-aos-duration="800" data-aos-delay="1400">
+          <h3 class="section-title">
+            <img src="/assets/images/morocco-can2025/football-stadium.jpg" alt="Stade" class="section-icon">
+            Informations professionnelles
+          </h3>
+          <div class="form-group">
+            <label for="description">Description *</label>
+            <div class="input-wrapper">
+              <textarea 
+                id="description" 
+                formControlName="description"
+                [class.invalid]="isFieldInvalid('description')"
+                placeholder="Propriétaire expérimenté avec plus de 10 ans d'expérience dans l'immobilier."
+                rows="4"
+              ></textarea>
+              <i class="fas fa-align-left input-icon textarea-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="numeroSiret">Numéro SIRET *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="numeroSiret" 
+                  formControlName="numeroSiret"
+                  [class.invalid]="isFieldInvalid('numeroSiret')"
+                  placeholder="12345678901234"
+                >
+                <i class="fas fa-id-card input-icon"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="raisonSociale">Raison sociale *</label>
+              <div class="input-wrapper">
+                <input 
+                  type="text" 
+                  id="raisonSociale" 
+                  formControlName="raisonSociale"
+                  [class.invalid]="isFieldInvalid('raisonSociale')"
+                  placeholder="Martin Immobilier SARL"
+                >
+                <i class="fas fa-building input-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adresseProfessionnelle">Adresse professionnelle *</label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="adresseProfessionnelle" 
+                formControlName="adresseProfessionnelle"
+                [class.invalid]="isFieldInvalid('adresseProfessionnelle')"
+                placeholder="123 Avenue de l'Opéra, 75001 Paris"
+              >
+              <i class="fas fa-map-marker-alt input-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary submit-button"
+          [disabled]="isLoading || locateurForm.invalid"
+          data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1600"
+        >
+          <span *ngIf="!isLoading">
+            <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="btn-icon">
+            Créer mon compte locateur
+          </span>
+          <span *ngIf="isLoading">
+            <div class="spinner"></div>
+            Inscription en cours...
+          </span>
+        </button>
+      </form>
+
+      <!-- Footer de la carte -->
+      <div class="card-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1800">
+        <p class="footer-text">Déjà un compte ?</p>
+        <button class="btn btn-secondary" routerLink="/login">
+          <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="btn-icon">
+          Se connecter
+        </button>
+      </div>
+    </div>
+
+    <!-- Section d'informations -->
+    <div class="info-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="2000">
+      <div class="info-card">
+        <div class="info-header">
+          <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="info-icon">
+          <h3>CAN 2025 - Maroc</h3>
+        </div>
+        <p class="info-description">
+          Rejoignez la plateforme officielle de logement pour la Coupe d'Afrique des Nations au Maroc, 
+          terre d'hospitalité et de passion footballistique
+        </p>
+        <div class="features-grid">
+          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="2200">
+            <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="feature-icon">
+            <span>Hospitalité marocaine</span>
+          </div>
+          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="2400">
+            <img src="/assets/images/morocco-can2025/football-stadium.jpg" alt="Stade" class="feature-icon">
+            <span>Stades modernes</span>
+          </div>
+          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="2600">
+            <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="feature-icon">
+            <span>Championnat d'Afrique</span>
+          </div>
+          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="2800">
+            <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="feature-icon">
+            <span>Expérience unique</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer de la page -->
+    <footer class="page-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="3000">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="CAN 2025" class="footer-icon">
+          <span>CAN 2025</span>
+        </div>
+        <p>Coupe d'Afrique des Nations - Maroc</p>
+        <div class="footer-flags">
+          <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="footer-flag">
+          <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="footer-flag">
+        </div>
+      </div>
+    </footer>
+  </div>
+</div> 

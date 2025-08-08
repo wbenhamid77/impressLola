@@ -1,90 +1,341 @@
-.dashboard-container {
+/* Variables CSS avec thème Maroc-CAF 2025 */
+:root {
+  /* Couleurs principales Maroc */
+  --morocco-red: #c1272d;
+  --morocco-green: #006233;
+  --morocco-gold: #ffd700;
+  
+  /* Couleurs CAF */
+  --caf-blue: #0066cc;
+  --caf-dark-blue: #004499;
+  
+  /* Couleurs de base */
+  --primary-color: #ffffff;
+  --secondary-color: #f8f9fa;
+  --accent-color: var(--morocco-red);
+  --accent-secondary: var(--morocco-green);
+  --accent-gold: var(--morocco-gold);
+  
+  /* Couleurs de texte */
+  --text-primary: #1a202c;
+  --text-secondary: #2d3748;
+  --text-muted: #4a5568;
+  --text-light: #ffffff;
+  
+  /* Couleurs de bordure et ombres */
+  --border-color: #e2e8f0;
+  --shadow-light: 0 2px 8px rgba(193, 39, 45, 0.1);
+  --shadow-medium: 0 4px 16px rgba(193, 39, 45, 0.15);
+  --shadow-heavy: 0 8px 32px rgba(193, 39, 45, 0.2);
+  --shadow-green: 0 4px 16px rgba(0, 98, 51, 0.15);
+  --shadow-gold: 0 4px 16px rgba(255, 215, 0, 0.15);
+  
+  /* Bordures */
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  
+  /* Couleurs de statut */
+  --success-color: var(--morocco-green);
+  --warning-color: var(--morocco-gold);
+  --danger-color: var(--morocco-red);
+  --info-color: var(--caf-blue);
+  
+  /* Gradients */
+  --gradient-morocco: linear-gradient(135deg, var(--morocco-red) 0%, var(--morocco-green) 100%);
+  --gradient-morocco-reverse: linear-gradient(135deg, var(--morocco-green) 0%, var(--morocco-red) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--morocco-gold) 0%, #ffed4e 100%);
+  --gradient-caf: linear-gradient(135deg, var(--caf-blue) 0%, #0088ff 100%);
+}
+
+/* Page principale avec thème Maroc */
+.dashboard-page {
   min-height: 100vh;
-  background-color: #f8fafc;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
 }
 
-.dashboard-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 20px 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* Header avec thème Maroc-CAF */
+.page-header {
+  background: var(--gradient-morocco);
+  border-bottom: 3px solid var(--morocco-gold);
+  padding: 30px 0;
+  box-shadow: var(--shadow-heavy);
+  position: relative;
+  overflow: hidden;
 }
 
-.header-content {
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+  opacity: 0.3;
+}
+
+.header-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
 }
 
-.header-content h1 {
-  margin: 0;
-  font-size: 28px;
+/* Bouton retour avec thème Maroc */
+.btn-back {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-light);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 20px;
+  border-radius: var(--border-radius);
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+  text-decoration: none;
 }
 
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: var(--morocco-gold);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+  color: var(--text-light);
+}
+
+/* Centre du header avec badge CAF */
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.header-badge {
+  background: var(--gradient-gold);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: var(--shadow-medium);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-badge i {
+  color: var(--morocco-red);
+  font-size: 14px;
+}
+
+.page-title {
+  color: var(--text-light);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.page-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Informations utilisateur */
 .user-info {
   display: flex;
   align-items: center;
-  gap: 20px;
-}
-
-.welcome-text {
-  font-size: 16px;
-  opacity: 0.9;
-}
-
-.logout-button {
+  gap: 12px;
   background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: var(--border-radius-lg);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gradient-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-size: 18px;
+  box-shadow: var(--shadow-medium);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  color: var(--text-light);
+  font-weight: 600;
   font-size: 14px;
+}
+
+.user-role {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
   font-weight: 500;
-  transition: all 0.3s ease;
 }
 
-.logout-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-
-.dashboard-main {
+/* Container principal */
+.main-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 24px;
 }
 
+/* Contenu du dashboard */
 .dashboard-content {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 40px;
 }
 
-.welcome-card {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+/* Sections */
+.section-header {
+  margin-bottom: 24px;
   text-align: center;
-  border: 1px solid #e1e5e9;
 }
 
-.welcome-card h2 {
-  color: #333;
-  margin: 0 0 10px 0;
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.section-title i {
+  color: var(--morocco-red);
   font-size: 24px;
+}
+
+.section-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Loading avec thème Maroc */
+.loading-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loading-spinner {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+}
+
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 4px solid transparent;
+  border-top: 4px solid var(--morocco-red);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-ring:nth-child(2) {
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+  border-top-color: var(--morocco-green);
+  animation-delay: 0.2s;
+}
+
+.spinner-ring:nth-child(3) {
+  width: 60%;
+  height: 60%;
+  top: 20%;
+  left: 20%;
+  border-top-color: var(--morocco-gold);
+  animation-delay: 0.4s;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error avec thème Maroc */
+.error-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.error-message {
+  background: var(--gradient-morocco);
+  color: var(--text-light);
+  padding: 20px;
+  border-radius: var(--border-radius-lg);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   font-weight: 600;
 }
 
-.welcome-card p {
-  color: #666;
-  margin: 0;
-  font-size: 16px;
+.btn-retry {
+  background: var(--gradient-morocco-reverse);
+  color: var(--text-light);
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  box-shadow: var(--shadow-green);
+}
+
+.btn-retry:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
+}
+
+/* Statistiques avec thème Maroc */
+.stats-section {
+  margin-bottom: 40px;
 }
 
 .stats-grid {
@@ -94,95 +345,658 @@
 }
 
 .stat-card {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e1e5e9;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+  background: var(--primary-color);
+  border-radius: var(--border-radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+  border-color: var(--morocco-red);
 }
 
 .stat-icon {
-  font-size: 32px;
-  margin-bottom: 15px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--text-light);
+  background: var(--gradient-morocco);
+  box-shadow: var(--shadow-medium);
+}
+
+.stat-icon.active {
+  background: var(--gradient-gold);
+  color: var(--text-primary);
+}
+
+.stat-icon.pending {
+  background: var(--gradient-caf);
+}
+
+.stat-icon.rejected {
+  background: var(--gradient-morocco-reverse);
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Actions rapides avec thème Maroc */
+.quick-actions {
+  margin-bottom: 40px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.action-card {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+  border-color: var(--morocco-green);
+  color: inherit;
+}
+
+.action-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--text-light);
+  background: var(--gradient-morocco);
+  margin: 0 auto 16px;
+  box-shadow: var(--shadow-medium);
+}
+
+.action-card:hover .action-icon {
+  background: var(--gradient-morocco-reverse);
+  transform: scale(1.1);
+}
+
+.action-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.action-description {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Section recherche */
+.search-section {
+  margin-bottom: 40px;
+}
+
+.search-container {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-input-group {
+  flex: 1;
+  min-width: 300px;
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--morocco-red);
+  font-size: 16px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: var(--primary-color);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--morocco-red);
+  box-shadow: 0 0 0 3px rgba(193, 39, 45, 0.1);
+}
+
+.filter-controls {
+  display: flex;
+  gap: 12px;
+}
+
+/* Filtres avancés */
+.advanced-filters {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  margin-top: 16px;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.filter-label i {
+  color: var(--morocco-red);
+  font-size: 16px;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: var(--primary-color);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--morocco-green);
+  box-shadow: 0 0 0 3px rgba(0, 98, 51, 0.1);
+}
+
+/* Annonces récentes avec thème Maroc */
+.recent-annonces {
+  margin-bottom: 40px;
+}
+
+.annonces-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.annonce-card {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.annonce-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+  border-color: var(--morocco-red);
+}
+
+/* Image de la carte */
+.card-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: var(--gradient-morocco);
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.image-content {
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.image-content i {
+  font-size: 48px;
+  color: var(--morocco-red);
+  margin-bottom: 12px;
   display: block;
 }
 
-.stat-card h3 {
-  color: #333;
-  margin: 0 0 10px 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.stat-card p {
-  color: #666;
-  margin: 0;
+.image-text {
   font-size: 14px;
-  line-height: 1.5;
+  font-weight: 500;
 }
 
-.info-section {
-  background: white;
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.annonce-card:hover .post-image {
+  transform: scale(1.05);
+}
+
+/* Badges sur l'image */
+.image-count-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--text-light);
+  padding: 4px 8px;
   border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e1e5e9;
-}
-
-.info-section h3 {
-  color: #333;
-  margin: 0 0 20px 0;
-  font-size: 20px;
+  font-size: 12px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
+.status-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-badge.active {
+  background: var(--gradient-morocco-reverse);
+  color: var(--text-light);
+}
+
+.status-badge.pending {
+  background: var(--gradient-caf);
+  color: var(--text-light);
+}
+
+.status-badge.inactive {
+  background: var(--gradient-morocco);
+  color: var(--text-light);
+}
+
+/* Contenu de la carte */
+.card-content {
+  padding: 20px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+.card-price {
+  background: var(--gradient-morocco-reverse);
+  color: var(--text-light);
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: inline-block;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-green);
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .info-item {
-  padding: 15px;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 1px solid #e1e5e9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
   font-size: 14px;
-  color: #333;
 }
 
-.info-item strong {
-  color: #667eea;
+.info-item i {
+  color: var(--morocco-red);
+  font-size: 16px;
+  width: 16px;
+  text-align: center;
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star-icon {
+  font-size: 14px;
+}
+
+.star-icon.fas {
+  color: var(--morocco-gold);
+}
+
+.star-icon.far {
+  color: var(--border-color);
+}
+
+.rating-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Actions de la carte */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 20px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  background: var(--secondary-color);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.action-btn.primary {
+  background: var(--gradient-morocco);
+  color: var(--text-light);
+}
+
+.action-btn.primary:hover {
+  background: var(--gradient-morocco-reverse);
+}
+
+/* État vide */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--primary-color);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+}
+
+.empty-icon {
+  font-size: 64px;
+  color: var(--morocco-red);
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin: 0 0 24px 0;
+}
+
+/* Boutons avec thème Maroc */
+.btn {
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--gradient-morocco);
+  color: var(--text-light);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-primary:hover {
+  background: var(--gradient-morocco-reverse);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
+}
+
+.btn-secondary {
+  background: var(--gradient-gold);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-gold);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #ffed4e 0%, var(--morocco-gold) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .annonces-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
-  .header-content {
+  .dashboard-page {
+    padding: 10px 0;
+  }
+  
+  .main-container {
+    padding: 20px 16px;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .header-container {
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     text-align: center;
   }
   
   .user-info {
-    flex-direction: column;
-    gap: 10px;
+    align-self: center;
   }
   
   .stats-grid {
     grid-template-columns: 1fr;
   }
   
-  .info-grid {
+  .actions-grid {
     grid-template-columns: 1fr;
   }
   
-  .dashboard-main {
-    padding: 20px 15px;
+  .search-container {
+  flex-direction: column;
+    align-items: stretch;
   }
+  
+  .search-input-group {
+    min-width: auto;
+  }
+  
+  .filter-controls {
+  justify-content: center;
+  }
+  
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .annonces-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Animations */
+@keyframes moroccoPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes moroccoSlide {
+  0% { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes moroccoFade {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Classes utilitaires */
+.morocco-gradient {
+  background: var(--gradient-morocco) !important;
+}
+
+.morocco-gradient-reverse {
+  background: var(--gradient-morocco-reverse) !important;
+}
+
+.morocco-gold-gradient {
+  background: var(--gradient-gold) !important;
+}
+
+.caf-gradient {
+  background: var(--gradient-caf) !important;
+}
+
+.morocco-shadow {
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.morocco-shadow-heavy {
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+.morocco-border {
+  border: 2px solid var(--morocco-red) !important;
+}
+
+.morocco-border-gold {
+  border: 2px solid var(--morocco-gold) !important;
 } 

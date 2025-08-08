@@ -1,0 +1,18 @@
+'Log files:
+C:\impresslola\clear\_logs\2025-08-05T12_57_37_818Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: impress-lola@0.0.0
+Found: @angular/common@19.2.14
+node_modules/@angular/common
+  @angular/common@"^19.2.0" from the root project
+
+Could not resolve dependency:
+peer @angular/common@"^20.0.0 || ^21.0.0" from @angular/google-maps@20.1.4
+node_modules/@angular/google-maps
+  @angular/google-maps@"*" from the root project
+
+Fix the upstream dependency conflict, or retry
+this command with --force or --legacy-peer-deps
+to accept an incorrect (and potentially broken) dependency resolution.

@@ -1,0 +1,260 @@
+<div *ngIf="isVisible && annonce" class="popup-overlay" (click)="onOverlayClick($event)">
+  <div class="popup-container">
+    <!-- Header moderne -->
+    <div class="popup-header">
+      <div class="header-background">
+        <div class="header-pattern"></div>
+      </div>
+      <div class="header-content">
+        <div class="title-section">
+          <div class="title-icon">🏠</div>
+          <div class="title-text">
+            <h1>Détails de l'annonce</h1>
+            <p>Informations complètes du logement</p>
+          </div>
+        </div>
+        <button class="close-btn" (click)="onClose()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content avec design moderne -->
+    <div class="popup-content">
+      <!-- Hero Section avec image et infos principales -->
+      <div class="hero-section">
+        <div class="hero-image">
+          <div class="image-container">
+          <div class="image-placeholder">
+            <i class="fas fa-home"></i>
+              <span class="image-text">Photo du logement</span>
+          </div>
+            <div class="image-overlay">
+              <div class="overlay-badges">
+            <span class="badge badge-type">{{ getTypeMaisonLabel(annonce.typeMaison) }}</span>
+            <span class="badge badge-price">{{ formatPrice(annonce.prixParNuit) }}/nuit</span>
+              </div>
+              <div class="overlay-status">
+                <span class="status-badge" [ngClass]="getStatutBadge(annonce.estActive).class">
+                  {{ getStatutBadge(annonce.estActive).text }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="hero-info">
+          <div class="main-title">
+            <h2>{{ annonce.titre }}</h2>
+            <div class="location-badge">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ annonce.adresse.numero }} {{ annonce.adresse.rue }}, {{ annonce.adresse.codePostal }} {{ annonce.adresse.ville }}</span>
+            </div>
+          </div>
+          
+          <div class="quick-stats">
+            <div class="stat-card">
+              <div class="stat-icon">🏠</div>
+              <div class="stat-content">
+                <span class="stat-value">{{ getTypeMaisonLabel(annonce.typeMaison) }}</span>
+                <span class="stat-label">Type</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-content">
+                <span class="stat-value">{{ annonce.capacite }}</span>
+                <span class="stat-label">Personnes</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🛏️</div>
+              <div class="stat-content">
+                <span class="stat-value">{{ annonce.nombreChambres }}</span>
+                <span class="stat-label">Chambres</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🚿</div>
+              <div class="stat-content">
+                <span class="stat-value">{{ annonce.nombreSallesDeBain }}</span>
+                <span class="stat-label">SDB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description Section -->
+      <div class="description-section">
+        <div class="section-header">
+          <div class="section-icon">📝</div>
+          <h3>Description</h3>
+        </div>
+        <div class="description-content">
+          <p>{{ annonce.description }}</p>
+          </div>
+          </div>
+
+      <!-- Pricing Section moderne -->
+      <div class="pricing-section">
+        <div class="section-header">
+          <div class="section-icon">💰</div>
+          <h3>Tarifs</h3>
+        </div>
+        <div class="pricing-cards">
+          <div class="price-card featured">
+            <div class="price-header">
+              <span class="price-label">Par nuit</span>
+              <span class="price-badge">Populaire</span>
+          </div>
+            <div class="price-value">{{ formatPrice(annonce.prixParNuit) }}</div>
+            <div class="price-details">Prix par personne</div>
+          </div>
+          <div class="price-card">
+            <div class="price-header">
+              <span class="price-label">Par semaine</span>
+        </div>
+            <div class="price-value">{{ formatPrice(annonce.prixParSemaine) }}</div>
+            <div class="price-details">Économisez 15%</div>
+          </div>
+          <div class="price-card">
+            <div class="price-header">
+              <span class="price-label">Par mois</span>
+            </div>
+            <div class="price-value">{{ formatPrice(annonce.prixParMois) }}</div>
+            <div class="price-details">Meilleur tarif</div>
+          </div>
+          </div>
+        </div>
+
+      <!-- Caractéristiques détaillées -->
+      <div class="features-section">
+        <div class="section-header">
+          <div class="section-icon">🏗️</div>
+          <h3>Caractéristiques</h3>
+        </div>
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-icon">📏</div>
+            <div class="feature-content">
+              <span class="feature-label">Surface</span>
+              <span class="feature-value">{{ annonce.adresse.surface }} m²</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">⚽</div>
+            <div class="feature-content">
+              <span class="feature-label">Stade proche</span>
+              <span class="feature-value">{{ annonce.stadePlusProche }}</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">📍</div>
+            <div class="feature-content">
+              <span class="feature-label">Distance</span>
+              <span class="feature-value">{{ annonce.distanceStade }} km</span>
+        </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">📅</div>
+            <div class="feature-content">
+              <span class="feature-label">Créée le</span>
+              <span class="feature-value">{{ formatDate(annonce.dateCreation) }}</span>
+            </div>
+          </div>
+          </div>
+        </div>
+
+      <!-- Équipements avec design moderne -->
+      <div class="equipment-section" *ngIf="annonce.equipements && annonce.equipements.length > 0">
+        <div class="section-header">
+          <div class="section-icon">🛠️</div>
+          <h3>Équipements disponibles</h3>
+          </div>
+        <div class="equipment-grid">
+          <div *ngFor="let equipement of annonce.equipements" class="equipment-item">
+            <div class="equipment-icon">✓</div>
+            <span class="equipment-text">{{ equipement }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Règles avec design moderne -->
+      <div class="rules-section" *ngIf="annonce.regles && annonce.regles.length > 0">
+        <div class="section-header">
+          <div class="section-icon">📋</div>
+          <h3>Règles de la maison</h3>
+      </div>
+        <div class="rules-grid">
+          <div *ngFor="let regle of annonce.regles" class="rule-item">
+            <div class="rule-icon">📋</div>
+            <span class="rule-text">{{ regle }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Évaluations -->
+      <div class="ratings-section" *ngIf="annonce.nombreAvis > 0">
+        <div class="section-header">
+          <div class="section-icon">⭐</div>
+          <h3>Évaluations</h3>
+        </div>
+        <div class="rating-content">
+          <div class="rating-display">
+          <div class="rating-stars">
+            <span *ngFor="let etoile of getNoteEtoiles(annonce.noteMoyenne)" 
+                  [class.filled]="etoile === '★'" class="star">
+              {{ etoile }}
+            </span>
+          </div>
+            <div class="rating-info">
+              <span class="rating-score">{{ annonce.noteMoyenne }}/5</span>
+              <span class="rating-count">({{ annonce.nombreAvis }} avis)</span>
+        </div>
+      </div>
+        </div>
+      </div>
+
+      <!-- Informations propriétaire -->
+      <div class="owner-section">
+        <div class="section-header">
+          <div class="section-icon">👤</div>
+          <h3>Propriétaire</h3>
+        </div>
+        <div class="owner-card">
+          <div class="owner-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="owner-details">
+            <span class="owner-name">{{ annonce.nomLocateur }}</span>
+            <span class="owner-type">Locateur vérifié</span>
+            <span class="owner-id">ID: {{ annonce.locateurId }}</span>
+          </div>
+          <div class="owner-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Vérifié</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer avec actions -->
+    <div class="popup-footer">
+      <div class="footer-actions">
+      <button class="btn btn-secondary" (click)="onClose()">
+        <i class="fas fa-times"></i>
+        Fermer
+      </button>
+      <button class="btn btn-primary">
+        <i class="fas fa-heart"></i>
+        Ajouter aux favoris
+      </button>
+      <button class="btn btn-success">
+        <i class="fas fa-calendar-plus"></i>
+          Réserver maintenant
+      </button>
+      </div>
+    </div>
+  </div>
+</div> 

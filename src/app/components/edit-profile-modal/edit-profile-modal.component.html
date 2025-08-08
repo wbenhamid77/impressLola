@@ -1,0 +1,252 @@
+<div class="modal-overlay" (click)="fermerModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <!-- Header du modal -->
+    <div class="modal-header">
+      <div class="header-content">
+        <h2 class="modal-title">
+          <i class="fas fa-user-edit"></i>
+          Modifier le profil
+        </h2>
+        <div class="header-subtitle">
+          <i class="fas fa-star"></i>
+          <span>CAF 2025 - {{ userRole === 'LOCATAIRE' ? 'Locataire' : 'Locateur' }}</span>
+          <i class="fas fa-star"></i>
+        </div>
+      </div>
+      <button class="btn-close" (click)="fermerModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Contenu du modal -->
+    <div class="modal-content">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="loading-container">
+        <div class="loading-spinner">
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+        </div>
+        <p>Modification en cours...</p>
+      </div>
+
+      <!-- Message d'erreur -->
+      <div *ngIf="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      <!-- Message de succès -->
+      <div *ngIf="successMessage" class="success-message">
+        <i class="fas fa-check-circle"></i>
+        <p>{{ successMessage }}</p>
+      </div>
+
+      <!-- Formulaire -->
+      <form *ngIf="!isLoading && !successMessage" [formGroup]="profileForm" (ngSubmit)="modifierProfil()" class="profile-form">
+        <!-- Informations personnelles -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <i class="fas fa-user"></i>
+            Informations Personnelles
+          </h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">
+                <i class="fas fa-user"></i>
+                Prénom *
+              </label>
+              <input 
+                type="text" 
+                id="prenom"
+                formControlName="prenom"
+                placeholder="Votre prénom"
+                class="form-input"
+                [class.error]="profileForm.get('prenom')?.invalid && profileForm.get('prenom')?.touched"
+              >
+              <div *ngIf="profileForm.get('prenom')?.invalid && profileForm.get('prenom')?.touched" class="error-text">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Le prénom est requis</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="nom">
+                <i class="fas fa-user"></i>
+                Nom *
+              </label>
+              <input 
+                type="text" 
+                id="nom"
+                formControlName="nom"
+                placeholder="Votre nom"
+                class="form-input"
+                [class.error]="profileForm.get('nom')?.invalid && profileForm.get('nom')?.touched"
+              >
+              <div *ngIf="profileForm.get('nom')?.invalid && profileForm.get('nom')?.touched" class="error-text">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Le nom est requis</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="telephone">
+              <i class="fas fa-phone"></i>
+              Téléphone *
+            </label>
+            <input 
+              type="tel" 
+              id="telephone"
+              formControlName="telephone"
+              placeholder="+33 1 23 45 67 89"
+              class="form-input"
+              [class.error]="profileForm.get('telephone')?.invalid && profileForm.get('telephone')?.touched"
+            >
+            <div *ngIf="profileForm.get('telephone')?.invalid && profileForm.get('telephone')?.touched" class="error-text">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>Le téléphone est requis</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations spécifiques au locataire -->
+        <div *ngIf="userRole === 'LOCATAIRE'" class="form-section">
+          <h3 class="section-title">
+            <i class="fas fa-briefcase"></i>
+            Informations Professionnelles
+          </h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profession">
+                <i class="fas fa-briefcase"></i>
+                Profession
+              </label>
+              <input 
+                type="text" 
+                id="profession"
+                formControlName="profession"
+                placeholder="Votre profession"
+                class="form-input"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="employeur">
+                <i class="fas fa-building"></i>
+                Employeur
+              </label>
+              <input 
+                type="text" 
+                id="employeur"
+                formControlName="employeur"
+                placeholder="Nom de votre employeur"
+                class="form-input"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="revenuAnnuel">
+              <i class="fas fa-euro-sign"></i>
+              Revenu annuel (€)
+            </label>
+            <input 
+              type="number" 
+              id="revenuAnnuel"
+              formControlName="revenuAnnuel"
+              placeholder="45000"
+              class="form-input"
+              min="0"
+              step="1000"
+            >
+          </div>
+        </div>
+
+        <!-- Informations spécifiques au locateur -->
+        <div *ngIf="userRole === 'LOCATEUR'" class="form-section">
+          <h3 class="section-title">
+            <i class="fas fa-building"></i>
+            Informations Entreprise
+          </h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="raisonSociale">
+                <i class="fas fa-building"></i>
+                Raison sociale
+              </label>
+              <input 
+                type="text" 
+                id="raisonSociale"
+                formControlName="raisonSociale"
+                placeholder="Nom de votre entreprise"
+                class="form-input"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="numeroSiret">
+                <i class="fas fa-id-card"></i>
+                Numéro SIRET
+              </label>
+              <input 
+                type="text" 
+                id="numeroSiret"
+                formControlName="numeroSiret"
+                placeholder="12345678901234"
+                class="form-input"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adresseProfessionnelle">
+              <i class="fas fa-map-marker-alt"></i>
+              Adresse professionnelle
+            </label>
+            <input 
+              type="text" 
+              id="adresseProfessionnelle"
+              formControlName="adresseProfessionnelle"
+              placeholder="Adresse de votre entreprise"
+              class="form-input"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="description">
+              <i class="fas fa-align-left"></i>
+              Description
+            </label>
+            <textarea 
+              id="description"
+              formControlName="description"
+              placeholder="Description de votre entreprise..."
+              class="form-textarea"
+              rows="4"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="fermerModal()">
+            <i class="fas fa-times"></i>
+            Annuler
+          </button>
+          <button 
+            type="submit" 
+            class="btn-submit" 
+            [disabled]="profileForm.invalid || isLoading"
+          >
+            <i class="fas fa-save"></i>
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

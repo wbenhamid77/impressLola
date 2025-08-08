@@ -1,0 +1,248 @@
+<div class="profile-container">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <button class="btn-back" (click)="retourAccueil()">
+        <i class="fas fa-arrow-left"></i>
+        <span>Retour</span>
+      </button>
+      <h1 class="page-title">
+        <i class="fas fa-user-circle"></i>
+        Mon Profil
+        <i class="fas fa-futbol"></i>
+      </h1>
+      <div class="header-subtitle">
+        <i class="fas fa-star"></i>
+        <span>CAF 2025 - {{ userRole === 'LOCATAIRE' ? 'Locataire' : 'Locateur' }}</span>
+        <i class="fas fa-star"></i>
+      </div>
+    </div>
+    <div class="football-decoration">
+      <i class="fas fa-futbol"></i>
+      <i class="fas fa-trophy"></i>
+      <i class="fas fa-futbol"></i>
+    </div>
+  </header>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+    </div>
+    <p>Chargement de votre profil...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="error-message">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ errorMessage }}</p>
+    <button class="btn-retry" (click)="chargerProfil()">
+      <i class="fas fa-redo"></i>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Contenu du profil -->
+  <main *ngIf="!isLoading && !errorMessage" class="main-content">
+    <!-- Informations générales -->
+    <section class="profile-section" data-aos="fade-up">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-user"></i>
+          Informations Personnelles
+        </h2>
+        <p class="section-subtitle">Vos données de base</p>
+      </div>
+      
+      <div class="profile-card">
+        <div class="profile-avatar">
+          <i class="fas fa-user-circle"></i>
+          <div class="avatar-glow"></div>
+        </div>
+        
+        <div class="profile-info">
+          <div class="info-row">
+            <div class="info-item">
+              <label>Nom complet</label>
+              <span>{{ userProfile?.prenom }} {{ userProfile?.nom }}</span>
+            </div>
+            <div class="info-item">
+              <label>Email</label>
+              <span>{{ userProfile?.email }}</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-item">
+              <label>Téléphone</label>
+              <span>{{ userProfile?.telephone || 'Non renseigné' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Rôle</label>
+              <span class="role-badge">{{ userRole === 'LOCATAIRE' ? 'Locataire' : 'Locateur' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Informations spécifiques au locataire -->
+    <section *ngIf="userRole === 'LOCATAIRE' && locataireProfile" class="profile-section" data-aos="fade-up" data-aos-delay="200">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-briefcase"></i>
+          Informations Professionnelles
+        </h2>
+        <p class="section-subtitle">Vos données professionnelles</p>
+      </div>
+      
+      <div class="profile-card">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Profession</label>
+            <span>{{ locataireProfile?.profession || 'Non renseigné' }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Employeur</label>
+            <span>{{ locataireProfile?.employeur || 'Non renseigné' }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Date d'embauche</label>
+            <span>{{ formaterDate(locataireProfile?.dateEmbauche) || 'Non renseigné' }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Revenu annuel</label>
+            <span>{{ formaterPrix(locataireProfile?.revenuAnnuel) || 'Non renseigné' }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Informations spécifiques au locateur -->
+    <section *ngIf="userRole === 'LOCATEUR' && locateurProfile" class="profile-section" data-aos="fade-up" data-aos-delay="200">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-building"></i>
+          Informations Entreprise
+        </h2>
+        <p class="section-subtitle">Vos données d'entreprise</p>
+      </div>
+      
+      <div class="profile-card">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Raison sociale</label>
+            <span>{{ locateurProfile?.raisonSociale || 'Non renseigné' }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Numéro SIRET</label>
+            <span>{{ locateurProfile?.numeroSiret || 'Non renseigné' }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Adresse professionnelle</label>
+            <span>{{ locateurProfile?.adresseProfessionnelle || 'Non renseigné' }}</span>
+          </div>
+          
+          <div class="info-item full-width">
+            <label>Description</label>
+            <span>{{ locateurProfile?.description || 'Aucune description' }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="profile-section" data-aos="fade-up" data-aos-delay="400">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-cog"></i>
+          Actions
+        </h2>
+        <p class="section-subtitle">Gérer votre profil</p>
+      </div>
+      
+      <div class="actions-grid">
+        <button class="action-btn btn-edit" (click)="modifierProfil()">
+          <i class="fas fa-edit"></i>
+          <span>Modifier le profil</span>
+        </button>
+        
+        <button class="action-btn btn-password" (click)="changerMotDePasse()">
+          <i class="fas fa-key"></i>
+          <span>Changer le mot de passe</span>
+        </button>
+        
+        <button class="action-btn btn-delete" (click)="supprimerCompte()">
+          <i class="fas fa-trash"></i>
+          <span>Supprimer le compte</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Statistiques -->
+    <section class="profile-section" data-aos="fade-up" data-aos-delay="600">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-chart-bar"></i>
+          Statistiques
+        </h2>
+        <p class="section-subtitle">Vos activités</p>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ stats.favoris || 0 }}</span>
+            <span class="stat-label">Favoris</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ stats.annonces || 0 }}</span>
+            <span class="stat-label">{{ userRole === 'LOCATAIRE' ? 'Visites' : 'Annonces' }}</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number">{{ stats.reservations || 0 }}</span>
+            <span class="stat-label">Réservations</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de changement de mot de passe -->
+  <app-change-password-modal 
+    *ngIf="showPasswordModal"
+    (modalClosed)="onPasswordModalClosed()"
+    (passwordChanged)="onPasswordChanged()">
+  </app-change-password-modal>
+
+  <!-- Modal de modification de profil -->
+  <app-edit-profile-modal 
+    *ngIf="showEditModal"
+    [userProfile]="userProfile"
+    [userRole]="userRole"
+    (modalClosed)="onEditModalClosed()"
+    (profileUpdated)="onProfileUpdated()">
+  </app-edit-profile-modal>
+</div>

@@ -1,0 +1,982 @@
+<!-- Page d'ajout d'annonce avec thème Maroc-CAF 2025 -->
+<div class="ajouter-annonce-page">
+  <!-- Header avec thème Maroc-CAF -->
+  <header class="page-header">
+    <div class="header-container">
+      <button class="btn-back" routerLink="/dashboard">
+        <i class="fas fa-arrow-left"></i>
+        Retour Dashboard
+      </button>
+      
+      <div class="header-center">
+        <div class="header-badge">
+          <i class="fas fa-plus"></i>
+          Nouvelle Annonce
+        </div>
+        <h1 class="page-title">Ajouter une Annonce</h1>
+        <p class="page-subtitle">Publiez votre logement pour la CAN 2025 au Maroc</p>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary" routerLink="/mes-annonces">
+          <i class="fas fa-list"></i>
+          Mes Annonces
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container principal -->
+  <div class="main-container">
+    <!-- Messages d'erreur/succès -->
+    <div *ngIf="error" class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+
+    <div *ngIf="success" class="alert alert-success">
+      <i class="fas fa-check-circle"></i>
+      {{ success }}
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="!formInitialized" class="loading-container">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+      <p>Chargement du formulaire...</p>
+    </div>
+
+    <!-- Formulaire principal -->
+    <form *ngIf="formInitialized && annonceForm" [formGroup]="annonceForm" (ngSubmit)="onSubmit()" class="form-container">
+      
+      <!-- Section 1: Informations Générales -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Informations Générales
+          </h2>
+          <p class="section-subtitle">Décrivez votre logement de manière attractive</p>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-heading"></i>
+              Titre de l'annonce *
+            </label>
+            <input 
+              type="text" 
+              formControlName="titre"
+              placeholder="Ex: Villa luxueuse à 5 min du Stade Mohammed V"
+              class="form-control"
+            >
+            <div *ngIf="annonceForm.get('titre')?.invalid && annonceForm.get('titre')?.touched" class="error-text">
+              Le titre est requis et doit contenir au moins 10 caractères
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">
+              <i class="fas fa-align-left"></i>
+              Description détaillée *
+            </label>
+            <textarea 
+              formControlName="description"
+              placeholder="Décrivez votre logement, ses atouts, son emplacement idéal pour la CAN 2025..."
+              rows="6"
+              class="form-control"
+            ></textarea>
+            <div *ngIf="annonceForm.get('description')?.invalid && annonceForm.get('description')?.touched" class="error-text">
+              La description est requise et doit contenir au moins 50 caractères
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Images du Logement -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-images"></i>
+            Images du Logement
+          </h2>
+          <p class="section-subtitle">Ajoutez des photos attractives pour attirer plus de locataires</p>
+        </div>
+        
+        <div class="images-upload-container">
+          <div 
+            class="upload-zone" 
+            (dragover)="onDragOver($event)" 
+            (dragleave)="onDragLeave($event)" 
+            (drop)="onDrop($event)"
+            [class.drag-over]="isDragOver"
+            (click)="fileInput.click()"
+          >
+            <div class="upload-content">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <h4>Glissez vos images ici ou cliquez pour sélectionner</h4>
+              <p>Formats acceptés : JPG, PNG, GIF (max 5MB par image)</p>
+              <p class="upload-hint">Ajoutez au moins une photo principale de votre logement</p>
+            </div>
+            <input 
+              #fileInput 
+              type="file" 
+              multiple 
+              accept="image/*" 
+              (change)="onFileSelected($event)"
+              style="display: none;"
+            >
+          </div>
+          
+          <div class="images-preview" *ngIf="selectedFiles.length > 0">
+            <div class="image-item" *ngFor="let file of selectedFiles; let i = index">
+              <img [src]="getImagePreview(file)" [alt]="'Image ' + (i + 1)">
+              <button type="button" class="remove-image" (click)="removeImage(i)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Caractéristiques du Logement -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-home"></i>
+            Caractéristiques du Logement
+          </h2>
+          <p class="section-subtitle">Définissez les spécificités de votre logement</p>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-building"></i>
+              Type de logement *
+            </label>
+            <select formControlName="typeMaison" class="form-select">
+              <option value="">Sélectionnez un type</option>
+              <option value="APPARTEMENT">Appartement</option>
+              <option value="MAISON">Maison</option>
+              <option value="STUDIO">Studio</option>
+              <option value="LOFT">Loft</option>
+              <option value="VILLA">Villa</option>
+              <option value="CHALET">Chalet</option>
+              <option value="MANOIR">Manoir</option>
+              <option value="CHATEAU">Château</option>
+              <option value="BUNGALOW">Bungalow</option>
+              <option value="PENTHOUSE">Penthouse</option>
+              <option value="MAISON_DE_VACANCES">Maison de vacances</option>
+              <option value="GITE">Gîte</option>
+              <option value="CHAMBRE_HOTE">Chambre d'hôte</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-bed"></i>
+              Nombre de chambres *
+            </label>
+            <input 
+              type="number" 
+              formControlName="nombreChambres"
+              min="1"
+              max="20"
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-users"></i>
+              Capacité (personnes) *
+            </label>
+            <input 
+              type="number" 
+              formControlName="capacite"
+              min="1"
+              max="50"
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-euro-sign"></i>
+              Prix par nuit (€) *
+            </label>
+            <input 
+              type="number" 
+              formControlName="prixParNuit"
+              min="1"
+              step="0.01"
+              class="form-control"
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Localisation et Carte -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-map-marker-alt"></i>
+            Localisation
+          </h2>
+          <p class="section-subtitle">Définissez l'emplacement exact de votre logement</p>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-city"></i>
+              Ville *
+            </label>
+            <input 
+              type="text" 
+              formControlName="ville"
+              placeholder="Ex: Casablanca"
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-map"></i>
+              Pays *
+            </label>
+            <input 
+              type="text" 
+              formControlName="pays"
+              placeholder="Ex: Maroc"
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-road"></i>
+              Rue *
+            </label>
+            <input 
+              type="text" 
+              formControlName="rue"
+              placeholder="Ex: Avenue Mohammed V"
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-hashtag"></i>
+              Code postal *
+            </label>
+            <input 
+              type="text" 
+              formControlName="codePostal"
+              placeholder="Ex: 20000"
+              class="form-control"
+            >
+          </div>
+        </div>
+
+        <!-- Carte interactive -->
+        <div class="map-section">
+          <div class="map-container">
+            <div id="map" class="professional-map"></div>
+            
+            <!-- Contrôles de la carte -->
+            <div class="map-controls">
+              <button type="button" class="map-control-btn" (click)="getCurrentLocation()" title="Ma position">
+                <i class="fas fa-crosshairs"></i>
+              </button>
+              <button type="button" class="map-control-btn" (click)="zoomIn()" title="Zoom +">
+                <i class="fas fa-plus"></i>
+              </button>
+              <button type="button" class="map-control-btn" (click)="zoomOut()" title="Zoom -">
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+
+            <!-- Informations de localisation -->
+            <div class="location-info">
+              <h4>
+                <i class="fas fa-map-pin"></i>
+                Coordonnées sélectionnées
+              </h4>
+              <div class="coordinates-display">
+                <div class="coord-item">
+                  <i class="fas fa-latitude"></i>
+                  <span>Latitude: {{ latitude }}</span>
+                </div>
+                <div class="coord-item">
+                  <i class="fas fa-longitude"></i>
+                  <span>Longitude: {{ longitude }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Équipements (Version Étendue) -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-tools"></i>
+            Équipements Disponibles
+          </h2>
+          <p class="section-subtitle">Sélectionnez tous les équipements disponibles dans votre logement</p>
+        </div>
+        
+        <div class="equipments-grid" formGroupName="equipements">
+          
+          <!-- Équipements de Base -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-home"></i>
+              Équipements de Base
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="wifi" formControlName="wifi">
+                <label for="wifi">WiFi gratuit</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="climatisation" formControlName="climatisation">
+                <label for="climatisation">Climatisation</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="chauffage" formControlName="chauffage">
+                <label for="chauffage">Chauffage</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="ascenseur" formControlName="ascenseur">
+                <label for="ascenseur">Ascenseur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="parking" formControlName="parking">
+                <label for="parking">Parking privé</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="balcon" formControlName="balcon">
+                <label for="balcon">Balcon/Terrasse</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="vue" formControlName="vue">
+                <label for="vue">Vue exceptionnelle</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="securite" formControlName="securite">
+                <label for="securite">Système de sécurité</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cuisine -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-utensils"></i>
+              Cuisine
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="cuisine_equipee" formControlName="cuisine_equipee">
+                <label for="cuisine_equipee">Cuisine équipée</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="micro_ondes" formControlName="micro_ondes">
+                <label for="micro_ondes">Micro-ondes</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="lave_vaisselle" formControlName="lave_vaisselle">
+                <label for="lave_vaisselle">Lave-vaisselle</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="refrigerateur" formControlName="refrigerateur">
+                <label for="refrigerateur">Réfrigérateur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="cafetiere" formControlName="cafetiere">
+                <label for="cafetiere">Cafetière</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="bouilloire" formControlName="bouilloire">
+                <label for="bouilloire">Bouilloire</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="mixeur" formControlName="mixeur">
+                <label for="mixeur">Mixeur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="grill" formControlName="grill">
+                <label for="grill">Grill</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="ustensiles" formControlName="ustensiles">
+                <label for="ustensiles">Ustensiles de cuisine</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="vaisselle" formControlName="vaisselle">
+                <label for="vaisselle">Vaisselle complète</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Salle de Bain -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-bath"></i>
+              Salle de Bain
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="salle_bain_privee" formControlName="salle_bain_privee">
+                <label for="salle_bain_privee">Salle de bain privée</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="douche" formControlName="douche">
+                <label for="douche">Douche</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="bain" formControlName="bain">
+                <label for="bain">Baignoire</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="serviettes" formControlName="serviettes">
+                <label for="serviettes">Serviettes fournies</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="seche_cheveux" formControlName="seche_cheveux">
+                <label for="seche_cheveux">Sèche-cheveux</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="produits_hygiene" formControlName="produits_hygiene">
+                <label for="produits_hygiene">Produits d'hygiène</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="peignoir" formControlName="peignoir">
+                <label for="peignoir">Peignoir</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="chaussons" formControlName="chaussons">
+                <label for="chaussons">Chaussons</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chambres -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-bed"></i>
+              Chambres
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="linge_maison" formControlName="linge_maison">
+                <label for="linge_maison">Linge de maison</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="oreillers" formControlName="oreillers">
+                <label for="oreillers">Oreillers</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="couvertures" formControlName="couvertures">
+                <label for="couvertures">Couvertures</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="armoire" formControlName="armoire">
+                <label for="armoire">Armoire/Penderie</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="lit_bebe" formControlName="lit_bebe">
+                <label for="lit_bebe">Lit bébé disponible</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="lit_supplementaire" formControlName="lit_supplementaire">
+                <label for="lit_supplementaire">Lit supplémentaire</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="table_chevet" formControlName="table_chevet">
+                <label for="table_chevet">Table de chevet</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="lampe_chevet" formControlName="lampe_chevet">
+                <label for="lampe_chevet">Lampe de chevet</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divertissement -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-tv"></i>
+              Divertissement
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="tv" formControlName="tv">
+                <label for="tv">Télévision</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="netflix" formControlName="netflix">
+                <label for="netflix">Netflix/Streaming</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="jeux" formControlName="jeux">
+                <label for="jeux">Jeux de société</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="livres" formControlName="livres">
+                <label for="livres">Livres</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="musique" formControlName="musique">
+                <label for="musique">Système audio</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="console_jeux" formControlName="console_jeux">
+                <label for="console_jeux">Console de jeux</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="projecteur" formControlName="projecteur">
+                <label for="projecteur">Projecteur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="karaoke" formControlName="karaoke">
+                <label for="karaoke">Karaoké</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extérieur -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-tree"></i>
+              Extérieur
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="jardin" formControlName="jardin">
+                <label for="jardin">Jardin</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="barbecue" formControlName="barbecue">
+                <label for="barbecue">Barbecue</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="piscine" formControlName="piscine">
+                <label for="piscine">Piscine</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="terrasse" formControlName="terrasse">
+                <label for="terrasse">Terrasse</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="vue" formControlName="vue">
+                <label for="vue">Vue exceptionnelle</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="hamac" formControlName="hamac">
+                <label for="hamac">Hamac</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="parasol" formControlName="parasol">
+                <label for="parasol">Parasol</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="chaises_longues" formControlName="chaises_longues">
+                <label for="chaises_longues">Chaises longues</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accessibilité -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-wheelchair"></i>
+              Accessibilité
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="accessible" formControlName="accessible">
+                <label for="accessible">Accessible aux personnes à mobilité réduite</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="rampe" formControlName="rampe">
+                <label for="rampe">Rampe d'accès</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="ascenseur_accessible" formControlName="ascenseur_accessible">
+                <label for="ascenseur_accessible">Ascenseur accessible</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="salle_bain_accessible" formControlName="salle_bain_accessible">
+                <label for="salle_bain_accessible">Salle de bain accessible</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Services Spéciaux -->
+          <div class="equipment-category">
+            <h4 class="category-title">
+              <i class="fas fa-concierge-bell"></i>
+              Services Spéciaux
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="conciergerie" formControlName="conciergerie">
+                <label for="conciergerie">Service de conciergerie</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="petit_dejeuner" formControlName="petit_dejeuner">
+                <label for="petit_dejeuner">Petit-déjeuner inclus</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="transfert" formControlName="transfert">
+                <label for="transfert">Service de transfert</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="guide" formControlName="guide">
+                <label for="guide">Guide touristique</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="menage" formControlName="menage">
+                <label for="menage">Service de ménage</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="cuisinier" formControlName="cuisinier">
+                <label for="cuisinier">Cuisinier privé</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="chauffeur" formControlName="chauffeur">
+                <label for="chauffeur">Chauffeur privé</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="massage" formControlName="massage">
+                <label for="massage">Service de massage</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Section 6: Règles de la Maison (Version Étendue) -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-gavel"></i>
+            Règles de la Maison
+          </h2>
+          <p class="section-subtitle">Définissez les règles importantes pour vos locataires</p>
+        </div>
+        
+        <div class="rules-grid" formGroupName="regles">
+          
+          <!-- Règles Générales -->
+          <div class="rule-category">
+            <h4 class="category-title">
+              <i class="fas fa-info-circle"></i>
+              Règles Générales
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_fumeur" formControlName="pas_fumeur">
+                <label for="pas_fumeur">Non-fumeur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_animaux" formControlName="pas_animaux">
+                <label for="pas_animaux">Animaux non autorisés</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="animaux_autorises" formControlName="animaux_autorises">
+                <label for="animaux_autorises">Animaux autorisés</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_fete" formControlName="pas_fete">
+                <label for="pas_fete">Pas de fêtes/événements</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="calme" formControlName="calme">
+                <label for="calme">Respect du calme</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_alcool" formControlName="pas_alcool">
+                <label for="pas_alcool">Consommation d'alcool interdite</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_musique" formControlName="pas_musique">
+                <label for="pas_musique">Musique interdite</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_visiteurs" formControlName="pas_visiteurs">
+                <label for="pas_visiteurs">Visiteurs non autorisés</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Horaires -->
+          <div class="rule-category">
+            <h4 class="category-title">
+              <i class="fas fa-clock"></i>
+              Horaires
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="check_in_flexible" formControlName="check_in_flexible">
+                <label for="check_in_flexible">Check-in flexible</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="check_out_10h" formControlName="check_out_10h">
+                <label for="check_out_10h">Check-out avant 10h</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="check_out_11h" formControlName="check_out_11h">
+                <label for="check_out_11h">Check-out avant 11h</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="check_out_12h" formControlName="check_out_12h">
+                <label for="check_out_12h">Check-out avant 12h</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="couvre_feu" formControlName="couvre_feu">
+                <label for="couvre_feu">Couvre-feu à 22h</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="silence_nuit" formControlName="silence_nuit">
+                <label for="silence_nuit">Silence de nuit (22h-7h)</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sécurité -->
+          <div class="rule-category">
+            <h4 class="category-title">
+              <i class="fas fa-shield-alt"></i>
+              Sécurité
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="camera" formControlName="camera">
+                <label for="camera">Caméras de surveillance</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="detecteur_fumee" formControlName="detecteur_fumee">
+                <label for="detecteur_fumee">Détecteur de fumée</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="extincteur" formControlName="extincteur">
+                <label for="extincteur">Extincteur</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="coffre_fort" formControlName="coffre_fort">
+                <label for="coffre_fort">Coffre-fort</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="gardien" formControlName="gardien">
+                <label for="gardien">Gardien 24h/24</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="interphone" formControlName="interphone">
+                <label for="interphone">Interphone</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="digicode" formControlName="digicode">
+                <label for="digicode">Digicode</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nettoyage -->
+          <div class="rule-category">
+            <h4 class="category-title">
+              <i class="fas fa-broom"></i>
+              Nettoyage
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="nettoyage_inclus" formControlName="nettoyage_inclus">
+                <label for="nettoyage_inclus">Nettoyage inclus</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="linge_fourni" formControlName="linge_fourni">
+                <label for="linge_fourni">Linge de maison fourni</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="menage_fin_sejour" formControlName="menage_fin_sejour">
+                <label for="menage_fin_sejour">Ménage de fin de séjour</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="linge_propre" formControlName="linge_propre">
+                <label for="linge_propre">Linge propre à laisser</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="nettoyage_quotidien" formControlName="nettoyage_quotidien">
+                <label for="nettoyage_quotidien">Nettoyage quotidien</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="changement_linge" formControlName="changement_linge">
+                <label for="changement_linge">Changement de linge</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Restrictions -->
+          <div class="rule-category">
+            <h4 class="category-title">
+              <i class="fas fa-ban"></i>
+              Restrictions
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_cuisine" formControlName="pas_cuisine">
+                <label for="pas_cuisine">Cuisine non autorisée</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_lavage" formControlName="pas_lavage">
+                <label for="pas_lavage">Machine à laver non autorisée</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_enfants" formControlName="pas_enfants">
+                <label for="pas_enfants">Enfants non autorisés</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_etudiants" formControlName="pas_etudiants">
+                <label for="pas_etudiants">Étudiants non autorisés</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_travailleurs" formControlName="pas_travailleurs">
+                <label for="pas_travailleurs">Travailleurs non autorisés</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="pas_photographie" formControlName="pas_photographie">
+                <label for="pas_photographie">Photographie interdite</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Services Inclus -->
+          <div class="rule-category">
+            <h4 class="category-title">
+              <i class="fas fa-gift"></i>
+              Services Inclus
+            </h4>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="wifi_gratuit" formControlName="wifi_gratuit">
+                <label for="wifi_gratuit">WiFi gratuit</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="electricite_incluse" formControlName="electricite_incluse">
+                <label for="electricite_incluse">Électricité incluse</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="eau_incluse" formControlName="eau_incluse">
+                <label for="eau_incluse">Eau incluse</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="chauffage_inclus" formControlName="chauffage_inclus">
+                <label for="chauffage_inclus">Chauffage inclus</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="parking_gratuit" formControlName="parking_gratuit">
+                <label for="parking_gratuit">Parking gratuit</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="menage_inclus" formControlName="menage_inclus">
+                <label for="menage_inclus">Ménage inclus</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Section 7: Proximité Stade -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-futbol"></i>
+            Proximité Stade CAN 2025
+          </h2>
+          <p class="section-subtitle">Informations sur la proximité des stades de la CAN 2025</p>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-trophy"></i>
+              Stade le plus proche *
+            </label>
+            <select formControlName="stadePlusProche" class="form-select">
+              <option value="">Sélectionnez un stade</option>
+              <option value="Stade Mohammed V">Stade Mohammed V (Casablanca)</option>
+              <option value="Stade Ibn Batouta">Stade Ibn Batouta (Tanger)</option>
+              <option value="Stade Moulay Abdallah">Stade Moulay Abdallah (Rabat)</option>
+              <option value="Stade de Marrakech">Stade de Marrakech</option>
+              <option value="Stade de Fès">Stade de Fès</option>
+              <option value="Stade d'Agadir">Stade d'Agadir</option>
+              <option value="Stade de Tétouan">Stade de Tétouan</option>
+              <option value="Stade de Meknès">Stade de Meknès</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-ruler"></i>
+              Distance au stade (km) *
+            </label>
+            <input 
+              type="number" 
+              formControlName="distanceStade"
+              placeholder="Ex: 0.3"
+              step="0.1"
+              min="0"
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">
+              <i class="fas fa-map-marker-alt"></i>
+              Adresse du stade *
+            </label>
+            <input 
+              type="text" 
+              formControlName="adresseStade"
+              placeholder="Ex: Boulevard Zerktouni, Casablanca"
+              class="form-control"
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Boutons d'action -->
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn btn-primary btn-large"
+          [disabled]="annonceForm.invalid || loading"
+        >
+          <i class="fas fa-plus"></i>
+          {{ loading ? 'Création en cours...' : 'Créer l\'annonce' }}
+        </button>
+        
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          routerLink="/dashboard"
+        >
+          <i class="fas fa-times"></i>
+          Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

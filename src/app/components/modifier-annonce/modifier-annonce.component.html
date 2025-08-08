@@ -1,0 +1,554 @@
+<div class="container">
+  <div class="header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>✏️ Modifier l'annonce</h1>
+        <p class="subtitle">Mettez à jour votre location pour la CAF 2025</p>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" (click)="retourMesAnnonces()">
+          <i class="fas fa-arrow-left"></i> Retour Mes Annonces
+        </button>
+        <button class="btn btn-primary" (click)="retourDashboard()">
+          <i class="fas fa-home"></i> Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLocateur" class="error-message">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error }}
+  </div>
+
+  <div *ngIf="isLocateur" class="form-container">
+    <div *ngIf="error" class="alert alert-danger">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ error }}
+      <div class="error-actions" style="margin-top: 10px;">
+        <button class="btn btn-secondary btn-sm" (click)="chargerAnnonce()" style="margin-right: 10px;">
+          <i class="fas fa-redo"></i> Réessayer
+        </button>
+        <button *ngIf="error.includes('500')" class="btn btn-primary btn-sm" (click)="synchroniserAvecServeur()">
+          <i class="fas fa-sync"></i> Synchroniser
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="success" class="alert alert-success">
+      <i class="fas fa-check-circle"></i>
+      {{ success }}
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Chargement de l'annonce...</p>
+    </div>
+
+    <form *ngIf="!loading && annonce && annonceForm" [formGroup]="annonceForm" (ngSubmit)="onSubmit()" class="annonce-form">
+      <!-- Informations générales -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-info-circle"></i> Informations générales</h3>
+          <p>Modifiez les informations de base de votre annonce</p>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="titre">Titre de l'annonce *</label>
+            <input 
+              type="text" 
+              id="titre" 
+              formControlName="titre"
+              placeholder="Ex: Maison de charme à 5 minutes du Parc des Princes"
+              class="form-control"
+            >
+            <div *ngIf="annonceForm.get('titre')?.invalid && annonceForm.get('titre')?.touched" class="error-text">
+              Le titre est requis et doit contenir au moins 10 caractères
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea 
+              id="description" 
+              formControlName="description"
+              placeholder="Décrivez votre logement en détail pour les supporters..."
+              rows="4"
+              class="form-control"
+            ></textarea>
+            <div *ngIf="annonceForm.get('description')?.invalid && annonceForm.get('description')?.touched" class="error-text">
+              La description est requise et doit contenir au moins 50 caractères
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-map-marker-alt"></i> Adresse</h3>
+          <p>Modifiez l'adresse de votre logement</p>
+        </div>
+        
+        <div formGroupName="adresse">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="rue">Rue *</label>
+              <input 
+                type="text" 
+                id="rue" 
+                formControlName="rue"
+                placeholder="Ex: Rue de la Paix"
+                class="form-control"
+              >
+            </div>
+            <div class="form-group">
+              <label for="numero">Numéro *</label>
+              <input 
+                type="text" 
+                id="numero" 
+                formControlName="numero"
+                placeholder="Ex: 28"
+                class="form-control"
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="codePostal">Code postal *</label>
+              <input 
+                type="text" 
+                id="codePostal" 
+                formControlName="codePostal"
+                placeholder="Ex: 75016"
+                class="form-control"
+              >
+            </div>
+            <div class="form-group">
+              <label for="ville">Ville *</label>
+              <input 
+                type="text" 
+                id="ville" 
+                formControlName="ville"
+                placeholder="Ex: Paris"
+                class="form-control"
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="complement">Complément d'adresse</label>
+              <input 
+                type="text" 
+                id="complement" 
+                formControlName="complement"
+                placeholder="Ex: Maison avec jardin"
+                class="form-control"
+              >
+            </div>
+            <div class="form-group">
+              <label for="pays">Pays *</label>
+              <input 
+                type="text" 
+                id="pays" 
+                formControlName="pays"
+                placeholder="Ex: France"
+                class="form-control"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Localisation sur la carte -->
+      <div class="form-section map-section">
+        <div class="section-header">
+          <h3><i class="fas fa-map-marked-alt"></i> Localisation sur la carte</h3>
+          <p class="section-description">Cliquez sur la carte ou déplacez le marqueur pour définir l'emplacement exact de votre logement</p>
+        </div>
+        
+        <div class="professional-map-container">
+          <!-- Barre de recherche d'adresse -->
+          <div class="map-search-container">
+            <div class="search-input-wrapper">
+              <i class="fas fa-search search-icon"></i>
+              <input 
+                type="text" 
+                [(ngModel)]="searchQuery"
+                [ngModelOptions]="{standalone: true}"
+                (input)="onSearchInput()"
+                placeholder="Rechercher une adresse en France..."
+                class="professional-search-input"
+              >
+              <button class="gps-location-btn" (click)="getCurrentLocation()" title="Utiliser ma position actuelle">
+                <i class="fas fa-crosshairs"></i>
+              </button>
+        </div>
+        
+            <!-- Résultats de recherche -->
+            <div class="search-results-container" *ngIf="showSearchResults && searchResults.length > 0">
+              <div 
+                class="search-result-item" 
+                *ngFor="let result of searchResults; let i = index"
+                (click)="selectSearchResult(result)"
+                [class.selected]="i === 0"
+              >
+                <div class="result-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="result-content">
+                  <div class="result-address">{{ result.address }}</div>
+                  <div class="result-coordinates">Lat: {{ result.lat.toFixed(4) }}, Lng: {{ result.lng.toFixed(4) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Carte principale -->
+          <div class="map-wrapper">
+            <!-- Indicateur de chargement -->
+            <div class="map-loading-overlay" *ngIf="!mapInitialized && !mapError">
+              <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+              </div>
+              <div class="loading-text">Chargement de la carte...</div>
+            </div>
+            
+            <!-- Message d'erreur -->
+            <div class="map-error-overlay" *ngIf="mapError">
+              <div class="error-content">
+                <i class="fas fa-exclamation-triangle error-icon"></i>
+                <h4>Erreur de chargement</h4>
+                <p>La carte n'a pas pu se charger. Vérifiez votre connexion internet.</p>
+                <button (click)="retryMapLoad()" class="retry-btn">
+                  <i class="fas fa-redo"></i>
+                  Réessayer
+                </button>
+              </div>
+            </div>
+            
+            <!-- Carte interactive -->
+            <div id="map" class="professional-map"></div>
+            
+            <!-- Contrôles de la carte -->
+            <div class="map-controls">
+              <button class="control-btn zoom-in" (click)="zoomIn()" title="Zoom +">
+                <i class="fas fa-plus"></i>
+              </button>
+              <button class="control-btn zoom-out" (click)="zoomOut()" title="Zoom -">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button class="control-btn center-map" (click)="centerMap()" title="Centrer la carte">
+                <i class="fas fa-crosshairs"></i>
+              </button>
+            </div>
+            
+            <!-- Informations de localisation -->
+            <div class="location-info-panel">
+              <div class="info-header">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Emplacement sélectionné</span>
+              </div>
+              <div class="coordinates-display">
+                <div class="coord-item">
+                  <span class="coord-label">Latitude:</span>
+                  <span class="coord-value" id="lat-display">{{ annonceForm.get('latitude')?.value?.toFixed(6) || '48.8566' }}</span>
+                </div>
+                <div class="coord-item">
+                  <span class="coord-label">Longitude:</span>
+                  <span class="coord-value" id="lng-display">{{ annonceForm.get('longitude')?.value?.toFixed(6) || '2.3522' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Champs de coordonnées cachés -->
+        <div class="hidden-coordinates">
+          <input type="hidden" formControlName="latitude">
+          <input type="hidden" formControlName="longitude">
+        </div>
+      </div>
+
+      <!-- Prix -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-euro-sign"></i> Tarifs</h3>
+          <p>Mettez à jour vos tarifs pour la CAF 2025</p>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prixParNuit">Prix par nuit (€) *</label>
+            <input 
+              type="number" 
+              id="prixParNuit" 
+              formControlName="prixParNuit"
+              placeholder="Ex: 250"
+              class="form-control"
+            >
+          </div>
+          <div class="form-group">
+            <label for="prixParSemaine">Prix par semaine (€) *</label>
+            <input 
+              type="number" 
+              id="prixParSemaine" 
+              formControlName="prixParSemaine"
+              placeholder="Ex: 1600"
+              class="form-control"
+            >
+          </div>
+          <div class="form-group">
+            <label for="prixParMois">Prix par mois (€) *</label>
+            <input 
+              type="number" 
+              id="prixParMois" 
+              formControlName="prixParMois"
+              placeholder="Ex: 5800"
+              class="form-control"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Capacité et caractéristiques -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-home"></i> Caractéristiques</h3>
+          <p>Modifiez les caractéristiques de votre logement</p>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="capacite">Capacité (personnes) *</label>
+            <input 
+              type="number" 
+              id="capacite" 
+              formControlName="capacite"
+              placeholder="Ex: 6"
+              class="form-control"
+            >
+          </div>
+          <div class="form-group">
+            <label for="nombreChambres">Nombre de chambres *</label>
+            <input 
+              type="number" 
+              id="nombreChambres" 
+              formControlName="nombreChambres"
+              placeholder="Ex: 3"
+              class="form-control"
+            >
+          </div>
+          <div class="form-group">
+            <label for="nombreSallesDeBain">Nombre de salles de bain *</label>
+            <input 
+              type="number" 
+              id="nombreSallesDeBain" 
+              formControlName="nombreSallesDeBain"
+              placeholder="Ex: 2"
+              class="form-control"
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="typeMaison">Type de logement *</label>
+            <select id="typeMaison" formControlName="typeMaison" class="form-control">
+              <option value="MAISON">Maison</option>
+              <option value="APPARTEMENT">Appartement</option>
+              <option value="STUDIO">Studio</option>
+              <option value="VILLA">Villa</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Équipements -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-tools"></i> Équipements disponibles</h3>
+          <p>Sélectionnez les équipements de votre logement</p>
+        </div>
+        <div class="equipements-grid">
+          <div 
+            *ngFor="let equipement of equipementsDisponibles" 
+            class="equipement-item"
+            [class.selected]="isEquipementSelected(equipement)"
+            (click)="toggleEquipement(equipement)"
+          >
+            <i class="fas fa-check"></i>
+            {{ equipement }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Règles -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-clipboard-list"></i> Règles de la maison</h3>
+          <p>Modifiez les règles pour vos locataires</p>
+        </div>
+        <div class="regles-grid">
+          <div 
+            *ngFor="let regle of reglesDisponibles" 
+            class="regle-item"
+            [class.selected]="isRegleSelected(regle)"
+            (click)="toggleRegle(regle)"
+          >
+            <i class="fas fa-check"></i>
+            {{ regle }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Images du logement -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-images"></i> Images du logement</h3>
+          <p>Ajoutez ou modifiez les photos de votre logement</p>
+        </div>
+        
+        <!-- Images existantes -->
+        <div *ngIf="annonce && annonce.images && annonce.images.length > 0" class="existing-images">
+          <h4>Images actuelles</h4>
+          <div class="existing-images-grid">
+            <div *ngFor="let image of annonce.images; let i = index" class="existing-image-item">
+              <img [src]="image" [alt]="'Image ' + (i + 1)" class="existing-image">
+              <button type="button" class="remove-existing-image" (click)="removeExistingImage(i)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone de drag & drop pour nouvelles images -->
+        <div class="image-upload-section">
+          <div 
+            class="image-upload-zone"
+            [class.drag-over]="isDragOver"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()"
+          >
+            <div class="upload-content">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <h4>Glissez-déposez vos images ici</h4>
+              <p>ou cliquez pour sélectionner des fichiers</p>
+              <p class="upload-info">
+                Formats acceptés: JPG, PNG, GIF • Taille max: 5MB • Max 10 images
+              </p>
+            </div>
+            <input 
+              #fileInput
+              type="file" 
+              multiple 
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              style="display: none;"
+            >
+          </div>
+
+          <!-- Erreurs d'images -->
+          <div *ngIf="imageErrors.length > 0" class="image-errors">
+            <div *ngFor="let error of imageErrors" class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              {{ error }}
+            </div>
+          </div>
+
+          <!-- Images sélectionnées -->
+          <div *ngIf="selectedImages.length > 0" class="selected-images">
+            <h4>Nouvelles images à ajouter</h4>
+            <div class="selected-images-grid">
+              <div *ngFor="let image of selectedImages; let i = index" class="selected-image-item">
+                <img [src]="image.preview" [alt]="image.name" class="selected-image">
+                <div class="image-info">
+                  <span class="image-name">{{ image.name }}</span>
+                  <span class="image-size">{{ formatFileSize(image.size) }}</span>
+                </div>
+                <button type="button" class="remove-image" (click)="removeImage(i)">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations stade -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-futbol"></i> Proximité stade</h3>
+          <p>Mettez à jour les informations de proximité avec les stades</p>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="stadePlusProche">Stade le plus proche *</label>
+            <input 
+              type="text" 
+              id="stadePlusProche" 
+              formControlName="stadePlusProche"
+              placeholder="Ex: Parc des Princes"
+              class="form-control"
+            >
+          </div>
+          <div class="form-group">
+            <label for="distanceStade">Distance au stade (km) *</label>
+            <input 
+              type="number" 
+              id="distanceStade" 
+              formControlName="distanceStade"
+              placeholder="Ex: 0.3"
+              step="0.1"
+              class="form-control"
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="adresseStade">Adresse du stade *</label>
+            <input 
+              type="text" 
+              id="adresseStade" 
+              formControlName="adresseStade"
+              placeholder="Ex: 75016 Paris"
+              class="form-control"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="btn btn-primary btn-large"
+          [disabled]="annonceForm.invalid || saving"
+        >
+          <i class="fas fa-save"></i>
+          {{ saving ? 'Modification en cours...' : 'Sauvegarder les modifications' }}
+        </button>
+        
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          (click)="retourMesAnnonces()"
+        >
+          <i class="fas fa-times"></i>
+          Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

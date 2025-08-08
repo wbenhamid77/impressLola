@@ -1,0 +1,185 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-section">
+      <div class="logo-circle">
+        <i class="fas fa-trophy"></i>
+        <div class="logo-glow"></div>
+      </div>
+      <div class="logo-text">
+        <h2>
+          <i class="fas fa-star"></i>
+          CAF 2025
+          <i class="fas fa-star"></i>
+        </h2>
+        <p>Maroc - Coupe d'Afrique</p>
+        <div class="football-elements">
+          <i class="fas fa-futbol"></i>
+          <span>Football</span>
+          <i class="fas fa-futbol"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <h3 class="nav-title">
+        <i class="fas fa-compass"></i>
+        Navigation
+      </h3>
+      <ul class="nav-list">
+        <li class="nav-item" [class.active]="isActive('dashboard')">
+          <a class="nav-link" (click)="navigateTo('dashboard')">
+            <span class="nav-icon">
+              <i class="fas fa-tachometer-alt"></i>
+            </span>
+            <span>Dashboard</span>
+            <span class="nav-badge">🏠</span>
+          </a>
+        </li>
+        <li class="nav-item" [class.active]="isActive('profile')">
+          <a class="nav-link" (click)="navigateTo('profile')">
+            <span class="nav-icon">
+              <i class="fas fa-user-circle"></i>
+            </span>
+            <span>Mon Profil</span>
+            <span class="nav-badge">👤</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Section Locataire -->
+    <div *ngIf="isLocataire" class="nav-section">
+      <h3 class="nav-title">
+        <i class="fas fa-home"></i>
+        Locataire
+      </h3>
+      <ul class="nav-list">
+        <li class="nav-item" [class.active]="isActive('annonces')">
+          <a class="nav-link" (click)="navigateTo('annonces')">
+            <span class="nav-icon">
+              <i class="fas fa-search"></i>
+            </span>
+            <span>Rechercher</span>
+            <span class="nav-badge">🔍</span>
+          </a>
+        </li>
+        <li class="nav-item" [class.active]="isActive('mes-favoris')">
+          <a class="nav-link" (click)="navigateTo('mes-favoris')">
+            <span class="nav-icon">
+              <i class="fas fa-heart"></i>
+            </span>
+            <span>Mes Favoris</span>
+            <span class="nav-badge">❤️</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#reservations">
+            <span class="nav-icon">
+              <i class="fas fa-calendar-check"></i>
+            </span>
+            <span>Mes réservations</span>
+            <span class="nav-badge">📅</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#historique">
+            <span class="nav-icon">
+              <i class="fas fa-history"></i>
+            </span>
+            <span>Historique</span>
+            <span class="nav-badge">📋</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Section Locateur -->
+    <div *ngIf="!isLocataire" class="nav-section">
+      <h3 class="nav-title">
+        <i class="fas fa-building"></i>
+        Locateur
+      </h3>
+      <ul class="nav-list">
+        <li class="nav-item" [class.active]="isActive('ajouter-annonce')">
+          <a class="nav-link" (click)="navigateTo('ajouter-annonce')">
+            <span class="nav-icon">
+              <i class="fas fa-plus-circle"></i>
+            </span>
+            <span>Ajouter annonce</span>
+            <span class="nav-badge">➕</span>
+          </a>
+        </li>
+        <li class="nav-item" [class.active]="isActive('mes-annonces')">
+          <a class="nav-link" (click)="navigateTo('mes-annonces')">
+            <span class="nav-icon">
+              <i class="fas fa-list-alt"></i>
+            </span>
+            <span>Mes annonces</span>
+            <span class="nav-badge">📋</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#reservations">
+            <span class="nav-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </span>
+            <span>Réservations</span>
+            <span class="nav-badge">📅</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#statistiques">
+            <span class="nav-icon">
+              <i class="fas fa-chart-bar"></i>
+            </span>
+            <span>Statistiques</span>
+            <span class="nav-badge">📊</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-section">
+      <h3 class="nav-title">
+        <i class="fas fa-cog"></i>
+        Paramètres
+      </h3>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a class="nav-link" href="#settings">
+            <span class="nav-icon">
+              <i class="fas fa-sliders-h"></i>
+            </span>
+            <span>Configuration</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#help">
+            <span class="nav-icon">
+              <i class="fas fa-question-circle"></i>
+            </span>
+            <span>Aide</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ username }}</span>
+        <span class="user-role">{{ isLocataire ? 'Locataire' : 'Locateur' }}</span>
+      </div>
+    </div>
+    <button class="btn btn-secondary logout-btn" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      Déconnexion
+    </button>
+  </div>
+</aside> 
