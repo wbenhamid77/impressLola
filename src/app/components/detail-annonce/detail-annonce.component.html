@@ -61,10 +61,12 @@
               [src]="getImagePath(annonce.images[currentImageIndex])" 
               [alt]="'Photo ' + (currentImageIndex + 1) + ' du logement'"
               class="hero-image"
-              (error)="onImageError($event)"
-              (load)="onImageLoad($event)"
+              appImageFallback
+              fallbackText="Photo du logement non disponible"
+              fallbackIcon="fas fa-home"
               loading="lazy"
             >
+
             
             <!-- Badges sur l'image -->
             <div class="hero-badges">
@@ -124,9 +126,12 @@
                 [src]="getImagePath(image)" 
                 [alt]="'Miniature ' + (i + 1)"
                 class="thumbnail-image"
-                (error)="onImageError($event)"
+                appImageFallback
+                fallbackText="Photo {{ i + 1 }}"
+                fallbackIcon="fas fa-image"
                 loading="lazy"
               >
+
             </div>
           </div>
         </div>
@@ -370,9 +375,12 @@
                 <img 
                   [src]="getAuthorAvatar(annonce.locateur)" 
                   [alt]="getAuthorName(annonce.locateur)"
-                  (error)="onAvatarError($event)"
                   class="avatar-image"
+                  appImageFallback
+                  fallbackText="{{ getAuthorName(annonce.locateur).charAt(0) }}"
+                  fallbackIcon="fas fa-user"
                 >
+
               </div>
               <div class="owner-info">
                 <h4 class="owner-name" (click)="voirProfilLocateur(annonce.locateur?.id)">
@@ -408,17 +416,61 @@
             </button>
           </div>
 
-          <!-- Carte stade -->
-          <div class="stade-card" *ngIf="annonce.stadePlusProche" data-aos="fade-left" data-aos-duration="800" data-aos-delay="400">
-            <div class="stade-header">
+          <!-- Section Stades CAN 2025 - Sticky -->
+          <div class="stades-section sticky-stades" *ngIf="stadesProches.length > 0" data-aos="fade-left" data-aos-duration="800" data-aos-delay="400">
+            <div class="stades-header">
               <i class="fas fa-futbol"></i>
-              <h4>Stade le plus proche</h4>
+              <h4>Stades de la CAN 2025</h4>
+              <button class="btn-tous-stades" (click)="ouvrirPopupTousStades()">
+                <i class="fas fa-list"></i>
+                Voir toutes les distances
+              </button>
             </div>
-            <div class="stade-info">
-              <h5>{{ annonce.stadePlusProche }}</h5>
-              <p class="stade-distance">{{ annonce.distanceStade || 0 }} km</p>
-              <p class="stade-address">{{ annonce.adresseStade }}</p>
-        </div>
+            
+            <!-- Stade le plus proche -->
+            <div class="stade-principal" *ngIf="getStadePlusProche()" (click)="ouvrirPopupStade(getStadePlusProche()!)">
+              <div class="stade-main-info">
+                <div class="stade-icon">
+                  <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stade-details">
+                  <h5>{{ getStadePlusProche()?.nom }}</h5>
+                  <p class="stade-ville">{{ getStadePlusProche()?.ville }}</p>
+                  <p class="stade-distance-primary">{{ formatDistance(getStadePlusProche()?.distance || 0) }}</p>
+                </div>
+                <div class="stade-capacity">
+                  <span class="capacity-badge">{{ getStadePlusProche()?.capacite ? getStadePlusProche()!.capacite.toLocaleString('fr-FR') : '0' }} places</span>
+                </div>
+              </div>
+              <div class="stade-actions">
+                <button class="btn-stade-info">
+                  <i class="fas fa-info-circle"></i>
+                  Voir détails
+                </button>
+              </div>
+            </div>
+
+            <!-- Autres stades proches -->
+            <div class="autres-stades" *ngIf="getAutresStades().length > 0">
+              <h6>Autres stades à proximité</h6>
+              <div class="stades-grid">
+                <div 
+                  *ngFor="let stade of getAutresStades()" 
+                  class="stade-item"
+                  (click)="ouvrirPopupStade(stade)"
+                >
+                  <div class="stade-item-header">
+                    <i class="fas fa-futbol"></i>
+                    <span class="stade-distance">{{ formatDistance(stade.distance) }}</span>
+                  </div>
+                  <div class="stade-item-content">
+                    <h6>{{ stade.nom }}</h6>
+                    <p>{{ stade.ville }}</p>
+                    <span class="stade-capacity-small">{{ (stade.capacite || 0).toLocaleString('fr-FR') }} places</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           
           <!-- Informations pratiques -->
@@ -473,9 +525,12 @@
           [src]="getImagePath(annonce.images[modalImageIndex])" 
           [alt]="'Photo ' + (modalImageIndex + 1) + ' du logement'"
           class="modal-image"
-          (error)="onImageError($event)"
+          appImageFallback
+          fallbackText="Photo {{ modalImageIndex + 1 }} non disponible"
+          fallbackIcon="fas fa-home"
           loading="lazy"
         >
+
       </div>
 
       <!-- Navigation du modal -->
@@ -513,9 +568,12 @@
             [src]="getImagePath(image)" 
             [alt]="'Miniature ' + (i + 1)"
             class="modal-thumbnail-image"
-            (error)="onImageError($event)"
+            appImageFallback
+            fallbackText="{{ i + 1 }}"
+            fallbackIcon="fas fa-image"
             loading="lazy"
           >
+
         </div>
       </div>
     </div>
@@ -523,4 +581,10 @@
 </div> 
 
 <!-- Composant Popup Locateur -->
-<app-locateur-popup></app-locateur-popup> 
+<app-locateur-popup></app-locateur-popup>
+
+<!-- Composant Popup Stade -->
+<app-stade-popup></app-stade-popup>
+
+<!-- Composant Popup Tous les Stades -->
+<app-tous-stades-popup></app-tous-stades-popup> 

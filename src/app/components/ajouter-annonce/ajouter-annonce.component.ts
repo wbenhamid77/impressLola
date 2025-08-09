@@ -7,6 +7,7 @@ import { CreateAnnonceRequest } from '../../models/annonce.model';
 import { GoogleMapService, MapLocation } from '../../services/google-map.service';
 import { SimpleMapService } from '../../services/simple-map.service';
 import { BasicMapService } from '../../services/basic-map.service';
+import { StadeService } from '../../services/stade.service';
 import * as L from 'leaflet';
 
 @Component({
@@ -162,6 +163,7 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
     private mapService: GoogleMapService,
     private simpleMapService: SimpleMapService,
     private basicMapService: BasicMapService,
+    private stadeService: StadeService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -489,9 +491,6 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
       codePostal: ['', Validators.required],
       latitude: [33.5731, Validators.required],
       longitude: [-7.5898, Validators.required],
-      stadePlusProche: ['', Validators.required],
-      distanceStade: [0, [Validators.required, Validators.min(0)]],
-      adresseStade: ['', Validators.required],
         equipements: this.fb.group({
           wifi: [false],
           climatisation: [false],
@@ -633,6 +632,9 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
 
     const formValue = this.annonceForm.value;
     
+    // Calculer automatiquement les informations du stade le plus proche
+    const stadeInfo = this.stadeService.mettreAJourStadeAnnonce(formValue.latitude, formValue.longitude);
+    
     const request: CreateAnnonceRequest = {
       titre: formValue.titre,
       description: formValue.description,
@@ -645,9 +647,9 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
       nombreSallesDeBain: 1,
       latitude: formValue.latitude,
       longitude: formValue.longitude,
-      stadePlusProche: formValue.stadePlusProche,
-      distanceStade: formValue.distanceStade,
-      adresseStade: formValue.adresseStade,
+      stadePlusProche: stadeInfo.stadePlusProche,
+      distanceStade: stadeInfo.distanceStade,
+      adresseStade: stadeInfo.adresseStade,
           equipements: this.getSelectedEquipements(),
           regles: this.getSelectedRegles(),
       images: this.getSelectedImages(),

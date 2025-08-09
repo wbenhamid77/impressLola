@@ -1816,4 +1816,488 @@
   .nav-btn i {
     font-size: 16px;
   }
+}
+
+/* Nouvelle section des stades */
+.stades-section {
+  background: #ffffff;
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-light);
+  margin-bottom: 24px;
+}
+
+.stades-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stades-header i {
+  color: var(--accent-color);
+  font-size: 20px;
+}
+
+.stades-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Stade principal */
+.stade-principal {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.stade-principal:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(193, 39, 45, 0.15);
+}
+
+.stade-main-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.stade-icon {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-secondary) 100%);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.stade-details {
+  flex: 1;
+}
+
+.stade-details h5 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stade-ville {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.stade-distance-primary {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.stade-capacity {
+  text-align: right;
+}
+
+.capacity-badge {
+  background: linear-gradient(135deg, var(--accent-secondary) 0%, #004d26 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stade-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-stade-info {
+  background: linear-gradient(135deg, var(--accent-color) 0%, #a01f24 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-stade-info:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(193, 39, 45, 0.3);
+}
+
+/* Autres stades */
+.autres-stades h6 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.stade-item {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stade-item:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(193, 39, 45, 0.1);
+}
+
+.stade-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.stade-item-header i {
+  color: var(--accent-color);
+  font-size: 16px;
+}
+
+.stade-distance {
+  background: var(--accent-color);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stade-item-content h6 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stade-item-content p {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.stade-capacity-small {
+  font-size: 11px;
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+/* Responsive pour les stades */
+@media (max-width: 768px) {
+  .stades-section {
+    padding: 20px;
+  }
+  
+  .stade-main-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .stade-capacity {
+    text-align: center;
+  }
+  
+  .stades-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stade-item {
+    padding: 12px;
+  }
+} 
+
+/* Nouvelle section des stades - Sticky */
+.stades-section.sticky-stades {
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+  background: #ffffff;
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-light);
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.stades-section.sticky-stades:hover {
+  box-shadow: 0 8px 25px rgba(193, 39, 45, 0.15);
+}
+
+.stades-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.stades-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stades-header i {
+  color: var(--accent-color);
+  font-size: 20px;
+}
+
+.btn-tous-stades {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-secondary) 100%);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(193, 39, 45, 0.2);
+}
+
+.btn-tous-stades:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(193, 39, 45, 0.3);
+}
+
+.btn-tous-stades i {
+  font-size: 16px;
+}
+
+/* Responsive pour les stades */
+@media (max-width: 768px) {
+  .stades-section.sticky-stades {
+    position: relative;
+    top: 0;
+    padding: 20px;
+  }
+  
+  .stades-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .btn-tous-stades {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .stade-main-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .stade-capacity {
+    text-align: center;
+  }
+  
+  .stades-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stade-item {
+    padding: 12px;
+  }
+}
+
+/* Styles pour les placeholders d'images */
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px dashed #dee2e6;
+  border-radius: var(--border-radius);
+  color: var(--text-muted);
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.image-placeholder:hover {
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.image-placeholder i {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.image-placeholder span {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Placeholder pour l'image principale */
+.main-image-container .image-placeholder {
+  width: 100%;
+  height: 400px;
+  min-height: 300px;
+}
+
+/* Placeholder pour les miniatures */
+.thumbnail-placeholder {
+  width: 80px;
+  height: 60px;
+  min-width: 80px;
+}
+
+.thumbnail-placeholder i {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.thumbnail-placeholder span {
+  font-size: 0.75rem;
+}
+
+/* Placeholder pour l'avatar */
+.avatar-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  min-width: 60px;
+}
+
+.avatar-placeholder i {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.avatar-placeholder span {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+/* Placeholder pour le modal */
+.modal-placeholder {
+  width: 100%;
+  height: 500px;
+  min-height: 400px;
+}
+
+.modal-placeholder i {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.modal-placeholder span {
+  font-size: 1.125rem;
+}
+
+/* Placeholder pour les miniatures du modal */
+.modal-thumbnail-placeholder {
+  width: 100px;
+  height: 75px;
+  min-width: 100px;
+}
+
+.modal-thumbnail-placeholder i {
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+}
+
+.modal-thumbnail-placeholder span {
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+/* Responsive pour les placeholders */
+@media (max-width: 768px) {
+  .main-image-container .image-placeholder {
+    height: 250px;
+    min-height: 200px;
+  }
+  
+  .thumbnail-placeholder {
+    width: 60px;
+    height: 45px;
+    min-width: 60px;
+  }
+  
+  .thumbnail-placeholder i {
+    font-size: 1rem;
+  }
+  
+  .thumbnail-placeholder span {
+    font-size: 0.625rem;
+  }
+  
+  .modal-placeholder {
+    height: 300px;
+    min-height: 250px;
+  }
+  
+  .modal-placeholder i {
+    font-size: 2rem;
+  }
+  
+  .modal-placeholder span {
+    font-size: 1rem;
+  }
+  
+  .modal-thumbnail-placeholder {
+    width: 80px;
+    height: 60px;
+    min-width: 80px;
+  }
+  
+  .modal-thumbnail-placeholder i {
+    font-size: 1.25rem;
+  }
+  
+  .modal-thumbnail-placeholder span {
+    font-size: 0.75rem;
+  }
 } 

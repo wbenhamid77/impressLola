@@ -1,22 +1,53 @@
 <div class="login-page">
-  <!-- Background avec images du Maroc et CAN 2025 -->
+  <!-- Background thème Maroc -->
   <div class="login-background">
     <div class="background-overlay"></div>
-    <div class="background-images">
-      <img src="/assets/images/morocco-can2025/morocco-landscape.jpg" alt="Paysage marocain" class="bg-image landscape">
-      <img src="/assets/images/morocco-can2025/football-stadium.jpg" alt="Stade de football" class="bg-image stadium">
+    
+    <!-- Motif géométrique marocain -->
+    <div class="geometric-pattern">
+      <div class="pattern-element" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]"></div>
     </div>
+    
+    <!-- Éléments flottants marocains -->
     <div class="floating-elements">
-      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="0">
-        <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="floating-icon">
+      <div class="floating-element circle-element" data-aos="float" data-aos-duration="3000" data-aos-delay="0">
+        <div class="circle-icon"></div>
+        <div class="glow-effect"></div>
       </div>
-      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="500">
-        <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="floating-icon">
+      <div class="floating-element square-element" data-aos="float" data-aos-duration="3000" data-aos-delay="500">
+        <div class="square-icon"></div>
+        <div class="glow-effect"></div>
       </div>
-      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1000">
-        <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Drapeau Maroc" class="floating-icon flag">
+      <div class="floating-element triangle-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1000">
+        <div class="triangle-icon"></div>
+        <div class="glow-effect"></div>
       </div>
-      <div class="floating-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1500">⚽</div>
+      <div class="floating-element diamond-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1500">
+        <div class="diamond-icon"></div>
+        <div class="glow-effect"></div>
+      </div>
+    </div>
+    
+    <!-- Particules animées -->
+    <div class="particles">
+      <div class="particle" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]"></div>
+    </div>
+    
+    <!-- Vagues animées -->
+    <div class="wave-container">
+      <div class="wave wave-1"></div>
+      <div class="wave wave-2"></div>
+      <div class="wave wave-3"></div>
+    </div>
+    
+    <!-- Grille marocaine -->
+    <div class="moroccan-grid">
+      <div class="grid-line" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]"></div>
+    </div>
+    
+    <!-- Éléments de lumière marocaine -->
+    <div class="moroccan-lights">
+      <div class="light-beam" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
     </div>
   </div>
 
@@ -24,22 +55,26 @@
   <div class="login-container">
     <!-- Header avec badge CAN 2025 -->
     <header class="login-header" data-aos="fade-down" data-aos-duration="800">
-      <div class="header-badge">
-        <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée CAN" class="badge-icon">
+      <div class="header-badge" data-aos="zoom-in" data-aos-delay="200">
+        <div class="badge-icon"></div>
         <span>CAN 2025 - Maroc</span>
       </div>
-      <h1 class="main-title">Bienvenue au Maroc</h1>
-      <p class="main-subtitle">Connectez-vous à votre espace personnel pour la Coupe d'Afrique des Nations 2025</p>
+      <h1 class="main-title" data-aos="fade-up" data-aos-delay="400">
+        <span class="title-highlight">Bienvenue</span> au Maroc
+      </h1>
+      <p class="main-subtitle" data-aos="fade-up" data-aos-delay="600">
+        Connectez-vous à votre espace personnel pour la Coupe d'Afrique des Nations 2025
+      </p>
     </header>
 
     <!-- Carte de connexion -->
     <div class="login-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
       <div class="card-header">
         <div class="logo-section">
-          <div class="logo-icon">
-            <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="logo-flag">
+          <div class="logo-icon" data-aos="zoom-in" data-aos-delay="300">
+            <div class="logo-symbol"></div>
           </div>
-          <div class="logo-text">
+          <div class="logo-text" data-aos="fade-left" data-aos-delay="500">
             <h2>Connexion</h2>
             <p>Accédez à votre compte CAN 2025</p>
           </div>
@@ -62,8 +97,10 @@
               class="form-input"
               placeholder="votre@email.com"
               required
+              [class.input-error]="errorMessage && !email"
             >
             <i class="fas fa-envelope input-icon"></i>
+            <div class="input-focus-border"></div>
           </div>
         </div>
 
@@ -81,16 +118,29 @@
               class="form-input"
               placeholder="Votre mot de passe"
               required
+              [class.input-error]="errorMessage && !password"
             >
             <i class="fas fa-lock input-icon"></i>
             <button 
               type="button" 
               class="password-toggle"
               (click)="togglePasswordVisibility()"
+              [class.active]="showPassword"
             >
               <i class="fas" [class]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
             </button>
+            <div class="input-focus-border"></div>
           </div>
+        </div>
+
+        <!-- Options supplémentaires -->
+        <div class="form-options" data-aos="fade-up" data-aos-duration="800" data-aos-delay="900">
+          <label class="checkbox-wrapper">
+            <input type="checkbox" class="checkbox-input">
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-label">Se souvenir de moi</span>
+          </label>
+          <a href="#" class="forgot-password">Mot de passe oublié ?</a>
         </div>
 
         <button 
@@ -116,8 +166,25 @@
         {{ errorMessage }}
       </div>
 
+      <!-- Séparateur -->
+      <div class="separator" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1100">
+        <span>ou</span>
+      </div>
+
+      <!-- Connexion sociale -->
+      <div class="social-login" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1200">
+        <button class="btn btn-social btn-google">
+          <i class="fab fa-google"></i>
+          Continuer avec Google
+        </button>
+        <button class="btn btn-social btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+          Continuer avec Facebook
+        </button>
+      </div>
+
       <!-- Footer de la carte -->
-      <div class="card-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1200">
+      <div class="card-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1300">
         <p class="footer-text">Pas encore de compte ?</p>
         <button class="btn btn-secondary" (click)="navigateToInscription()">
           <i class="fas fa-user-plus"></i>
@@ -130,7 +197,7 @@
     <div class="info-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1400">
       <div class="info-card">
         <div class="info-header">
-                      <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="Trophée" class="info-icon">
+          <div class="info-icon"></div>
           <h3>CAN 2025 - Maroc</h3>
         </div>
         <p class="info-description">
@@ -139,15 +206,15 @@
         </p>
         <div class="features-grid">
           <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1600">
-            <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="feature-icon">
+            <div class="feature-icon"></div>
             <span>Hospitalité marocaine</span>
           </div>
           <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1800">
-            <img src="/assets/images/morocco-can2025/football-stadium.jpg" alt="Stade" class="feature-icon">
+            <div class="feature-icon"></div>
             <span>Stades modernes</span>
           </div>
           <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="2000">
-            <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="feature-icon">
+            <div class="feature-icon"></div>
             <span>Championnat d'Afrique</span>
           </div>
         </div>
@@ -158,13 +225,13 @@
     <footer class="page-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="2200">
       <div class="footer-content">
         <div class="footer-logo">
-          <img src="/assets/images/morocco-can2025/trophy-gold.png" alt="CAN 2025" class="footer-icon">
+          <div class="footer-icon"></div>
           <span>CAN 2025</span>
         </div>
         <p>Coupe d'Afrique des Nations - Maroc</p>
-        <div class="footer-flags">
-                     <img src="/assets/images/morocco-can2025/morocco-flag.png" alt="Maroc" class="footer-flag">
-           <img src="/assets/images/morocco-can2025/africa-map.png" alt="Afrique" class="footer-flag">
+        <div class="footer-symbols">
+          <div class="footer-symbol"></div>
+          <div class="footer-symbol"></div>
         </div>
       </div>
     </footer>

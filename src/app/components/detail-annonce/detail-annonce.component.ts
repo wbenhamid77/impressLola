@@ -5,13 +5,19 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { LocateurPopupService } from '../../services/locateur-popup.service';
 import { LocateurPopupComponent } from '../locateur-popup/locateur-popup.component';
+import { StadeService } from '../../services/stade.service';
+import { StadePopupService } from '../../services/stade-popup.service';
+import { StadePopupComponent } from '../stade-popup/stade-popup.component';
+import { TousStadesPopupComponent } from '../tous-stades-popup/tous-stades-popup.component';
+import { StadeAvecDistance } from '../../models/stade.model';
+import { ImageFallbackDirective } from '../../directives/image-fallback.directive';
 import * as AOS from 'aos';
 import * as L from 'leaflet';
 
 @Component({
   selector: 'app-detail-annonce',
   standalone: true,
-  imports: [CommonModule, LocateurPopupComponent],
+  imports: [CommonModule, LocateurPopupComponent, StadePopupComponent, TousStadesPopupComponent, ImageFallbackDirective],
   templateUrl: './detail-annonce.component.html',
   styleUrl: './detail-annonce.component.css'
 })
@@ -22,6 +28,9 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
   currentImageIndex = 0;
   isModalOpen = false;
   modalImageIndex = 0;
+  
+  // Propriétés pour les stades
+  stadesProches: StadeAvecDistance[] = [];
   
   // Propriétés pour la carte
   private map: any = null;
@@ -34,7 +43,9 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
     private router: Router,
     private apiService: ApiService,
     private authService: AuthService,
-    private locateurPopupService: LocateurPopupService
+    private locateurPopupService: LocateurPopupService,
+    private stadeService: StadeService,
+    private stadePopupService: StadePopupService
   ) {}
 
   ngOnInit(): void {
@@ -73,8 +84,22 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
       
       if (response) {
         this.annonce = response;
+        
+        // Calculer les stades proches
+        if (this.annonce.latitude && this.annonce.longitude) {
+          this.stadesProches = this.stadeService.getStadesAvecDistances(
+            this.annonce.latitude, 
+            this.annonce.longitude
+          );
+        }
+        
         // Initialiser la carte immédiatement après le chargement de l'annonce
         this.initMap();
+        
+        // Initialiser les placeholders d'images après le rendu
+        setTimeout(() => {
+          this.initImagePlaceholders();
+        }, 100);
       } else {
         this.errorMessage = 'Annonce non trouvée';
       }
@@ -198,13 +223,58 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
     const img = event.target as HTMLImageElement;
     const placeholder = img.nextElementSibling as HTMLElement;
     
+    // Déterminer le type d'image basé sur les classes CSS
+    let imageType = 'property';
+    if (img.classList.contains('avatar-image')) {
+      imageType = 'avatar';
+    } else if (img.classList.contains('thumbnail-image') || img.classList.contains('modal-thumbnail-image')) {
+      imageType = 'gallery';
+    }
+    
     if (placeholder && placeholder.classList.contains('image-placeholder')) {
       img.style.display = 'none';
       placeholder.style.display = 'flex';
     } else {
-      // If no placeholder, use a default image
-      img.src = 'assets/images/default-property.jpg'; // Assumes this default image exists
-      img.onerror = null; // Prevent infinite loops if default image also fails
+      // Si pas de placeholder, masquer l'image et créer un placeholder
+      img.style.display = 'none';
+      
+      // Créer un placeholder dynamiquement si il n'existe pas
+      if (!placeholder || !placeholder.classList.contains('image-placeholder')) {
+        const newPlaceholder = document.createElement('div');
+        newPlaceholder.className = 'image-placeholder';
+        
+        // Personnaliser le placeholder selon le type d'image
+        let icon = 'fas fa-image';
+        let text = 'Photo non disponible';
+        
+        switch (imageType) {
+          case 'avatar':
+            icon = 'fas fa-user';
+            text = 'Avatar non disponible';
+            newPlaceholder.classList.add('avatar-placeholder');
+            break;
+          case 'gallery':
+            icon = 'fas fa-image';
+            text = 'Photo non disponible';
+            if (img.classList.contains('thumbnail-image')) {
+              newPlaceholder.classList.add('thumbnail-placeholder');
+            } else if (img.classList.contains('modal-thumbnail-image')) {
+              newPlaceholder.classList.add('modal-thumbnail-placeholder');
+            }
+            break;
+          default:
+            icon = 'fas fa-home';
+            text = 'Photo du logement non disponible';
+            break;
+        }
+        
+        newPlaceholder.innerHTML = `
+          <i class="${icon}"></i>
+          <span>${text}</span>
+        `;
+        img.parentNode?.insertBefore(newPlaceholder, img.nextSibling);
+        newPlaceholder.style.display = 'flex';
+      }
     }
   }
 
@@ -213,9 +283,27 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
     const img = event.target as HTMLImageElement;
     const placeholder = img.nextElementSibling as HTMLElement;
     
+    // Afficher l'image et masquer le placeholder
+    img.style.display = 'block';
     if (placeholder && placeholder.classList.contains('image-placeholder')) {
       placeholder.style.display = 'none';
     }
+  }
+
+  // Méthode pour gérer les images avec un timeout
+  handleImageWithTimeout(img: HTMLImageElement, timeout: number = 5000): void {
+    const timer = setTimeout(() => {
+      // Si l'image n'est pas chargée après le timeout, afficher le placeholder
+      if (!img.complete || img.naturalWidth === 0) {
+        this.onImageError({ target: img } as unknown as Event);
+      }
+    }, timeout);
+
+    // Si l'image se charge avant le timeout, annuler le timer
+    img.onload = () => {
+      clearTimeout(timer);
+      this.onImageLoad({ target: img } as unknown as Event);
+    };
   }
 
   // Méthodes pour les badges de statut
@@ -439,7 +527,88 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
 
   onAvatarError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.src = '/assets/images/morocco-can2025/morocco-flag.png';
+    const placeholder = img.nextElementSibling as HTMLElement;
+    
+    if (placeholder && placeholder.classList.contains('image-placeholder')) {
+      img.style.display = 'none';
+      placeholder.style.display = 'flex';
+    } else {
+      // Essayer d'utiliser l'image par défaut
+      img.src = this.getDefaultImage('avatar');
+      img.onerror = null; // Éviter les boucles infinies
+    }
+  }
+
+  // Méthode pour obtenir une image par défaut selon le contexte
+  getDefaultImage(type: 'property' | 'avatar' | 'gallery' = 'property'): string {
+    switch (type) {
+      case 'avatar':
+        return '/assets/images/morocco-can2025/morocco-flag.png';
+      case 'gallery':
+        return '/assets/images/default-property.jpg';
+      default:
+        return '/assets/images/default-property.jpg';
+    }
+  }
+
+  // Méthode pour vérifier si une image existe
+  imageExists(src: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = src;
+    });
+  }
+
+  // Méthode pour initialiser les placeholders d'images
+  initImagePlaceholders(): void {
+    // Vérifier toutes les images et créer des placeholders si nécessaire
+    const images = document.querySelectorAll('img[src]');
+    images.forEach((img) => {
+      const imageElement = img as HTMLImageElement;
+      const placeholder = imageElement.nextElementSibling as HTMLElement;
+      
+      // Si l'image n'a pas de placeholder, en créer un
+      if (!placeholder || !placeholder.classList.contains('image-placeholder')) {
+        this.createImagePlaceholder(imageElement);
+      }
+    });
+  }
+
+  // Méthode pour créer un placeholder pour une image
+  createImagePlaceholder(img: HTMLImageElement): void {
+    const newPlaceholder = document.createElement('div');
+    newPlaceholder.className = 'image-placeholder';
+    newPlaceholder.style.display = 'none';
+    
+    // Déterminer le type d'image
+    let icon = 'fas fa-image';
+    let text = 'Photo non disponible';
+    
+    if (img.classList.contains('avatar-image')) {
+      icon = 'fas fa-user';
+      text = 'Avatar non disponible';
+      newPlaceholder.classList.add('avatar-placeholder');
+    } else if (img.classList.contains('thumbnail-image')) {
+      icon = 'fas fa-image';
+      text = 'Photo non disponible';
+      newPlaceholder.classList.add('thumbnail-placeholder');
+    } else if (img.classList.contains('modal-thumbnail-image')) {
+      icon = 'fas fa-image';
+      text = 'Photo non disponible';
+      newPlaceholder.classList.add('modal-thumbnail-placeholder');
+    } else if (img.classList.contains('hero-image') || img.classList.contains('modal-image')) {
+      icon = 'fas fa-home';
+      text = 'Photo du logement non disponible';
+    }
+    
+    newPlaceholder.innerHTML = `
+      <i class="${icon}"></i>
+      <span>${text}</span>
+    `;
+    
+    img.parentNode?.insertBefore(newPlaceholder, img.nextSibling);
   }
 
   // Méthodes pour ouvrir les applications de navigation
@@ -463,21 +632,40 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ouvrirWaze(): void {
-    if (!this.annonce || !this.annonce.latitude || !this.annonce.longitude) {
-      console.error('Coordonnées manquantes pour Waze');
-      return;
+    if (this.annonce && this.annonce.latitude && this.annonce.longitude) {
+      const lat = this.annonce.latitude;
+      const lng = this.annonce.longitude;
+      const address = `${this.annonce.adresse?.numero || ''} ${this.annonce.adresse?.rue || ''}, ${this.annonce.adresse?.ville || ''}`;
+      
+      const wazeUrl = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes&address=${encodeURIComponent(address)}`;
+      window.open(wazeUrl, '_blank');
     }
+  }
 
-    const lat = this.annonce.latitude;
-    const lng = this.annonce.longitude;
-    const adresse = this.annonce.adresse?.rue 
-      ? `${this.annonce.adresse.rue}, ${this.annonce.adresse.ville}, ${this.annonce.adresse.pays}`
-      : `${lat}, ${lng}`;
+  // Méthodes pour les stades
+  ouvrirPopupStade(stade: StadeAvecDistance): void {
+    this.stadePopupService.ouvrirPopup(stade);
+  }
 
-    // URL pour Waze (web et mobile)
-    const wazeUrl = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes&q=${encodeURIComponent(adresse)}`;
-    
-    // Ouvrir dans un nouvel onglet
-    window.open(wazeUrl, '_blank');
+  ouvrirPopupTousStades(): void {
+    if (this.stadesProches.length > 0) {
+      const adresseLogement = `${this.annonce.adresse?.numero || ''} ${this.annonce.adresse?.rue || ''}, ${this.annonce.adresse?.ville || ''}`;
+      this.stadePopupService.ouvrirTousStadesPopup(this.stadesProches, adresseLogement);
+    }
+  }
+
+  getStadePlusProche(): StadeAvecDistance | null {
+    return this.stadesProches.length > 0 ? this.stadesProches[0] : null;
+  }
+
+  getAutresStades(): StadeAvecDistance[] {
+    return this.stadesProches.slice(1, 4); // Afficher les 3 autres stades les plus proches
+  }
+
+  formatDistance(distance: number): string {
+    if (distance < 1) {
+      return `${Math.round(distance * 1000)}m`;
+    }
+    return `${distance}km`;
   }
 } 
