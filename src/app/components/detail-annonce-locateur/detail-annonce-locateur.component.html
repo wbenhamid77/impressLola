@@ -1,0 +1,497 @@
+<div class="container-fluid py-4">
+  <!-- Header Professionnel avec Bootstrap -->
+  <header class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-3">
+              <button class="btn btn-outline-primary" (click)="retourAnnonces()">
+                <i class="fas fa-arrow-left me-2"></i>
+                Retour aux annonces
+              </button>
+            </div>
+            <div class="col-md-6 text-center">
+              <div class="badge bg-primary fs-6 mb-2">
+                <i class="fas fa-building me-2"></i>
+                Gestion de Propriété
+              </div>
+              <h1 class="h2 text-primary mb-0">Votre Logement</h1>
+            </div>
+            <div class="col-md-3 text-end">
+              <div class="badge" [class]="getStatusClass(annonce?.estActive)">
+                <i class="fas me-2" [class]="getStatusIcon(annonce?.estActive)"></i>
+                {{ getStatusText(annonce?.estActive) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Loading avec Bootstrap -->
+    <div *ngIf="isLoading" class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+            <h5 class="text-muted">Chargement des détails...</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error avec Bootstrap -->
+    <div *ngIf="errorMessage" class="row mb-4">
+      <div class="col-12">
+        <div class="alert alert-danger shadow-sm border-0" role="alert">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+            <div>
+              <h6 class="alert-heading mb-1">Erreur de chargement</h6>
+              <p class="mb-2">{{ errorMessage }}</p>
+              <button class="btn btn-outline-danger btn-sm" (click)="chargerDetailAnnonce()">
+                <i class="fas fa-redo me-2"></i>Réessayer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annonce Details -->
+    <div *ngIf="!isLoading && !errorMessage && annonce">
+      
+      <!-- Hero Section avec Galerie -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-0" *ngIf="annonce.images && annonce.images.length > 0">
+              <!-- Image principale -->
+              <div class="position-relative">
+                <img 
+                  [src]="getImagePath(annonce.images[currentImageIndex])" 
+                  [alt]="'Photo ' + (currentImageIndex + 1) + ' du logement'"
+                  class="img-fluid w-100"
+                  style="height: 400px; object-fit: cover;"
+                  appImageFallback
+                  fallbackText="Photo du logement non disponible"
+                  fallbackIcon="fas fa-home"
+                  loading="lazy"
+                >
+                
+                <!-- Badges sur l'image -->
+                <div class="position-absolute top-0 start-0 p-3">
+                  <div class="badge bg-warning fs-6 me-2">
+                    <i class="fas fa-trophy me-1"></i>
+                    CAN 2025
+                  </div>
+                  <div class="badge bg-info fs-6" *ngIf="annonce.stadePlusProche">
+                    <i class="fas fa-futbol me-1"></i>
+                    {{ annonce.distanceStade }}km
+                  </div>
+                </div>
+
+                <!-- Numéro de photo -->
+                <div class="position-absolute bottom-0 end-0 p-3">
+                  <div class="badge bg-dark bg-opacity-75 fs-6">
+                    {{ currentImageIndex + 1 }} / {{ annonce.images.length }}
+                  </div>
+                </div>
+
+                <!-- Navigation des images -->
+                <div class="position-absolute top-50 start-0 translate-middle-y" *ngIf="annonce.images.length > 1">
+                  <button class="btn btn-light btn-lg rounded-circle" (click)="previousImage()" [disabled]="currentImageIndex === 0">
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                </div>
+                <div class="position-absolute top-50 end-0 translate-middle-y" *ngIf="annonce.images.length > 1">
+                  <button class="btn btn-light btn-lg rounded-circle" (click)="nextImage()" [disabled]="currentImageIndex === annonce.images.length - 1">
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+
+                <!-- Indicateurs -->
+                <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3" *ngIf="annonce.images.length > 1">
+                  <div class="d-flex gap-2">
+                    <span 
+                      *ngFor="let image of annonce.images; let i = index" 
+                      [class]="i === currentImageIndex ? 'bg-primary' : 'bg-secondary'"
+                      (click)="goToImage(i)"
+                      class="indicator-dot rounded-circle"
+                      style="width: 12px; height: 12px; cursor: pointer;"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions de Gestion -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-cogs text-primary me-2"></i>
+                Actions de Gestion
+              </h3>
+              <p class="text-muted mb-0">Gérez votre propriété et vos réservations</p>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                  <button class="btn btn-primary w-100 h-100 py-3" (click)="modifierAnnonce()">
+                    <i class="fas fa-edit mb-2 d-block fs-3"></i>
+                    <span>Modifier l'annonce</span>
+                  </button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <button class="btn btn-success w-100 h-100 py-3" (click)="ajouterPhotos()">
+                    <i class="fas fa-camera mb-2 d-block fs-3"></i>
+                    <span>Ajouter des photos</span>
+                  </button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <button class="btn btn-warning w-100 h-100 py-3" (click)="modifierInformations()">
+                    <i class="fas fa-info-circle mb-2 d-block fs-3"></i>
+                    <span>Modifier les infos</span>
+                  </button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <button class="btn btn-danger w-100 h-100 py-3" (click)="supprimerAnnonce()">
+                    <i class="fas fa-trash mb-2 d-block fs-3"></i>
+                    <span>Supprimer</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Informations Principales -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h2 class="mb-3">{{ annonce.titre }}</h2>
+                  <div class="d-flex flex-wrap gap-3 mb-3">
+                    <span class="text-muted">
+                      <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                      {{ annonce.adresse?.ville }}, {{ annonce.adresse?.pays }}
+                    </span>
+                    <span class="text-muted" *ngIf="annonce.noteMoyenne">
+                      <i class="fas fa-star text-warning me-2"></i>
+                      {{ annonce.noteMoyenne }}/5 ({{ annonce.nombreAvis }} avis)
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card bg-primary text-white text-center">
+                    <div class="card-body">
+                      <div class="display-4 fw-bold mb-2">€{{ annonce.prixParNuit }}</div>
+                      <div class="fs-6 mb-3">/nuit</div>
+                      <div class="d-flex flex-column gap-1">
+                        <span class="small">
+                          <i class="fas fa-check me-2"></i>
+                          Prix compétitif
+                        </span>
+                        <span class="small">
+                          <i class="fas fa-check me-2"></i>
+                          Marché dynamique
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Caractéristiques du Logement -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-list text-primary me-2"></i>
+                Caractéristiques
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-4 col-sm-6">
+                  <div class="d-flex align-items-center p-3 bg-light rounded">
+                    <i class="fas fa-users text-primary me-3 fs-4"></i>
+                    <div>
+                      <div class="fw-bold">Capacité</div>
+                      <div class="text-muted">{{ annonce.capacite }} personnes</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <div class="d-flex align-items-center p-3 bg-light rounded">
+                    <i class="fas fa-home text-primary me-3 fs-4"></i>
+                    <div>
+                      <div class="fw-bold">Type</div>
+                      <div class="text-muted">{{ annonce.typeMaison }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <div class="d-flex align-items-center p-3 bg-light rounded">
+                    <i class="fas fa-ruler-combined text-primary me-3 fs-4"></i>
+                    <div>
+                      <div class="fw-bold">Surface</div>
+                      <div class="text-muted">{{ annonce.adresse?.surface }} m²</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <div class="d-flex align-items-center p-3 bg-light rounded">
+                    <i class="fas fa-bed text-primary me-3 fs-4"></i>
+                    <div>
+                      <div class="fw-bold">Chambres</div>
+                      <div class="text-muted">{{ annonce.nombreChambres }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <div class="d-flex align-items-center p-3 bg-light rounded">
+                    <i class="fas fa-car text-primary me-3 fs-4"></i>
+                    <div>
+                      <div class="fw-bold">Parking</div>
+                      <div class="text-muted">{{ aEquipement('Parking') ? 'Disponible' : 'Non disponible' }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <div class="d-flex align-items-center p-3 bg-light rounded">
+                    <i class="fas fa-wifi text-primary me-3 fs-4"></i>
+                    <div>
+                      <div class="fw-bold">WiFi</div>
+                      <div class="text-muted">{{ aEquipement('WiFi') ? 'Inclus' : 'Non inclus' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Description -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-align-left text-primary me-2"></i>
+                Description
+              </h3>
+            </div>
+            <div class="card-body">
+              <p class="mb-0">{{ annonce.description }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Équipements -->
+      <section class="row mb-4" *ngIf="annonce.equipements && annonce.equipements.length > 0">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-tools text-primary me-2"></i>
+                Équipements
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="row g-2">
+                <div class="col-md-3 col-sm-6" *ngFor="let equipment of annonce.equipements">
+                  <div class="d-flex align-items-center p-2 bg-light rounded">
+                    <i class="fas fa-check text-success me-2"></i>
+                    <span>{{ equipment }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Calendrier de Disponibilité -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-calendar-alt text-primary me-2"></i>
+                Gestion des Réservations
+              </h3>
+              <p class="text-muted mb-0">Suivez l'état de vos réservations et la disponibilité</p>
+            </div>
+            <div class="card-body">
+              <app-calendrier-locateur
+                [annonceId]="annonce.id"
+              ></app-calendrier-locateur>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statistiques et Performance -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-chart-line text-primary me-2"></i>
+                Statistiques et Performance
+              </h3>
+              <p class="text-muted mb-0">Analysez les performances de votre propriété</p>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                  <div class="card border-0 bg-primary text-white text-center">
+                    <div class="card-body">
+                      <i class="fas fa-calendar-check fs-1 mb-3"></i>
+                      <h4 class="mb-1">{{ statsReservations?.total || 0 }}</h4>
+                      <p class="mb-0">Total des réservations</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="card border-0 bg-warning text-dark text-center">
+                    <div class="card-body">
+                      <i class="fas fa-star fs-1 mb-3"></i>
+                      <h4 class="mb-1">{{ annonce.noteMoyenne || 'N/A' }}</h4>
+                      <p class="mb-0">Satisfaction clients</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="card border-0 bg-success text-white text-center">
+                    <div class="card-body">
+                      <i class="fas fa-euro-sign fs-1 mb-3"></i>
+                      <h4 class="mb-1">{{ statsReservations?.revenus || 0 }}€</h4>
+                      <p class="mb-0">Revenus totaux</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="card border-0 bg-info text-white text-center">
+                    <div class="card-body">
+                      <i class="fas fa-percentage fs-1 mb-3"></i>
+                      <h4 class="mb-1">{{ statsReservations?.tauxOccupation || 0 }}%</h4>
+                      <p class="mb-0">Efficacité</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Localisation -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-map-marked-alt text-primary me-2"></i>
+                Localisation
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-map-marker-alt text-primary me-3 fs-4"></i>
+                      <span>{{ getAdresseComplete() }}</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-city text-primary me-3 fs-4"></i>
+                      <span>{{ annonce.adresse?.ville }}, {{ annonce.adresse?.codePostal }}</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-globe text-primary me-3 fs-4"></i>
+                      <span>{{ annonce.adresse?.pays }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="bg-light rounded p-3 text-center">
+                    <div id="location-map" class="location-map" style="height: 200px; background-color: #e9ecef;">
+                      <div class="d-flex align-items-center justify-content-center h-100">
+                        <i class="fas fa-map text-muted fs-1"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profil Propriétaire -->
+      <section class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+              <h3 class="mb-0">
+                <i class="fas fa-user-tie text-primary me-2"></i>
+                Votre Profil Propriétaire
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                  <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                       style="width: 80px; height: 80px;">
+                    <i class="fas fa-user fs-1"></i>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h4 class="mb-2">{{ annonce.nomLocateur }}</h4>
+                  <div class="mb-3" *ngIf="annonce.noteMoyenne">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                      <div class="stars">
+                        <i class="fas fa-star text-warning" *ngFor="let star of getNoteEtoiles(annonce.noteMoyenne)" [class.filled]="star === '★'"></i>
+                      </div>
+                      <span class="text-muted">{{ annonce.noteMoyenne }}/5</span>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-0">Propriétaire expérimenté et fiable</p>
+                </div>
+                <div class="col-md-3 text-end">
+                  <button class="btn btn-outline-primary" (click)="modifierProfilProprietaire()">
+                    <i class="fas fa-edit me-2"></i>
+                    Modifier le profil
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div> 

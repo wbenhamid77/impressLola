@@ -1,0 +1,123 @@
+<div class="reservation-overlay" *ngIf="isOpen">
+  <div class="reservation-modal">
+    <div class="modal-header">
+      <h3>Réserver</h3>
+      <button class="close-btn" (click)="close()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="dateArrivee">Date d'arrivée *</label>
+        <div class="input-with-icon">
+          <input 
+            type="date" 
+            id="dateArrivee" 
+            name="dateArrivee" 
+            [(ngModel)]="dateArrivee" 
+            required 
+            [min]="getTodayString()"
+            [disabled]="dateIsDisabled(dateArrivee)"
+            [class.date-pre-filled]="dateArrivee"
+          />
+          <i class="fas fa-calendar"></i>
+          <div class="date-indicator" *ngIf="dateArrivee">
+            <i class="fas fa-check-circle"></i>
+            <span>Date sélectionnée</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="dateDepart">Date de départ *</label>
+        <div class="input-with-icon">
+          <input 
+            type="date" 
+            id="dateDepart" 
+            name="dateDepart" 
+            [(ngModel)]="dateDepart" 
+            required 
+            [min]="getNextDayString(dateArrivee)"
+            [disabled]="dateIsDisabled(dateDepart)"
+            [class.date-pre-filled]="dateDepart"
+          />
+          <i class="fas fa-calendar"></i>
+          <div class="date-indicator" *ngIf="dateDepart">
+            <i class="fas fa-check-circle"></i>
+            <span>Date sélectionnée</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Voyageurs</label>
+        <input type="number" min="1" [max]="capaciteMax" [(ngModel)]="nombreVoyageurs" />
+      </div>
+      <div class="form-row">
+        <label>Mode de paiement</label>
+        <select [(ngModel)]="modePaiement">
+          <option value="PAIEMENT_SUR_PLACE">Paiement sur place</option>
+          <option value="CARTE">Carte</option>
+          <option value="VIREMENT">Virement</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Message au propriétaire (optionnel)</label>
+        <textarea [(ngModel)]="messageProprietaire" rows="3" placeholder="Heure d'arrivée, demandes spéciales..."></textarea>
+      </div>
+
+      <div class="alert error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <div class="recap" *ngIf="recapitulatif">
+        <h4>Récapitulatif</h4>
+        <div class="recap-row">
+          <span>Nuits</span>
+          <span>{{ recapitulatif.nombreNuits }}</span>
+        </div>
+        <div class="recap-row" *ngIf="recapitulatif.fraisService">
+          <span>Frais de service</span>
+          <span>{{ recapitulatif.fraisService }}€</span>
+        </div>
+        <div class="recap-row" *ngIf="recapitulatif.fraisNettoyage">
+          <span>Frais de nettoyage</span>
+          <span>{{ recapitulatif.fraisNettoyage }}€</span>
+        </div>
+        <div class="recap-row" *ngIf="recapitulatif.fraisDepot">
+          <span>Dépôt</span>
+          <span>{{ recapitulatif.fraisDepot }}€</span>
+        </div>
+        <div class="recap-total">
+          <span>Total</span>
+          <span>{{ recapitulatif.prixTotal }}€</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="close()"
+      >
+        Annuler
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="verifierEtRecap()"
+        [disabled]="loading || !isDateRangeValid"
+      >
+        <span *ngIf="loading">Chargement...</span>
+        <span *ngIf="!loading">Calculer le prix</span>
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn btn-success" 
+        (click)="confirmerReservation()"
+        [disabled]="!recapitulatif || loading"
+      >
+        Confirmer la réservation
+      </button>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,204 @@
+<div class="reservation-container">
+  <!-- En-tête de la page -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="main-title">
+        <i class="fas fa-calendar-check"></i>
+        Système de Réservation
+      </h1>
+      <p class="subtitle">Réservez votre séjour en toute simplicité</p>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Formulaire de réservation -->
+    <div class="reservation-form-section">
+      <div class="form-card">
+        <div class="card-header">
+          <h2><i class="fas fa-plus-circle"></i> Nouvelle Réservation</h2>
+          <p>Remplissez les informations pour créer votre réservation</p>
+        </div>
+
+        <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()" class="reservation-form">
+          <!-- Sélection de l'annonce -->
+          <div class="form-group">
+            <label for="annonceId">
+              <i class="fas fa-home"></i>
+              Sélectionner une Annonce
+            </label>
+            <select
+              id="annonceId"
+              formControlName="annonceId"
+              class="form-control"
+            >
+              <option value="">Choisissez une annonce</option>
+              <option value="1E8447B6-62C6-40E1-BB9A-2228627D2572">Appartement Paris Centre - 120€/nuit</option>
+              <option value="2F9558C7-73D7-51F2-CC0B-3339738E3683">Maison Provence - 95€/nuit</option>
+              <option value="3G0669D8-84E8-62G3-DD1C-4440849F4794">Studio Lyon - 80€/nuit</option>
+            </select>
+            <div class="form-help">
+              <small>Sélectionnez l'annonce de votre choix dans la liste</small>
+            </div>
+          </div>
+
+          <!-- Dates d'arrivée et de départ -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dateArrivee">
+                <i class="fas fa-plane-arrival"></i>
+                Date d'Arrivée
+              </label>
+              <input
+                type="date"
+                id="dateArrivee"
+                formControlName="dateArrivee"
+                class="form-control"
+                [min]="getTodayDate()"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="dateDepart">
+                <i class="fas fa-plane-departure"></i>
+                Date de Départ
+              </label>
+              <input
+                type="date"
+                id="dateDepart"
+                formControlName="dateDepart"
+                class="form-control"
+                [min]="getTodayDate()"
+              />
+            </div>
+          </div>
+
+          <!-- Nombre de voyageurs -->
+          <div class="form-group">
+            <label for="nombreVoyageurs">
+              <i class="fas fa-users"></i>
+              Nombre de Voyageurs
+            </label>
+            <div class="number-input-wrapper">
+              <button type="button" class="number-btn" (click)="decrementVoyageurs()">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input
+                type="number"
+                id="nombreVoyageurs"
+                formControlName="nombreVoyageurs"
+                class="form-control number-input"
+                min="1"
+                max="10"
+              />
+              <button type="button" class="number-btn" (click)="incrementVoyageurs()">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            <div class="form-help">
+              <small>Entre 1 et 10 voyageurs maximum</small>
+            </div>
+          </div>
+
+          <!-- Bouton de soumission -->
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn-submit"
+              [disabled]="!reservationForm.valid || isLoading"
+            >
+              <span *ngIf="!isLoading">
+                <i class="fas fa-check"></i>
+                Créer la Réservation
+              </span>
+              <span *ngIf="isLoading" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                Création en cours...
+              </span>
+            </button>
+          </div>
+
+          <!-- Messages de statut -->
+          <div class="status-messages">
+            <div *ngIf="messageSucces" class="message success">
+              <i class="fas fa-check-circle"></i>
+              {{ messageSucces }}
+            </div>
+            <div *ngIf="messageErreur" class="message error">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ messageErreur }}
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Section des informations de réservation -->
+    <div class="reservation-info-section">
+      <!-- Périodes réservées -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fas fa-calendar-times"></i> Périodes Déjà Réservées</h3>
+          <button class="refresh-btn" (click)="chargerPeriodesReservees()">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        
+        <div class="periodes-list">
+          <div *ngIf="periodesReservees.length === 0" class="empty-state">
+            <i class="fas fa-calendar-check"></i>
+            <p>Aucune période réservée pour le moment</p>
+          </div>
+          
+          <div *ngFor="let periode of periodesReservees" class="periode-item">
+            <div class="periode-dates">
+              <span class="date-label">Du:</span>
+              <span class="date-value">{{ periode.dateDebut | date:'dd/MM/yyyy' }}</span>
+              <span class="date-label">Au:</span>
+              <span class="date-value">{{ periode.dateFin | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="periode-statut" [style.background-color]="getStatutColor(periode.statut)">
+              {{ getStatutLabel(periode.statut) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jours réservés -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fas fa-calendar-day"></i> Jours Individuels Réservés</h3>
+          <button class="refresh-btn" (click)="chargerJoursReserves()">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        
+        <div class="jours-list">
+          <div *ngIf="joursReserves.length === 0" class="empty-state">
+            <i class="fas fa-calendar-day"></i>
+            <p>Aucun jour individuel réservé</p>
+          </div>
+          
+          <div class="jours-grid">
+            <span *ngFor="let jour of joursReserves" class="jour-reserve">
+              {{ jour | date:'dd/MM' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer informatif -->
+  <div class="info-footer">
+    <div class="footer-content">
+      <div class="footer-item">
+        <i class="fas fa-info-circle"></i>
+        <span>Vérifiez les disponibilités avant de réserver</span>
+      </div>
+      <div class="footer-item">
+        <i class="fas fa-clock"></i>
+        <span>Les réservations sont traitées dans les 24h</span>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -71,14 +71,77 @@ export class AuthService {
   }
 
   getLocataireId(): string | null {
-    return localStorage.getItem('locataireId');
+    // 🔍 DEBUG : Vérifier toutes les sources possibles
+    const locataireId = localStorage.getItem('locataireId');
+    const userId = localStorage.getItem('userId');
+    const userType = localStorage.getItem('userType');
+    
+    console.log('🔍 === DEBUG getLocataireId ===');
+    console.log('🏠 locataireId direct:', locataireId);
+    console.log('🆔 userId:', userId);
+    console.log('👤 userType:', userType);
+    
+    // Si on a directement l'ID du locataire
+    if (locataireId) {
+      console.log('✅ ID locataire trouvé directement:', locataireId);
+      return locataireId;
+    }
+    
+    // Si on a un userId et que le type est LOCATAIRE
+    if (userId && userType === 'LOCATAIRE') {
+      console.log('✅ ID locataire déduit de userId:', userId);
+      // Sauvegarder pour la prochaine fois
+      localStorage.setItem('locataireId', userId);
+      return userId;
+    }
+    
+    // Si on a juste un userId, essayer de le récupérer
+    if (userId) {
+      console.log('⚠️ userId trouvé mais type non défini, tentative de récupération...');
+      // Essayer de récupérer le type depuis l'API ou le localStorage
+      return this.tryToRecoverLocataireId(userId);
+    }
+    
+    console.log('❌ Aucun ID de locataire trouvé');
+    return null;
   }
 
-  getUserNom(): string | null {
-    return localStorage.getItem('userNom');
+  // 🔍 Méthode de récupération d'urgence
+  private tryToRecoverLocataireId(userId: string): string | null {
+    console.log('🔄 Tentative de récupération de l\'ID locataire...');
+    
+    // Vérifier si on peut déduire le type d'utilisateur
+    const userEmail = localStorage.getItem('userEmail');
+    const userNom = localStorage.getItem('userNom');
+    
+    // Si on a des informations utilisateur, essayer de deviner le type
+    if (userEmail || userNom) {
+      // Par défaut, considérer comme locataire si pas d'autre indication
+      console.log('💡 Type non défini, considération par défaut comme LOCATAIRE');
+      localStorage.setItem('userType', 'LOCATAIRE');
+      localStorage.setItem('locataireId', userId);
+      return userId;
+    }
+    
+    return null;
   }
 
-  getUserPrenom(): string | null {
-    return localStorage.getItem('userPrenom');
+  // 🔍 Méthode de diagnostic complet
+  debugAuthentication(): void {
+    console.log('🔍 === DIAGNOSTIC COMPLET AUTHENTIFICATION ===');
+    console.log('🔑 authToken:', localStorage.getItem('authToken'));
+    console.log('👤 userType:', localStorage.getItem('userType'));
+    console.log('📧 userEmail:', localStorage.getItem('userEmail'));
+    console.log('🆔 userId:', localStorage.getItem('userId'));
+    console.log('🏠 locataireId:', localStorage.getItem('locataireId'));
+    console.log('🏢 locateurId:', localStorage.getItem('locateurId'));
+    console.log('👨‍💼 userNom:', localStorage.getItem('userNom'));
+    console.log('👩‍💼 userPrenom:', localStorage.getItem('userPrenom'));
+    
+    // Test des méthodes
+    console.log('🔍 Test getLocataireId():', this.getLocataireId());
+    console.log('🔍 Test getLocateurId():', this.getLocateurId());
+    console.log('🔍 Test isAuthenticated():', this.isAuthenticated());
+    console.log('🔍 === FIN DIAGNOSTIC ===');
   }
 } 

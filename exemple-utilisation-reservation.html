@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemple d'Utilisation - Composant Réservation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .annonce-card { border: 1px solid #ddd; margin: 10px; padding: 15px; border-radius: 5px; }
+        .btn-reserver { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; }
+        .btn-reserver:hover { background: #218838; }
+        .reservation-section { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🏠 Exemple d'Utilisation - Composant Réservation</h1>
+    
+    <h2>📋 Liste des Annonces</h2>
+    
+    <!-- Annonce 1 -->
+    <div class="annonce-card">
+        <h3>🏖️ Villa avec vue mer</h3>
+        <p><strong>ID:</strong> 1E8447B6-62C6-40E1-BB9A-2228627D2572</p>
+        <p><strong>Prix:</strong> 150€/nuit</p>
+        <p><strong>Localisation:</strong> Nice, Côte d'Azur</p>
+        <button class="btn-reserver" onclick="afficherReservation('1E8447B6-62C6-40E1-BB9A-2228627D2572')">
+            📅 Réserver cette annonce
+        </button>
+    </div>
+
+    <!-- Annonce 2 -->
+    <div class="annonce-card">
+        <h3>🏔️ Chalet en montagne</h3>
+        <p><strong>ID:</strong> 2F9558C7-73D7-51F2-CC0B-3339738E2583</p>
+        <p><strong>Prix:</strong> 120€/nuit</p>
+        <p><strong>Localisation:</strong> Chamonix, Alpes</p>
+        <button class="btn-reserver" onclick="afficherReservation('2F9558C7-73D7-51F2-CC0B-3339738E2583')">
+            📅 Réserver cette annonce
+        </button>
+    </div>
+
+    <!-- Annonce 3 -->
+    <div class="annonce-card">
+        <h3>🏰 Appartement en ville</h3>
+        <p><strong>ID:</strong> 3G0669D8-84E8-62G3-DD1C-4440849F2594</p>
+        <p><strong>Prix:</strong> 80€/nuit</p>
+        <p><strong>Localisation:</strong> Paris, Île-de-France</p>
+        <button class="btn-reserver" onclick="afficherReservation('3G0669D8-84E8-62G3-DD1C-4440849F2594')">
+            📅 Réserver cette annonce
+        </button>
+    </div>
+
+    <!-- Section de réservation -->
+    <div id="reservationSection" class="reservation-section" style="display: none;">
+        <h2>📅 Formulaire de Réservation</h2>
+        <p><strong>Annonce sélectionnée:</strong> <span id="annonceSelectionnee"></span></p>
+        
+        <!-- Ici sera affiché le composant Angular de réservation -->
+        <div id="reservationComponent">
+            <p>Le composant Angular de réservation sera affiché ici avec l'ID de l'annonce sélectionnée.</p>
+        </div>
+    </div>
+
+    <script>
+        function afficherReservation(annonceId) {
+            // Afficher la section de réservation
+            document.getElementById('reservationSection').style.display = 'block';
+            
+            // Afficher l'ID de l'annonce sélectionnée
+            document.getElementById('annonceSelectionnee').textContent = annonceId;
+            
+            // Ici, dans une vraie application Angular, vous appelleriez :
+            // this.router.navigate(['/reservation'], { queryParams: { annonceId: annonceId } });
+            // ou
+            // this.router.navigate(['/reservation', annonceId]);
+            
+            console.log('🏠 Annonce sélectionnée pour réservation:', annonceId);
+            
+            // Exemple de données qui seraient envoyées au composant
+            const donneesReservation = {
+                annonceId: annonceId,
+                dateArrivee: '',
+                dateDepart: '',
+                nombreVoyageurs: 1
+            };
+            
+            console.log('📝 Données de réservation:', donneesReservation);
+        }
+    </script>
+
+    <h3>🔧 Comment ça fonctionne dans Angular :</h3>
+    
+    <h4>1. Dans le composant parent (liste des annonces) :</h4>
+    <pre><code>
+// Template HTML
+&lt;button (click)="reserverAnnonce(annonce.id)"&gt;Réserver&lt;/button&gt;
+
+// Composant TypeScript
+reserverAnnonce(annonceId: string): void {
+  this.router.navigate(['/reservation'], { 
+    queryParams: { annonceId: annonceId } 
+  });
+}
+    </code></pre>
+
+    <h4>2. Dans le composant de réservation :</h4>
+    <pre><code>
+// Template HTML
+&lt;app-reservation [annonceId]="annonceId"&gt;&lt;/app-reservation&gt;
+
+// Composant TypeScript
+export class ReservationComponent implements OnInit {
+  @Input() annonceId: string = '';
+  
+  ngOnInit(): void {
+    if (this.annonceId) {
+      this.reservationForm.patchValue({ annonceId: this.annonceId });
+    }
+  }
+}
+    </code></pre>
+
+    <h4>3. Dans le routing :</h4>
+    <pre><code>
+const routes: Routes = [
+  { path: 'reservation', component: ReservationComponent },
+  { path: 'reservation/:annonceId', component: ReservationComponent }
+];
+    </code></pre>
+</body>
+</html> 

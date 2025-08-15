@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -13,11 +13,14 @@ import { StadeAvecDistance } from '../../models/stade.model';
 import { ImageFallbackDirective } from '../../directives/image-fallback.directive';
 import * as AOS from 'aos';
 import * as L from 'leaflet';
+import { ReservationPopupComponent } from '../reservation/reservation-popup.component';
+import { CalendrierLocataireComponent } from '../calendrier-locataire/calendrier-locataire.component';
+import { CalendrierLocateurComponent } from '../calendrier-locateur/calendrier-locateur.component';
 
 @Component({
   selector: 'app-detail-annonce',
   standalone: true,
-  imports: [CommonModule, LocateurPopupComponent, StadePopupComponent, TousStadesPopupComponent, ImageFallbackDirective],
+  imports: [CommonModule, LocateurPopupComponent, StadePopupComponent, TousStadesPopupComponent, ImageFallbackDirective, ReservationPopupComponent, CalendrierLocataireComponent, CalendrierLocateurComponent],
   templateUrl: './detail-annonce.component.html',
   styleUrl: './detail-annonce.component.css'
 })
@@ -37,6 +40,13 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
   private marker: any = null;
   mapInitialized = false;
   mapError = false;
+
+  // Réservation popup state
+  @ViewChild('reservationPopup') reservationPopup?: ReservationPopupComponent;
+
+  // Dates sélectionnées dans le calendrier
+  dateArriveeSelectionnee: string = '';
+  dateDepartSelectionnee: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -667,5 +677,134 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
       return `${Math.round(distance * 1000)}m`;
     }
     return `${distance}km`;
+  }
+
+  ouvrirReservation(): void {
+    this.reservationPopup?.open();
+  }
+
+  onReservationClosed(): void {
+    // noop pour l’instant
+  }
+
+  onReservationConfirmed(): void {
+    // Rafraîchir les données si nécessaire
+    console.log('✅ Réservation confirmée avec succès');
+  }
+
+  // Gestion des dates sélectionnées dans le calendrier
+  onDateArriveeChange(date: string): void {
+    this.dateArriveeSelectionnee = date;
+    console.log('📅 Date d\'arrivée sélectionnée:', date);
+    
+    // Si on a une date de départ et qu'elle est avant la date d'arrivée, la réinitialiser
+    if (this.dateDepartSelectionnee && new Date(date) > new Date(this.dateDepartSelectionnee)) {
+      this.dateDepartSelectionnee = '';
+      console.log('🔄 Date de départ réinitialisée');
+    }
+  }
+
+  onDateDepartChange(date: string): void {
+    this.dateDepartSelectionnee = date;
+    console.log('📅 Date de départ sélectionnée:', date);
+  }
+
+  // Ouvrir la réservation avec les dates pré-sélectionnées
+  ouvrirReservationAvecDates(): void {
+    if (this.dateArriveeSelectionnee && this.dateDepartSelectionnee) {
+      // Ouvrir le popup de réservation avec les dates pré-remplies
+      this.reservationPopup?.openWithDates(this.dateArriveeSelectionnee, this.dateDepartSelectionnee);
+    } else {
+      // Ouvrir le popup normal
+      this.reservationPopup?.open();
+    }
+  }
+
+  /**
+   * Vérifie si l'utilisateur connecté est un locataire
+   */
+  estLocataire(): boolean {
+    const userType = localStorage.getItem('userType');
+    return userType === 'LOCATAIRE';
+  }
+
+  /**
+   * Vérifie si l'utilisateur connecté est un locateur
+   */
+  estLocateur(): boolean {
+    const userType = localStorage.getItem('userType');
+    return userType === 'LOCATEUR';
+  }
+
+  /**
+   * Obtient le nombre de réservations en attente
+   */
+  getNombreReservationsEnAttente(): number {
+    // TODO: Implémenter la logique pour récupérer le nombre de réservations en attente
+    return 3; // Valeur temporaire
+  }
+
+  /**
+   * Obtient le nombre de réservations confirmées
+   */
+  getNombreReservationsConfirmees(): number {
+    // TODO: Implémenter la logique pour récupérer le nombre de réservations confirmées
+    return 5; // Valeur temporaire
+  }
+
+  /**
+   * Obtient le nombre de réservations en cours
+   */
+  getNombreReservationsEnCours(): number {
+    // TODO: Implémenter la logique pour récupérer le nombre de réservations en cours
+    return 2; // Valeur temporaire
+  }
+
+  /**
+   * Affiche toutes les réservations
+   */
+  voirToutesReservations(): void {
+    console.log('📋 Affichage de toutes les réservations');
+    // TODO: Implémenter la logique pour afficher toutes les réservations
+  }
+
+  /**
+   * Exporte le calendrier
+   */
+  exporterCalendrier(): void {
+    console.log('📥 Export du calendrier');
+    // TODO: Implémenter la logique d'export du calendrier
+  }
+
+  /**
+   * Efface la date d'arrivée sélectionnée
+   */
+  effacerDateArrivee(): void {
+    this.dateArriveeSelectionnee = '';
+    console.log('🗑️ Date d\'arrivée effacée');
+  }
+
+  /**
+   * Efface la date de départ sélectionnée
+   */
+  effacerDateDepart(): void {
+    this.dateDepartSelectionnee = '';
+    console.log('🗑️ Date de départ effacée');
+  }
+
+  /**
+   * Calcule la durée du séjour en jours
+   */
+  calculerDureeSejour(): number {
+    if (!this.dateArriveeSelectionnee || !this.dateDepartSelectionnee) {
+      return 0;
+    }
+
+    const arrivee = new Date(this.dateArriveeSelectionnee);
+    const depart = new Date(this.dateDepartSelectionnee);
+    const difference = depart.getTime() - arrivee.getTime();
+    const jours = Math.ceil(difference / (1000 * 3600 * 24));
+    
+    return jours;
   }
 } 

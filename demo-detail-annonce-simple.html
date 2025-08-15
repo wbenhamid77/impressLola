@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démo - Détail Annonce Locataire</title>
+    <link rel="stylesheet" href="src/app/components/detail-annonce-locataire/detail-annonce-locataire.component.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #1e293b;
+        }
+        
+        .demo-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .demo-header p {
+            font-size: 1.2rem;
+            margin: 10px 0 0 0;
+            color: #64748b;
+        }
+        
+        .demo-info {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-info h3 {
+            color: #1e40af;
+            margin-top: 0;
+        }
+        
+        .demo-info ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .demo-info li {
+            margin: 5px 0;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-header">
+            <h1>🏠 Démo - Détail Annonce Locataire</h1>
+            <p>Composant corrigé et fonctionnel</p>
+        </div>
+        
+        <div class="demo-info">
+            <h3>✅ Problèmes résolus :</h3>
+            <ul>
+                <li><strong>Dépendances manquantes :</strong> Suppression des composants ReservationPopup et CalendrierLocataire inexistants</li>
+                <li><strong>Modèle de données :</strong> Correction pour correspondre à l'interface Annonce réelle</li>
+                <li><strong>Gestion d'erreurs :</strong> Remplacement de toPromise() déprécié par firstValueFrom()</li>
+                <li><strong>Données d'exemple :</strong> Ajout de données de démo pour tester sans API</li>
+                <li><strong>Fonctionnalités manquantes :</strong> Ajout de sections équipements, règles et prix</li>
+                <li><strong>Boutons de test :</strong> Ajout de boutons pour simuler la sélection de dates</li>
+            </ul>
+            
+            <h3>🎯 Fonctionnalités ajoutées :</h3>
+            <ul>
+                <li><strong>Section équipements :</strong> Affichage des équipements disponibles avec icônes</li>
+                <li><strong>Section règles :</strong> Affichage des règles de la maison</li>
+                <li><strong>Section prix :</strong> Affichage des tarifs par nuit, semaine et mois</li>
+                <li><strong>Simulation de réservation :</strong> Boutons pour tester la sélection de dates</li>
+                <li><strong>Calcul automatique :</strong> Prix total basé sur la durée du séjour</li>
+            </ul>
+        </div>
+        
+        <!-- Composant detail-annonce-locataire -->
+        <div class="detail-annonce-locataire">
+            <!-- En-tête de l'annonce -->
+            <div class="annonce-header">
+                <div class="header-content">
+                    <h1 class="annonce-titre">Appartement moderne au cœur de la ville</h1>
+                    <p class="annonce-sous-titre">Magnifique appartement rénové avec vue panoramique, idéalement situé près des transports et commerces. Parfait pour un séjour confortable en ville.</p>
+                    <div class="annonce-meta">
+                        <span class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Paris, France
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-users"></i>
+                            2 chambres
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-bed"></i>
+                            4 personnes
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-euro-sign"></i>
+                            120€/nuit
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Galerie d'images -->
+            <div class="galerie-section">
+                <div class="galerie-header">
+                    <h3>📸 Photos du logement</h3>
+                </div>
+                <div class="galerie-images">
+                    <div class="image-principale">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=400&fit=crop" 
+                             alt="Appartement moderne" 
+                             class="main-image">
+                    </div>
+                    <div class="images-secondaires">
+                        <div class="image-item">
+                            <img src="https://images.unsplash.com/photo-1560448075-bb485b067938?w=200&h=80&fit=crop" alt="Chambre" class="secondary-image">
+                        </div>
+                        <div class="image-item">
+                            <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salon" class="secondary-image">
+                        </div>
+                        <div class="image-item">
+                            <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Cuisine" class="secondary-image">
+                        </div>
+                        <div class="image-item">
+                            <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salle de bain" class="secondary-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations détaillées -->
+            <div class="info-section">
+                <div class="info-header">
+                    <h3>ℹ️ Informations détaillées</h3>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Type de logement</h4>
+                            <p>Appartement</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Surface</h4>
+                            <p>65 m²</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Parking</h4>
+                            <p>Disponible</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>WiFi</h4>
+                            <p>Inclus</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section des équipements -->
+            <div class="equipements-section">
+                <div class="equipements-header">
+                    <h3>🔧 Équipements disponibles</h3>
+                </div>
+                <div class="equipements-grid">
+                    <div class="equipement-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>WiFi</span>
+                    </div>
+                    <div class="equipement-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Parking</span>
+                    </div>
+                    <div class="equipement-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Climatisation</span>
+                    </div>
+                    <div class="equipement-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Cuisine équipée</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section des règles -->
+            <div class="regles-section">
+                <div class="regles-header">
+                    <h3>📋 Règles de la maison</h3>
+                </div>
+                <div class="regles-grid">
+                    <div class="regle-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Pas de fête</span>
+                    </div>
+                    <div class="regle-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Pas d'animaux</span>
+                    </div>
+                    <div class="regle-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Arrivée après 15h</span>
+                    </div>
+                    <div class="regle-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Départ avant 11h</span>
+                    </div>
+                    <div class="regle-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Pas de tabac</span>
+                    </div>
+                    <div class="regle-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Respect des voisins</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section de réservation -->
+            <div class="reservation-section">
+                <div class="reservation-header">
+                    <h3>🎯 Réserver ce logement</h3>
+                    <p class="reservation-subtitle">Sélectionnez vos dates de séjour</p>
+                </div>
+                
+                <!-- Boutons de démo pour tester -->
+                <div class="demo-buttons">
+                    <button class="btn-demo" onclick="simulerSelectionDates()">
+                        <i class="fas fa-calendar-plus"></i>
+                        Simuler sélection dates
+                    </button>
+                    <button class="btn-demo" onclick="effacerToutesDates()">
+                        <i class="fas fa-calendar-minus"></i>
+                        Effacer dates
+                    </button>
+                </div>
+                
+                <div class="dates-selectionnees" id="dates-selectionnees" style="display: none;">
+                    <div class="date-item" id="date-arrivee" style="display: none;">
+                        <div class="date-label">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Arrivée</span>
+                        </div>
+                        <div class="date-value" id="date-arrivee-value"></div>
+                        <button class="btn-clear" onclick="effacerDateArrivee()" title="Effacer la date d'arrivée">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="date-item" id="date-depart" style="display: none;">
+                        <div class="date-label">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Départ</span>
+                        </div>
+                        <div class="date-value" id="date-depart-value"></div>
+                        <button class="btn-clear" onclick="effacerDateDepart()" title="Effacer la date de départ">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="periode-info" id="periode-info" style="display: none;">
+                        <div class="duree-sejour">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="duree-sejour-text"></span>
+                        </div>
+                        <div class="prix-total">
+                            <i class="fas fa-euro-sign"></i>
+                            <span id="prix-total-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-reserve" id="btn-reserve" disabled>
+                    <i class="fas fa-calendar-check"></i>
+                    <span id="btn-reserve-text">Sélectionnez vos dates pour réserver</span>
+                </button>
+            </div>
+
+            <!-- Carte propriétaire -->
+            <div class="owner-card">
+                <div class="owner-header">
+                    <h3>👤 À propos du propriétaire</h3>
+                </div>
+                <div class="owner-content">
+                    <div class="owner-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="owner-info">
+                        <h4>Marie Dupont</h4>
+                        <p class="owner-description">
+                            Propriétaire expérimentée et disponible pour vous accompagner. J'aime partager ma passion pour l'accueil et m'assurer que votre séjour soit parfait.
+                        </p>
+                        <div class="owner-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">4.8 (12 avis)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section des prix -->
+            <div class="prix-section">
+                <div class="prix-header">
+                    <h3>💰 Tarifs</h3>
+                </div>
+                <div class="prix-grid">
+                    <div class="prix-card">
+                        <div class="prix-montant">120€</div>
+                        <div class="prix-periode">par nuit</div>
+                    </div>
+                    <div class="prix-card">
+                        <div class="prix-montant">750€</div>
+                        <div class="prix-periode">par semaine</div>
+                    </div>
+                    <div class="prix-card">
+                        <div class="prix-montant">2800€</div>
+                        <div class="prix-periode">par mois</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales pour les dates
+        let dateArriveeSelectionnee = '';
+        let dateDepartSelectionnee = '';
+
+        // Simuler la sélection de dates
+        function simulerSelectionDates() {
+            const aujourdhui = new Date();
+            const arrivee = new Date(aujourdhui);
+            arrivee.setDate(aujourdhui.getDate() + 7); // Dans une semaine
+            
+            const depart = new Date(arrivee);
+            depart.setDate(arrivee.getDate() + 7); // Une semaine plus tard
+            
+            dateArriveeSelectionnee = arrivee.toISOString().split('T')[0];
+            dateDepartSelectionnee = depart.toISOString().split('T')[0];
+            
+            afficherDates();
+            console.log('📅 Dates simulées:', dateArriveeSelectionnee, dateDepartSelectionnee);
+        }
+
+        // Effacer toutes les dates
+        function effacerToutesDates() {
+            dateArriveeSelectionnee = '';
+            dateDepartSelectionnee = '';
+            masquerDates();
+            console.log('🗑️ Toutes les dates effacées');
+        }
+
+        // Effacer la date d'arrivée
+        function effacerDateArrivee() {
+            dateArriveeSelectionnee = '';
+            if (!dateArriveeSelectionnee && !dateDepartSelectionnee) {
+                masquerDates();
+            } else {
+                afficherDates();
+            }
+            console.log('🗑️ Date d\'arrivée effacée');
+        }
+
+        // Effacer la date de départ
+        function effacerDateDepart() {
+            dateDepartSelectionnee = '';
+            if (!dateArriveeSelectionnee && !dateDepartSelectionnee) {
+                masquerDates();
+            } else {
+                afficherDates();
+            }
+            console.log('🗑️ Date de départ effacée');
+        }
+
+        // Afficher les dates sélectionnées
+        function afficherDates() {
+            const datesContainer = document.getElementById('dates-selectionnees');
+            const dateArriveeDiv = document.getElementById('date-arrivee');
+            const dateDepartDiv = document.getElementById('date-depart');
+            const periodeInfoDiv = document.getElementById('periode-info');
+            const btnReserve = document.getElementById('btn-reserve');
+            const btnReserveText = document.getElementById('btn-reserve-text');
+
+            datesContainer.style.display = 'block';
+
+            if (dateArriveeSelectionnee) {
+                document.getElementById('date-arrivee-value').textContent = formatDate(dateArriveeSelectionnee);
+                dateArriveeDiv.style.display = 'flex';
+            }
+
+            if (dateDepartSelectionnee) {
+                document.getElementById('date-depart-value').textContent = formatDate(dateDepartSelectionnee);
+                dateDepartDiv.style.display = 'flex';
+            }
+
+            if (dateArriveeSelectionnee && dateDepartSelectionnee) {
+                const duree = calculerDureeSejour();
+                const prixTotal = duree * 120;
+                
+                document.getElementById('duree-sejour-text').textContent = `Durée du séjour: ${duree} jour(s)`;
+                document.getElementById('prix-total-text').textContent = `Prix total: ${prixTotal}€`;
+                periodeInfoDiv.style.display = 'flex';
+                
+                btnReserve.disabled = false;
+                btnReserveText.textContent = `Réserver du ${formatDateShort(dateArriveeSelectionnee)} au ${formatDateShort(dateDepartSelectionnee)}`;
+            } else {
+                periodeInfoDiv.style.display = 'none';
+                btnReserve.disabled = true;
+                btnReserveText.textContent = 'Sélectionnez vos dates pour réserver';
+            }
+        }
+
+        // Masquer les dates
+        function masquerDates() {
+            const datesContainer = document.getElementById('dates-selectionnees');
+            const dateArriveeDiv = document.getElementById('date-arrivee');
+            const dateDepartDiv = document.getElementById('date-depart');
+            const periodeInfoDiv = document.getElementById('periode-info');
+            const btnReserve = document.getElementById('btn-reserve');
+            const btnReserveText = document.getElementById('btn-reserve-text');
+
+            datesContainer.style.display = 'none';
+            dateArriveeDiv.style.display = 'none';
+            dateDepartDiv.style.display = 'none';
+            periodeInfoDiv.style.display = 'none';
+            btnReserve.disabled = true;
+            btnReserveText.textContent = 'Sélectionnez vos dates pour réserver';
+        }
+
+        // Calculer la durée du séjour
+        function calculerDureeSejour() {
+            if (!dateArriveeSelectionnee || !dateDepartSelectionnee) {
+                return 0;
+            }
+
+            const arrivee = new Date(dateArriveeSelectionnee);
+            const depart = new Date(dateDepartSelectionnee);
+            const difference = depart.getTime() - arrivee.getTime();
+            const jours = Math.ceil(difference / (1000 * 3600 * 24));
+            
+            return jours;
+        }
+
+        // Formater une date complète
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR');
+        }
+
+        // Formater une date courte
+        function formatDateShort(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+        }
+
+        // Gérer le clic sur le bouton de réservation
+        document.getElementById('btn-reserve').addEventListener('click', function() {
+            if (dateArriveeSelectionnee && dateDepartSelectionnee) {
+                const duree = calculerDureeSejour();
+                const prixTotal = duree * 120;
+                
+                const confirmation = confirm(
+                    `Confirmer votre réservation ?\n\n` +
+                    `Arrivée: ${dateArriveeSelectionnee}\n` +
+                    `Départ: ${dateDepartSelectionnee}\n` +
+                    `Durée: ${duree} jour(s)\n` +
+                    `Prix total: ${prixTotal}€`
+                );
+                
+                if (confirmation) {
+                    alert('Réservation confirmée avec succès !');
+                    console.log('✅ Réservation confirmée');
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

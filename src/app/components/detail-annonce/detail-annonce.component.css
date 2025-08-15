@@ -2145,6 +2145,184 @@
   }
 }
 
+/* ===== SECTION DE RÉSERVATION ===== */
+.reservation-section {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.reservation-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.reservation-header h3 {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.reservation-subtitle {
+  margin: 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Dates sélectionnées */
+.dates-selectionnees {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.date-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.date-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.date-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.date-label i {
+  color: #667eea;
+  font-size: 16px;
+}
+
+.date-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.btn-clear {
+  background: #dc3545;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+}
+
+.btn-clear:hover {
+  background: #c53030;
+  transform: scale(1.1);
+}
+
+/* Informations sur la période */
+.periode-info {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border: 1px solid #28a745;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.duree-sejour {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #155724;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.duree-sejour i {
+  font-size: 18px;
+}
+
+/* Bouton de réservation */
+.btn-reserve {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-reserve:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-reserve:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-reserve i {
+  font-size: 18px;
+}
+
+/* Responsive pour la section de réservation */
+@media (max-width: 768px) {
+  .reservation-section {
+    padding: 20px;
+  }
+  
+  .date-item {
+    padding: 12px;
+  }
+  
+  .btn-reserve {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .date-item {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .btn-reserve {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+
 /* Styles pour les placeholders d'images */
 .image-placeholder {
   display: flex;
@@ -2300,4 +2478,703 @@
   .modal-thumbnail-placeholder span {
     font-size: 0.75rem;
   }
+} 
+
+/* ===== SECTION LOCATEUR ===== */
+.locateur-section {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 20px;
+  padding: 32px;
+  margin: 24px 0;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.locateur-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+  border-radius: 20px 20px 0 0;
+}
+
+.locateur-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.locateur-header h3 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.locateur-subtitle {
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ===== STATISTIQUES DES RÉSERVATIONS ===== */
+.reservations-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 16px 16px 0 0;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: white;
+  position: relative;
+}
+
+.stat-card:nth-child(1) .stat-icon {
+  background: linear-gradient(135deg, #ffc107, #ff9800);
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+}
+
+.stat-card:nth-child(2) .stat-icon {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.stat-card:nth-child(3) .stat-icon {
+  background: linear-gradient(135deg, #17a2b8, #6f42c1);
+  box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+}
+
+.stat-content {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 36px;
+  font-weight: 900;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ===== ACTIONS DES RÉSERVATIONS ===== */
+.reservations-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  min-width: 200px;
+  justify-content: center;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.btn-action i {
+  font-size: 18px;
+}
+
+/* ===== AMÉLIORATION DU CALENDRIER ===== */
+.calendrier-section {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border-radius: 20px;
+  padding: 32px;
+  margin: 24px 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e8e8;
+  position: relative;
+  overflow: hidden;
+}
+
+.calendrier-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  border-radius: 20px 20px 0 0;
+}
+
+.calendrier-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.calendrier-header h3 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.calendrier-subtitle {
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .reservations-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-number {
+    font-size: 28px;
+  }
+  
+  .reservations-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-action {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .calendrier-section,
+  .locateur-section,
+  .reservation-section {
+    padding: 24px;
+    margin: 16px 0;
+  }
+  
+  .calendrier-header h3,
+  .locateur-header h3 {
+    font-size: 24px;
+  }
+} 
+
+/* ======================================== */
+/* 🎨 STYLES POUR LES CALENDRIERS AMÉLIORÉS */
+/* ======================================== */
+
+/* Section principale du calendrier */
+.calendar-section {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 0;
+  margin: 32px 0;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.calendar-section .section-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 32px 40px;
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.calendar-section .section-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 24px;
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+}
+
+.calendar-section .section-content {
+  flex: 1;
+}
+
+.calendar-section .section-title {
+  margin: 0 0 8px 0;
+  color: var(--gray-800);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.calendar-section .section-subtitle {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Container principal du calendrier */
+.calendar-container {
+  padding: 0;
+}
+
+/* Wrapper du calendrier */
+.calendar-wrapper {
+  position: relative;
+}
+
+.calendar-header-info {
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+  padding: 24px 40px;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.calendar-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.calendar-role-badge.locataire {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: var(--success-color);
+  border: 2px solid #a7f3d0;
+}
+
+.calendar-role-badge.locateur {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: var(--info-color);
+  border: 2px solid #93c5fd;
+}
+
+.calendar-role-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.calendar-role-badge i {
+  font-size: 16px;
+}
+
+.calendar-description {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  flex: 1;
+  text-align: right;
+}
+
+/* Section sidebar du calendrier */
+.calendrier-section {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 0;
+  margin: 24px 0;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--gray-200);
+  overflow: hidden;
+  position: relative;
+}
+
+.calendrier-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--info-color), var(--success-color));
+}
+
+.calendrier-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.calendrier-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 20px;
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+}
+
+.calendrier-content {
+  flex: 1;
+}
+
+.calendrier-content h3 {
+  margin: 0 0 6px 0;
+  color: var(--gray-800);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.calendrier-subtitle {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Container du calendrier sidebar */
+.calendrier-container {
+  padding: 0;
+}
+
+/* Wrapper du calendrier sidebar */
+.calendrier-wrapper {
+  position: relative;
+}
+
+.calendrier-role-info {
+  background: var(--gray-50);
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.role-badge.locataire {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: var(--success-color);
+  border: 1px solid #a7f3d0;
+}
+
+.role-badge.locateur {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: var(--info-color);
+  border: 1px solid #93c5fd;
+}
+
+.role-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.role-badge i {
+  font-size: 14px;
+}
+
+.role-description {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  flex: 1;
+  text-align: right;
+}
+
+/* Responsive pour les calendriers */
+@media (max-width: 1024px) {
+  .calendar-section .section-header {
+    padding: 28px 32px;
+  }
+  
+  .calendar-section .section-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+  }
+  
+  .calendar-section .section-title {
+    font-size: 24px;
+  }
+  
+  .calendar-header-info {
+    padding: 20px 32px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .calendar-description {
+    text-align: left;
+  }
+  
+  .calendrier-header {
+    padding: 20px 24px;
+  }
+  
+  .calendrier-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+  
+  .calendrier-content h3 {
+    font-size: 18px;
+  }
+  
+  .calendrier-role-info {
+    padding: 16px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .role-description {
+    text-align: left;
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-section {
+    margin: 24px 0;
+  }
+  
+  .calendar-section .section-header {
+    padding: 24px 28px;
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .calendar-section .section-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+  
+  .calendar-section .section-title {
+    font-size: 22px;
+  }
+  
+  .calendar-header-info {
+    padding: 16px 28px;
+    text-align: center;
+  }
+  
+  .calendar-role-badge {
+    align-self: center;
+  }
+  
+  .calendrier-section {
+    margin: 20px 0;
+  }
+  
+  .calendrier-header {
+    padding: 16px 20px;
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .calendrier-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .calendrier-content h3 {
+    font-size: 16px;
+  }
+  
+  .calendrier-role-info {
+    padding: 12px 20px;
+    text-align: center;
+  }
+  
+  .role-badge {
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-section .section-header {
+    padding: 20px 24px;
+  }
+  
+  .calendar-section .section-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+  
+  .calendar-section .section-title {
+    font-size: 20px;
+  }
+  
+  .calendar-section .section-subtitle {
+    font-size: 14px;
+  }
+  
+  .calendar-header-info {
+    padding: 12px 24px;
+  }
+  
+  .calendar-role-badge {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  
+  .calendar-description {
+    font-size: 14px;
+  }
+  
+  .calendrier-header {
+    padding: 12px 16px;
+  }
+  
+  .calendrier-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  
+  .calendrier-content h3 {
+    font-size: 15px;
+  }
+  
+  .calendrier-subtitle {
+    font-size: 13px;
+  }
+  
+  .calendrier-role-info {
+    padding: 10px 16px;
+  }
+  
+  .role-badge {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  
+  .role-description {
+    font-size: 12px;
+  }
+}
+
+/* Variables CSS pour la cohérence */
+:root {
+  --primary-color: #4f46e5;
+  --primary-dark: #3730a3;
+  --success-color: #059669;
+  --info-color: #0284c7;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-600: #4b5563;
+  --gray-800: #1f2937;
+  --white: #ffffff;
+  --border-radius: 16px;
+  --border-radius-lg: 20px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 } 

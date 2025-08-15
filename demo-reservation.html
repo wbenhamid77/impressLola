@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Réservation - Démo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Variables CSS pour la cohérence des couleurs */
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .reservation-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* En-tête de la page */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .main-title i {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Wrapper du contenu principal */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        /* Section du formulaire */
+        .form-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .form-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .card-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* Formulaire */
+        .reservation-form {
+            padding: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control:hover {
+            border-color: var(--primary-color);
+        }
+
+        .form-help {
+            margin-top: 6px;
+        }
+
+        .form-help small {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Input pour le nombre de voyageurs */
+        .number-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .number-input-wrapper:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .number-btn {
+            background: var(--background-color);
+            border: none;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .number-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .number-btn:active {
+            transform: scale(0.95);
+        }
+
+        .number-input {
+            border: none;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            background: white;
+            width: 80px;
+        }
+
+        .number-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* Boutons d'action */
+        .form-actions {
+            margin-top: 32px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Section des informations */
+        .info-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+            margin-bottom: 24px;
+        }
+
+        .info-card:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .info-card .card-header {
+            background: linear-gradient(135deg, var(--secondary-color), #475569);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-card .card-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(180deg);
+        }
+
+        /* Liste des périodes réservées */
+        .periodes-list {
+            padding: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .periode-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--background-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .periode-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .periode-dates {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .date-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .date-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .periode-statut {
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Grille des jours réservés */
+        .jours-list {
+            padding: 20px;
+        }
+
+        .jours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .jour-reserve {
+            background: var(--warning-color);
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Footer informatif */
+        .info-footer {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .footer-item i {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .page-header {
+                margin-bottom: 24px;
+            }
+            
+            .header-content {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 1.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .reservation-form {
+                padding: 20px;
+            }
+            
+            .card-header {
+                padding: 16px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Styles pour les messages de statut */
+        .status-messages {
+            margin-top: 20px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reservation-container">
+        <!-- En-tête de la page -->
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="main-title">
+                    <i class="fas fa-calendar-check"></i>
+                    Système de Réservation
+                </h1>
+                <p class="subtitle">Réservez votre séjour en toute simplicité</p>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- Formulaire de réservation -->
+            <div class="reservation-form-section">
+                <div class="form-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-plus-circle"></i> Nouvelle Réservation</h2>
+                        <p>Remplissez les informations pour créer votre réservation</p>
+                    </div>
+
+                    <form class="reservation-form" id="reservationForm">
+                        <!-- ID de l'annonce -->
+                        <div class="form-group">
+                            <label for="annonceId">
+                                <i class="fas fa-home"></i>
+                                Identifiant de l'Annonce
+                            </label>
+                            <input
+                                type="text"
+                                id="annonceId"
+                                name="annonceId"
+                                class="form-control"
+                                placeholder="Entrez l'ID de l'annonce"
+                                value="1E8447B6-62C6-40E1-BB9A-2228627D2572"
+                                required
+                            />
+                            <div class="form-help">
+                                <small>ID par défaut: 1E8447B6-62C6-40E1-BB9A-2228627D2572</small>
+                            </div>
+                        </div>
+
+                        <!-- Dates d'arrivée et de départ -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dateArrivee">
+                                    <i class="fas fa-plane-arrival"></i>
+                                    Date d'Arrivée
+                                </label>
+                                <input
+                                    type="date"
+                                    id="dateArrivee"
+                                    name="dateArrivee"
+                                    class="form-control"
+                                    required
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dateDepart">
+                                    <i class="fas fa-plane-departure"></i>
+                                    Date de Départ
+                                </label>
+                                <input
+                                    type="date"
+                                    id="dateDepart"
+                                    name="dateDepart"
+                                    class="form-control"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Nombre de voyageurs -->
+                        <div class="form-group">
+                            <label for="nombreVoyageurs">
+                                <i class="fas fa-users"></i>
+                                Nombre de Voyageurs
+                            </label>
+                            <div class="number-input-wrapper">
+                                <button type="button" class="number-btn" onclick="decrementVoyageurs()">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input
+                                    type="number"
+                                    id="nombreVoyageurs"
+                                    name="nombreVoyageurs"
+                                    class="form-control number-input"
+                                    value="1"
+                                    min="1"
+                                    max="10"
+                                    required
+                                />
+                                <button type="button" class="number-btn" onclick="incrementVoyageurs()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="form-help">
+                                <small>Entre 1 et 10 voyageurs maximum</small>
+                            </div>
+                        </div>
+
+                        <!-- Bouton de soumission -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-check"></i>
+                                Créer la Réservation
+                            </button>
+                        </div>
+
+                        <!-- Messages de statut -->
+                        <div class="status-messages" id="statusMessages"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Section des informations de réservation -->
+            <div class="reservation-info-section">
+                <!-- Périodes réservées -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-times"></i> Périodes Déjà Réservées</h3>
+                        <button class="refresh-btn" onclick="chargerPeriodesReservees()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="periodes-list" id="periodesList">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-check"></i>
+                            <p>Aucune période réservée pour le moment</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jours réservés -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-day"></i> Jours Individuels Réservés</h3>
+                        <button class="refresh-btn" onclick="chargerJoursReserves()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="jours-list" id="joursList">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-day"></i>
+                            <p>Aucun jour individuel réservé</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer informatif -->
+        <div class="info-footer">
+            <div class="footer-content">
+                <div class="footer-item">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Vérifiez les disponibilités avant de réserver</span>
+                </div>
+                <div class="footer-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Les réservations sont traitées dans les 24h</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonctionnalités JavaScript pour la démonstration
+        function incrementVoyageurs() {
+            const input = document.getElementById('nombreVoyageurs');
+            const currentValue = parseInt(input.value) || 1;
+            if (currentValue < 10) {
+                input.value = currentValue + 1;
+            }
+        }
+
+        function decrementVoyageurs() {
+            const input = document.getElementById('nombreVoyageurs');
+            const currentValue = parseInt(input.value) || 1;
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        }
+
+        function chargerPeriodesReservees() {
+            const periodesList = document.getElementById('periodesList');
+            periodesList.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-check"></i><p>Aucune période réservée pour le moment</p></div>';
+        }
+
+        function chargerJoursReserves() {
+            const joursList = document.getElementById('joursList');
+            joursList.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-day"></i><p>Aucun jour individuel réservé</p></div>';
+        }
+
+        // Gestion du formulaire
+        document.getElementById('reservationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const reservation = {
+                annonceId: formData.get('annonceId'),
+                dateArrivee: formData.get('dateArrivee'),
+                dateDepart: formData.get('dateDepart'),
+                nombreVoyageurs: parseInt(formData.get('nombreVoyageurs'))
+            };
+
+            // Simulation de l'API
+            console.log('Données de réservation:', reservation);
+            
+            // Afficher un message de succès
+            const statusMessages = document.getElementById('statusMessages');
+            statusMessages.innerHTML = `
+                <div class="message success">
+                    <i class="fas fa-check-circle"></i>
+                    Réservation créée avec succès !
+                </div>
+            `;
+
+            // Réinitialiser le formulaire
+            this.reset();
+            document.getElementById('annonceId').value = '1E8447B6-62C6-40E1-BB9A-2228627D2572';
+            document.getElementById('nombreVoyageurs').value = '1';
+        });
+
+        // Définir la date minimale pour aujourd'hui
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dateArrivee').min = today;
+        document.getElementById('dateDepart').min = today;
+    </script>
+</body>
+</html> 

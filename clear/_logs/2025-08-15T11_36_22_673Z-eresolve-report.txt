@@ -1,0 +1,60 @@
+'Log files:
+C:\impresslola\clear\_logs\2025-08-15T11_36_22_673Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: @angular/core@20.1.7
+Found: @angular/compiler@19.2.14
+node_modules/@angular/compiler
+  peer @angular/compiler@"^19.0.0 || ^19.2.0-next.0" from @angular/build@19.2.15
+  node_modules/@angular/build
+    @angular/build@"19.2.15" from @angular-devkit/build-angular@19.2.15
+    node_modules/@angular-devkit/build-angular
+      dev @angular-devkit/build-angular@"^19.2.0" from the root project
+  peer @angular/compiler@"19.2.14" from @angular/compiler-cli@19.2.14
+  node_modules/@angular/compiler-cli
+    peer @angular/compiler-cli@"^19.0.0 || ^19.2.0-next.0" from @angular-devkit/build-angular@19.2.15
+    node_modules/@angular-devkit/build-angular
+      dev @angular-devkit/build-angular@"^19.2.0" from the root project
+    peer @angular/compiler-cli@"^19.0.0 || ^19.2.0-next.0" from @angular/build@19.2.15
+    node_modules/@angular/build
+      @angular/build@"19.2.15" from @angular-devkit/build-angular@19.2.15
+      node_modules/@angular-devkit/build-angular
+        dev @angular-devkit/build-angular@"^19.2.0" from the root project
+    peer @angular/compiler-cli@"^19.0.0 || ^19.2.0-next.0" from @ngtools/webpack@19.2.15
+    node_modules/@ngtools/webpack
+      @ngtools/webpack@"19.2.15" from @angular-devkit/build-angular@19.2.15
+      node_modules/@angular-devkit/build-angular
+        dev @angular-devkit/build-angular@"^19.2.0" from the root project
+    dev @angular/compiler-cli@"^19.2.0" from the root project
+  peer @angular/compiler@"19.2.14" from @angular/platform-browser-dynamic@19.2.14
+  node_modules/@angular/platform-browser-dynamic
+    @angular/platform-browser-dynamic@"^19.2.0" from the root project
+  @angular/compiler@"^19.2.0" from the root project
+
+Could not resolve dependency:
+peerOptional @angular/compiler@"20.1.7" from @angular/core@20.1.7
+node_modules/@angular/core
+  @angular/core@"20.1.7" from the root project
+  peer @angular/core@"^19.0.0 || ^20.0.0" from @angular/google-maps@19.2.19
+  node_modules/@angular/google-maps
+    @angular/google-maps@"^19.2.19" from the root project
+  peer @angular/core@">=9.0.0" from ngx-swiper-wrapper@10.0.0
+  node_modules/ngx-swiper-wrapper
+    ngx-swiper-wrapper@"^10.0.0" from the root project
+
+Conflicting peer dependency: @angular/compiler@20.1.7
+node_modules/@angular/compiler
+  peerOptional @angular/compiler@"20.1.7" from @angular/core@20.1.7
+  node_modules/@angular/core
+    @angular/core@"20.1.7" from the root project
+    peer @angular/core@"^19.0.0 || ^20.0.0" from @angular/google-maps@19.2.19
+    node_modules/@angular/google-maps
+      @angular/google-maps@"^19.2.19" from the root project
+    peer @angular/core@">=9.0.0" from ngx-swiper-wrapper@10.0.0
+    node_modules/ngx-swiper-wrapper
+      ngx-swiper-wrapper@"^10.0.0" from the root project
+
+Fix the upstream dependency conflict, or retry
+this command with --force or --legacy-peer-deps
+to accept an incorrect (and potentially broken) dependency resolution.

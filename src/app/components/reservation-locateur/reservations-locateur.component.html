@@ -1,0 +1,624 @@
+<div class="reservations-locateur-container">
+  <!-- En-tête avec statistiques -->
+  <div class="header-section">
+    <h1 class="page-title">
+      <i class="fas fa-home"></i>
+      🏆 Gestion des Réservations
+    </h1>
+    
+    <!-- Statistiques -->
+    <div class="stats-cards" *ngIf="statistiques">
+      <div class="stat-card">
+        <div class="stat-number">{{ statistiques.total }}</div>
+        <div class="stat-label">🎯 Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ statistiques.enAttente }}</div>
+        <div class="stat-label">⏳ En attente</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ statistiques.confirmees }}</div>
+        <div class="stat-label">✅ Confirmées</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ statistiques.enCours }}</div>
+        <div class="stat-label">🏃 En cours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ statistiques.terminees }}</div>
+        <div class="stat-label">🏁 Terminées</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ statistiques.annulees }}</div>
+        <div class="stat-label">❌ Annulées</div>
+      </div>
+      <div class="stat-card revenue">
+        <div class="stat-number">{{ statistiques.revenus }}€</div>
+        <div class="stat-label">💰 Revenus</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="chargerReservations()" [disabled]="loading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+        🔄 Actualiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages d'état -->
+  <div class="messages-section" *ngIf="error || success">
+    <div class="alert alert-danger" *ngIf="error">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+      <button class="btn-close" (click)="error = ''">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="alert alert-success" *ngIf="success">
+      <i class="fas fa-check-circle"></i>
+      {{ success }}
+      <button class="btn-close" (click)="success = ''">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label for="filtreStatut">Statut :</label>
+        <select id="filtreStatut" class="form-select" [(ngModel)]="filtreStatut" (change)="page = 1">
+          <option value="TOUS">Tous les statuts</option>
+          <option value="EN_ATTENTE">En attente</option>
+          <option value="CONFIRMEE">Confirmée</option>
+          <option value="EN_COURS">En cours</option>
+          <option value="TERMINEE">Terminée</option>
+          <option value="ANNULEE">Annulée</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filtrePeriode">Période :</label>
+        <select id="filtrePeriode" class="form-select" [(ngModel)]="filtrePeriode" (change)="page = 1">
+          <option value="TOUTES">Toutes les périodes</option>
+          <option value="FUTURES">Futures</option>
+          <option value="EN_COURS">En cours</option>
+          <option value="PASSEES">Passées</option>
+        </select>
+      </div>
+
+      <div class="search-group">
+        <label for="recherche">Rechercher :</label>
+        <div class="search-input">
+          <input 
+            type="text" 
+            id="recherche" 
+            class="form-control" 
+            [(ngModel)]="recherche" 
+            placeholder="Annonce, locataire, dates..."
+            (keyup.enter)="page = 1"
+          >
+          <button class="btn btn-outline-primary" (click)="page = 1">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="main-content">
+    <!-- Onglets -->
+    <div class="tabs-container">
+      <div class="tab-nav">
+        <button 
+          class="tab-btn active" 
+          (click)="filtreStatut = 'TOUS'; page = 1"
+          [class.active]="filtreStatut === 'TOUS'"
+        >
+          🎯 Toutes ({{ toutes.length }})
+        </button>
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'EN_ATTENTE'; page = 1"
+          [class.active]="filtreStatut === 'EN_ATTENTE'"
+        >
+          ⏳ En attente ({{ enAttente.length }})
+        </button>
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'CONFIRMEE'; page = 1"
+          [class.active]="filtreStatut === 'CONFIRMEE'"
+        >
+          ✅ Confirmées ({{ confirmees.length }})
+        </button>
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'EN_COURS'; page = 1"
+          [class.active]="filtreStatut === 'EN_COURS'"
+        >
+          🏃 En cours ({{ enCours.length }})
+        </button>
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'TERMINEE'; page = 1"
+          [class.active]="filtreStatut === 'TERMINEE'"
+        >
+          🏁 Terminées ({{ terminees.length }})
+        </button>
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'ANNULEE'; page = 1"
+          [class.active]="filtreStatut === 'ANNULEE'"
+        >
+          ❌ Annulées ({{ annulees.length }})
+        </button>
+      </div>
+    </div>
+
+    <!-- Liste des réservations -->
+    <div class="reservations-list" *ngIf="!loading; else loadingTemplate">
+      <div class="reservation-card" *ngFor="let reservation of getReservationsPaginees()">
+        <div class="reservation-header">
+          <div class="reservation-id">
+            <strong>Réf. #{{ reservation.id?.substring(0, 8) }}</strong>
+          </div>
+          <div class="reservation-status">
+            <span class="badge" [ngClass]="'badge-' + (reservation.statut === 'CONFIRMEE' ? 'success' : reservation.statut === 'EN_ATTENTE' ? 'warning' : reservation.statut === 'EN_COURS' ? 'info' : reservation.statut === 'TERMINEE' ? 'secondary' : 'danger')">
+              {{ formaterStatut(reservation.statut) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="reservation-details">
+          <div class="detail-row">
+            <div class="detail-item">
+              <i class="fas fa-home"></i>
+              <span class="label">Annonce :</span>
+              <div class="annonce-info clickable" (click)="ouvrirPopupAnnonce(reservation)">
+                <div class="annonce-titre">
+                  {{ reservation.annonce.titre }}
+                </div>
+                <div class="annonce-adresse">
+                  {{ getShortAddress(reservation) }}
+                </div>
+              </div>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-user"></i>
+              <span class="label">Locataire :</span>
+              <div class="locataire-info clickable" (click)="ouvrirPopupLocataire(reservation)">
+                <div class="locataire-nom">
+                  {{ reservation.locataire.prenom }} {{ reservation.locataire.nom }}
+                </div>
+                <div class="locataire-email">
+                  {{ reservation.locataire.email }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <i class="fas fa-calendar-day"></i>
+              <span class="label">Arrivée :</span>
+              <span class="value">{{ formaterDate(reservation.dateArrivee) }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-calendar-check"></i>
+              <span class="label">Départ :</span>
+              <span class="value">{{ formaterDate(reservation.dateDepart) }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <i class="fas fa-users"></i>
+              <span class="label">Voyageurs :</span>
+              <span class="value">{{ reservation.nombreVoyageurs }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-clock"></i>
+              <span class="label">Durée :</span>
+              <span class="value">{{ reservation.nombreNuits }} jours</span>
+            </div>
+          </div>
+
+          <div class="detail-row" *ngIf="reservation.montantTotal">
+            <div class="detail-item">
+              <i class="fas fa-euro-sign"></i>
+              <span class="label">Montant :</span>
+              <span class="value">{{ reservation.montantTotal }}€</span>
+            </div>
+            <div class="detail-item" *ngIf="reservation.dateCreation">
+              <i class="fas fa-calendar-plus"></i>
+              <span class="label">Créée le :</span>
+              <span class="value">{{ formaterDate(reservation.dateCreation) }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <i class="fas fa-tag"></i>
+              <span class="label">Type :</span>
+              <span class="value">{{ reservation.annonce.typeMaison }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-euro-sign"></i>
+              <span class="label">Prix/nuit :</span>
+              <span class="value">{{ reservation.prixParNuit }}€</span>
+            </div>
+          </div>
+
+          <div class="detail-row" *ngIf="reservation.locataire.telephone">
+            <div class="detail-item">
+              <i class="fas fa-phone"></i>
+              <span class="label">Téléphone :</span>
+              <span class="value">{{ reservation.locataire.telephone }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row" *ngIf="reservation.messageProprietaire">
+            <div class="detail-item full-width">
+              <i class="fas fa-comment"></i>
+              <span class="label">Message du locataire :</span>
+              <span class="value">{{ reservation.messageProprietaire }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reservation-actions">
+          <!-- Actions pour réservations en attente -->
+          <div class="action-group" *ngIf="reservation.statut === 'EN_ATTENTE'">
+            <button class="btn btn-success btn-sm" (click)="confirmerReservation(reservation)">
+              <i class="fas fa-check"></i>
+              ✅ Confirmer
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="annulerReservation(reservation)">
+              <i class="fas fa-times"></i>
+              ❌ Refuser
+            </button>
+          </div>
+
+          <!-- Actions pour réservations confirmées -->
+          <div class="action-group" *ngIf="reservation.statut === 'CONFIRMEE'">
+            <button class="btn btn-info btn-sm" (click)="changerStatutReservation(reservation)">
+              <i class="fas fa-play"></i>
+              🏃 Démarrer
+            </button>
+            <button class="btn btn-warning btn-sm" (click)="changerStatutReservation(reservation)">
+              <i class="fas fa-edit"></i>
+              ✏️ Modifier
+            </button>
+          </div>
+
+          <!-- Actions pour réservations en cours -->
+          <div class="action-group" *ngIf="reservation.statut === 'EN_COURS'">
+            <button class="btn btn-secondary btn-sm" (click)="changerStatutReservation(reservation)">
+              <i class="fas fa-flag-checkered"></i>
+              🏁 Terminer
+            </button>
+          </div>
+
+          <!-- Actions pour toutes les réservations -->
+          <div class="action-group">
+            <button class="btn btn-outline-primary btn-sm" (click)="changerStatutReservation(reservation)">
+              <i class="fas fa-edit"></i>
+              🔄 Changer statut
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message si aucune réservation -->
+      <div class="no-reservations" *ngIf="getReservationsFiltrees().length === 0">
+        <i class="fas fa-calendar-times"></i>
+        <h3>⚽ Aucune réservation trouvée</h3>
+        <p *ngIf="filtreStatut !== 'TOUS' || filtrePeriode !== 'TOUTES' || recherche">
+          Aucune réservation ne correspond à vos critères de filtrage.
+        </p>
+        <p *ngIf="filtreStatut === 'TOUS' && filtrePeriode === 'TOUTES' && !recherche">
+          Vous n'avez pas encore de réservations pour vos annonces.
+        </p>
+      </div>
+  </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="getTotalPages() > 1">
+      <nav class="pagination-nav">
+        <button 
+          class="btn btn-outline-primary" 
+          [disabled]="page === 1"
+          (click)="pagePrecedente()"
+        >
+          <i class="fas fa-chevron-left"></i>
+          ⬅️ Précédent
+        </button>
+
+        <div class="page-numbers">
+          <button 
+            class="btn btn-outline-secondary" 
+            *ngFor="let pageNum of getPageNumbers()"
+            [class.active]="pageNum === page"
+            [disabled]="pageNum === -1"
+            (click)="pageNum !== -1 && allerAPage(pageNum)"
+          >
+            <span *ngIf="pageNum !== -1">{{ pageNum }}</span>
+            <span *ngIf="pageNum === -1">...</span>
+          </button>
+        </div>
+
+        <button 
+          class="btn btn-outline-primary" 
+          [disabled]="page === getTotalPages()"
+          (click)="pageSuivante()"
+        >
+          Suivant ➡️
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Template de chargement -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p>⚽ Chargement de vos réservations...</p>
+    </div>
+  </ng-template>
+</div>
+
+<!-- Modal de changement de statut -->
+<div class="modal-overlay" *ngIf="showStatutForm" (click)="fermerFormulaireStatut()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Changer le statut de la réservation</h3>
+      <button class="btn-close" (click)="fermerFormulaireStatut()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="reservation-info" *ngIf="reservationSelectionnee">
+        <h4>Réservation Réf. #{{ reservationSelectionnee.id?.substring(0, 8) }}</h4>
+        <p><strong>Statut actuel :</strong> {{ formaterStatut(reservationSelectionnee.statut) }}</p>
+        <p><strong>Annonce :</strong> {{ reservationSelectionnee.annonce.titre || 'Annonce sélectionnée' }}</p>
+        <p><strong>Période :</strong> {{ formaterDate(reservationSelectionnee.dateArrivee) }} - {{ formaterDate(reservationSelectionnee.dateDepart) }}</p>
+      </div>
+
+      <form [formGroup]="statutForm" (ngSubmit)="appliquerChangementStatut()">
+        <div class="form-group">
+          <label for="nouveauStatut">Nouveau statut *</label>
+          <select id="nouveauStatut" class="form-control" formControlName="nouveauStatut">
+            <option value="EN_ATTENTE">En attente</option>
+            <option value="CONFIRMEE">Confirmée</option>
+            <option value="EN_COURS">En cours</option>
+            <option value="TERMINEE">Terminée</option>
+            <option value="ANNULEE">Annulée</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="commentaire">Commentaire (optionnel)</label>
+          <textarea 
+            id="commentaire" 
+            class="form-control" 
+            formControlName="commentaire"
+            rows="3"
+            placeholder="Commentaire sur le changement de statut..."
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary" 
+            [disabled]="statutForm.invalid || loading"
+          >
+            <i class="fas fa-save" *ngIf="!loading"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+            Appliquer le changement
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            (click)="fermerFormulaireStatut()"
+          >
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 
+
+<!-- Popup de détails d'annonce -->
+<div class="modal-overlay" *ngIf="showAnnoncePopup" (click)="fermerPopupAnnonce()">
+  <div class="modal-content annonce-details-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>
+        <i class="fas fa-home"></i>
+        Détails de l'Annonce
+      </h3>
+      <button class="btn-close" (click)="fermerPopupAnnonce()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="annonceSelectionnee">
+      <!-- Image de l'annonce -->
+      <div class="annonce-image" *ngIf="annonceSelectionnee.imageUrl">
+        <img [src]="annonceSelectionnee.imageUrl" [alt]="annonceSelectionnee.titre">
+      </div>
+
+      <!-- Informations principales -->
+      <div class="annonce-main-info">
+        <h4 class="annonce-titre">{{ annonceSelectionnee.titre }}</h4>
+        <div class="annonce-adresse">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ annonceSelectionnee.adresse }}
+        </div>
+      </div>
+
+      <!-- Caractéristiques -->
+      <div class="annonce-caracteristiques">
+        <div class="carac-item">
+          <i class="fas fa-tag"></i>
+          <span class="label">Type :</span>
+          <span class="value">{{ annonceSelectionnee.type }}</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-euro-sign"></i>
+          <span class="label">Prix/nuit :</span>
+          <span class="value">{{ annonceSelectionnee.prix }}€</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-expand-arrows-alt"></i>
+          <span class="label">Superficie :</span>
+          <span class="value">{{ annonceSelectionnee.superficie }} m²</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-bed"></i>
+          <span class="label">Chambres :</span>
+          <span class="value">{{ annonceSelectionnee.nombreChambres }}</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-bath"></i>
+          <span class="label">Salles de bain :</span>
+          <span class="value">{{ annonceSelectionnee.nombreSallesDeBain }}</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="annonce-description" *ngIf="annonceSelectionnee.description">
+        <h5>Description</h5>
+        <p>{{ annonceSelectionnee.description }}</p>
+      </div>
+
+      <!-- Équipements -->
+      <div class="annonce-equipements" *ngIf="annonceSelectionnee.equipements?.length">
+        <h5>Équipements</h5>
+        <div class="equipements-list">
+          <span class="equipement-tag" *ngFor="let equipement of annonceSelectionnee.equipements">
+            {{ equipement }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Informations du propriétaire -->
+      <div class="annonce-proprietaire" *ngIf="annonceSelectionnee.proprietaire">
+        <h5>Propriétaire</h5>
+        <div class="proprietaire-info">
+          <div class="proprietaire-avatar" *ngIf="annonceSelectionnee.proprietaire.avatarUrl">
+            <img [src]="annonceSelectionnee.proprietaire.avatarUrl" [alt]="annonceSelectionnee.proprietaire.nom">
+          </div>
+          <div class="proprietaire-details">
+            <div class="proprietaire-nom">
+              {{ annonceSelectionnee.proprietaire.prenom }} {{ annonceSelectionnee.proprietaire.nom }}
+            </div>
+            <div class="proprietaire-email">
+              <i class="fas fa-envelope"></i>
+              {{ annonceSelectionnee.proprietaire.email }}
+            </div>
+            <div class="proprietaire-telephone" *ngIf="annonceSelectionnee.proprietaire.telephone">
+              <i class="fas fa-phone"></i>
+              {{ annonceSelectionnee.proprietaire.telephone }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="modal-body loading-state" *ngIf="loading">
+      <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p>Chargement des détails de l'annonce...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Popup de détails du locataire -->
+<div class="modal-overlay" *ngIf="showLocatairePopup" (click)="fermerPopupLocataire()">
+  <div class="modal-content locataire-details-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>
+        <i class="fas fa-user"></i>
+        Profil du Locataire
+      </h3>
+      <button class="btn-close" (click)="fermerPopupLocataire()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="locataireSelectionne">
+      <!-- Avatar et informations principales -->
+      <div class="locataire-header">
+        <div class="locataire-avatar" *ngIf="locataireSelectionne.avatarUrl">
+          <img [src]="locataireSelectionne.avatarUrl" [alt]="locataireSelectionne.nom">
+        </div>
+        <div class="locataire-main-info">
+          <h4 class="locataire-nom">{{ locataireSelectionne.prenom }} {{ locataireSelectionne.nom }}</h4>
+          <div class="locataire-email">
+            <i class="fas fa-envelope"></i>
+            {{ locataireSelectionne.email }}
+          </div>
+          <div class="locataire-telephone">
+            <i class="fas fa-phone"></i>
+            {{ locataireSelectionne.telephone }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="locataire-stats">
+        <div class="stat-item">
+          <div class="stat-value">{{ locataireSelectionne.nombreReservations }}</div>
+          <div class="stat-label">Réservations</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ locataireSelectionne.noteMoyenne }}/100</div>
+          <div class="stat-label">Note moyenne</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ formaterDate(locataireSelectionne.dateInscription) }}</div>
+          <div class="stat-label">Membre depuis</div>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div class="locataire-adresse">
+        <h5>Adresse</h5>
+        <div class="adresse-content">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ locataireSelectionne.adresse }}
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class="locataire-bio" *ngIf="locataireSelectionne.bio">
+        <h5>À propos</h5>
+        <p>{{ locataireSelectionne.bio }}</p>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="modal-body loading-state" *ngIf="loading">
+      <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p>Chargement du profil du locataire...</p>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,14 @@
+<div class="reservation-detail">
+  <h2>Détail de la réservation</h2>
+  <div *ngIf="loading">Chargement...</div>
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+  <div *ngIf="reservation">
+    <div><strong>Référence:</strong> #{{ reservation.id?.substring(0, 8) }}</div>
+    <div><strong>Annonce:</strong> {{ reservation.annonce.titre || 'Annonce sélectionnée' }}</div>
+    <div><strong>Locataire:</strong> {{ reservation.locataire.prenom }} {{ reservation.locataire.nom }}</div>
+    <div><strong>Dates:</strong> {{ reservation.dateArrivee }} → {{ reservation.dateDepart }}</div>
+    <div><strong>Voyageurs:</strong> {{ reservation.nombreVoyageurs }}</div>
+    <div><strong>Statut:</strong> {{ reservation.statut }}</div>
+    <div *ngIf="reservation.montantTotal"><strong>Total:</strong> {{ reservation.montantTotal }}€</div>
+  </div>
+</div> 

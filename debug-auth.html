@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Debug Authentification - localStorage</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f5f5f5;
+        }
+        .debug-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .result { 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-radius: 5px; 
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { 
+            background-color: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .error { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .warning { 
+            background-color: #fff3cd; 
+            color: #856404; 
+            border: 1px solid #ffeaa7; 
+        }
+        .info { 
+            background-color: #d1ecf1; 
+            color: #0c5460; 
+            border: 1px solid #bee5eb; 
+        }
+        button { 
+            padding: 12px 24px; 
+            margin: 8px; 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 14px;
+        }
+        button:hover { 
+            background-color: #0056b3; 
+        }
+        button.danger { 
+            background-color: #dc3545; 
+        }
+        button.danger:hover { 
+            background-color: #c82333; 
+        }
+        button.success { 
+            background-color: #28a745; 
+        }
+        button.success:hover { 
+            background-color: #218838; 
+        }
+        .form-group { 
+            margin: 15px 0; 
+        }
+        label { 
+            display: inline-block; 
+            width: 200px; 
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select { 
+            padding: 10px; 
+            margin: 5px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            width: 300px;
+            font-size: 14px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-ok { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-warning { background-color: #ffc107; }
+        .status-info { background-color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Authentification - localStorage</h1>
+    
+    <div class="debug-section">
+        <h3>📊 État Actuel du localStorage</h3>
+        <button onclick="afficherLocalStorage()">🔄 Actualiser localStorage</button>
+        <button onclick="nettoyerLocalStorage()" class="danger">🗑️ Nettoyer localStorage</button>
+        <div id="localStorageStatus" class="result info"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>🔐 Test d'Authentification</h3>
+        
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" value="test@example.com" />
+        </div>
+        
+        <div class="form-group">
+            <label>Mot de passe:</label>
+            <input type="password" id="password" value="password123" />
+        </div>
+        
+        <div class="form-group">
+            <label>Type d'utilisateur:</label>
+            <select id="userType">
+                <option value="LOCATAIRE">LOCATAIRE</option>
+                <option value="LOCATEUR">LOCATEUR</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>ID utilisateur (UUID):</label>
+            <input type="text" id="userId" value="6D47B91D-6602-4D76-A4D6-C93AB39388D0" />
+        </div>
+        
+        <button onclick="simulerConnexion()" class="success">🔑 Simuler Connexion</button>
+        <button onclick="testerAuthService()">🧪 Tester AuthService</button>
+        
+        <div id="authResult" class="result"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>🏠 Test de Réservation</h3>
+        
+        <div class="form-group">
+            <label>ID de l'annonce:</label>
+            <input type="text" id="annonceId" value="1E8447B6-62C6-40E1-BB9A-2228627D2572" />
+        </div>
+        
+        <div class="form-group">
+            <label>Date d'arrivée:</label>
+            <input type="date" id="dateArrivee" value="2025-08-20" />
+        </div>
+        
+        <div class="form-group">
+            <label>Date de départ:</label>
+            <input type="date" id="dateDepart" value="2025-08-24" />
+        </div>
+        
+        <button onclick="testerReservation()">🚀 Tester Création Réservation</button>
+        
+        <div id="reservationResult" class="result"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>🔧 Outils de Débogage</h3>
+        
+        <button onclick="genererUUID()">🆔 Générer UUID</button>
+        <button onclick="copierLocalStorage()">📋 Copier localStorage</button>
+        <button onclick="exporterLocalStorage()">💾 Exporter localStorage</button>
+        <button onclick="importerLocalStorage()">📥 Importer localStorage</button>
+        
+        <div id="toolsResult" class="result"></div>
+    </div>
+
+    <script>
+        // Fonction pour afficher le localStorage
+        function afficherLocalStorage() {
+            const container = document.getElementById('localStorageStatus');
+            let html = '<h4>📊 Contenu du localStorage:</h4>';
+            
+            const keys = ['authToken', 'userType', 'userEmail', 'userId', 'locataireId', 'locateurId', 'userNom', 'userPrenom'];
+            
+            keys.forEach(key => {
+                const value = localStorage.getItem(key);
+                const status = value ? 'status-ok' : 'status-error';
+                const icon = value ? '✅' : '❌';
+                
+                html += `<div><span class="status-indicator ${status}"></span>${icon} <strong>${key}:</strong> ${value || 'Non défini'}</div>`;
+            });
+            
+            // Vérifier la cohérence
+            const userType = localStorage.getItem('userType');
+            const locataireId = localStorage.getItem('locataireId');
+            const locateurId = localStorage.getItem('locateurId');
+            
+            html += '<h4>🔍 Analyse de Cohérence:</h4>';
+            
+            if (userType === 'LOCATAIRE' && !locataireId) {
+                html += '<div class="status-indicator status-warning"></span>⚠️ <strong>PROBLÈME:</strong> Type LOCATAIRE mais pas d\'ID de locataire</div>';
+            } else if (userType === 'LOCATEUR' && !locateurId) {
+                html += '<div class="status-indicator status-warning"></span>⚠️ <strong>PROBLÈME:</strong> Type LOCATEUR mais pas d\'ID de locateur</div>';
+            } else if (userType && (locataireId || locateurId)) {
+                html += '<div class="status-indicator status-ok"></span>✅ <strong>OK:</strong> Configuration cohérente</div>';
+            } else if (!userType) {
+                html += '<div class="status-indicator status-error"></span>❌ <strong>ERREUR:</strong> Type d\'utilisateur non défini</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Fonction pour simuler une connexion
+        function simulerConnexion() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            const userId = document.getElementById('userId').value;
+            
+            if (!email || !password || !userType || !userId) {
+                showResult('authResult', '❌ Veuillez remplir tous les champs', true);
+                return;
+            }
+            
+            // Simuler le stockage comme dans LoginComponent
+            localStorage.setItem('authToken', 'fake-jwt-token-' + Date.now());
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userType', userType);
+            localStorage.setItem('userNom', 'Nom Test');
+            localStorage.setItem('userPrenom', 'Prénom Test');
+            localStorage.setItem('userId', userId);
+            
+            if (userType === 'LOCATAIRE') {
+                localStorage.setItem('locataireId', userId);
+                localStorage.removeItem('locateurId');
+            } else if (userType === 'LOCATEUR') {
+                localStorage.setItem('locateurId', userId);
+                localStorage.removeItem('locataireId');
+            }
+            
+            showResult('authResult', '✅ Connexion simulée avec succès! localStorage mis à jour.', false);
+            afficherLocalStorage();
+        }
+
+        // Fonction pour tester le service d'authentification
+        function testerAuthService() {
+            const container = document.getElementById('authResult');
+            let html = '<h4>🧪 Test du Service d\'Authentification:</h4>';
+            
+            // Simuler les méthodes de AuthService
+            const authToken = localStorage.getItem('authToken');
+            const userType = localStorage.getItem('userType');
+            const locataireId = localStorage.getItem('locataireId');
+            const locateurId = localStorage.getItem('locateurId');
+            
+            html += `<div><strong>isAuthenticated:</strong> ${authToken ? 'true' : 'false'}</div>`;
+            html += `<div><strong>getUserType:</strong> ${userType || 'null'}</div>`;
+            html += `<div><strong>getLocataireId:</strong> ${locataireId || 'null'}</div>`;
+            html += `<div><strong>getLocateurId:</strong> ${locateurId || 'null'}</div>`;
+            
+            if (userType === 'LOCATAIRE' && locataireId) {
+                html += '<div class="status-indicator status-ok"></span>✅ <strong>OK:</strong> Service d\'authentification fonctionnel pour LOCATAIRE</div>';
+            } else if (userType === 'LOCATEUR' && locateurId) {
+                html += '<div class="status-indicator status-ok"></span>✅ <strong>OK:</strong> Service d\'authentification fonctionnel pour LOCATEUR</div>';
+            } else {
+                html += '<div class="status-indicator status-error"></span>❌ <strong>ERREUR:</strong> Service d\'authentification non fonctionnel</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Fonction pour tester la création de réservation
+        function testerReservation() {
+            const annonceId = document.getElementById('annonceId').value;
+            const dateArrivee = document.getElementById('dateArrivee').value;
+            const dateDepart = document.getElementById('dateDepart').value;
+            const locataireId = localStorage.getItem('locataireId');
+            
+            if (!annonceId || !dateArrivee || !dateDepart) {
+                showResult('reservationResult', '❌ Veuillez remplir toutes les dates', true);
+                return;
+            }
+            
+            if (!locataireId) {
+                showResult('reservationResult', '❌ Aucun ID de locataire trouvé. Connectez-vous d\'abord.', true);
+                return;
+            }
+            
+            const reservation = {
+                annonceId: annonceId,
+                dateArrivee: dateArrivee,
+                dateDepart: dateDepart,
+                nombreVoyageurs: 2
+            };
+            
+            showResult('reservationResult', `✅ Données de réservation valides!\n\n📝 Payload: ${JSON.stringify(reservation, null, 2)}\n\n👤 Locataire ID: ${locataireId}`, false);
+        }
+
+        // Fonction pour nettoyer le localStorage
+        function nettoyerLocalStorage() {
+            if (confirm('Êtes-vous sûr de vouloir nettoyer tout le localStorage ?')) {
+                localStorage.clear();
+                showResult('localStorageStatus', '🗑️ localStorage nettoyé avec succès!', false);
+                afficherLocalStorage();
+            }
+        }
+
+        // Fonction pour générer un UUID
+        function genererUUID() {
+            const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+            
+            document.getElementById('userId').value = uuid.toUpperCase();
+            showResult('toolsResult', `🆔 Nouvel UUID généré: ${uuid.toUpperCase()}`, false);
+        }
+
+        // Fonction pour copier le localStorage
+        function copierCurl() {
+            const locataireId = localStorage.getItem('locataireId') || '99999999-aaaa-bbbb-cccc-dddddddddddd';
+            const body = {
+                annonceId: document.getElementById('annonceId').value,
+                dateArrivee: document.getElementById('dateArrivee').value,
+                dateDepart: document.getElementById('dateDepart').value,
+                nombreVoyageurs: 2
+            };
+            const json = JSON.stringify(body).replace(/"/g, '\\"');
+            const cmd = `curl -X POST "http://localhost:8083/api/reservations?locataireId=${locataireId}" -H "Content-Type: application/json" -d "${json}"`;
+            
+            navigator.clipboard?.writeText(cmd).then(() => {
+                showResult('toolsResult', '📋 Commande cURL copiée dans le presse-papiers!', false);
+            }).catch(() => {
+                showResult('toolsResult', '❌ Impossible de copier automatiquement. Commande:\n' + cmd, true);
+            });
+        }
+
+        // Fonction pour afficher un résultat
+        function showResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${isError ? 'error' : 'success'}`;
+        }
+
+        // Initialisation au chargement
+        window.onload = function() {
+            afficherLocalStorage();
+            showResult('authResult', '🚀 Prêt pour les tests d\'authentification!', false);
+            showResult('reservationResult', '🏠 Prêt pour les tests de réservation!', false);
+            showResult('toolsResult', '🔧 Outils de débogage disponibles!', false);
+        };
+    </script>
+</body>
+</html> 

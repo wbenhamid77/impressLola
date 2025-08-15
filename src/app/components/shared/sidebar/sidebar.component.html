@@ -74,8 +74,8 @@
             <span class="nav-badge">❤️</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#reservations">
+        <li class="nav-item" [class.active]="isActive('mes-reservations')">
+          <a class="nav-link" (click)="navigateTo('mes-reservations')">
             <span class="nav-icon">
               <i class="fas fa-calendar-check"></i>
             </span>
@@ -120,8 +120,8 @@
             <span class="nav-badge">📋</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#reservations">
+        <li class="nav-item" [class.active]="isActive('reservations-locateur')">
+          <a class="nav-link" (click)="navigateTo('reservations-locateur')">
             <span class="nav-icon">
               <i class="fas fa-calendar-alt"></i>
             </span>

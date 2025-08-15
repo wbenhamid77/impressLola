@@ -58,6 +58,12 @@ export class SidebarComponent {
       case 'profile':
         this.router.navigate(['/profile']);
         break;
+      case 'mes-reservations':
+        this.router.navigate(['/mes-reservations']);
+        break;
+      case 'reservations-locateur':
+        this.router.navigate(['/reservations-locateur']);
+        break;
       default:
         this.router.navigate(['/dashboard']);
     }

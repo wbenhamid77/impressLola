@@ -1,0 +1,996 @@
+/* ======================================== */
+/* 🎨 STYLES PARTAGÉS POUR LES CALENDRIERS COMPACTS */
+/* ======================================== */
+
+/* Variables CSS pour la cohérence */
+:root {
+  --primary-color: #4f46e5;
+  --primary-dark: #3730a3;
+  --primary-light: #818cf8;
+  --secondary-color: #64748b;
+  --success-color: #059669;
+  --success-light: #10b981;
+  --warning-color: #d97706;
+  --warning-light: #f59e0b;
+  --danger-color: #dc2626;
+  --danger-light: #ef4444;
+  --info-color: #0284c7;
+  --info-light: #0ea5e9;
+  --light-bg: #f8fafc;
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --border-radius: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 20px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Structure générale - CALENDRIER COMPACT */
+.calendrier-locateur,
+.calendrier-locataire {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 0;
+  box-shadow: var(--shadow-lg);
+  margin: 16px 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  position: relative;
+  max-width: 400px; /* Largeur maximale pour un design compact */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.calendrier-locateur::before,
+.calendrier-locataire::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--info-color), var(--success-color));
+  z-index: 10;
+}
+
+/* En-tête du calendrier - COMPACT */
+.calendrier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.calendrier-header::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Boutons de navigation - COMPACTS */
+.btn-nav {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.btn-nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Titre du mois - COMPACT */
+.mois-titre {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+  flex: 1;
+  margin: 0 16px;
+  letter-spacing: -0.5px;
+}
+
+/* États de chargement et d'erreur - COMPACTS */
+.calendrier-loading,
+.calendrier-error {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.calendrier-loading {
+  color: var(--gray-600);
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--gray-300);
+  border-top: 2px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: var(--danger-color);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.btn-retry {
+  background: var(--danger-color);
+  color: var(--white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.btn-retry:hover {
+  background: var(--danger-dark);
+  transform: translateY(-1px);
+}
+
+/* Corps du calendrier - COMPACT */
+.calendrier-body {
+  padding: 16px 20px;
+  background: var(--white);
+  position: relative;
+}
+
+.calendrier-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gray-200), transparent);
+}
+
+/* En-têtes des semaines - COMPACTS */
+.semaine-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.jour-header {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-500);
+  padding: 8px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.jour-header::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--gray-200);
+  border-radius: 1px;
+  transition: var(--transition);
+}
+
+.jour-header:hover::before {
+  background: var(--primary-color);
+  width: 24px;
+}
+
+/* Grille des semaines - COMPACTE */
+.semaine {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+/* Jours individuels - COMPACTS */
+.jour {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-700);
+  background: var(--white);
+  border: 1px solid transparent;
+}
+
+.jour::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  background: var(--gray-50);
+  opacity: 0;
+  transition: var(--transition);
+  z-index: -1;
+}
+
+.jour:hover::before {
+  opacity: 1;
+}
+
+.jour:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.jour.clickable {
+  cursor: pointer;
+}
+
+.jour.clickable:hover {
+  background: var(--primary-light);
+  color: var(--white);
+}
+
+/* Numéro du jour - COMPACT */
+.numero-jour {
+  position: relative;
+  z-index: 2;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.jour:hover .numero-jour {
+  color: inherit;
+}
+
+/* États des jours - COMPACTS */
+.jour-disponible {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: var(--success-color);
+  border: 1px solid #a7f3d0;
+}
+
+.jour-disponible:hover {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.jour-en-attente {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: var(--warning-color);
+  border: 1px solid #fbbf24;
+}
+
+.jour-en-attente:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.jour-confirme {
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
+  color: var(--info-color);
+  border: 1px solid #60a5fa;
+}
+
+.jour-confirme:hover {
+  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.jour-en-cours {
+  background: linear-gradient(135deg, #fce7f3 0%, #f9a8d4 100%);
+  color: var(--danger-color);
+  border: 1px solid #ec4899;
+}
+
+.jour-en-cours:hover {
+  background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.jour-passe {
+  background: var(--gray-100);
+  color: var(--gray-400);
+  cursor: not-allowed;
+}
+
+.jour-selectionne {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--white);
+  border: 2px solid var(--primary-light);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1.1); }
+  50% { transform: scale(1.15); }
+}
+
+.jour-periode {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+  color: var(--white);
+  border: 1px solid var(--primary-light);
+}
+
+.jour-periode:hover {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  transform: translateY(-1px);
+}
+
+/* Indicateurs de réservation - COMPACTS */
+.indicateur-reservation {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warning-color);
+  border: 1px solid var(--white);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  z-index: 3;
+}
+
+.indicateur-reservation:hover {
+  transform: scale(1.5);
+  box-shadow: var(--shadow-md);
+}
+
+.indicateur-selection {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(55, 48, 163, 0.1) 100%);
+  border: 2px dashed var(--primary-color);
+  opacity: 0;
+  transition: var(--transition);
+  z-index: 1;
+}
+
+.jour:hover .indicateur-selection {
+  opacity: 1;
+}
+
+.indicateur-selection:hover {
+  opacity: 0.8;
+}
+
+/* Nombre de réservations - COMPACT */
+.nombre-reservations {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: var(--primary-color);
+  color: var(--white);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid var(--white);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Badges - COMPACTS */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.badge:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Popup de réservation - COMPACT */
+.reservation-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.popup-content {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 0;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: var(--shadow-2xl);
+  position: relative;
+  animation: popupSlideIn 0.3s ease-out;
+}
+
+.popup-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--info-color), var(--success-color));
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+/* En-tête du popup - COMPACT */
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.popup-header h4 {
+  margin: 0;
+  color: var(--gray-800);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: var(--transition);
+  font-size: 18px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover {
+  background: var(--gray-200);
+  color: var(--gray-700);
+}
+
+/* Détails des réservations - COMPACTS */
+.reservations-details {
+  padding: 16px 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.reservation-detail {
+  background: var(--gray-50);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.reservation-detail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--primary-color), var(--info-color));
+  border-radius: 2px;
+}
+
+.reservation-detail:hover::before {
+  width: 6px;
+}
+
+.reservation-detail:hover {
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* En-tête de réservation - COMPACT */
+.reservation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.statut-reservation {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.statut-reservation:hover {
+  transform: scale(1.05);
+}
+
+.statut-en_attente {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: var(--warning-color);
+  border-color: #fbbf24;
+}
+
+.statut-confirmee {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: var(--success-color);
+  border-color: #a7f3d0;
+}
+
+.statut-en_cours {
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
+  color: var(--info-color);
+  border-color: #60a5fa;
+}
+
+/* Informations du locataire - COMPACTES */
+.locataire-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--gray-600);
+  transition: var(--transition);
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-item:hover {
+  color: var(--gray-800);
+}
+
+.info-item i {
+  width: 12px;
+  color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.info-item:hover i {
+  transform: scale(1.2);
+}
+
+.label {
+  font-weight: 600;
+  color: var(--gray-700);
+  min-width: 60px;
+}
+
+.value {
+  color: var(--gray-600);
+  flex: 1;
+}
+
+/* Légende du calendrier - COMPACTE */
+.calendrier-legend {
+  background: var(--gray-50);
+  border-radius: var(--border-radius);
+  padding: 16px 20px;
+  margin-top: 16px;
+  border: 1px solid var(--gray-200);
+  position: relative;
+  overflow: hidden;
+}
+
+.calendrier-legend::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--info-color), var(--success-color));
+}
+
+.calendrier-legend h4 {
+  margin: 0 0 12px 0;
+  color: var(--gray-800);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.legend-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gray-50);
+  opacity: 0;
+  transition: var(--transition);
+  z-index: -1;
+}
+
+.legend-item:hover::before {
+  opacity: 1;
+}
+
+.legend-item:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Indicateurs de couleur pour la légende */
+.color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--gray-200);
+  flex-shrink: 0;
+}
+
+/* Section de sélection de dates */
+.dates-selectionnees {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.date-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--white);
+  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.date-item:hover {
+  background: var(--gray-50);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.date-label {
+  font-weight: 600;
+  color: var(--gray-700);
+  min-width: 60px;
+}
+
+.date-value {
+  color: var(--gray-600);
+  flex: 1;
+}
+
+.btn-clear {
+  background: var(--danger-color);
+  color: var(--white);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 12px;
+}
+
+.btn-clear:hover {
+  background: var(--danger-dark);
+  transform: scale(1.1);
+}
+
+/* Résumé des réservations */
+.reservation-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.reservation-time {
+  font-size: 11px;
+  color: var(--gray-500);
+}
+
+/* Responsive pour les calendriers compacts */
+@media (max-width: 768px) {
+  .calendrier-locateur,
+  .calendrier-locataire {
+    max-width: 100%;
+    margin: 12px 0;
+  }
+  
+  .calendrier-header {
+    padding: 12px 16px;
+  }
+  
+  .mois-titre {
+    font-size: 16px;
+  }
+  
+  .calendrier-body {
+    padding: 12px 16px;
+  }
+  
+  .jour {
+    font-size: 13px;
+  }
+  
+  .legend-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dates-selectionnees {
+    padding: 12px 16px;
+  }
+  
+  .date-item {
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .jour {
+    aspect-ratio: 1;
+    font-size: 12px;
+  }
+  
+  .numero-jour {
+    font-size: 11px;
+  }
+  
+  .calendrier-header {
+    padding: 10px 12px;
+  }
+  
+  .mois-titre {
+    font-size: 14px;
+  }
+  
+  .btn-nav {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  
+  .calendrier-body {
+    padding: 8px 12px;
+  }
+  
+  .semaine-header {
+    gap: 2px;
+  }
+  
+  .jour-header {
+    font-size: 11px;
+    padding: 6px 2px;
+  }
+  
+  .semaine {
+    gap: 2px;
+  }
+  
+  .jour {
+    border-radius: 6px;
+  }
+  
+  .indicateur-reservation,
+  .nombre-reservations {
+    width: 12px;
+    height: 12px;
+    font-size: 8px;
+  }
+  
+  .badge {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+  
+  .popup-content {
+    margin: 16px;
+    max-width: calc(100vw - 32px);
+  }
+  
+  .popup-header {
+    padding: 12px 16px;
+  }
+  
+  .popup-header h4 {
+    font-size: 14px;
+  }
+  
+  .reservations-details {
+    padding: 12px 16px;
+  }
+  
+  .reservation-detail {
+    padding: 8px 12px;
+  }
+  
+  .statut-reservation {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+  
+  .info-item {
+    font-size: 11px;
+  }
+  
+  .label {
+    min-width: 50px;
+    font-size: 11px;
+  }
+  
+  .value {
+    font-size: 11px;
+  }
+  
+  .legend-item {
+    padding: 4px 6px;
+  }
+  
+  .color-indicator {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .date-item {
+    padding: 6px 8px;
+  }
+  
+  .date-label {
+    font-size: 11px;
+  }
+  
+  .date-value {
+    font-size: 11px;
+  }
+  
+  .btn-clear {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+} 

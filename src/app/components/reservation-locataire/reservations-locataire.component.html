@@ -1,0 +1,675 @@
+<!-- ===== COMPOSANT RÉSERVATIONS LOCATAIRE - THÈME MAROC PROFESSIONNEL ===== -->
+<div class="reservations-locataire-container">
+  <!-- En-tête principal avec design marocain -->
+  <div class="header-section">
+    <div class="header-background">
+      <div class="header-pattern"></div>
+      <div class="header-content">
+        <div class="title-section">
+          <div class="title-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h1 class="page-title">
+            Mes Réservations
+            <span class="title-accent">Maroc CAN 2025</span>
+          </h1>
+          <p class="title-subtitle">Gérez vos séjours avec élégance</p>
+        </div>
+        
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="ouvrirFormulaireCreation()">
+            <i class="fas fa-plus-circle"></i>
+            Nouvelle Réservation
+          </button>
+          <button class="btn btn-secondary" (click)="chargerReservations()" [disabled]="loading">
+            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+            Actualiser
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grille de statistiques élégante -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card futures">
+        <div class="stat-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ futures.length }}</div>
+          <div class="stat-label">Réservations Futures</div>
+        </div>
+      </div>
+      
+      <div class="stat-card passees">
+        <div class="stat-icon">
+          <i class="fas fa-history"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ passees.length }}</div>
+          <div class="stat-label">Séjours Passés</div>
+        </div>
+      </div>
+      
+      <div class="stat-card confirmees">
+        <div class="stat-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ confirmees.length }}</div>
+          <div class="stat-label">Confirmées</div>
+        </div>
+      </div>
+      
+      <div class="stat-card en-attente">
+        <div class="stat-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ enAttente.length }}</div>
+          <div class="stat-label">En Attente</div>
+        </div>
+      </div>
+      
+      <div class="stat-card toutes">
+        <div class="stat-icon">
+          <i class="fas fa-list-alt"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ toutes.length }}</div>
+          <div class="stat-label">Total Réservations</div>
+        </div>
+      </div>
+      
+      <div class="stat-card paiements" *ngIf="statistiques && statistiques.revenus">
+        <div class="stat-icon">
+          <i class="fas fa-euro-sign"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ statistiques.revenus }}€</div>
+          <div class="stat-label">Revenus Totaux</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages d'état avec design marocain -->
+  <div class="messages-section" *ngIf="error || success">
+    <div class="alert alert-danger" *ngIf="error">
+      <div class="alert-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="alert-content">
+        <span class="alert-message">{{ error }}</span>
+      </div>
+      <button class="alert-close" (click)="effacerErreur()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="alert alert-success" *ngIf="success">
+      <div class="alert-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="alert-content">
+        <span class="alert-message">{{ success }}</span>
+      </div>
+      <button class="alert-close" (click)="effacerSucces()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Section de filtres et recherche -->
+  <div class="filters-section">
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="filtreStatut" class="filter-label">
+          <i class="fas fa-filter"></i>
+          Statut de la Réservation
+        </label>
+        <select id="filtreStatut" class="form-select" [(ngModel)]="filtreStatut" (change)="filtrerParStatut(filtreStatut)">
+          <option value="TOUS">Tous les statuts</option>
+          <option value="EN_ATTENTE">En attente de confirmation</option>
+          <option value="CONFIRMEE">Confirmée</option>
+          <option value="EN_COURS">En cours (séjour actuel)</option>
+          <option value="TERMINEE">Terminée</option>
+          <option value="ANNULEE">Annulée</option>
+        </select>
+      </div>
+
+      <div class="search-group">
+        <label for="recherche" class="filter-label">
+          <i class="fas fa-search"></i>
+          Recherche
+        </label>
+        <div class="search-input">
+          <input 
+            type="text" 
+            id="recherche" 
+            class="form-control" 
+            [(ngModel)]="recherche" 
+            placeholder="Rechercher par annonce, dates, statut..."
+            (keyup.enter)="rechercher()"
+          >
+          <button class="btn btn-search" (click)="rechercher()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="main-content">
+    <!-- Navigation par onglets -->
+    <div class="tabs-container">
+      <div class="tab-nav">
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'TOUS'; page = 1"
+          [class.active]="filtreStatut === 'TOUS'"
+        >
+          <i class="fas fa-list-alt"></i>
+          <span>Toutes</span>
+          <span class="tab-count">({{ toutes.length }})</span>
+        </button>
+        
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'EN_ATTENTE'; page = 1"
+          [class.active]="filtreStatut === 'EN_ATTENTE'"
+        >
+          <i class="fas fa-clock"></i>
+          <span>En attente</span>
+          <span class="tab-count">({{ getNombreReservationsParStatut('EN_ATTENTE') }})</span>
+        </button>
+        
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'CONFIRMEE'; page = 1"
+          [class.active]="filtreStatut === 'CONFIRMEE'"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>Confirmées</span>
+          <span class="tab-count">({{ getNombreReservationsParStatut('CONFIRMEE') }})</span>
+        </button>
+        
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'EN_COURS'; page = 1"
+          [class.active]="filtreStatut === 'EN_COURS'"
+        >
+          <i class="fas fa-play-circle"></i>
+          <span>En cours</span>
+          <span class="tab-count">({{ getNombreReservationsParStatut('EN_COURS') }})</span>
+        </button>
+        
+        <button 
+          class="tab-btn" 
+          (click)="filtreStatut = 'TERMINEE'; page = 1"
+          [class.active]="filtreStatut === 'TERMINEE'"
+        >
+          <i class="fas fa-flag-checkered"></i>
+          <span>Terminées</span>
+          <span class="tab-count">({{ getNombreReservationsParStatut('TERMINEE') }})</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Liste des réservations -->
+    <div class="reservations-list" *ngIf="!loading; else loadingTemplate">
+      <div class="reservation-card" *ngFor="let reservation of getReservationsPaginees()">
+        <div class="reservation-header">
+          <div class="reservation-status">
+            <span class="status-badge" [ngClass]="getClasseStatut(reservation.statut)">
+              <i class="fas" [ngClass]="getIconeStatut(reservation.statut)"></i>
+              {{ formaterStatut(reservation.statut) }}
+            </span>
+          </div>
+          <div class="reservation-dates">
+            <div class="date-range">
+              <div class="date-item">
+                <i class="fas fa-sign-in-alt"></i>
+                <span class="date-label">Arrivée</span>
+                <span class="date-value">{{ formaterDate(reservation.dateArrivee) }}</span>
+              </div>
+              <div class="date-separator">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+              <div class="date-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="date-label">Départ</span>
+                <span class="date-value">{{ formaterDate(reservation.dateDepart) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reservation-content">
+          <div class="annonce-section">
+            <div class="annonce-header clickable" (click)="ouvrirPopupAnnonce(reservation)">
+              <div class="annonce-main">
+                <h3 class="annonce-titre">{{ reservation.annonce.titre }}</h3>
+                <div class="annonce-location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  {{ reservation.annonce.adresse.ville || 'Ville non disponible' }}, {{ reservation.annonce.adresse.pays || 'Pays non disponible' }}
+                </div>
+              </div>
+              <div class="annonce-arrow">
+                <i class="fas fa-chevron-right"></i>
+              </div>
+            </div>
+            
+            <div class="annonce-details">
+              <div class="detail-chip">
+                <i class="fas fa-home"></i>
+                <span>{{ reservation.annonce.typeMaison }}</span>
+              </div>
+              <div class="detail-chip">
+                <i class="fas fa-users"></i>
+                <span>{{ reservation.nombreVoyageurs }} voyageurs</span>
+              </div>
+              <div class="detail-chip">
+                <i class="fas fa-calendar-alt"></i>
+                <span>{{ calculerDureeSejour(reservation.dateArrivee, reservation.dateDepart) }} jours</span>
+              </div>
+              <div class="detail-chip price">
+                <i class="fas fa-euro-sign"></i>
+                <span>{{ reservation.montantTotal }}€</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="reservation-info" *ngIf="reservation.messageProprietaire">
+            <div class="message-section">
+              <div class="message-icon">
+                <i class="fas fa-comment-dots"></i>
+              </div>
+              <div class="message-content">
+                <span class="message-text">{{ reservation.messageProprietaire }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reservation-actions">
+          <button class="btn btn-outline-primary" (click)="detailsReservation(reservation)">
+            <i class="fas fa-eye"></i>
+            Détails
+          </button>
+          
+          <button 
+            class="btn btn-success" 
+            (click)="traiterPaiement(reservation)"
+            *ngIf="reservation.statut === 'CONFIRMEE'"
+            [disabled]="loading"
+          >
+            <i class="fas fa-credit-card" *ngIf="!loading"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+            Payer
+          </button>
+          
+          <button 
+            class="btn btn-outline-warning" 
+            (click)="ajouterAuxFavorisAPI(reservation.annonce.id)"
+            title="Ajouter aux favoris"
+          >
+            <i class="fas fa-heart"></i>
+            Favoris
+          </button>
+          
+          <button 
+            class="btn btn-outline-danger" 
+            (click)="annulerReservation(reservation)"
+            *ngIf="reservation.statut === 'EN_ATTENTE' || reservation.statut === 'CONFIRMEE'"
+          >
+            <i class="fas fa-times-circle"></i>
+            Annuler
+          </button>
+        </div>
+      </div>
+
+      <!-- Message si aucune réservation -->
+      <div class="no-reservations" *ngIf="getReservationsFiltrees().length === 0">
+        <div class="no-reservations-icon">
+          <i class="fas fa-calendar-times"></i>
+        </div>
+        <div class="no-reservations-content">
+          <h3>Aucune réservation trouvée</h3>
+          <p *ngIf="filtreStatut !== 'TOUS' || recherche">
+            Aucune réservation ne correspond à vos critères de recherche.
+          </p>
+          <p *ngIf="filtreStatut === 'TOUS' && !recherche">
+            Vous n'avez pas encore de réservations. Commencez par en créer une pour vos vacances !
+          </p>
+          <button class="btn btn-primary" (click)="ouvrirFormulaireCreation()">
+            <i class="fas fa-plus-circle"></i>
+            Créer ma première réservation
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template de chargement -->
+    <ng-template #loadingTemplate>
+      <div class="loading-container">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>Chargement de vos réservations...</p>
+      </div>
+    </ng-template>
+
+    <!-- Pagination -->
+    <div class="pagination-section" *ngIf="getReservationsFiltrees().length > 0">
+      <div class="pagination-info">
+        <span>Affichage de {{ (page - 1) * pageSize + 1 }} à {{ Math.min(page * pageSize, getReservationsFiltrees().length) }} sur {{ getReservationsFiltrees().length }} réservations</span>
+      </div>
+      
+      <div class="pagination-controls">
+        <button 
+          class="btn btn-outline-primary" 
+          (click)="page = page - 1" 
+          [disabled]="page === 1"
+        >
+          <i class="fas fa-chevron-left"></i>
+          Précédent
+        </button>
+        
+        <div class="page-numbers">
+          <!-- Première page -->
+          <button 
+            class="page-btn" 
+            (click)="page = 1"
+            [class.active]="page === 1"
+            *ngIf="getNombrePages() > 1"
+          >
+            1
+          </button>
+          
+          <!-- Ellipse de début -->
+          <span class="page-ellipsis" *ngIf="page > 4 && getNombrePages() > 7">...</span>
+          
+          <!-- Pages du milieu -->
+          <button 
+            class="page-btn" 
+            *ngFor="let pageNum of getPages()" 
+            (click)="page = pageNum"
+            [class.active]="pageNum === page"
+            [class.hidden]="pageNum === 1 || pageNum === getNombrePages()"
+          >
+            {{ pageNum }}
+          </button>
+          
+          <!-- Ellipse de fin -->
+          <span class="page-ellipsis" *ngIf="page < getNombrePages() - 3 && getNombrePages() > 7">...</span>
+          
+          <!-- Dernière page -->
+          <button 
+            class="page-btn" 
+            (click)="page = getNombrePages()"
+            [class.active]="page === getNombrePages()"
+            *ngIf="getNombrePages() > 1"
+          >
+            {{ getNombrePages() }}
+          </button>
+        </div>
+        
+        <button 
+          class="btn btn-outline-primary" 
+          (click)="page = page + 1" 
+          [disabled]="page >= getNombrePages()"
+        >
+          Suivant
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Formulaire de création de réservation -->
+      <div class="modal-overlay" *ngIf="showCreationForm" (click)="fermerFormulaireCreation()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>
+              <i class="fas fa-plus-circle"></i>
+              🏠 Nouvelle Réservation
+            </h3>
+            <button class="btn-close" (click)="fermerFormulaireCreation()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form [formGroup]="creationForm" (ngSubmit)="calculerRecapitulatifAvecVerification()">
+              <div class="form-group">
+                <label for="dateArrivee" class="form-label">
+                  <i class="fas fa-calendar-plus"></i>
+                  Date d'arrivée
+                </label>
+                <input 
+                  type="date" 
+                  id="dateArrivee" 
+                  class="form-control" 
+                  formControlName="dateArrivee"
+                  [min]="getDateMin()"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="dateDepart" class="form-label">
+                  <i class="fas fa-calendar-minus"></i>
+                  Date de départ
+                </label>
+                <input 
+                  type="date" 
+                  id="dateDepart" 
+                  class="form-control" 
+                  formControlName="dateDepart"
+                  [min]="getDateMin()"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="nombreVoyageurs" class="form-label">
+                  <i class="fas fa-users"></i>
+                  Nombre de voyageurs
+                </label>
+                <input 
+                  type="number" 
+                  id="nombreVoyageurs" 
+                  class="form-control" 
+                  formControlName="nombreVoyageurs"
+                  min="1" 
+                  max="10"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="message" class="form-label">
+                  <i class="fas fa-comment"></i>
+                  Message au propriétaire (optionnel)
+                </label>
+                <textarea 
+                  id="message" 
+                  class="form-control" 
+                  formControlName="message"
+                  rows="3"
+                  placeholder="Présentez-vous et expliquez vos besoins..."
+                ></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button 
+                  type="submit" 
+                  class="btn btn-primary"
+                  [disabled]="creationForm.invalid || loading"
+                >
+                  <i class="fas fa-calculator" *ngIf="!loading"></i>
+                  <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+                  💰 Calculer le récapitulatif
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-secondary"
+                  (click)="fermerFormulaireCreation()"
+                >
+                  <i class="fas fa-times"></i>
+                  Annuler
+                </button>
+              </div>
+            </form>
+
+            <!-- Récapitulatif de la réservation -->
+            <div class="recapitulatif-section" *ngIf="recapitulatif">
+              <h4>
+                <i class="fas fa-receipt"></i>
+                📋 Récapitulatif de la réservation
+              </h4>
+              <div class="recap-details">
+                <div class="recap-item">
+                  <span class="label">Prix total :</span>
+                  <span class="value">{{ recapitulatif.prixTotal }}€</span>
+                </div>
+                <div class="recap-item">
+                  <span class="label">Nombre de nuits :</span>
+                  <span class="value">{{ recapitulatif.nombreNuits }}</span>
+                </div>
+                <div class="recap-item" *ngIf="recapitulatif.fraisService">
+                  <span class="label">Frais de service :</span>
+                  <span class="value">{{ recapitulatif.fraisService }}€</span>
+                </div>
+                <div class="recap-item" *ngIf="recapitulatif.fraisNettoyage">
+                  <span class="label">Frais de nettoyage :</span>
+                  <span class="value">{{ recapitulatif.fraisNettoyage }}€</span>
+                </div>
+                <div class="recap-item" *ngIf="recapitulatif.fraisDepot">
+                  <span class="label">Frais de dépôt :</span>
+                  <span class="value">{{ recapitulatif.fraisDepot }}€</span>
+                </div>
+              </div>
+
+              <div class="recap-actions">
+                <button 
+                  class="btn btn-success btn-lg" 
+                  (click)="soumettreReservation()"
+                  [disabled]="loading"
+                >
+                  <i class="fas fa-credit-card" *ngIf="!loading"></i>
+                  <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+                  💳 Confirmer et Payer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<!-- Popup de détails d'annonce -->
+<div class="modal-overlay" *ngIf="showAnnoncePopup" (click)="fermerPopupAnnonce()">
+  <div class="modal-content annonce-details-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>
+        <i class="fas fa-home"></i>
+        Détails de l'Annonce
+      </h3>
+      <button class="btn-close" (click)="fermerPopupAnnonce()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="annonceSelectionnee">
+      <!-- Image de l'annonce -->
+      <div class="annonce-image" *ngIf="annonceSelectionnee.images?.length">
+        <img [src]="annonceSelectionnee.images[0]" [alt]="annonceSelectionnee.titre">
+      </div>
+
+      <!-- Informations principales -->
+      <div class="annonce-main-info">
+        <h4 class="annonce-titre">{{ annonceSelectionnee.titre }}</h4>
+        <div class="annonce-adresse">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ annonceSelectionnee.adresse.numero }} {{ annonceSelectionnee.adresse.rue }}, {{ annonceSelectionnee.adresse.codePostal }} {{ annonceSelectionnee.adresse.ville }}, {{ annonceSelectionnee.adresse.pays }}
+        </div>
+      </div>
+
+      <!-- Caractéristiques -->
+      <div class="annonce-caracteristiques">
+        <div class="carac-item">
+          <i class="fas fa-tag"></i>
+          <span class="label">Type :</span>
+          <span class="value">{{ annonceSelectionnee.typeMaison }}</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-euro-sign"></i>
+          <span class="label">Prix/nuit :</span>
+          <span class="value">{{ annonceSelectionnee.prixParNuit }}€</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-users"></i>
+          <span class="label">Capacité :</span>
+          <span class="value">{{ annonceSelectionnee.capacite }} personnes</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-bed"></i>
+          <span class="label">Chambres :</span>
+          <span class="value">{{ annonceSelectionnee.nombreChambres }}</span>
+        </div>
+        <div class="carac-item">
+          <i class="fas fa-bath"></i>
+          <span class="label">Salles de bain :</span>
+          <span class="value">{{ annonceSelectionnee.nombreSallesDeBain }}</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="annonce-description" *ngIf="annonceSelectionnee.description">
+        <h5>Description</h5>
+        <p>{{ annonceSelectionnee.description }}</p>
+      </div>
+
+      <!-- Équipements -->
+      <div class="annonce-equipements" *ngIf="annonceSelectionnee.equipements?.length">
+        <h5>Équipements</h5>
+        <div class="equipements-list">
+          <span class="equipement-tag" *ngFor="let equipement of annonceSelectionnee.equipements">
+            {{ equipement }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Informations du propriétaire -->
+      <div class="annonce-proprietaire" *ngIf="annonceSelectionnee.locateur">
+        <h5>Propriétaire</h5>
+        <div class="proprietaire-info">
+          <div class="proprietaire-avatar">
+            <i class="fas fa-user-circle fa-2x"></i>
+          </div>
+          <div class="proprietaire-details">
+            <div class="proprietaire-nom">
+              {{ annonceSelectionnee.locateur.prenom }} {{ annonceSelectionnee.locateur.nom }}
+            </div>
+            <div class="proprietaire-email">
+              <i class="fas fa-envelope"></i>
+              {{ annonceSelectionnee.locateur.email }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="modal-body loading-state" *ngIf="loading">
+      <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p>Chargement des détails de l'annonce...</p>
+      </div>
+    </div>
+  </div>
+</div> 

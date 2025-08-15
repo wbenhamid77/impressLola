@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démo - Détail des Annonces</title>
+    <link rel="stylesheet" href="src/app/components/detail-annonce-locataire/detail-annonce-locataire.component.css">
+    <link rel="stylesheet" href="src/app/components/detail-annonce-locateur/detail-annonce-locateur.component.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #1e293b;
+        }
+        
+        .demo-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .demo-header p {
+            font-size: 1.2rem;
+            margin: 10px 0 0 0;
+            color: #64748b;
+        }
+        
+        .demo-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 10px;
+        }
+        
+        .demo-tab {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .demo-tab.active {
+            background: #1e40af;
+            border-color: #1e40af;
+            color: white;
+        }
+        
+        .demo-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-content {
+            display: none;
+        }
+        
+        .demo-content.active {
+            display: block;
+        }
+        
+        .demo-section {
+            margin-bottom: 60px;
+        }
+        
+        .demo-section h2 {
+            font-size: 1.5rem;
+            color: #374151;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-header">
+            <h1>🏠 Démo - Détail des Annonces</h1>
+            <p>Testez les nouveaux designs pour les composants locataire et locateur</p>
+        </div>
+        
+        <div class="demo-tabs">
+            <div class="demo-tab active" onclick="showTab('locataire')">👤 Vue Locataire</div>
+            <div class="demo-tab" onclick="showTab('locateur')">🏢 Vue Locateur</div>
+        </div>
+        
+        <!-- Vue Locataire -->
+        <div id="locataire" class="demo-content active">
+            <div class="demo-section">
+                <h2>Vue Locataire - Détail d'une annonce</h2>
+                
+                <div class="detail-annonce-locataire">
+                    <!-- En-tête de l'annonce -->
+                    <div class="annonce-header">
+                        <div class="header-content">
+                            <h1 class="annonce-titre">Appartement moderne au cœur de la ville</h1>
+                            <p class="annonce-sous-titre">Magnifique appartement rénové avec vue panoramique, idéalement situé près des transports et commerces. Parfait pour un séjour confortable en ville.</p>
+                            <div class="annonce-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Paris, France
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-users"></i>
+                                    2 chambres
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-bed"></i>
+                                    4 lits
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Galerie d'images -->
+                    <div class="galerie-section">
+                        <div class="galerie-header">
+                            <h3>📸 Photos du logement</h3>
+                        </div>
+                        <div class="galerie-images">
+                            <div class="image-principale">
+                                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=400&fit=crop" 
+                                     alt="Appartement moderne" 
+                                     class="main-image">
+                            </div>
+                            <div class="images-secondaires">
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448075-bb485b067938?w=200&h=80&fit=crop" alt="Chambre" class="secondary-image">
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salon" class="secondary-image">
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Cuisine" class="secondary-image">
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salle de bain" class="secondary-image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informations détaillées -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3>ℹ️ Informations détaillées</h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Type de logement</h4>
+                                    <p>Appartement</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-ruler-combined"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Surface</h4>
+                                    <p>65 m²</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Parking</h4>
+                                    <p>Disponible</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-wifi"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>WiFi</h4>
+                                    <p>Inclus</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section de réservation -->
+                    <div class="reservation-section">
+                        <div class="reservation-header">
+                            <h3>🎯 Réserver ce logement</h3>
+                            <p class="reservation-subtitle">Sélectionnez vos dates de séjour dans le calendrier</p>
+                        </div>
+                        
+                        <div class="dates-selectionnees">
+                            <div class="date-item">
+                                <div class="date-label">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span>Arrivée</span>
+                                </div>
+                                <div class="date-value">15/08/2025</div>
+                                <button class="btn-clear" title="Effacer la date d'arrivée">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="date-item">
+                                <div class="date-label">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Départ</span>
+                                </div>
+                                <div class="date-value">22/08/2025</div>
+                                <button class="btn-clear" title="Effacer la date de départ">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="periode-info">
+                                <div class="duree-sejour">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Durée du séjour: 7 jour(s)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-reserve">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Réserver du 15/08 au 22/08</span>
+                        </button>
+                    </div>
+
+                    <!-- Carte propriétaire -->
+                    <div class="owner-card">
+                        <div class="owner-header">
+                            <h3>👤 À propos du propriétaire</h3>
+                        </div>
+                        <div class="owner-content">
+                            <div class="owner-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="owner-info">
+                                <h4>Marie Dupont</h4>
+                                <p class="owner-description">
+                                    Propriétaire expérimentée et disponible pour vous accompagner. J'aime partager ma passion pour l'accueil et m'assurer que votre séjour soit parfait.
+                                </p>
+                                <div class="owner-rating">
+                                    <div class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="rating-text">5.0 (Excellent)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vue Locateur -->
+        <div id="locateur" class="demo-content">
+            <div class="demo-section">
+                <h2>Vue Locateur - Gestion d'une annonce</h2>
+                
+                <div class="detail-annonce-locateur">
+                    <!-- En-tête de l'annonce avec actions -->
+                    <div class="annonce-header">
+                        <div class="header-content">
+                            <div class="header-main">
+                                <h1 class="annonce-titre">Appartement moderne au cœur de la ville</h1>
+                                <p class="annonce-sous-titre">Magnifique appartement rénové avec vue panoramique, idéalement situé près des transports et commerces. Parfait pour un séjour confortable en ville.</p>
+                                <div class="annonce-meta">
+                                    <span class="meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Paris, France
+                                    </span>
+                                    <span class="meta-item">
+                                        <i class="fas fa-users"></i>
+                                        2 chambres
+                                    </span>
+                                    <span class="meta-item">
+                                        <i class="fas fa-bed"></i>
+                                        4 personnes
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Actions du locateur -->
+                            <div class="header-actions">
+                                <button class="btn-action-modifier">
+                                    <i class="fas fa-edit"></i>
+                                    Modifier
+                                </button>
+                                <button class="btn-action-supprimer">
+                                    <i class="fas fa-trash"></i>
+                                    Supprimer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Galerie d'images -->
+                    <div class="galerie-section">
+                        <div class="galerie-header">
+                            <h3>📸 Photos du logement</h3>
+                            <button class="btn-ajouter-photo">
+                                <i class="fas fa-plus"></i>
+                                Ajouter des photos
+                            </button>
+                        </div>
+                        <div class="galerie-images">
+                            <div class="image-principale">
+                                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=400&fit=crop" 
+                                     alt="Appartement moderne" 
+                                     class="main-image">
+                            </div>
+                            <div class="images-secondaires">
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448075-bb485b067938?w=200&h=80&fit=crop" alt="Chambre" class="secondary-image">
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salon" class="secondary-image">
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Cuisine" class="secondary-image">
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salle de bain" class="secondary-image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informations détaillées -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3>ℹ️ Informations détaillées</h3>
+                            <button class="btn-modifier-info">
+                                <i class="fas fa-edit"></i>
+                                Modifier
+                            </button>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Type de logement</h4>
+                                    <p>Appartement</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-ruler-combined"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Surface</h4>
+                                    <p>65 m²</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>Capacité</h4>
+                                    <p>4 personnes</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-wifi"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h4>WiFi</h4>
+                                    <p>Inclus</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section des règles de la maison -->
+                    <div class="regles-section">
+                        <div class="regles-header">
+                            <h3>📋 Règles de la maison</h3>
+                            <p>Les règles à respecter pour un séjour agréable</p>
+                        </div>
+                        <div class="regles-grid">
+                            <div class="regle-item">
+                                <div class="regle-icon">
+                                    <i class="fas fa-ban"></i>
+                                </div>
+                                <div class="regle-text">Pas de fête</div>
+                            </div>
+                            <div class="regle-item">
+                                <div class="regle-icon">
+                                    <i class="fas fa-paw"></i>
+                                </div>
+                                <div class="regle-text">Pas d'animaux</div>
+                            </div>
+                            <div class="regle-item">
+                                <div class="regle-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="regle-text">Arrivée après 15h</div>
+                            </div>
+                            <div class="regle-item">
+                                <div class="regle-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="regle-text">Départ avant 11h</div>
+                            </div>
+                            <div class="regle-item">
+                                <div class="regle-icon">
+                                    <i class="fas fa-smoking-ban"></i>
+                                </div>
+                                <div class="regle-text">Pas de tabac</div>
+                            </div>
+                            <div class="regle-item">
+                                <div class="regle-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="regle-text">Respect des voisins</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section des prix et disponibilités -->
+                    <div class="prix-section">
+                        <div class="prix-header">
+                            <h3>💰 Tarifs et disponibilités</h3>
+                            <p>Gérez vos prix et votre calendrier</p>
+                        </div>
+                        <div class="prix-grid">
+                            <div class="prix-card">
+                                <div class="prix-montant">€120</div>
+                                <div class="prix-periode">par nuit</div>
+                                <div class="prix-details">
+                                    <div class="prix-detail">
+                                        <span class="detail-label">Frais de ménage</span>
+                                        <span class="detail-value">€50</span>
+                                    </div>
+                                    <div class="prix-detail">
+                                        <span class="detail-label">Frais de service</span>
+                                        <span class="detail-value">€20</span>
+                                    </div>
+                                    <div class="prix-detail">
+                                        <span class="detail-label">Total estimé</span>
+                                        <span class="detail-value">€190</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section des statistiques -->
+                    <div class="stats-section">
+                        <div class="stats-header">
+                            <h3>📊 Statistiques de votre annonce</h3>
+                            <p>Suivez les performances de votre logement</p>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="stat-value">1,247</div>
+                                <div class="stat-label">Vues</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="stat-value">89</div>
+                                <div class="stat-label">Favoris</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-value">67</div>
+                                <div class="stat-label">Réservations</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-value">4.8</div>
+                                <div class="stat-label">Note moyenne</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section des actions -->
+                    <div class="actions-section">
+                        <div class="actions-header">
+                            <h3>⚡ Actions rapides</h3>
+                            <p>Gérez facilement votre annonce</p>
+                        </div>
+                        <div class="actions-grid">
+                            <button class="btn-action-large">
+                                <i class="fas fa-calendar-alt"></i>
+                                Gérer le calendrier
+                            </button>
+                            <button class="btn-action-large secondary">
+                                <i class="fas fa-chart-line"></i>
+                                Voir les statistiques
+                            </button>
+                            <button class="btn-action-large warning">
+                                <i class="fas fa-bell"></i>
+                                Notifications
+                            </button>
+                            <button class="btn-action-large danger">
+                                <i class="fas fa-pause"></i>
+                                Mettre en pause
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Masquer tous les contenus
+            const contents = document.querySelectorAll('.demo-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Désactiver tous les onglets
+            const tabs = document.querySelectorAll('.demo-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Afficher le contenu sélectionné
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activer l'onglet sélectionné
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html> 

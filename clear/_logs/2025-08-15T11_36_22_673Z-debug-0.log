@@ -1,0 +1,1236 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Users\21260\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.1.0
+2 info using node@v20.17.0
+3 silly config load:file:C:\Users\21260\AppData\Roaming\npm\node_modules\npm\npmrc
+4 silly config load:file:C:\impresslola\.npmrc
+5 silly config load:file:C:\Users\21260\.npmrc
+6 silly config load:file:C:\Users\21260\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install @angular/core@latest @angular/cli@latest
+8 verbose argv "install" "@angular/core@latest" "@angular/cli@latest"
+9 verbose logfile logs-max:10 dir:C:\impresslola\clear\_logs\2025-08-15T11_36_22_673Z-
+10 verbose logfile C:\impresslola\clear\_logs\2025-08-15T11_36_22_673Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly logfile done cleaning log files
+14 silly packumentCache corgi:https://registry.npmjs.org/@angular%2fcore cache-miss
+15 silly packumentCache corgi:https://registry.npmjs.org/@angular%2fcli cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/@angular%2fcore 811ms (cache updated)
+17 silly packumentCache corgi:https://registry.npmjs.org/@angular%2fcore set size:undefined disposed:false
+18 http fetch GET 200 https://registry.npmjs.org/@angular%2fcli 844ms (cache updated)
+19 silly packumentCache corgi:https://registry.npmjs.org/@angular%2fcli set size:undefined disposed:false
+20 silly idealTree buildDeps
+21 silly fetch manifest @angular/core@20.1.7
+22 silly packumentCache full:https://registry.npmjs.org/@angular%2fcore cache-miss
+23 http fetch GET 200 https://registry.npmjs.org/@angular%2fcore 218ms (cache updated)
+24 silly packumentCache full:https://registry.npmjs.org/@angular%2fcore set size:undefined disposed:false
+25 silly fetch manifest @angular/compiler@^19.2.0
+26 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler cache-miss
+27 http fetch GET 200 https://registry.npmjs.org/@angular%2fcompiler 205ms (cache updated)
+28 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler set size:undefined disposed:false
+29 silly fetch manifest @angular/compiler@20.1.7
+30 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler cache-miss
+31 http cache https://registry.npmjs.org/@angular%2fcompiler 31ms (cache hit)
+32 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler set size:2468949 disposed:false
+33 silly fetch manifest rxjs@~7.8.0
+34 silly packumentCache full:https://registry.npmjs.org/rxjs cache-miss
+35 http fetch GET 200 https://registry.npmjs.org/rxjs 85ms (cache revalidated)
+36 silly packumentCache full:https://registry.npmjs.org/rxjs set size:980097 disposed:false
+37 silly fetch manifest zone.js@~0.15.0
+38 silly packumentCache full:https://registry.npmjs.org/zone.js cache-miss
+39 http fetch GET 200 https://registry.npmjs.org/zone.js 92ms (cache revalidated)
+40 silly packumentCache full:https://registry.npmjs.org/zone.js set size:365274 disposed:false
+41 silly fetch manifest @angular/cli@20.1.6
+42 silly packumentCache full:https://registry.npmjs.org/@angular%2fcli cache-miss
+43 http fetch GET 200 https://registry.npmjs.org/@angular%2fcli 204ms (cache updated)
+44 silly packumentCache full:https://registry.npmjs.org/@angular%2fcli set size:undefined disposed:false
+45 silly placeDep ROOT @angular/cli@20.1.6 REPLACE for: impress-lola@0.0.0 want: 20.1.6
+46 silly placeDep ROOT @angular/core@20.1.7 REPLACE for: impress-lola@0.0.0 want: 20.1.7
+47 warn ERESOLVE overriding peer dependency {
+47 warn ERESOLVE   code: 'ERESOLVE',
+47 warn ERESOLVE   edge: {
+47 warn ERESOLVE     type: 'peer',
+47 warn ERESOLVE     name: '@angular/core',
+47 warn ERESOLVE     spec: '19.2.14',
+47 warn ERESOLVE     from: {
+47 warn ERESOLVE       name: '@angular/animations',
+47 warn ERESOLVE       version: '19.2.14',
+47 warn ERESOLVE       location: 'node_modules/@angular/animations',
+47 warn ERESOLVE       isWorkspace: false,
+47 warn ERESOLVE       dependents: [Array]
+47 warn ERESOLVE     }
+47 warn ERESOLVE   },
+47 warn ERESOLVE   dep: {
+47 warn ERESOLVE     name: '@angular/core',
+47 warn ERESOLVE     version: '20.1.7',
+47 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+47 warn ERESOLVE     location: 'node_modules/@angular/core',
+47 warn ERESOLVE     isWorkspace: false,
+47 warn ERESOLVE     dependents: [ [Object] ]
+47 warn ERESOLVE   },
+47 warn ERESOLVE   force: false,
+47 warn ERESOLVE   isMine: true,
+47 warn ERESOLVE   strictPeerDeps: false,
+47 warn ERESOLVE   current: {
+47 warn ERESOLVE     name: '@angular/core',
+47 warn ERESOLVE     version: '19.2.14',
+47 warn ERESOLVE     location: 'node_modules/@angular/core',
+47 warn ERESOLVE     isWorkspace: false,
+47 warn ERESOLVE     dependents: [
+47 warn ERESOLVE       [Object], [Object],
+47 warn ERESOLVE       [Object], [Object],
+47 warn ERESOLVE       [Object], [Object],
+47 warn ERESOLVE       [Object], [Object],
+47 warn ERESOLVE       [Object]
+47 warn ERESOLVE     ]
+47 warn ERESOLVE   }
+47 warn ERESOLVE }
+48 warn ERESOLVE overriding peer dependency {
+48 warn ERESOLVE   code: 'ERESOLVE',
+48 warn ERESOLVE   edge: {
+48 warn ERESOLVE     type: 'peer',
+48 warn ERESOLVE     name: '@angular/core',
+48 warn ERESOLVE     spec: '19.2.14',
+48 warn ERESOLVE     from: {
+48 warn ERESOLVE       name: '@angular/animations',
+48 warn ERESOLVE       version: '19.2.14',
+48 warn ERESOLVE       location: 'node_modules/@angular/animations',
+48 warn ERESOLVE       isWorkspace: false,
+48 warn ERESOLVE       dependents: [Array]
+48 warn ERESOLVE     }
+48 warn ERESOLVE   },
+48 warn ERESOLVE   dep: {
+48 warn ERESOLVE     name: '@angular/core',
+48 warn ERESOLVE     version: '20.1.7',
+48 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+48 warn ERESOLVE     location: 'node_modules/@angular/core',
+48 warn ERESOLVE     isWorkspace: false,
+48 warn ERESOLVE     dependents: [ [Object] ]
+48 warn ERESOLVE   },
+48 warn ERESOLVE   force: false,
+48 warn ERESOLVE   isMine: true,
+48 warn ERESOLVE   strictPeerDeps: false,
+48 warn ERESOLVE   current: {
+48 warn ERESOLVE     name: '@angular/core',
+48 warn ERESOLVE     version: '19.2.14',
+48 warn ERESOLVE     location: 'node_modules/@angular/core',
+48 warn ERESOLVE     isWorkspace: false,
+48 warn ERESOLVE     dependents: [
+48 warn ERESOLVE       [Object], [Object],
+48 warn ERESOLVE       [Object], [Object],
+48 warn ERESOLVE       [Object], [Object],
+48 warn ERESOLVE       [Object], [Object],
+48 warn ERESOLVE       [Object]
+48 warn ERESOLVE     ]
+48 warn ERESOLVE   }
+48 warn ERESOLVE }
+49 warn ERESOLVE overriding peer dependency {
+49 warn ERESOLVE   code: 'ERESOLVE',
+49 warn ERESOLVE   edge: {
+49 warn ERESOLVE     type: 'peer',
+49 warn ERESOLVE     name: '@angular/core',
+49 warn ERESOLVE     spec: '19.2.14',
+49 warn ERESOLVE     from: {
+49 warn ERESOLVE       name: '@angular/animations',
+49 warn ERESOLVE       version: '19.2.14',
+49 warn ERESOLVE       location: 'node_modules/@angular/animations',
+49 warn ERESOLVE       isWorkspace: false,
+49 warn ERESOLVE       dependents: [Array]
+49 warn ERESOLVE     }
+49 warn ERESOLVE   },
+49 warn ERESOLVE   dep: {
+49 warn ERESOLVE     name: '@angular/core',
+49 warn ERESOLVE     version: '20.1.7',
+49 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+49 warn ERESOLVE     location: 'node_modules/@angular/core',
+49 warn ERESOLVE     isWorkspace: false,
+49 warn ERESOLVE     dependents: [ [Object] ]
+49 warn ERESOLVE   },
+49 warn ERESOLVE   force: false,
+49 warn ERESOLVE   isMine: true,
+49 warn ERESOLVE   strictPeerDeps: false,
+49 warn ERESOLVE   current: {
+49 warn ERESOLVE     name: '@angular/core',
+49 warn ERESOLVE     version: '19.2.14',
+49 warn ERESOLVE     location: 'node_modules/@angular/core',
+49 warn ERESOLVE     isWorkspace: false,
+49 warn ERESOLVE     dependents: [
+49 warn ERESOLVE       [Object], [Object],
+49 warn ERESOLVE       [Object], [Object],
+49 warn ERESOLVE       [Object], [Object],
+49 warn ERESOLVE       [Object], [Object],
+49 warn ERESOLVE       [Object]
+49 warn ERESOLVE     ]
+49 warn ERESOLVE   }
+49 warn ERESOLVE }
+50 warn ERESOLVE overriding peer dependency {
+50 warn ERESOLVE   code: 'ERESOLVE',
+50 warn ERESOLVE   edge: {
+50 warn ERESOLVE     type: 'peer',
+50 warn ERESOLVE     name: '@angular/core',
+50 warn ERESOLVE     spec: '19.2.14',
+50 warn ERESOLVE     from: {
+50 warn ERESOLVE       name: '@angular/animations',
+50 warn ERESOLVE       version: '19.2.14',
+50 warn ERESOLVE       location: 'node_modules/@angular/animations',
+50 warn ERESOLVE       isWorkspace: false,
+50 warn ERESOLVE       dependents: [Array]
+50 warn ERESOLVE     }
+50 warn ERESOLVE   },
+50 warn ERESOLVE   dep: {
+50 warn ERESOLVE     name: '@angular/core',
+50 warn ERESOLVE     version: '20.1.7',
+50 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+50 warn ERESOLVE     location: 'node_modules/@angular/core',
+50 warn ERESOLVE     isWorkspace: false,
+50 warn ERESOLVE     dependents: [ [Object] ]
+50 warn ERESOLVE   },
+50 warn ERESOLVE   force: false,
+50 warn ERESOLVE   isMine: true,
+50 warn ERESOLVE   strictPeerDeps: false,
+50 warn ERESOLVE   current: {
+50 warn ERESOLVE     name: '@angular/core',
+50 warn ERESOLVE     version: '19.2.14',
+50 warn ERESOLVE     location: 'node_modules/@angular/core',
+50 warn ERESOLVE     isWorkspace: false,
+50 warn ERESOLVE     dependents: [
+50 warn ERESOLVE       [Object], [Object],
+50 warn ERESOLVE       [Object], [Object],
+50 warn ERESOLVE       [Object], [Object],
+50 warn ERESOLVE       [Object], [Object],
+50 warn ERESOLVE       [Object]
+50 warn ERESOLVE     ]
+50 warn ERESOLVE   }
+50 warn ERESOLVE }
+51 warn ERESOLVE overriding peer dependency {
+51 warn ERESOLVE   code: 'ERESOLVE',
+51 warn ERESOLVE   edge: {
+51 warn ERESOLVE     type: 'peer',
+51 warn ERESOLVE     name: '@angular/core',
+51 warn ERESOLVE     spec: '19.2.14',
+51 warn ERESOLVE     from: {
+51 warn ERESOLVE       name: '@angular/animations',
+51 warn ERESOLVE       version: '19.2.14',
+51 warn ERESOLVE       location: 'node_modules/@angular/animations',
+51 warn ERESOLVE       isWorkspace: false,
+51 warn ERESOLVE       dependents: [Array]
+51 warn ERESOLVE     }
+51 warn ERESOLVE   },
+51 warn ERESOLVE   dep: {
+51 warn ERESOLVE     name: '@angular/core',
+51 warn ERESOLVE     version: '20.1.7',
+51 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+51 warn ERESOLVE     location: 'node_modules/@angular/core',
+51 warn ERESOLVE     isWorkspace: false,
+51 warn ERESOLVE     dependents: [ [Object] ]
+51 warn ERESOLVE   },
+51 warn ERESOLVE   force: false,
+51 warn ERESOLVE   isMine: true,
+51 warn ERESOLVE   strictPeerDeps: false,
+51 warn ERESOLVE   current: {
+51 warn ERESOLVE     name: '@angular/core',
+51 warn ERESOLVE     version: '19.2.14',
+51 warn ERESOLVE     location: 'node_modules/@angular/core',
+51 warn ERESOLVE     isWorkspace: false,
+51 warn ERESOLVE     dependents: [
+51 warn ERESOLVE       [Object], [Object],
+51 warn ERESOLVE       [Object], [Object],
+51 warn ERESOLVE       [Object], [Object],
+51 warn ERESOLVE       [Object], [Object],
+51 warn ERESOLVE       [Object]
+51 warn ERESOLVE     ]
+51 warn ERESOLVE   }
+51 warn ERESOLVE }
+52 warn ERESOLVE overriding peer dependency {
+52 warn ERESOLVE   code: 'ERESOLVE',
+52 warn ERESOLVE   edge: {
+52 warn ERESOLVE     type: 'peer',
+52 warn ERESOLVE     name: '@angular/core',
+52 warn ERESOLVE     spec: '19.2.14',
+52 warn ERESOLVE     from: {
+52 warn ERESOLVE       name: '@angular/common',
+52 warn ERESOLVE       version: '19.2.14',
+52 warn ERESOLVE       location: 'node_modules/@angular/common',
+52 warn ERESOLVE       isWorkspace: false,
+52 warn ERESOLVE       dependents: [Array]
+52 warn ERESOLVE     }
+52 warn ERESOLVE   },
+52 warn ERESOLVE   dep: {
+52 warn ERESOLVE     name: '@angular/core',
+52 warn ERESOLVE     version: '20.1.7',
+52 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+52 warn ERESOLVE     location: 'node_modules/@angular/core',
+52 warn ERESOLVE     isWorkspace: false,
+52 warn ERESOLVE     dependents: [ [Object] ]
+52 warn ERESOLVE   },
+52 warn ERESOLVE   force: false,
+52 warn ERESOLVE   isMine: true,
+52 warn ERESOLVE   strictPeerDeps: false,
+52 warn ERESOLVE   current: {
+52 warn ERESOLVE     name: '@angular/core',
+52 warn ERESOLVE     version: '19.2.14',
+52 warn ERESOLVE     location: 'node_modules/@angular/core',
+52 warn ERESOLVE     isWorkspace: false,
+52 warn ERESOLVE     dependents: [
+52 warn ERESOLVE       [Object], [Object],
+52 warn ERESOLVE       [Object], [Object],
+52 warn ERESOLVE       [Object], [Object],
+52 warn ERESOLVE       [Object], [Object],
+52 warn ERESOLVE       [Object]
+52 warn ERESOLVE     ]
+52 warn ERESOLVE   }
+52 warn ERESOLVE }
+53 warn ERESOLVE overriding peer dependency {
+53 warn ERESOLVE   code: 'ERESOLVE',
+53 warn ERESOLVE   edge: {
+53 warn ERESOLVE     type: 'peer',
+53 warn ERESOLVE     name: '@angular/core',
+53 warn ERESOLVE     spec: '19.2.14',
+53 warn ERESOLVE     from: {
+53 warn ERESOLVE       name: '@angular/common',
+53 warn ERESOLVE       version: '19.2.14',
+53 warn ERESOLVE       location: 'node_modules/@angular/common',
+53 warn ERESOLVE       isWorkspace: false,
+53 warn ERESOLVE       dependents: [Array]
+53 warn ERESOLVE     }
+53 warn ERESOLVE   },
+53 warn ERESOLVE   dep: {
+53 warn ERESOLVE     name: '@angular/core',
+53 warn ERESOLVE     version: '20.1.7',
+53 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+53 warn ERESOLVE     location: 'node_modules/@angular/core',
+53 warn ERESOLVE     isWorkspace: false,
+53 warn ERESOLVE     dependents: [ [Object] ]
+53 warn ERESOLVE   },
+53 warn ERESOLVE   force: false,
+53 warn ERESOLVE   isMine: true,
+53 warn ERESOLVE   strictPeerDeps: false,
+53 warn ERESOLVE   current: {
+53 warn ERESOLVE     name: '@angular/core',
+53 warn ERESOLVE     version: '19.2.14',
+53 warn ERESOLVE     location: 'node_modules/@angular/core',
+53 warn ERESOLVE     isWorkspace: false,
+53 warn ERESOLVE     dependents: [
+53 warn ERESOLVE       [Object], [Object],
+53 warn ERESOLVE       [Object], [Object],
+53 warn ERESOLVE       [Object], [Object],
+53 warn ERESOLVE       [Object], [Object],
+53 warn ERESOLVE       [Object]
+53 warn ERESOLVE     ]
+53 warn ERESOLVE   }
+53 warn ERESOLVE }
+54 warn ERESOLVE overriding peer dependency {
+54 warn ERESOLVE   code: 'ERESOLVE',
+54 warn ERESOLVE   edge: {
+54 warn ERESOLVE     type: 'peer',
+54 warn ERESOLVE     name: '@angular/core',
+54 warn ERESOLVE     spec: '19.2.14',
+54 warn ERESOLVE     from: {
+54 warn ERESOLVE       name: '@angular/common',
+54 warn ERESOLVE       version: '19.2.14',
+54 warn ERESOLVE       location: 'node_modules/@angular/common',
+54 warn ERESOLVE       isWorkspace: false,
+54 warn ERESOLVE       dependents: [Array]
+54 warn ERESOLVE     }
+54 warn ERESOLVE   },
+54 warn ERESOLVE   dep: {
+54 warn ERESOLVE     name: '@angular/core',
+54 warn ERESOLVE     version: '20.1.7',
+54 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+54 warn ERESOLVE     location: 'node_modules/@angular/core',
+54 warn ERESOLVE     isWorkspace: false,
+54 warn ERESOLVE     dependents: [ [Object] ]
+54 warn ERESOLVE   },
+54 warn ERESOLVE   force: false,
+54 warn ERESOLVE   isMine: true,
+54 warn ERESOLVE   strictPeerDeps: false,
+54 warn ERESOLVE   current: {
+54 warn ERESOLVE     name: '@angular/core',
+54 warn ERESOLVE     version: '19.2.14',
+54 warn ERESOLVE     location: 'node_modules/@angular/core',
+54 warn ERESOLVE     isWorkspace: false,
+54 warn ERESOLVE     dependents: [
+54 warn ERESOLVE       [Object], [Object],
+54 warn ERESOLVE       [Object], [Object],
+54 warn ERESOLVE       [Object], [Object],
+54 warn ERESOLVE       [Object], [Object],
+54 warn ERESOLVE       [Object]
+54 warn ERESOLVE     ]
+54 warn ERESOLVE   }
+54 warn ERESOLVE }
+55 warn ERESOLVE overriding peer dependency {
+55 warn ERESOLVE   code: 'ERESOLVE',
+55 warn ERESOLVE   edge: {
+55 warn ERESOLVE     type: 'peer',
+55 warn ERESOLVE     name: '@angular/core',
+55 warn ERESOLVE     spec: '19.2.14',
+55 warn ERESOLVE     from: {
+55 warn ERESOLVE       name: '@angular/common',
+55 warn ERESOLVE       version: '19.2.14',
+55 warn ERESOLVE       location: 'node_modules/@angular/common',
+55 warn ERESOLVE       isWorkspace: false,
+55 warn ERESOLVE       dependents: [Array]
+55 warn ERESOLVE     }
+55 warn ERESOLVE   },
+55 warn ERESOLVE   dep: {
+55 warn ERESOLVE     name: '@angular/core',
+55 warn ERESOLVE     version: '20.1.7',
+55 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+55 warn ERESOLVE     location: 'node_modules/@angular/core',
+55 warn ERESOLVE     isWorkspace: false,
+55 warn ERESOLVE     dependents: [ [Object] ]
+55 warn ERESOLVE   },
+55 warn ERESOLVE   force: false,
+55 warn ERESOLVE   isMine: true,
+55 warn ERESOLVE   strictPeerDeps: false,
+55 warn ERESOLVE   current: {
+55 warn ERESOLVE     name: '@angular/core',
+55 warn ERESOLVE     version: '19.2.14',
+55 warn ERESOLVE     location: 'node_modules/@angular/core',
+55 warn ERESOLVE     isWorkspace: false,
+55 warn ERESOLVE     dependents: [
+55 warn ERESOLVE       [Object], [Object],
+55 warn ERESOLVE       [Object], [Object],
+55 warn ERESOLVE       [Object], [Object],
+55 warn ERESOLVE       [Object], [Object],
+55 warn ERESOLVE       [Object]
+55 warn ERESOLVE     ]
+55 warn ERESOLVE   }
+55 warn ERESOLVE }
+56 warn ERESOLVE overriding peer dependency {
+56 warn ERESOLVE   code: 'ERESOLVE',
+56 warn ERESOLVE   edge: {
+56 warn ERESOLVE     type: 'peer',
+56 warn ERESOLVE     name: '@angular/core',
+56 warn ERESOLVE     spec: '19.2.14',
+56 warn ERESOLVE     from: {
+56 warn ERESOLVE       name: '@angular/common',
+56 warn ERESOLVE       version: '19.2.14',
+56 warn ERESOLVE       location: 'node_modules/@angular/common',
+56 warn ERESOLVE       isWorkspace: false,
+56 warn ERESOLVE       dependents: [Array]
+56 warn ERESOLVE     }
+56 warn ERESOLVE   },
+56 warn ERESOLVE   dep: {
+56 warn ERESOLVE     name: '@angular/core',
+56 warn ERESOLVE     version: '20.1.7',
+56 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+56 warn ERESOLVE     location: 'node_modules/@angular/core',
+56 warn ERESOLVE     isWorkspace: false,
+56 warn ERESOLVE     dependents: [ [Object] ]
+56 warn ERESOLVE   },
+56 warn ERESOLVE   force: false,
+56 warn ERESOLVE   isMine: true,
+56 warn ERESOLVE   strictPeerDeps: false,
+56 warn ERESOLVE   current: {
+56 warn ERESOLVE     name: '@angular/core',
+56 warn ERESOLVE     version: '19.2.14',
+56 warn ERESOLVE     location: 'node_modules/@angular/core',
+56 warn ERESOLVE     isWorkspace: false,
+56 warn ERESOLVE     dependents: [
+56 warn ERESOLVE       [Object], [Object],
+56 warn ERESOLVE       [Object], [Object],
+56 warn ERESOLVE       [Object], [Object],
+56 warn ERESOLVE       [Object], [Object],
+56 warn ERESOLVE       [Object]
+56 warn ERESOLVE     ]
+56 warn ERESOLVE   }
+56 warn ERESOLVE }
+57 warn ERESOLVE overriding peer dependency {
+57 warn ERESOLVE   code: 'ERESOLVE',
+57 warn ERESOLVE   edge: {
+57 warn ERESOLVE     type: 'peer',
+57 warn ERESOLVE     name: '@angular/core',
+57 warn ERESOLVE     spec: '19.2.14',
+57 warn ERESOLVE     from: {
+57 warn ERESOLVE       name: '@angular/common',
+57 warn ERESOLVE       version: '19.2.14',
+57 warn ERESOLVE       location: 'node_modules/@angular/common',
+57 warn ERESOLVE       isWorkspace: false,
+57 warn ERESOLVE       dependents: [Array]
+57 warn ERESOLVE     }
+57 warn ERESOLVE   },
+57 warn ERESOLVE   dep: {
+57 warn ERESOLVE     name: '@angular/core',
+57 warn ERESOLVE     version: '20.1.7',
+57 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+57 warn ERESOLVE     location: 'node_modules/@angular/core',
+57 warn ERESOLVE     isWorkspace: false,
+57 warn ERESOLVE     dependents: [ [Object] ]
+57 warn ERESOLVE   },
+57 warn ERESOLVE   force: false,
+57 warn ERESOLVE   isMine: true,
+57 warn ERESOLVE   strictPeerDeps: false,
+57 warn ERESOLVE   current: {
+57 warn ERESOLVE     name: '@angular/core',
+57 warn ERESOLVE     version: '19.2.14',
+57 warn ERESOLVE     location: 'node_modules/@angular/core',
+57 warn ERESOLVE     isWorkspace: false,
+57 warn ERESOLVE     dependents: [
+57 warn ERESOLVE       [Object], [Object],
+57 warn ERESOLVE       [Object], [Object],
+57 warn ERESOLVE       [Object], [Object],
+57 warn ERESOLVE       [Object], [Object],
+57 warn ERESOLVE       [Object]
+57 warn ERESOLVE     ]
+57 warn ERESOLVE   }
+57 warn ERESOLVE }
+58 warn ERESOLVE overriding peer dependency {
+58 warn ERESOLVE   code: 'ERESOLVE',
+58 warn ERESOLVE   edge: {
+58 warn ERESOLVE     type: 'peer',
+58 warn ERESOLVE     name: '@angular/core',
+58 warn ERESOLVE     spec: '19.2.14',
+58 warn ERESOLVE     from: {
+58 warn ERESOLVE       name: '@angular/common',
+58 warn ERESOLVE       version: '19.2.14',
+58 warn ERESOLVE       location: 'node_modules/@angular/common',
+58 warn ERESOLVE       isWorkspace: false,
+58 warn ERESOLVE       dependents: [Array]
+58 warn ERESOLVE     }
+58 warn ERESOLVE   },
+58 warn ERESOLVE   dep: {
+58 warn ERESOLVE     name: '@angular/core',
+58 warn ERESOLVE     version: '20.1.7',
+58 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+58 warn ERESOLVE     location: 'node_modules/@angular/core',
+58 warn ERESOLVE     isWorkspace: false,
+58 warn ERESOLVE     dependents: [ [Object] ]
+58 warn ERESOLVE   },
+58 warn ERESOLVE   force: false,
+58 warn ERESOLVE   isMine: true,
+58 warn ERESOLVE   strictPeerDeps: false,
+58 warn ERESOLVE   current: {
+58 warn ERESOLVE     name: '@angular/core',
+58 warn ERESOLVE     version: '19.2.14',
+58 warn ERESOLVE     location: 'node_modules/@angular/core',
+58 warn ERESOLVE     isWorkspace: false,
+58 warn ERESOLVE     dependents: [
+58 warn ERESOLVE       [Object], [Object],
+58 warn ERESOLVE       [Object], [Object],
+58 warn ERESOLVE       [Object], [Object],
+58 warn ERESOLVE       [Object], [Object],
+58 warn ERESOLVE       [Object]
+58 warn ERESOLVE     ]
+58 warn ERESOLVE   }
+58 warn ERESOLVE }
+59 warn ERESOLVE overriding peer dependency {
+59 warn ERESOLVE   code: 'ERESOLVE',
+59 warn ERESOLVE   edge: {
+59 warn ERESOLVE     type: 'peer',
+59 warn ERESOLVE     name: '@angular/core',
+59 warn ERESOLVE     spec: '19.2.14',
+59 warn ERESOLVE     from: {
+59 warn ERESOLVE       name: '@angular/common',
+59 warn ERESOLVE       version: '19.2.14',
+59 warn ERESOLVE       location: 'node_modules/@angular/common',
+59 warn ERESOLVE       isWorkspace: false,
+59 warn ERESOLVE       dependents: [Array]
+59 warn ERESOLVE     }
+59 warn ERESOLVE   },
+59 warn ERESOLVE   dep: {
+59 warn ERESOLVE     name: '@angular/core',
+59 warn ERESOLVE     version: '20.1.7',
+59 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+59 warn ERESOLVE     location: 'node_modules/@angular/core',
+59 warn ERESOLVE     isWorkspace: false,
+59 warn ERESOLVE     dependents: [ [Object] ]
+59 warn ERESOLVE   },
+59 warn ERESOLVE   force: false,
+59 warn ERESOLVE   isMine: true,
+59 warn ERESOLVE   strictPeerDeps: false,
+59 warn ERESOLVE   current: {
+59 warn ERESOLVE     name: '@angular/core',
+59 warn ERESOLVE     version: '19.2.14',
+59 warn ERESOLVE     location: 'node_modules/@angular/core',
+59 warn ERESOLVE     isWorkspace: false,
+59 warn ERESOLVE     dependents: [
+59 warn ERESOLVE       [Object], [Object],
+59 warn ERESOLVE       [Object], [Object],
+59 warn ERESOLVE       [Object], [Object],
+59 warn ERESOLVE       [Object], [Object],
+59 warn ERESOLVE       [Object]
+59 warn ERESOLVE     ]
+59 warn ERESOLVE   }
+59 warn ERESOLVE }
+60 warn ERESOLVE overriding peer dependency {
+60 warn ERESOLVE   code: 'ERESOLVE',
+60 warn ERESOLVE   edge: {
+60 warn ERESOLVE     type: 'peer',
+60 warn ERESOLVE     name: '@angular/core',
+60 warn ERESOLVE     spec: '19.2.14',
+60 warn ERESOLVE     from: {
+60 warn ERESOLVE       name: '@angular/forms',
+60 warn ERESOLVE       version: '19.2.14',
+60 warn ERESOLVE       location: 'node_modules/@angular/forms',
+60 warn ERESOLVE       isWorkspace: false,
+60 warn ERESOLVE       dependents: [Array]
+60 warn ERESOLVE     }
+60 warn ERESOLVE   },
+60 warn ERESOLVE   dep: {
+60 warn ERESOLVE     name: '@angular/core',
+60 warn ERESOLVE     version: '20.1.7',
+60 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+60 warn ERESOLVE     location: 'node_modules/@angular/core',
+60 warn ERESOLVE     isWorkspace: false,
+60 warn ERESOLVE     dependents: [ [Object] ]
+60 warn ERESOLVE   },
+60 warn ERESOLVE   force: false,
+60 warn ERESOLVE   isMine: true,
+60 warn ERESOLVE   strictPeerDeps: false,
+60 warn ERESOLVE   current: {
+60 warn ERESOLVE     name: '@angular/core',
+60 warn ERESOLVE     version: '19.2.14',
+60 warn ERESOLVE     location: 'node_modules/@angular/core',
+60 warn ERESOLVE     isWorkspace: false,
+60 warn ERESOLVE     dependents: [
+60 warn ERESOLVE       [Object], [Object],
+60 warn ERESOLVE       [Object], [Object],
+60 warn ERESOLVE       [Object], [Object],
+60 warn ERESOLVE       [Object], [Object],
+60 warn ERESOLVE       [Object]
+60 warn ERESOLVE     ]
+60 warn ERESOLVE   }
+60 warn ERESOLVE }
+61 warn ERESOLVE overriding peer dependency {
+61 warn ERESOLVE   code: 'ERESOLVE',
+61 warn ERESOLVE   edge: {
+61 warn ERESOLVE     type: 'peer',
+61 warn ERESOLVE     name: '@angular/core',
+61 warn ERESOLVE     spec: '19.2.14',
+61 warn ERESOLVE     from: {
+61 warn ERESOLVE       name: '@angular/platform-browser',
+61 warn ERESOLVE       version: '19.2.14',
+61 warn ERESOLVE       location: 'node_modules/@angular/platform-browser',
+61 warn ERESOLVE       isWorkspace: false,
+61 warn ERESOLVE       dependents: [Array]
+61 warn ERESOLVE     }
+61 warn ERESOLVE   },
+61 warn ERESOLVE   dep: {
+61 warn ERESOLVE     name: '@angular/core',
+61 warn ERESOLVE     version: '20.1.7',
+61 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+61 warn ERESOLVE     location: 'node_modules/@angular/core',
+61 warn ERESOLVE     isWorkspace: false,
+61 warn ERESOLVE     dependents: [ [Object] ]
+61 warn ERESOLVE   },
+61 warn ERESOLVE   force: false,
+61 warn ERESOLVE   isMine: true,
+61 warn ERESOLVE   strictPeerDeps: false,
+61 warn ERESOLVE   current: {
+61 warn ERESOLVE     name: '@angular/core',
+61 warn ERESOLVE     version: '19.2.14',
+61 warn ERESOLVE     location: 'node_modules/@angular/core',
+61 warn ERESOLVE     isWorkspace: false,
+61 warn ERESOLVE     dependents: [
+61 warn ERESOLVE       [Object], [Object],
+61 warn ERESOLVE       [Object], [Object],
+61 warn ERESOLVE       [Object], [Object],
+61 warn ERESOLVE       [Object], [Object],
+61 warn ERESOLVE       [Object]
+61 warn ERESOLVE     ]
+61 warn ERESOLVE   }
+61 warn ERESOLVE }
+62 warn ERESOLVE overriding peer dependency {
+62 warn ERESOLVE   code: 'ERESOLVE',
+62 warn ERESOLVE   edge: {
+62 warn ERESOLVE     type: 'peer',
+62 warn ERESOLVE     name: '@angular/core',
+62 warn ERESOLVE     spec: '19.2.14',
+62 warn ERESOLVE     from: {
+62 warn ERESOLVE       name: '@angular/platform-browser',
+62 warn ERESOLVE       version: '19.2.14',
+62 warn ERESOLVE       location: 'node_modules/@angular/platform-browser',
+62 warn ERESOLVE       isWorkspace: false,
+62 warn ERESOLVE       dependents: [Array]
+62 warn ERESOLVE     }
+62 warn ERESOLVE   },
+62 warn ERESOLVE   dep: {
+62 warn ERESOLVE     name: '@angular/core',
+62 warn ERESOLVE     version: '20.1.7',
+62 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+62 warn ERESOLVE     location: 'node_modules/@angular/core',
+62 warn ERESOLVE     isWorkspace: false,
+62 warn ERESOLVE     dependents: [ [Object] ]
+62 warn ERESOLVE   },
+62 warn ERESOLVE   force: false,
+62 warn ERESOLVE   isMine: true,
+62 warn ERESOLVE   strictPeerDeps: false,
+62 warn ERESOLVE   current: {
+62 warn ERESOLVE     name: '@angular/core',
+62 warn ERESOLVE     version: '19.2.14',
+62 warn ERESOLVE     location: 'node_modules/@angular/core',
+62 warn ERESOLVE     isWorkspace: false,
+62 warn ERESOLVE     dependents: [
+62 warn ERESOLVE       [Object], [Object],
+62 warn ERESOLVE       [Object], [Object],
+62 warn ERESOLVE       [Object], [Object],
+62 warn ERESOLVE       [Object], [Object],
+62 warn ERESOLVE       [Object]
+62 warn ERESOLVE     ]
+62 warn ERESOLVE   }
+62 warn ERESOLVE }
+63 warn ERESOLVE overriding peer dependency {
+63 warn ERESOLVE   code: 'ERESOLVE',
+63 warn ERESOLVE   edge: {
+63 warn ERESOLVE     type: 'peer',
+63 warn ERESOLVE     name: '@angular/core',
+63 warn ERESOLVE     spec: '19.2.14',
+63 warn ERESOLVE     from: {
+63 warn ERESOLVE       name: '@angular/platform-browser',
+63 warn ERESOLVE       version: '19.2.14',
+63 warn ERESOLVE       location: 'node_modules/@angular/platform-browser',
+63 warn ERESOLVE       isWorkspace: false,
+63 warn ERESOLVE       dependents: [Array]
+63 warn ERESOLVE     }
+63 warn ERESOLVE   },
+63 warn ERESOLVE   dep: {
+63 warn ERESOLVE     name: '@angular/core',
+63 warn ERESOLVE     version: '20.1.7',
+63 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+63 warn ERESOLVE     location: 'node_modules/@angular/core',
+63 warn ERESOLVE     isWorkspace: false,
+63 warn ERESOLVE     dependents: [ [Object] ]
+63 warn ERESOLVE   },
+63 warn ERESOLVE   force: false,
+63 warn ERESOLVE   isMine: true,
+63 warn ERESOLVE   strictPeerDeps: false,
+63 warn ERESOLVE   current: {
+63 warn ERESOLVE     name: '@angular/core',
+63 warn ERESOLVE     version: '19.2.14',
+63 warn ERESOLVE     location: 'node_modules/@angular/core',
+63 warn ERESOLVE     isWorkspace: false,
+63 warn ERESOLVE     dependents: [
+63 warn ERESOLVE       [Object], [Object],
+63 warn ERESOLVE       [Object], [Object],
+63 warn ERESOLVE       [Object], [Object],
+63 warn ERESOLVE       [Object], [Object],
+63 warn ERESOLVE       [Object]
+63 warn ERESOLVE     ]
+63 warn ERESOLVE   }
+63 warn ERESOLVE }
+64 warn ERESOLVE overriding peer dependency {
+64 warn ERESOLVE   code: 'ERESOLVE',
+64 warn ERESOLVE   edge: {
+64 warn ERESOLVE     type: 'peer',
+64 warn ERESOLVE     name: '@angular/core',
+64 warn ERESOLVE     spec: '19.2.14',
+64 warn ERESOLVE     from: {
+64 warn ERESOLVE       name: '@angular/platform-browser',
+64 warn ERESOLVE       version: '19.2.14',
+64 warn ERESOLVE       location: 'node_modules/@angular/platform-browser',
+64 warn ERESOLVE       isWorkspace: false,
+64 warn ERESOLVE       dependents: [Array]
+64 warn ERESOLVE     }
+64 warn ERESOLVE   },
+64 warn ERESOLVE   dep: {
+64 warn ERESOLVE     name: '@angular/core',
+64 warn ERESOLVE     version: '20.1.7',
+64 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+64 warn ERESOLVE     location: 'node_modules/@angular/core',
+64 warn ERESOLVE     isWorkspace: false,
+64 warn ERESOLVE     dependents: [ [Object] ]
+64 warn ERESOLVE   },
+64 warn ERESOLVE   force: false,
+64 warn ERESOLVE   isMine: true,
+64 warn ERESOLVE   strictPeerDeps: false,
+64 warn ERESOLVE   current: {
+64 warn ERESOLVE     name: '@angular/core',
+64 warn ERESOLVE     version: '19.2.14',
+64 warn ERESOLVE     location: 'node_modules/@angular/core',
+64 warn ERESOLVE     isWorkspace: false,
+64 warn ERESOLVE     dependents: [
+64 warn ERESOLVE       [Object], [Object],
+64 warn ERESOLVE       [Object], [Object],
+64 warn ERESOLVE       [Object], [Object],
+64 warn ERESOLVE       [Object], [Object],
+64 warn ERESOLVE       [Object]
+64 warn ERESOLVE     ]
+64 warn ERESOLVE   }
+64 warn ERESOLVE }
+65 warn ERESOLVE overriding peer dependency {
+65 warn ERESOLVE   code: 'ERESOLVE',
+65 warn ERESOLVE   edge: {
+65 warn ERESOLVE     type: 'peer',
+65 warn ERESOLVE     name: '@angular/core',
+65 warn ERESOLVE     spec: '19.2.14',
+65 warn ERESOLVE     from: {
+65 warn ERESOLVE       name: '@angular/platform-browser-dynamic',
+65 warn ERESOLVE       version: '19.2.14',
+65 warn ERESOLVE       location: 'node_modules/@angular/platform-browser-dynamic',
+65 warn ERESOLVE       isWorkspace: false,
+65 warn ERESOLVE       dependents: [Array]
+65 warn ERESOLVE     }
+65 warn ERESOLVE   },
+65 warn ERESOLVE   dep: {
+65 warn ERESOLVE     name: '@angular/core',
+65 warn ERESOLVE     version: '20.1.7',
+65 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+65 warn ERESOLVE     location: 'node_modules/@angular/core',
+65 warn ERESOLVE     isWorkspace: false,
+65 warn ERESOLVE     dependents: [ [Object] ]
+65 warn ERESOLVE   },
+65 warn ERESOLVE   force: false,
+65 warn ERESOLVE   isMine: true,
+65 warn ERESOLVE   strictPeerDeps: false,
+65 warn ERESOLVE   current: {
+65 warn ERESOLVE     name: '@angular/core',
+65 warn ERESOLVE     version: '19.2.14',
+65 warn ERESOLVE     location: 'node_modules/@angular/core',
+65 warn ERESOLVE     isWorkspace: false,
+65 warn ERESOLVE     dependents: [
+65 warn ERESOLVE       [Object], [Object],
+65 warn ERESOLVE       [Object], [Object],
+65 warn ERESOLVE       [Object], [Object],
+65 warn ERESOLVE       [Object], [Object],
+65 warn ERESOLVE       [Object]
+65 warn ERESOLVE     ]
+65 warn ERESOLVE   }
+65 warn ERESOLVE }
+66 warn ERESOLVE overriding peer dependency {
+66 warn ERESOLVE   code: 'ERESOLVE',
+66 warn ERESOLVE   edge: {
+66 warn ERESOLVE     type: 'peer',
+66 warn ERESOLVE     name: '@angular/core',
+66 warn ERESOLVE     spec: '19.2.14',
+66 warn ERESOLVE     from: {
+66 warn ERESOLVE       name: '@angular/router',
+66 warn ERESOLVE       version: '19.2.14',
+66 warn ERESOLVE       location: 'node_modules/@angular/router',
+66 warn ERESOLVE       isWorkspace: false,
+66 warn ERESOLVE       dependents: [Array]
+66 warn ERESOLVE     }
+66 warn ERESOLVE   },
+66 warn ERESOLVE   dep: {
+66 warn ERESOLVE     name: '@angular/core',
+66 warn ERESOLVE     version: '20.1.7',
+66 warn ERESOLVE     whileInstalling: { name: 'impress-lola', version: '0.0.0', path: 'C:\\impresslola' },
+66 warn ERESOLVE     location: 'node_modules/@angular/core',
+66 warn ERESOLVE     isWorkspace: false,
+66 warn ERESOLVE     dependents: [ [Object] ]
+66 warn ERESOLVE   },
+66 warn ERESOLVE   force: false,
+66 warn ERESOLVE   isMine: true,
+66 warn ERESOLVE   strictPeerDeps: false,
+66 warn ERESOLVE   current: {
+66 warn ERESOLVE     name: '@angular/core',
+66 warn ERESOLVE     version: '19.2.14',
+66 warn ERESOLVE     location: 'node_modules/@angular/core',
+66 warn ERESOLVE     isWorkspace: false,
+66 warn ERESOLVE     dependents: [
+66 warn ERESOLVE       [Object], [Object],
+66 warn ERESOLVE       [Object], [Object],
+66 warn ERESOLVE       [Object], [Object],
+66 warn ERESOLVE       [Object], [Object],
+66 warn ERESOLVE       [Object]
+66 warn ERESOLVE     ]
+66 warn ERESOLVE   }
+66 warn ERESOLVE }
+67 silly fetch manifest ini@5.0.0
+68 silly packumentCache full:https://registry.npmjs.org/ini cache-miss
+69 silly fetch manifest zod@3.25.75
+70 silly packumentCache full:https://registry.npmjs.org/zod cache-miss
+71 silly fetch manifest yargs@18.0.0
+72 silly packumentCache full:https://registry.npmjs.org/yargs cache-miss
+73 silly fetch manifest listr2@8.3.3
+74 silly packumentCache full:https://registry.npmjs.org/listr2 cache-miss
+75 silly fetch manifest pacote@21.0.0
+76 silly packumentCache full:https://registry.npmjs.org/pacote cache-miss
+77 silly fetch manifest semver@7.7.2
+78 silly packumentCache full:https://registry.npmjs.org/semver cache-miss
+79 silly fetch manifest algoliasearch@5.32.0
+80 silly packumentCache full:https://registry.npmjs.org/algoliasearch cache-miss
+81 silly fetch manifest npm-package-arg@12.0.2
+82 silly packumentCache full:https://registry.npmjs.org/npm-package-arg cache-miss
+83 silly fetch manifest @inquirer/prompts@7.6.0
+84 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fprompts cache-miss
+85 silly fetch manifest npm-pick-manifest@10.0.0
+86 silly packumentCache full:https://registry.npmjs.org/npm-pick-manifest cache-miss
+87 silly fetch manifest @schematics/angular@20.1.6
+88 silly packumentCache full:https://registry.npmjs.org/@schematics%2fangular cache-miss
+89 http fetch GET 200 https://registry.npmjs.org/yargs 295ms (cache revalidated)
+90 silly packumentCache full:https://registry.npmjs.org/yargs set size:743056 disposed:false
+91 silly fetch manifest @angular-devkit/core@20.1.6
+92 silly packumentCache full:https://registry.npmjs.org/@angular-devkit%2fcore cache-miss
+93 http fetch GET 200 https://registry.npmjs.org/npm-pick-manifest 320ms (cache revalidated)
+94 silly packumentCache full:https://registry.npmjs.org/npm-pick-manifest set size:94021 disposed:false
+95 silly fetch manifest @angular-devkit/architect@0.2001.6
+96 silly packumentCache full:https://registry.npmjs.org/@angular-devkit%2farchitect cache-miss
+97 http fetch GET 200 https://registry.npmjs.org/semver 356ms (cache revalidated)
+98 silly packumentCache full:https://registry.npmjs.org/semver set size:224186 disposed:false
+99 silly fetch manifest @modelcontextprotocol/sdk@1.13.3
+100 silly packumentCache full:https://registry.npmjs.org/@modelcontextprotocol%2fsdk cache-miss
+101 http fetch GET 200 https://registry.npmjs.org/pacote 386ms (cache revalidated)
+102 silly packumentCache full:https://registry.npmjs.org/pacote set size:722202 disposed:false
+103 silly fetch manifest @angular-devkit/schematics@20.1.6
+104 silly packumentCache full:https://registry.npmjs.org/@angular-devkit%2fschematics cache-miss
+105 http fetch GET 200 https://registry.npmjs.org/ini 441ms (cache revalidated)
+106 silly packumentCache full:https://registry.npmjs.org/ini set size:54653 disposed:false
+107 silly fetch manifest @listr2/prompt-adapter-inquirer@2.0.22
+108 silly packumentCache full:https://registry.npmjs.org/@listr2%2fprompt-adapter-inquirer cache-miss
+109 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fprompts 473ms (cache updated)
+110 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fprompts set size:undefined disposed:false
+111 http fetch GET 200 https://registry.npmjs.org/@modelcontextprotocol%2fsdk 282ms (cache miss)
+112 silly packumentCache full:https://registry.npmjs.org/@modelcontextprotocol%2fsdk set size:undefined disposed:false
+113 http fetch GET 200 https://registry.npmjs.org/npm-package-arg 670ms (cache updated)
+114 silly packumentCache full:https://registry.npmjs.org/npm-package-arg set size:undefined disposed:false
+115 http fetch GET 200 https://registry.npmjs.org/algoliasearch 686ms (cache miss)
+116 silly packumentCache full:https://registry.npmjs.org/algoliasearch set size:undefined disposed:false
+117 http fetch GET 200 https://registry.npmjs.org/@listr2%2fprompt-adapter-inquirer 396ms (cache updated)
+118 silly packumentCache full:https://registry.npmjs.org/@listr2%2fprompt-adapter-inquirer set size:undefined disposed:false
+119 http fetch GET 200 https://registry.npmjs.org/listr2 874ms (cache updated)
+120 silly packumentCache full:https://registry.npmjs.org/listr2 set size:undefined disposed:false
+121 http fetch GET 200 https://registry.npmjs.org/zod 961ms (cache miss)
+122 silly packumentCache full:https://registry.npmjs.org/zod set size:undefined disposed:false
+123 http fetch GET 200 https://registry.npmjs.org/@angular-devkit%2fcore 729ms (cache updated)
+124 silly packumentCache full:https://registry.npmjs.org/@angular-devkit%2fcore set size:undefined disposed:false
+125 http fetch GET 200 https://registry.npmjs.org/@angular-devkit%2fschematics 683ms (cache updated)
+126 silly packumentCache full:https://registry.npmjs.org/@angular-devkit%2fschematics set size:undefined disposed:false
+127 http fetch GET 200 https://registry.npmjs.org/@schematics%2fangular 1109ms (cache updated)
+128 silly packumentCache full:https://registry.npmjs.org/@schematics%2fangular set size:undefined disposed:false
+129 http fetch GET 200 https://registry.npmjs.org/@angular-devkit%2farchitect 835ms (cache updated)
+130 silly packumentCache full:https://registry.npmjs.org/@angular-devkit%2farchitect set size:undefined disposed:false
+131 silly fetch manifest @types/node@>=18
+132 silly packumentCache full:https://registry.npmjs.org/@types%2fnode cache-miss
+133 http fetch GET 200 https://registry.npmjs.org/@types%2fnode 443ms (cache updated)
+134 silly packumentCache full:https://registry.npmjs.org/@types%2fnode set size:undefined disposed:false
+135 silly fetch manifest chokidar@^4.0.0
+136 silly packumentCache full:https://registry.npmjs.org/chokidar cache-miss
+137 http fetch GET 200 https://registry.npmjs.org/chokidar 81ms (cache revalidated)
+138 silly packumentCache full:https://registry.npmjs.org/chokidar set size:253451 disposed:false
+139 silly placeDep node_modules/@angular/cli @angular-devkit/architect@0.2001.6 OK for: @angular/cli@20.1.6 want: 0.2001.6
+140 silly placeDep node_modules/@angular/cli @angular-devkit/core@20.1.6 OK for: @angular/cli@20.1.6 want: 20.1.6
+141 silly placeDep ROOT @angular-devkit/schematics@20.1.6 OK for: @angular/cli@20.1.6 want: 20.1.6
+142 silly placeDep ROOT @inquirer/prompts@7.6.0 OK for: @angular/cli@20.1.6 want: 7.6.0
+143 silly placeDep ROOT @listr2/prompt-adapter-inquirer@2.0.22 OK for: @angular/cli@20.1.6 want: 2.0.22
+144 silly placeDep ROOT @modelcontextprotocol/sdk@1.13.3 OK for: @angular/cli@20.1.6 want: 1.13.3
+145 silly placeDep ROOT @schematics/angular@20.1.6 OK for: @angular/cli@20.1.6 want: 20.1.6
+146 silly placeDep ROOT algoliasearch@5.32.0 OK for: @angular/cli@20.1.6 want: 5.32.0
+147 silly placeDep ROOT ini@5.0.0 OK for: @angular/cli@20.1.6 want: 5.0.0
+148 silly placeDep node_modules/@angular/cli listr2@8.3.3 OK for: @angular/cli@20.1.6 want: 8.3.3
+149 silly placeDep ROOT npm-package-arg@12.0.2 OK for: @angular/cli@20.1.6 want: 12.0.2
+150 silly placeDep ROOT npm-pick-manifest@10.0.0 OK for: @angular/cli@20.1.6 want: 10.0.0
+151 silly placeDep ROOT pacote@21.0.0 OK for: @angular/cli@20.1.6 want: 21.0.0
+152 silly placeDep node_modules/@angular/cli semver@7.7.2 OK for: @angular/cli@20.1.6 want: 7.7.2
+153 silly placeDep node_modules/@angular/cli yargs@18.0.0 OK for: @angular/cli@20.1.6 want: 18.0.0
+154 silly placeDep ROOT zod@3.25.75 OK for: @angular/cli@20.1.6 want: 3.25.75
+155 silly fetch manifest ora@8.2.0
+156 silly packumentCache full:https://registry.npmjs.org/ora cache-miss
+157 silly fetch manifest @inquirer/input@^4.2.0
+158 silly packumentCache full:https://registry.npmjs.org/@inquirer%2finput cache-miss
+159 silly fetch manifest @inquirer/editor@^4.2.14
+160 silly packumentCache full:https://registry.npmjs.org/@inquirer%2feditor cache-miss
+161 silly fetch manifest @inquirer/expand@^4.0.16
+162 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fexpand cache-miss
+163 silly fetch manifest @inquirer/number@^3.0.16
+164 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fnumber cache-miss
+165 silly fetch manifest @inquirer/search@^3.0.16
+166 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fsearch cache-miss
+167 silly fetch manifest @inquirer/select@^4.2.4
+168 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fselect cache-miss
+169 silly fetch manifest @inquirer/confirm@^5.1.13
+170 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fconfirm cache-miss
+171 silly fetch manifest @inquirer/rawlist@^4.1.4
+172 silly packumentCache full:https://registry.npmjs.org/@inquirer%2frawlist cache-miss
+173 silly fetch manifest @inquirer/checkbox@^4.1.9
+174 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fcheckbox cache-miss
+175 silly fetch manifest @inquirer/password@^4.0.16
+176 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fpassword cache-miss
+177 http fetch GET 200 https://registry.npmjs.org/ora 199ms (cache revalidated)
+178 silly packumentCache full:https://registry.npmjs.org/ora set size:131088 disposed:false
+179 silly fetch manifest @inquirer/type@^1.5.5
+180 silly packumentCache full:https://registry.npmjs.org/@inquirer%2ftype cache-miss
+181 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fsearch 253ms (cache updated)
+182 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fsearch set size:undefined disposed:false
+183 silly fetch manifest ajv@^6.12.6
+184 silly packumentCache full:https://registry.npmjs.org/ajv cache-miss
+185 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fnumber 291ms (cache updated)
+186 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fnumber set size:undefined disposed:false
+187 silly fetch manifest zod@^3.23.8
+188 silly packumentCache full:https://registry.npmjs.org/zod cache-miss
+189 http fetch GET 200 https://registry.npmjs.org/@inquirer%2frawlist 329ms (cache updated)
+190 silly packumentCache full:https://registry.npmjs.org/@inquirer%2frawlist set size:undefined disposed:false
+191 silly fetch manifest express@^5.0.1
+192 silly packumentCache full:https://registry.npmjs.org/express cache-miss
+193 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fconfirm 345ms (cache updated)
+194 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fconfirm set size:undefined disposed:false
+195 silly fetch manifest raw-body@^3.0.0
+196 silly packumentCache full:https://registry.npmjs.org/raw-body cache-miss
+197 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fselect 360ms (cache updated)
+198 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fselect set size:undefined disposed:false
+199 silly fetch manifest cross-spawn@^7.0.5
+200 silly packumentCache full:https://registry.npmjs.org/cross-spawn cache-miss
+201 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fcheckbox 370ms (cache updated)
+202 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fcheckbox set size:undefined disposed:false
+203 silly fetch manifest eventsource@^3.0.2
+204 silly packumentCache full:https://registry.npmjs.org/eventsource cache-miss
+205 http cache https://registry.npmjs.org/zod 256ms (cache hit)
+206 silly packumentCache full:https://registry.npmjs.org/zod set size:3000553 disposed:false
+207 silly fetch manifest pkce-challenge@^5.0.0
+208 silly packumentCache full:https://registry.npmjs.org/pkce-challenge cache-miss
+209 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fexpand 639ms (cache updated)
+210 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fexpand set size:undefined disposed:false
+211 silly fetch manifest eventsource-parser@^3.0.0
+212 silly packumentCache full:https://registry.npmjs.org/eventsource-parser cache-miss
+213 http fetch GET 200 https://registry.npmjs.org/@inquirer%2feditor 652ms (cache updated)
+214 silly packumentCache full:https://registry.npmjs.org/@inquirer%2feditor set size:undefined disposed:false
+215 silly fetch manifest express-rate-limit@^7.5.0
+216 silly packumentCache full:https://registry.npmjs.org/express-rate-limit cache-miss
+217 http fetch GET 200 https://registry.npmjs.org/@inquirer%2finput 679ms (cache updated)
+218 silly packumentCache full:https://registry.npmjs.org/@inquirer%2finput set size:undefined disposed:false
+219 silly fetch manifest zod-to-json-schema@^3.24.1
+220 silly packumentCache full:https://registry.npmjs.org/zod-to-json-schema cache-miss
+221 http fetch GET 200 https://registry.npmjs.org/ajv 438ms (cache revalidated)
+222 silly packumentCache full:https://registry.npmjs.org/ajv set size:1126055 disposed:false
+223 silly fetch manifest @algolia/ingestion@1.32.0
+224 silly packumentCache full:https://registry.npmjs.org/@algolia%2fingestion cache-miss
+225 http fetch GET 200 https://registry.npmjs.org/@inquirer%2fpassword 763ms (cache updated)
+226 silly packumentCache full:https://registry.npmjs.org/@inquirer%2fpassword set size:undefined disposed:false
+227 silly fetch manifest @algolia/recommend@5.32.0
+228 silly packumentCache full:https://registry.npmjs.org/@algolia%2frecommend cache-miss
+229 http fetch GET 200 https://registry.npmjs.org/@inquirer%2ftype 580ms (cache updated)
+230 silly packumentCache full:https://registry.npmjs.org/@inquirer%2ftype set size:undefined disposed:false
+231 silly fetch manifest @algolia/monitoring@1.32.0
+232 silly packumentCache full:https://registry.npmjs.org/@algolia%2fmonitoring cache-miss
+233 http fetch GET 200 https://registry.npmjs.org/raw-body 462ms (cache revalidated)
+234 silly packumentCache full:https://registry.npmjs.org/raw-body set size:108717 disposed:false
+235 silly fetch manifest @algolia/client-common@5.32.0
+236 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-common cache-miss
+237 http fetch GET 200 https://registry.npmjs.org/cross-spawn 476ms (cache revalidated)
+238 silly packumentCache full:https://registry.npmjs.org/cross-spawn set size:109066 disposed:false
+239 silly fetch manifest @algolia/client-search@5.32.0
+240 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-search cache-miss
+241 http fetch GET 200 https://registry.npmjs.org/pkce-challenge 231ms (cache miss)
+242 silly packumentCache full:https://registry.npmjs.org/pkce-challenge set size:undefined disposed:false
+243 silly fetch manifest @algolia/client-insights@5.32.0
+244 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-insights cache-miss
+245 http fetch GET 200 https://registry.npmjs.org/eventsource-parser 223ms (cache miss)
+246 silly packumentCache full:https://registry.npmjs.org/eventsource-parser set size:undefined disposed:false
+247 silly fetch manifest @algolia/requester-fetch@5.32.0
+248 silly packumentCache full:https://registry.npmjs.org/@algolia%2frequester-fetch cache-miss
+249 http fetch GET 200 https://registry.npmjs.org/eventsource 439ms (cache miss)
+250 silly packumentCache full:https://registry.npmjs.org/eventsource set size:undefined disposed:false
+251 silly fetch manifest @algolia/client-abtesting@5.32.0
+252 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-abtesting cache-miss
+253 http fetch GET 200 https://registry.npmjs.org/zod-to-json-schema 216ms (cache miss)
+254 silly packumentCache full:https://registry.npmjs.org/zod-to-json-schema set size:undefined disposed:false
+255 silly fetch manifest @algolia/client-analytics@5.32.0
+256 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-analytics cache-miss
+257 http fetch GET 200 https://registry.npmjs.org/express-rate-limit 262ms (cache miss)
+258 silly packumentCache full:https://registry.npmjs.org/express-rate-limit set size:undefined disposed:false
+259 silly fetch manifest @algolia/requester-node-http@5.32.0
+260 silly packumentCache full:https://registry.npmjs.org/@algolia%2frequester-node-http cache-miss
+261 http fetch GET 200 https://registry.npmjs.org/express 647ms (cache updated)
+262 silly packumentCache full:https://registry.npmjs.org/express set size:undefined disposed:false
+263 silly fetch manifest @algolia/requester-browser-xhr@5.32.0
+264 silly packumentCache full:https://registry.npmjs.org/@algolia%2frequester-browser-xhr cache-miss
+265 http fetch GET 200 https://registry.npmjs.org/@algolia%2fingestion 359ms (cache miss)
+266 silly packumentCache full:https://registry.npmjs.org/@algolia%2fingestion set size:undefined disposed:false
+267 silly fetch manifest @algolia/client-personalization@5.32.0
+268 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-personalization cache-miss
+269 http fetch GET 200 https://registry.npmjs.org/@algolia%2fclient-insights 292ms (cache miss)
+270 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-insights set size:undefined disposed:false
+271 silly fetch manifest @algolia/client-query-suggestions@5.32.0
+272 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-query-suggestions cache-miss
+273 http fetch GET 200 https://registry.npmjs.org/@algolia%2fclient-common 365ms (cache miss)
+274 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-common set size:undefined disposed:false
+275 silly fetch manifest wrap-ansi@^9.0.0
+276 silly packumentCache full:https://registry.npmjs.org/wrap-ansi cache-miss
+277 http fetch GET 200 https://registry.npmjs.org/@algolia%2fmonitoring 503ms (cache miss)
+278 silly packumentCache full:https://registry.npmjs.org/@algolia%2fmonitoring set size:undefined disposed:false
+279 silly fetch manifest eventemitter3@^5.0.1
+280 silly packumentCache full:https://registry.npmjs.org/eventemitter3 cache-miss
+281 http fetch GET 200 https://registry.npmjs.org/@algolia%2frequester-node-http 385ms (cache miss)
+282 silly packumentCache full:https://registry.npmjs.org/@algolia%2frequester-node-http set size:undefined disposed:false
+283 silly fetch manifest proc-log@^5.0.0
+284 silly packumentCache full:https://registry.npmjs.org/proc-log cache-miss
+285 http fetch GET 200 https://registry.npmjs.org/@algolia%2fclient-analytics 412ms (cache miss)
+286 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-analytics set size:undefined disposed:false
+287 silly fetch manifest hosted-git-info@^8.0.0
+288 silly packumentCache full:https://registry.npmjs.org/hosted-git-info cache-miss
+289 http fetch GET 200 https://registry.npmjs.org/wrap-ansi 171ms (cache revalidated)
+290 silly packumentCache full:https://registry.npmjs.org/wrap-ansi set size:51143 disposed:false
+291 silly fetch manifest validate-npm-package-name@^6.0.0
+292 silly packumentCache full:https://registry.npmjs.org/validate-npm-package-name cache-miss
+293 http fetch GET 200 https://registry.npmjs.org/@algolia%2fclient-abtesting 492ms (cache miss)
+294 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-abtesting set size:undefined disposed:false
+295 silly fetch manifest npm-install-checks@^7.1.0
+296 silly packumentCache full:https://registry.npmjs.org/npm-install-checks cache-miss
+297 http fetch GET 200 https://registry.npmjs.org/@algolia%2frequester-browser-xhr 382ms (cache miss)
+298 silly packumentCache full:https://registry.npmjs.org/@algolia%2frequester-browser-xhr set size:undefined disposed:false
+299 silly fetch manifest npm-normalize-package-bin@^4.0.0
+300 silly packumentCache full:https://registry.npmjs.org/npm-normalize-package-bin cache-miss
+301 http fetch GET 200 https://registry.npmjs.org/@algolia%2frequester-fetch 536ms (cache miss)
+302 silly packumentCache full:https://registry.npmjs.org/@algolia%2frequester-fetch set size:undefined disposed:false
+303 silly fetch manifest tar@^6.1.11
+304 silly packumentCache full:https://registry.npmjs.org/tar cache-miss
+305 http fetch GET 200 https://registry.npmjs.org/eventemitter3 164ms (cache revalidated)
+306 silly packumentCache full:https://registry.npmjs.org/eventemitter3 set size:86060 disposed:false
+307 silly fetch manifest ssri@^12.0.0
+308 silly packumentCache full:https://registry.npmjs.org/ssri cache-miss
+309 http fetch GET 200 https://registry.npmjs.org/proc-log 165ms (cache revalidated)
+310 silly packumentCache full:https://registry.npmjs.org/proc-log set size:28583 disposed:false
+311 silly fetch manifest cacache@^19.0.0
+312 silly packumentCache full:https://registry.npmjs.org/cacache cache-miss
+313 http fetch GET 200 https://registry.npmjs.org/hosted-git-info 190ms (cache updated)
+314 silly packumentCache full:https://registry.npmjs.org/hosted-git-info set size:undefined disposed:false
+315 silly fetch manifest sigstore@^3.0.0
+316 silly packumentCache full:https://registry.npmjs.org/sigstore cache-miss
+317 http fetch GET 200 https://registry.npmjs.org/@algolia%2fclient-personalization 452ms (cache miss)
+318 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-personalization set size:undefined disposed:false
+319 silly fetch manifest @npmcli/git@^6.0.0
+320 silly packumentCache full:https://registry.npmjs.org/@npmcli%2fgit cache-miss
+321 http fetch GET 200 https://registry.npmjs.org/@algolia%2frecommend 841ms (cache miss)
+322 silly packumentCache full:https://registry.npmjs.org/@algolia%2frecommend set size:undefined disposed:false
+323 silly fetch manifest fs-minipass@^3.0.0
+324 silly packumentCache full:https://registry.npmjs.org/fs-minipass cache-miss
+325 http fetch GET 200 https://registry.npmjs.org/npm-install-checks 259ms (cache revalidated)
+326 silly packumentCache full:https://registry.npmjs.org/npm-install-checks set size:54217 disposed:false
+327 silly fetch manifest npm-packlist@^10.0.0
+328 silly packumentCache full:https://registry.npmjs.org/npm-packlist cache-miss
+329 http fetch GET 200 https://registry.npmjs.org/npm-normalize-package-bin 253ms (cache revalidated)
+330 silly packumentCache full:https://registry.npmjs.org/npm-normalize-package-bin set size:19194 disposed:false
+331 silly fetch manifest promise-retry@^2.0.1
+332 silly packumentCache full:https://registry.npmjs.org/promise-retry cache-miss
+333 http fetch GET 200 https://registry.npmjs.org/tar 225ms (cache revalidated)
+334 silly packumentCache full:https://registry.npmjs.org/tar set size:398957 disposed:false
+335 silly fetch manifest @npmcli/run-script@^9.0.0
+336 silly packumentCache full:https://registry.npmjs.org/@npmcli%2frun-script cache-miss
+337 http fetch GET 200 https://registry.npmjs.org/ssri 203ms (cache revalidated)
+338 silly packumentCache full:https://registry.npmjs.org/ssri set size:130405 disposed:false
+339 silly fetch manifest npm-registry-fetch@^18.0.0
+340 silly packumentCache full:https://registry.npmjs.org/npm-registry-fetch cache-miss
+341 http fetch GET 200 https://registry.npmjs.org/validate-npm-package-name 362ms (cache updated)
+342 silly packumentCache full:https://registry.npmjs.org/validate-npm-package-name set size:undefined disposed:false
+343 silly fetch manifest @npmcli/package-json@^6.0.0
+344 silly packumentCache full:https://registry.npmjs.org/@npmcli%2fpackage-json cache-miss
+345 http fetch GET 200 https://registry.npmjs.org/cacache 311ms (cache updated)
+346 silly packumentCache full:https://registry.npmjs.org/cacache set size:undefined disposed:false
+347 silly fetch manifest @npmcli/promise-spawn@^8.0.0
+348 silly packumentCache full:https://registry.npmjs.org/@npmcli%2fpromise-spawn cache-miss
+349 http fetch GET 200 https://registry.npmjs.org/sigstore 281ms (cache updated)
+350 silly packumentCache full:https://registry.npmjs.org/sigstore set size:undefined disposed:false
+351 silly fetch manifest @npmcli/installed-package-contents@^3.0.0
+352 silly packumentCache full:https://registry.npmjs.org/@npmcli%2finstalled-package-contents cache-miss
+353 http fetch GET 200 https://registry.npmjs.org/fs-minipass 193ms (cache revalidated)
+354 silly packumentCache full:https://registry.npmjs.org/fs-minipass set size:44606 disposed:false
+355 silly fetch manifest cliui@^9.0.1
+356 silly packumentCache full:https://registry.npmjs.org/cliui cache-miss
+357 http fetch GET 200 https://registry.npmjs.org/promise-retry 216ms (cache revalidated)
+358 silly packumentCache full:https://registry.npmjs.org/promise-retry set size:34511 disposed:false
+359 silly fetch manifest yargs-parser@^22.0.0
+360 silly packumentCache full:https://registry.npmjs.org/yargs-parser cache-miss
+361 http fetch GET 200 https://registry.npmjs.org/@algolia%2fclient-search 1040ms (cache miss)
+362 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-search set size:undefined disposed:false
+363 http fetch GET 200 https://registry.npmjs.org/@npmcli%2frun-script 249ms (cache revalidated)
+364 silly packumentCache full:https://registry.npmjs.org/@npmcli%2frun-script set size:186069 disposed:false
+365 http fetch GET 200 https://registry.npmjs.org/@npmcli%2fgit 348ms (cache revalidated)
+366 silly packumentCache full:https://registry.npmjs.org/@npmcli%2fgit set size:105509 disposed:false
+367 http fetch GET 200 https://registry.npmjs.org/@npmcli%2fpackage-json 220ms (cache revalidated)
+368 silly packumentCache full:https://registry.npmjs.org/@npmcli%2fpackage-json set size:64768 disposed:false
+369 http fetch GET 200 https://registry.npmjs.org/npm-packlist 336ms (cache updated)
+370 silly packumentCache full:https://registry.npmjs.org/npm-packlist set size:undefined disposed:false
+371 http fetch GET 200 https://registry.npmjs.org/npm-registry-fetch 319ms (cache updated)
+372 silly packumentCache full:https://registry.npmjs.org/npm-registry-fetch set size:undefined disposed:false
+373 http fetch GET 200 https://registry.npmjs.org/cliui 226ms (cache revalidated)
+374 silly packumentCache full:https://registry.npmjs.org/cliui set size:69089 disposed:false
+375 http fetch GET 200 https://registry.npmjs.org/@npmcli%2finstalled-package-contents 244ms (cache revalidated)
+376 silly packumentCache full:https://registry.npmjs.org/@npmcli%2finstalled-package-contents set size:46208 disposed:false
+377 http fetch GET 200 https://registry.npmjs.org/@npmcli%2fpromise-spawn 261ms (cache revalidated)
+378 silly packumentCache full:https://registry.npmjs.org/@npmcli%2fpromise-spawn set size:60569 disposed:false
+379 http fetch GET 200 https://registry.npmjs.org/yargs-parser 206ms (cache revalidated)
+380 silly packumentCache full:https://registry.npmjs.org/yargs-parser set size:238630 disposed:false
+381 http fetch GET 200 https://registry.npmjs.org/@algolia%2fclient-query-suggestions 969ms (cache miss)
+382 silly packumentCache full:https://registry.npmjs.org/@algolia%2fclient-query-suggestions set size:undefined disposed:false
+383 silly placeDep node_modules/@angular-devkit/schematics @angular-devkit/core@20.1.6 OK for: @angular-devkit/schematics@20.1.6 want: 20.1.6
+384 silly placeDep node_modules/@angular-devkit/schematics ora@8.2.0 OK for: @angular-devkit/schematics@20.1.6 want: 8.2.0
+385 silly fetch manifest chalk@^5.3.0
+386 silly packumentCache full:https://registry.npmjs.org/chalk cache-miss
+387 silly fetch manifest is-interactive@^2.0.0
+388 silly packumentCache full:https://registry.npmjs.org/is-interactive cache-miss
+389 silly fetch manifest is-unicode-supported@^2.0.0
+390 silly packumentCache full:https://registry.npmjs.org/is-unicode-supported cache-miss
+391 silly fetch manifest log-symbols@^6.0.0
+392 silly packumentCache full:https://registry.npmjs.org/log-symbols cache-miss
+393 silly fetch manifest stdin-discarder@^0.2.2
+394 silly packumentCache full:https://registry.npmjs.org/stdin-discarder cache-miss
+395 http fetch GET 200 https://registry.npmjs.org/stdin-discarder 75ms (cache miss)
+396 silly packumentCache full:https://registry.npmjs.org/stdin-discarder set size:undefined disposed:false
+397 http fetch GET 200 https://registry.npmjs.org/is-unicode-supported 102ms (cache revalidated)
+398 silly packumentCache full:https://registry.npmjs.org/is-unicode-supported set size:19461 disposed:false
+399 http fetch GET 200 https://registry.npmjs.org/log-symbols 107ms (cache revalidated)
+400 silly packumentCache full:https://registry.npmjs.org/log-symbols set size:31991 disposed:false
+401 http fetch GET 200 https://registry.npmjs.org/chalk 127ms (cache updated)
+402 silly packumentCache full:https://registry.npmjs.org/chalk set size:undefined disposed:false
+403 http fetch GET 200 https://registry.npmjs.org/is-interactive 133ms (cache revalidated)
+404 silly packumentCache full:https://registry.npmjs.org/is-interactive set size:10692 disposed:false
+405 verbose stack Error: could not resolve
+405 verbose stack     at PlaceDep.failPeerConflict (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:503:25)
+405 verbose stack     at new PlaceDep (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:157:21)
+405 verbose stack     at #buildDepStep (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:920:18)
+405 verbose stack     at async Arborist.buildIdealTree (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:181:7)
+405 verbose stack     at async Promise.all (index 1)
+405 verbose stack     at async Arborist.reify (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\reify.js:131:5)
+405 verbose stack     at async Install.exec (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\lib\commands\install.js:149:5)
+405 verbose stack     at async Npm.exec (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\lib\npm.js:207:9)
+405 verbose stack     at async module.exports (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\lib\cli\entry.js:67:5)
+406 error code ERESOLVE
+407 error ERESOLVE could not resolve
+408 error
+409 error While resolving: @angular/core@20.1.7
+409 error Found: @angular/compiler@19.2.14[2m[22m
+409 error [2mnode_modules/@angular/compiler[22m
+409 error   [95mpeer[39m @angular/compiler@"^19.0.0 || ^19.2.0-next.0" from @angular/build@19.2.15[2m[22m
+409 error   [2mnode_modules/@angular/build[22m
+409 error     @angular/build@"19.2.15" from @angular-devkit/build-angular@19.2.15[2m[22m
+409 error     [2mnode_modules/@angular-devkit/build-angular[22m
+409 error       [34mdev[39m @angular-devkit/build-angular@"^19.2.0" from the root project
+409 error   [95mpeer[39m @angular/compiler@"19.2.14" from @angular/compiler-cli@19.2.14[2m[22m
+409 error   [2mnode_modules/@angular/compiler-cli[22m
+409 error     [95mpeer[39m @angular/compiler-cli@"^19.0.0 || ^19.2.0-next.0" from @angular-devkit/build-angular@19.2.15[2m[22m
+409 error     [2mnode_modules/@angular-devkit/build-angular[22m
+409 error       [34mdev[39m @angular-devkit/build-angular@"^19.2.0" from the root project
+409 error     [95mpeer[39m @angular/compiler-cli@"^19.0.0 || ^19.2.0-next.0" from @angular/build@19.2.15[2m[22m
+409 error     [2mnode_modules/@angular/build[22m
+409 error       @angular/build@"19.2.15" from @angular-devkit/build-angular@19.2.15[2m[22m
+409 error       [2mnode_modules/@angular-devkit/build-angular[22m
+409 error         [34mdev[39m @angular-devkit/build-angular@"^19.2.0" from the root project
+409 error     2 more (@ngtools/webpack, the root project)
+409 error   2 more (@angular/platform-browser-dynamic, the root project)
+409 error
+409 error Could not resolve dependency:
+409 error peerOptional @angular/compiler@"20.1.7" from @angular/core@20.1.7[2m[22m
+409 error [2mnode_modules/@angular/core[22m
+409 error   @angular/core@"20.1.7" from the root project
+409 error   [95mpeer[39m @angular/core@"^19.0.0 || ^20.0.0" from @angular/google-maps@19.2.19[2m[22m
+409 error   [2mnode_modules/@angular/google-maps[22m
+409 error     @angular/google-maps@"^19.2.19" from the root project
+409 error   1 more (ngx-swiper-wrapper)
+409 error
+409 error Conflicting peer dependency: @angular/compiler@20.1.7[2m[22m
+409 error [2mnode_modules/@angular/compiler[22m
+409 error   peerOptional @angular/compiler@"20.1.7" from @angular/core@20.1.7[2m[22m
+409 error   [2mnode_modules/@angular/core[22m
+409 error     @angular/core@"20.1.7" from the root project
+409 error     [95mpeer[39m @angular/core@"^19.0.0 || ^20.0.0" from @angular/google-maps@19.2.19[2m[22m
+409 error     [2mnode_modules/@angular/google-maps[22m
+409 error       @angular/google-maps@"^19.2.19" from the root project
+409 error     1 more (ngx-swiper-wrapper)
+409 error
+409 error Fix the upstream dependency conflict, or retry
+409 error this command with --force or --legacy-peer-deps
+409 error to accept an incorrect (and potentially broken) dependency resolution.
+410 error
+410 error
+410 error For a full report see:
+410 error C:\impresslola\clear\_logs\2025-08-15T11_36_22_673Z-eresolve-report.txt
+411 silly unfinished npm timer reify 1755257783583
+412 silly unfinished npm timer reify:loadTrees 1755257783585
+413 silly unfinished npm timer idealTree:buildDeps 1755257785029
+414 silly unfinished npm timer idealTree:node_modules/@angular/core 1755257790576
+415 verbose cwd C:\impresslola
+416 verbose os Windows_NT 10.0.26100
+417 verbose node v20.17.0
+418 verbose npm  v11.1.0
+419 verbose exit 1
+420 verbose code 1
+421 error A complete log of this run can be found in: C:\impresslola\clear\_logs\2025-08-15T11_36_22_673Z-debug-0.log

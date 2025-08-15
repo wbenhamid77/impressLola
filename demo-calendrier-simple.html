@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier Locateur - Version Simple</title>
+    <link rel="stylesheet" href="src/app/components/calendrier-locataire/calendrier-locataire.component.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e293b;
+        }
+        
+        .demo-title h1 {
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .demo-title p {
+            font-size: 1.1rem;
+            margin: 10px 0 0 0;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-title">
+            <h1>🏠 Calendrier Locateur - Version Simple</h1>
+            <p>Interface propre et sans problèmes de zoom</p>
+        </div>
+        
+        <!-- Composant calendrier locateur -->
+        <div class="calendrier-locataire">
+            <!-- En-tête principal -->
+            <div class="calendrier-main-header">
+                <div class="header-left">
+                    <h2 class="calendrier-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Calendrier des disponibilités
+                    </h2>
+                    <p class="calendrier-subtitle">
+                        Vérifiez les dates disponibles et les réservations existantes
+                    </p>
+                </div>
+                
+                <div class="header-right">
+                    <button class="btn-vue-locateur">
+                        <i class="fas fa-eye"></i>
+                        VUE LOCATEUR
+                    </button>
+                    <p class="header-info">Consultez l'état de vos réservations et la disponibilité de votre logement</p>
+                </div>
+            </div>
+
+            <!-- Navigation des mois -->
+            <div class="calendrier-navigation">
+                <button class="btn-nav-month">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="month-display">
+                    <h3 class="current-month">Août 2025</h3>
+                    <div class="month-actions">
+                        <button class="btn-today">
+                            <i class="fas fa-calendar-day"></i>
+                            Aujourd'hui
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="btn-nav-month">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Corps principal -->
+            <div class="calendrier-main-body">
+                <!-- Grille du calendrier -->
+                <div class="calendrier-grid">
+                    <!-- En-têtes des jours -->
+                    <div class="weekdays-header">
+                        <div class="weekday">D</div>
+                        <div class="weekday">L</div>
+                        <div class="weekday">M</div>
+                        <div class="weekday">M</div>
+                        <div class="weekday">J</div>
+                        <div class="weekday">V</div>
+                        <div class="weekday">S</div>
+                    </div>
+
+                    <!-- Grille des jours -->
+                    <div class="days-grid">
+                        <!-- Jours du mois précédent -->
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">27</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">28</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">29</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">30</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">31</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Premier jour d'août -->
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">1</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">2</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Deuxième semaine -->
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">3</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">4</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">5</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">6</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">7</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">8</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">9</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Troisième semaine -->
+                        <div class="day-cell jour-passe">
+                            <div class="day-content">
+                                <span class="day-number">10</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">11</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">12</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">13</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">14</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">15</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">16</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Quatrième semaine -->
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">17</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">18</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">19</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">20</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">21</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">22</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">23</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Cinquième semaine -->
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">24</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">25</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">26</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">27</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">28</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">29</span>
+                            </div>
+                        </div>
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">30</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Dernier jour -->
+                        <div class="day-cell jour-disponible">
+                            <div class="day-content">
+                                <span class="day-number">31</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="calendrier-sidebar">
+                    <!-- Résumé rapide -->
+                    <div class="quick-summary">
+                        <h4>📊 Résumé du mois</h4>
+                        <div class="summary-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">21</div>
+                                <div class="stat-label">Jours disponibles</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">Jours réservés</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">0%</div>
+                                <div class="stat-label">Taux d'occupation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Légende -->
+                    <div class="legend-simple">
+                        <h4>🎨 Légende</h4>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <div class="legend-color available"></div>
+                                <span>Disponible</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color pending"></div>
+                                <span>En attente</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color confirmed"></div>
+                                <span>Confirmée</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color active"></div>
+                                <span>En cours</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color past"></div>
+                                <span>Passé</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions rapides -->
+                    <div class="quick-actions">
+                        <h4>⚡ Actions rapides</h4>
+                        <div class="action-buttons">
+                            <button class="btn-action">
+                                <i class="fas fa-download"></i>
+                                Exporter
+                            </button>
+                            <button class="btn-action">
+                                <i class="fas fa-print"></i>
+                                Imprimer
+                            </button>
+                            <button class="btn-action">
+                                <i class="fas fa-share-alt"></i>
+                                Partager
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

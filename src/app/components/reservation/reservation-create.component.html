@@ -1,0 +1,261 @@
+<div class="reservation-create-container">
+  <!-- En-tête -->
+  <div class="create-header">
+    <h3>
+      <i class="fas fa-calendar-plus"></i>
+      Nouvelle Réservation
+    </h3>
+    <button class="btn-close" (click)="annuler()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Messages d'état -->
+  <div class="messages-section" *ngIf="error || success">
+    <div class="alert alert-danger" *ngIf="error">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+      <button class="btn-close" (click)="effacerErreur()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="alert alert-success" *ngIf="success">
+      <i class="fas fa-check-circle"></i>
+      {{ success }}
+      <button class="btn-close" (click)="effacerSucces()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulaire de création -->
+  <form [formGroup]="creationForm" (ngSubmit)="calculerRecapitulatif()" class="creation-form">
+    <!-- Informations de base -->
+    <div class="form-section">
+      <h4>Informations de base</h4>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="annonceId">Sélectionner une annonce *</label>
+          <select 
+            id="annonceId" 
+            class="form-control" 
+            formControlName="annonceId"
+            [disabled]="!!annonceId"
+          >
+            <option value="">Choisissez une annonce</option>
+            <option value="1E8447B6-62C6-40E1-BB9A-2228627D2572">Appartement Paris Centre - 120€/nuit</option>
+            <option value="2F9558C7-73D7-51F2-CC0B-3339738E3683">Maison Provence - 95€/nuit</option>
+            <option value="3G0669D8-84E8-62G3-DD1C-4440849F4794">Studio Lyon - 80€/nuit</option>
+          </select>
+          <div class="form-error" *ngIf="creationForm.get('annonceId')?.invalid && creationForm.get('annonceId')?.touched">
+            La sélection d'une annonce est requise
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dateArrivee">Date d'arrivée *</label>
+          <input 
+            type="date" 
+            id="dateArrivee" 
+            class="form-control" 
+            formControlName="dateArrivee"
+            (change)="onDateArriveeChange()"
+          >
+          <div class="form-error" *ngIf="creationForm.get('dateArrivee')?.invalid && creationForm.get('dateArrivee')?.touched">
+            La date d'arrivée est requise
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="dateDepart">Date de départ *</label>
+          <input 
+            type="date" 
+            id="dateDepart" 
+            class="form-control" 
+            formControlName="dateDepart"
+          >
+          <div class="form-error" *ngIf="creationForm.get('dateDepart')?.invalid && creationForm.get('dateDepart')?.touched">
+            La date de départ est requise
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombreVoyageurs">Nombre de voyageurs *</label>
+          <select id="nombreVoyageurs" class="form-control" formControlName="nombreVoyageurs">
+            <option *ngFor="let num of nombreVoyageursOptions" [value]="num">
+              {{ num }} {{ num === 1 ? 'voyageur' : 'voyageurs' }}
+            </option>
+          </select>
+          <div class="form-error" *ngIf="creationForm.get('nombreVoyageurs')?.invalid && creationForm.get('nombreVoyageurs')?.touched">
+            Le nombre de voyageurs doit être entre 1 et 10
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="modePaiement">Mode de paiement</label>
+          <select id="modePaiement" class="form-control" formControlName="modePaiement">
+            <option *ngFor="let option of modePaiementOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="messageProprietaire">Message au propriétaire</label>
+        <textarea 
+          id="messageProprietaire" 
+          class="form-control" 
+          formControlName="messageProprietaire"
+          rows="3"
+          placeholder="Votre message au propriétaire (optionnel)"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Frais additionnels -->
+    <div class="form-section">
+      <h4>Frais additionnels (optionnels)</h4>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fraisService">Frais de service (€)</label>
+          <input 
+            type="number" 
+            id="fraisService" 
+            class="form-control" 
+            formControlName="fraisService"
+            min="0"
+            step="0.01"
+          >
+          <div class="form-error" *ngIf="creationForm.get('fraisService')?.invalid && creationForm.get('fraisService')?.touched">
+            Les frais de service ne peuvent pas être négatifs
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="fraisNettoyage">Frais de nettoyage (€)</label>
+          <input 
+            type="number" 
+            id="fraisNettoyage" 
+            class="form-control" 
+            formControlName="fraisNettoyage"
+            min="0"
+            step="0.01"
+          >
+          <div class="form-error" *ngIf="creationForm.get('fraisNettoyage')?.invalid && creationForm.get('fraisNettoyage')?.touched">
+            Les frais de nettoyage ne peuvent pas être négatifs
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="fraisDepot">Frais de dépôt (€)</label>
+          <input 
+            type="number" 
+            id="fraisDepot" 
+            class="form-control" 
+            formControlName="fraisDepot"
+            min="0"
+            step="0.01"
+          >
+          <div class="form-error" *ngIf="creationForm.get('fraisDepot')?.invalid && creationForm.get('fraisDepot')?.touched">
+            Les frais de dépôt ne peuvent pas être négatifs
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résumé de la période -->
+    <div class="period-summary" *ngIf="dureeSejour > 0">
+      <div class="summary-item">
+        <i class="fas fa-calendar-alt"></i>
+        <span class="label">Durée du séjour :</span>
+        <span class="value">{{ dureeSejour }} {{ dureeSejour === 1 ? 'jour' : 'jours' }}</span>
+      </div>
+    </div>
+
+    <!-- Actions du formulaire -->
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="creationForm.invalid || loading"
+      >
+        <i class="fas fa-calculator" *ngIf="!loading"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+        Calculer le récapitulatif
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="annuler()"
+        [disabled]="loading"
+      >
+        Annuler
+      </button>
+    </div>
+  </form>
+
+  <!-- Récapitulatif -->
+  <div class="recapitulatif-section" *ngIf="recapitulatif">
+    <h4>
+      <i class="fas fa-receipt"></i>
+      Récapitulatif de la réservation
+    </h4>
+    
+    <div class="recap-details">
+      <div class="recap-item main">
+        <span class="label">Prix total :</span>
+        <span class="value">{{ recapitulatif.prixTotal }}€</span>
+      </div>
+      
+      <div class="recap-item">
+        <span class="label">Nombre de nuits :</span>
+        <span class="value">{{ recapitulatif.nombreNuits }}</span>
+      </div>
+      
+      <div class="recap-item" *ngIf="recapitulatif.fraisService && recapitulatif.fraisService > 0">
+        <span class="label">Frais de service :</span>
+        <span class="value">{{ recapitulatif.fraisService }}€</span>
+      </div>
+      
+      <div class="recap-item" *ngIf="recapitulatif.fraisNettoyage && recapitulatif.fraisNettoyage > 0">
+        <span class="label">Frais de nettoyage :</span>
+        <span class="value">{{ recapitulatif.fraisNettoyage }}€</span>
+      </div>
+      
+      <div class="recap-item" *ngIf="recapitulatif.fraisDepot && recapitulatif.fraisDepot > 0">
+        <span class="label">Frais de dépôt :</span>
+        <span class="value">{{ recapitulatif.fraisDepot }}€</span>
+      </div>
+    </div>
+
+    <div class="recap-actions">
+      <button 
+        class="btn btn-success" 
+        (click)="confirmerReservation()"
+        [disabled]="loading || !isFormValid"
+      >
+        <i class="fas fa-check" *ngIf="!loading"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+        Confirmer la réservation
+      </button>
+      
+      <button 
+        class="btn btn-outline-secondary" 
+        (click)="reinitialiserFormulaire()"
+        [disabled]="loading"
+      >
+        <i class="fas fa-redo"></i>
+        Recommencer
+      </button>
+    </div>
+  </div>
+</div> 

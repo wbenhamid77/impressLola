@@ -1,0 +1,410 @@
+/* ===== DESIGN AUX COULEURS DU MAROC ===== */
+:host {
+  --maroc-vert: #006233;
+  --maroc-rouge: #C1272D;
+  --maroc-vert-clair: #4CAF50;
+  --maroc-rouge-clair: #F44336;
+  --maroc-or: #FF9800;
+  --maroc-beige: #F5F5DC;
+  --maroc-gris: #757575;
+  --maroc-blanc: #FFFFFF;
+  --maroc-noir: #212121;
+  --maroc-ombre: rgba(0, 0, 0, 0.1);
+}
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.reservation-detail-container {
+  background: linear-gradient(135deg, var(--maroc-beige) 0%, var(--maroc-blanc) 100%);
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.page-header {
+  background: linear-gradient(135deg, var(--maroc-vert) 0%, var(--maroc-vert-clair) 100%);
+  color: var(--maroc-blanc);
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px var(--maroc-ombre);
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  margin: 10px 0 0 0;
+  opacity: 0.9;
+}
+
+/* ===== CONTENU PRINCIPAL ===== */
+.reservation-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+  .reservation-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== CARTE PRINCIPALE ===== */
+.main-card {
+  background: var(--maroc-blanc);
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 15px var(--maroc-ombre);
+}
+
+.card-header {
+  border-bottom: 2px solid var(--maroc-vert);
+  padding-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+.card-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--maroc-vert);
+  margin: 0 0 10px 0;
+}
+
+.card-subtitle {
+  font-size: 1.1rem;
+  color: var(--maroc-gris);
+  margin: 0;
+}
+
+/* ===== INFORMATIONS DE L'ANNONCE ===== */
+.annonce-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--maroc-vert);
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--maroc-vert);
+  border-radius: 2px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.info-item {
+  background: rgba(0, 98, 51, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 3px solid var(--maroc-vert);
+}
+
+.info-label {
+  font-size: 0.9rem;
+  color: var(--maroc-gris);
+  font-weight: 500;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 1.1rem;
+  color: var(--maroc-noir);
+  font-weight: 600;
+}
+
+/* ===== INFORMATIONS DE RÉSERVATION ===== */
+.reservation-info {
+  background: var(--maroc-blanc);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 5px 15px var(--maroc-ombre);
+}
+
+.reservation-header {
+  background: linear-gradient(135deg, var(--maroc-rouge) 0%, var(--maroc-rouge-clair) 100%);
+  color: var(--maroc-blanc);
+  padding: 20px;
+  border-radius: 10px;
+  margin: -25px -25px 25px -25px;
+  text-align: center;
+}
+
+.reservation-id {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
+.reservation-status {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* ===== DÉTAILS DE LA RÉSERVATION ===== */
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--maroc-vert);
+}
+
+.detail-value {
+  color: var(--maroc-noir);
+  font-weight: 500;
+}
+
+.detail-value.price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--maroc-vert);
+}
+
+.detail-value.total {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--maroc-rouge);
+}
+
+/* ===== BADGE DE STATUT ===== */
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-success {
+  background: var(--maroc-vert);
+  color: var(--maroc-blanc);
+}
+
+.badge-warning {
+  background: var(--maroc-or);
+  color: var(--maroc-blanc);
+}
+
+.badge-info {
+  background: var(--maroc-vert-clair);
+  color: var(--maroc-blanc);
+}
+
+.badge-secondary {
+  background: var(--maroc-gris);
+  color: var(--maroc-blanc);
+}
+
+.badge-danger {
+  background: var(--maroc-rouge);
+  color: var(--maroc-blanc);
+}
+
+/* ===== BOUTONS D'ACTION ===== */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: var(--maroc-vert);
+  color: var(--maroc-blanc);
+}
+
+.btn-primary:hover {
+  background: var(--maroc-vert-clair);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 98, 51, 0.3);
+}
+
+.btn-secondary {
+  background: var(--maroc-gris);
+  color: var(--maroc-blanc);
+}
+
+.btn-secondary:hover {
+  background: #616161;
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: var(--maroc-rouge);
+  color: var(--maroc-blanc);
+}
+
+.btn-danger:hover {
+  background: var(--maroc-rouge-clair);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(193, 39, 45, 0.3);
+}
+
+/* ===== LOADING ===== */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #E0E0E0;
+  border-top: 6px solid var(--maroc-vert);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== MESSAGES ===== */
+.message {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.message.success {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--maroc-vert);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.message.error {
+  background: rgba(244, 67, 54, 0.1);
+  color: var(--maroc-rouge);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .reservation-detail-container {
+    padding: 15px;
+  }
+  
+  .page-header {
+    padding: 20px;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .main-card,
+  .reservation-info {
+    padding: 20px;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reservation-detail-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.main-card,
+.reservation-info {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.main-card {
+  animation-delay: 0.1s;
+}
+
+.reservation-info {
+  animation-delay: 0.2s;
+}
+
+/* ===== UTILITAIRES ===== */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mb-20 { margin-bottom: 20px; }
+.mt-20 { margin-top: 20px; }
+.ml-20 { margin-left: 20px; }
+.mr-20 { margin-right: 20px; }
+
+.p-20 { padding: 20px; }
+.pt-20 { padding-top: 20px; }
+.pb-20 { padding-bottom: 20px; }
+
+.hidden { display: none; }
+.visible { display: block; } 

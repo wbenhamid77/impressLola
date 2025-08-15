@@ -12,6 +12,9 @@ import { AnnoncesComponent } from './components/annonces/annonces.component';
 import { DetailAnnonceComponent } from './components/detail-annonce/detail-annonce.component';
 import { MesFavorisComponent } from './components/mes-favoris/mes-favoris.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ReservationsLocataireComponent } from './components/reservation-locataire/reservations-locataire.component';
+import { ReservationsLocateurComponent } from './components/reservation-locateur/reservations-locateur.component';
+import { ReservationDetailComponent } from './components/reservation-detail/reservation-detail.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -31,6 +34,9 @@ export const routes: Routes = [
       { path: 'detail-annonce/:id', component: DetailAnnonceComponent },
       { path: 'mes-favoris', component: MesFavorisComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'mes-reservations', component: ReservationsLocataireComponent },
+      { path: 'reservations-locateur', component: ReservationsLocateurComponent },
+      { path: 'reservation/:id', component: ReservationDetailComponent },
     ]
   },
   { path: '**', redirectTo: '/login' }
