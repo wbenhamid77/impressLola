@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
@@ -17,12 +17,15 @@ export class SidebarComponent {
   username: string = '';
   isLocataire: boolean = false;
   connectionDate: string = '';
+  isCollapsed: boolean = true;
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {
     this.initializeUserInfo();
+    const stored = localStorage.getItem('sidebarCollapsed');
+    this.isCollapsed = stored ? stored === '1' : true;
   }
 
   initializeUserInfo(): void {
@@ -35,39 +38,7 @@ export class SidebarComponent {
     });
   }
 
-  navigateTo(page: string): void {
-    this.currentPage = page;
-    this.navigationEvent.emit(page);
-    
-    switch (page) {
-      case 'dashboard':
-        this.router.navigate(['/dashboard']);
-        break;
-      case 'mes-annonces':
-        this.router.navigate(['/mes-annonces']);
-        break;
-      case 'ajouter-annonce':
-        this.router.navigate(['/ajouter-annonce']);
-        break;
-      case 'annonces':
-        this.router.navigate(['/annonces']);
-        break;
-      case 'mes-favoris':
-        this.router.navigate(['/mes-favoris']);
-        break;
-      case 'profile':
-        this.router.navigate(['/profile']);
-        break;
-      case 'mes-reservations':
-        this.router.navigate(['/mes-reservations']);
-        break;
-      case 'reservations-locateur':
-        this.router.navigate(['/reservations-locateur']);
-        break;
-      default:
-        this.router.navigate(['/dashboard']);
-    }
-  }
+  // Navigation via RouterLink/RouterLinkActive côté template désormais
 
   logout(): void {
     this.authService.logout();
@@ -76,5 +47,23 @@ export class SidebarComponent {
 
   isActive(page: string): boolean {
     return this.currentPage === page;
+  }
+
+  toggleSidebar(): void {
+    this.isCollapsed = !this.isCollapsed;
+    localStorage.setItem('sidebarCollapsed', this.isCollapsed ? '1' : '0');
+    window.dispatchEvent(new Event('sidebar:toggle'));
+  }
+
+  onMouseEnter(): void {
+    this.isCollapsed = false;
+    localStorage.setItem('sidebarCollapsed', '0');
+    window.dispatchEvent(new Event('sidebar:toggle'));
+  }
+
+  onMouseLeave(): void {
+    this.isCollapsed = true;
+    localStorage.setItem('sidebarCollapsed', '1');
+    window.dispatchEvent(new Event('sidebar:toggle'));
   }
 } 

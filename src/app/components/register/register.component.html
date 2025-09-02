@@ -1,308 +1,315 @@
-<div class="register-container">
-  <div class="register-card">
-    <div class="register-header">
-      <div class="logo-section">
-        <div class="logo-circle">CAF</div>
-        <div class="logo-text">
-          <h1>🏆 CAF 2025</h1>
-          <p>Créez votre compte professionnel</p>
+<div class="fixed inset-0 flex items-center justify-center overflow-hidden bg-slate-900 p-4 text-white">
+  <div class="relative z-10 grid w-[min(1200px,95vw)] max-h-[90vh] grid-cols-1 gap-6 overflow-hidden rounded-2xl border border-white/15 bg-white/10 p-4 shadow-2xl backdrop-blur md:grid-cols-[1fr,1.2fr]">
+    <!-- Info gauche -->
+    <div class="flex flex-col gap-6 border-b border-white/15 p-2 md:border-b-0 md:border-r md:pr-4">
+      <div class="text-center">
+        <div class="mx-auto mb-4 inline-flex items-center gap-3">
+          <div class="grid h-12 w-12 place-items-center rounded-lg bg-gradient-to-br from-maroc-dor to-yellow-300 font-extrabold text-slate-900 shadow">CAN<br/>2025</div>
+          <h1 class="m-0 text-2xl font-bold bg-gradient-to-r from-maroc-vert via-maroc-dor to-maroc-rouge bg-clip-text text-transparent">ImpressLola</h1>
+        </div>
+        <p class="m-0 opacity-85">Location au Maroc — CAN 2025</p>
+      </div>
+
+      <div class="rounded-xl border border-yellow-300/25 bg-white/5 p-4 text-center backdrop-blur">
+        <div class="mx-auto mb-3 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-maroc-dor to-yellow-300 px-3 py-1 font-semibold text-slate-900 shadow">🏆 Plateforme Officielle CAN 2025</div>
+        <p class="mx-auto max-w-md text-sm opacity-90">Rejoignez la première plateforme de location certifiée pour la Coupe d'Afrique des Nations 2025 au Maroc. Connectez propriétaires et voyageurs dans un environnement sécurisé et professionnel.</p>
+        <div class="mt-3 flex flex-wrap justify-center gap-4">
+          <div class="flex flex-col items-center">
+            <span class="text-lg font-extrabold text-maroc-dor">15K+</span>
+            <span class="text-xs opacity-75 uppercase tracking-wide">Propriétés</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-lg font-extrabold text-maroc-dor">98%</span>
+            <span class="text-xs opacity-75 uppercase tracking-wide">Satisfaction</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-lg font-extrabold text-maroc-dor">24/7</span>
+            <span class="text-xs opacity-75 uppercase tracking-wide">Support</span>
+          </div>
         </div>
       </div>
-      <div class="header-decoration">
-        <div class="decoration-circle"></div>
-        <div class="decoration-circle"></div>
-        <div class="decoration-circle"></div>
+
+      <div class="rounded-xl border border-white/15 bg-white/5 p-4 text-center backdrop-blur">
+        <div class="mb-2 flex flex-wrap justify-center gap-6">
+          <div class="flex min-w-[70px] flex-col items-center gap-1"><span>🛡️</span><span class="text-xs opacity-80">Données cryptées SSL</span></div>
+          <div class="flex min-w-[70px] flex-col items-center gap-1"><span>✅</span><span class="text-xs opacity-80">Certifié RGPD</span></div>
+          <div class="flex min-w-[70px] flex-col items-center gap-1"><span>🏆</span><span class="text-xs opacity-80">Partenaire officiel</span></div>
+        </div>
+        <p class="m-0 text-xs opacity-75">Vos données sont protégées par un chiffrement de niveau bancaire. Nous respectons strictement votre confidentialité.</p>
       </div>
     </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
-      <!-- Informations de base -->
-      <div class="form-section">
-        <h3><i class="fas fa-user"></i> Informations personnelles</h3>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="nom">Nom *</label>
-            <input 
-              type="text" 
-              id="nom" 
-              formControlName="nom" 
-              placeholder="Votre nom"
-              [class.error]="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched">
-            <div *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              Le nom est requis et doit contenir au moins 2 caractères.
-            </div>
+    <!-- Formulaire droite -->
+    <div class="flex h-full flex-col overflow-hidden p-2">
+      <!-- Stepper -->
+      <div class="mb-4">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <div class="flex min-w-[60px] flex-col items-center" [ngClass]="{ 'opacity-100': step >= 1, 'opacity-70': step < 1 }">
+            <div class="grid h-12 w-12 place-items-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur"
+                 [ngClass]="{ 'border-maroc-dor bg-gradient-to-br from-maroc-dor to-yellow-300 text-slate-900': step >= 1, 'border-maroc-vert bg-gradient-to-br from-maroc-vert to-emerald-500 text-white': step > 1 }">1</div>
+            <span class="mt-1 text-xs opacity-80" [ngClass]="{ 'text-maroc-dor font-semibold opacity-100': step >= 1 }">Informations</span>
           </div>
-
-          <div class="form-group">
-            <label for="prenom">Prénom *</label>
-            <input 
-              type="text" 
-              id="prenom" 
-              formControlName="prenom" 
-              placeholder="Votre prénom"
-              [class.error]="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched">
-            <div *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              Le prénom est requis et doit contenir au moins 2 caractères.
-            </div>
+          <div class="h-1 w-14 rounded bg-white/20" [ngClass]="{ 'bg-gradient-to-r from-maroc-vert to-maroc-dor': step > 1 }"></div>
+          <div class="flex min-w-[60px] flex-col items-center" [ngClass]="{ 'opacity-100': step >= 2, 'opacity-70': step < 2 }">
+            <div class="grid h-12 w-12 place-items-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur"
+                 [ngClass]="{ 'border-maroc-dor bg-gradient-to-br from-maroc-dor to-yellow-300 text-slate-900': step >= 2, 'border-maroc-vert bg-gradient-to-br from-maroc-vert to-emerald-500 text-white': step > 2 }">2</div>
+            <span class="mt-1 text-xs opacity-80" [ngClass]="{ 'text-maroc-dor font-semibold opacity-100': step >= 2 }">Type</span>
           </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input 
-              type="email" 
-              id="email" 
-              formControlName="email" 
-              placeholder="votre@email.com"
-              [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-            <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              Veuillez entrer une adresse email valide.
-            </div>
+          <div class="h-1 w-14 rounded bg-white/20" [ngClass]="{ 'bg-gradient-to-r from-maroc-vert to-maroc-dor': step > 2 }"></div>
+          <div class="flex min-w-[60px] flex-col items-center" [ngClass]="{ 'opacity-100': step >= 3, 'opacity-70': step < 3 }">
+            <div class="grid h-12 w-12 place-items-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur"
+                 [ngClass]="{ 'border-maroc-dor bg-gradient-to-br from-maroc-dor to-yellow-300 text-slate-900': step >= 3, 'border-maroc-vert bg-gradient-to-br from-maroc-vert to-emerald-500 text-white': step > 3 }">3</div>
+            <span class="mt-1 text-xs opacity-80" [ngClass]="{ 'text-maroc-dor font-semibold opacity-100': step >= 3 }">Profil</span>
           </div>
-
-          <div class="form-group">
-            <label for="telephone">Téléphone *</label>
-            <input 
-              type="tel" 
-              id="telephone" 
-              formControlName="telephone" 
-              placeholder="06.12.34.56.78"
-              [class.error]="registerForm.get('telephone')?.invalid && registerForm.get('telephone')?.touched">
-            <div *ngIf="registerForm.get('telephone')?.invalid && registerForm.get('telephone')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              Veuillez entrer un numéro de téléphone valide.
-            </div>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="photoProfil">Photo de profil (URL)</label>
-            <input 
-              type="url" 
-              id="photoProfil" 
-              formControlName="photoProfil" 
-              placeholder="https://example.com/photos/votre-photo.jpg">
+          <div class="h-1 w-14 rounded bg-white/20" [ngClass]="{ 'bg-gradient-to-r from-maroc-vert to-maroc-dor': step > 3 }"></div>
+          <div class="flex min-w-[60px] flex-col items-center" [ngClass]="{ 'opacity-100': step >= 4, 'opacity-70': step < 4 }">
+            <div class="grid h-12 w-12 place-items-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur"
+                 [ngClass]="{ 'border-maroc-dor bg-gradient-to-br from-maroc-dor to-yellow-300 text-slate-900': step >= 4 }">4</div>
+            <span class="mt-1 text-xs opacity-80" [ngClass]="{ 'text-maroc-dor font-semibold opacity-100': step >= 4 }">Sécurité</span>
           </div>
         </div>
       </div>
 
-      <!-- Type de compte -->
-      <div class="form-section">
-        <h3><i class="fas fa-users"></i> Type de compte</h3>
-        
-        <div class="form-group">
-          <label for="typeUtilisateur">Type de compte *</label>
-          <select 
-            id="typeUtilisateur" 
-            formControlName="typeUtilisateur"
-            [class.error]="registerForm.get('typeUtilisateur')?.invalid && registerForm.get('typeUtilisateur')?.touched">
-            <option value="LOCATAIRE">🏠 Locataire - Je cherche un logement</option>
-            <option value="LOCATEUR">🏢 Locateur - Je propose un logement</option>
-          </select>
-          <div class="type-info">
-            <p *ngIf="registerForm.get('typeUtilisateur')?.value === 'LOCATAIRE'" class="info-text">
-              💡 En tant que locataire, vous pourrez rechercher et réserver des logements pour la CAF 2025
-            </p>
-            <p *ngIf="registerForm.get('typeUtilisateur')?.value === 'LOCATEUR'" class="info-text">
-              💡 En tant que locateur, vous pourrez proposer vos logements aux supporters de la CAF 2025
-            </p>
+      <!-- Form -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-1 flex-col overflow-hidden">
+        <!-- Étape 1 -->
+        <div *ngIf="step === 1" class="flex flex-1 flex-col overflow-auto">
+          <div class="mb-4 text-center">
+            <h2 class="m-0 text-lg font-semibold text-maroc-dor">Informations personnelles</h2>
+            <p class="m-0 text-sm opacity-85">Créez votre profil sécurisé avec vos données personnelles. Toutes les informations sont protégées selon les standards RGPD.</p>
+          </div>
+          <div class="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label for="nom" class="mb-2 block text-sm font-medium text-maroc-dor">Nom *</label>
+              <input id="nom" type="text" formControlName="nom" placeholder="Votre nom de famille"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched">
+                <span *ngIf="registerForm.get('nom')?.errors?.['required']">Le nom est requis</span>
+                <span *ngIf="registerForm.get('nom')?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+              </div>
+            </div>
+            <div>
+              <label for="prenom" class="mb-2 block text-sm font-medium text-maroc-dor">Prénom *</label>
+              <input id="prenom" type="text" formControlName="prenom" placeholder="Votre prénom"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched">
+                <span *ngIf="registerForm.get('prenom')?.errors?.['required']">Le prénom est requis</span>
+                <span *ngIf="registerForm.get('prenom')?.errors?.['minlength']">Le prénom doit contenir au moins 2 caractères</span>
+              </div>
+            </div>
+            <div class="md:col-span-2">
+              <label for="email" class="mb-2 block text-sm font-medium text-maroc-dor">Email *</label>
+              <input id="email" type="email" formControlName="email" placeholder="votre.email@exemple.com"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('email')?.invalid && registerForm.get('email')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                <span *ngIf="registerForm.get('email')?.errors?.['required']">L'email est requis</span>
+                <span *ngIf="registerForm.get('email')?.errors?.['email']">Format d'email invalide</span>
+              </div>
+            </div>
+            <div class="md:col-span-2">
+              <label for="telephone" class="mb-2 block text-sm font-medium text-maroc-dor">Téléphone *</label>
+              <input id="telephone" type="tel" formControlName="telephone" placeholder="+212 6 12 34 56 78"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('telephone')?.invalid && registerForm.get('telephone')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('telephone')?.invalid && registerForm.get('telephone')?.touched">
+                <span *ngIf="registerForm.get('telephone')?.errors?.['required']">Le téléphone est requis</span>
+                <span *ngIf="registerForm.get('telephone')?.errors?.['pattern']">Format de téléphone invalide</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- Étape 2 -->
+        <div *ngIf="step === 2" class="flex flex-1 flex-col overflow-auto">
+          <div class="mb-4 text-center">
+            <h2 class="m-0 text-lg font-semibold text-maroc-dor">Type de compte</h2>
+            <p class="m-0 text-sm opacity-85">Sélectionnez votre profil pour accéder aux services adaptés. Chaque type bénéficie d'outils professionnels dédiés et d'un accompagnement personnalisé.</p>
+          </div>
+          <div class="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="cursor-pointer rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur transition hover:-translate-y-1 hover:bg-white/15 hover:shadow"
+                 [ngClass]="{ 'ring-2 ring-maroc-dor scale-[1.01]': registerForm.get('typeUtilisateur')?.value === 'LOCATAIRE' }"
+                 (click)="selectUserType('LOCATAIRE')">
+              <div class="mb-3 grid place-items-center">
+                <div class="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-blue-700 to-blue-400 text-white">🏠</div>
+              </div>
+              <div class="text-center">
+                <h3 class="m-0 text-xl font-semibold text-maroc-dor">Locataire</h3>
+                <p class="m-0 text-sm opacity-90">Trouvez votre hébergement idéal pour vivre pleinement la CAN 2025</p>
+                <ul class="mt-2 list-inside list-disc text-left text-sm opacity-90">
+                  <li>Catalogue premium d'hébergements certifiés</li>
+                  <li>Localisation stratégique près des stades</li>
+                  <li>Conciergerie 24/7 pendant l'événement</li>
+                  <li>Garantie de satisfaction ou remboursement</li>
+                </ul>
+              </div>
+            </div>
+            <div class="cursor-pointer rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur transition hover:-translate-y-1 hover:bg-white/15 hover:shadow"
+                 [ngClass]="{ 'ring-2 ring-maroc-dor scale-[1.01]': registerForm.get('typeUtilisateur')?.value === 'LOCATEUR' }"
+                 (click)="selectUserType('LOCATEUR')">
+              <div class="mb-3 grid place-items-center">
+                <div class="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-emerald-700 to-emerald-400 text-white">🔑</div>
+              </div>
+              <div class="text-center">
+                <h3 class="m-0 text-xl font-semibold text-maroc-dor">Locateur</h3>
+                <p class="m-0 text-sm opacity-90">Monétisez vos biens immobiliers pendant la CAN 2025</p>
+                <ul class="mt-2 list-inside list-disc text-left text-sm opacity-90">
+                  <li>Commission réduite de 8% seulement</li>
+                  <li>Tarification dynamique intelligente</li>
+                  <li>Gestion complète des réservations</li>
+                  <li>Marketing ciblé vers les supporters</li>
+                  <li>Assurance tous risques incluse</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Étape 3 -->
+        <div *ngIf="step === 3" class="flex flex-1 flex-col overflow-auto">
+          <div class="mb-4 text-center">
+            <h2 class="m-0 text-lg font-semibold text-maroc-dor">Profil professionnel</h2>
+            <p class="m-0 text-sm opacity-85">{{registerForm.get('typeUtilisateur')?.value === 'LOCATEUR' ? 'Valorisez votre expertise immobilière. Ces informations renforcent votre crédibilité auprès des locataires et optimisent vos revenus.' : 'Complétez votre profil locataire. Ces données garantissent aux propriétaires votre solvabilité et sérieux.'}}</p>
+          </div>
+          <div *ngIf="registerForm.get('typeUtilisateur')?.value === 'LOCATEUR'" class="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="md:col-span-2">
+              <label for="description" class="mb-2 block text-sm font-medium text-maroc-dor">Description professionnelle *</label>
+              <textarea id="description" formControlName="description" rows="4" placeholder="Ex: Gestionnaire immobilier..."
+                        class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                        [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('description')?.invalid && registerForm.get('description')?.touched }"></textarea>
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('description')?.invalid && registerForm.get('description')?.touched">
+                <span *ngIf="registerForm.get('description')?.errors?.['required']">La description est requise</span>
+                <span *ngIf="registerForm.get('description')?.errors?.['minlength']">La description doit contenir au moins 20 caractères</span>
+              </div>
+            </div>
+            <div>
+              <label for="raisonSociale" class="mb-2 block text-sm font-medium text-maroc-dor">Raison sociale</label>
+              <input id="raisonSociale" type="text" formControlName="raisonSociale" placeholder="Ex: SARL Atlas Immobilier"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2" />
+            </div>
+            <div>
+              <label for="numeroSiret" class="mb-2 block text-sm font-medium text-maroc-dor">Numéro SIRET</label>
+              <input id="numeroSiret" type="text" formControlName="numeroSiret" placeholder="12345678901234"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2" />
+            </div>
+            <div class="md:col-span-2">
+              <label for="adresseProfessionnelle" class="mb-2 block text-sm font-medium text-maroc-dor">Adresse professionnelle *</label>
+              <input id="adresseProfessionnelle" type="text" formControlName="adresseProfessionnelle" placeholder="Adresse de votre établissement"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('adresseProfessionnelle')?.invalid && registerForm.get('adresseProfessionnelle')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('adresseProfessionnelle')?.invalid && registerForm.get('adresseProfessionnelle')?.touched">L'adresse professionnelle est requise</div>
+            </div>
+          </div>
+          <div *ngIf="registerForm.get('typeUtilisateur')?.value === 'LOCATAIRE'" class="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label for="profession" class="mb-2 block text-sm font-medium text-maroc-dor">Profession *</label>
+              <input id="profession" type="text" formControlName="profession" placeholder="Votre métier"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('profession')?.invalid && registerForm.get('profession')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('profession')?.invalid && registerForm.get('profession')?.touched">La profession est requise</div>
+            </div>
+            <div>
+              <label for="revenuAnnuel" class="mb-2 block text-sm font-medium text-maroc-dor">Revenu annuel *</label>
+              <div class="relative">
+                <input id="revenuAnnuel" type="number" formControlName="revenuAnnuel" placeholder="50000"
+                       class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 pr-10 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                       [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('revenuAnnuel')?.invalid && registerForm.get('revenuAnnuel')?.touched }" />
+                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-semibold text-maroc-dor">€</span>
+              </div>
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('revenuAnnuel')?.invalid && registerForm.get('revenuAnnuel')?.touched">
+                <span *ngIf="registerForm.get('revenuAnnuel')?.errors?.['required']">Le revenu annuel est requis</span>
+                <span *ngIf="registerForm.get('revenuAnnuel')?.errors?.['min']">Le revenu doit être positif</span>
+              </div>
+            </div>
+            <div>
+              <label for="employeur" class="mb-2 block text-sm font-medium text-maroc-dor">Employeur *</label>
+              <input id="employeur" type="text" formControlName="employeur" placeholder="Nom de votre employeur"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('employeur')?.invalid && registerForm.get('employeur')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('employeur')?.invalid && registerForm.get('employeur')?.touched">L'employeur est requis</div>
+            </div>
+            <div>
+              <label for="dateEmbauche" class="mb-2 block text-sm font-medium text-maroc-dor">Date d'embauche *</label>
+              <input id="dateEmbauche" type="date" formControlName="dateEmbauche"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('dateEmbauche')?.invalid && registerForm.get('dateEmbauche')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('dateEmbauche')?.invalid && registerForm.get('dateEmbauche')?.touched">La date d'embauche est requise</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Étape 4 -->
+        <div *ngIf="step === 4" class="flex flex-1 flex-col overflow-auto">
+          <div class="mb-4 text-center">
+            <h2 class="m-0 text-lg font-semibold text-maroc-dor">Sécurité du compte</h2>
+            <p class="m-0 text-sm opacity-85">Sécurisez votre compte avec un mot de passe robuste. Nous utilisons un chiffrement de niveau bancaire pour protéger vos données.</p>
+          </div>
+          <div class="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label for="motDePasse" class="mb-2 block text-sm font-medium text-maroc-dor">Mot de passe *</label>
+              <input id="motDePasse" type="password" formControlName="motDePasse" placeholder="••••••••"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': registerForm.get('motDePasse')?.invalid && registerForm.get('motDePasse')?.touched }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('motDePasse')?.invalid && registerForm.get('motDePasse')?.touched">
+                <span *ngIf="registerForm.get('motDePasse')?.errors?.['required']">Le mot de passe est requis</span>
+                <span *ngIf="registerForm.get('motDePasse')?.errors?.['minlength']">Le mot de passe doit contenir au moins 8 caractères</span>
+              </div>
+            </div>
+            <div>
+              <label for="confirmPassword" class="mb-2 block text-sm font-medium text-maroc-dor">Confirmer le mot de passe *</label>
+              <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="••••••••"
+                     class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2"
+                     [ngClass]="{ 'border-rose-400 bg-rose-900/20 ring-rose-400': (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) || registerForm.errors?.['passwordMismatch'] }" />
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">La confirmation est requise</div>
+              <div class="mt-1 text-sm text-rose-200" *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched">Les mots de passe ne correspondent pas</div>
+            </div>
+            <div class="md:col-span-2">
+              <div class="rounded-xl border border-white/15 bg-white/5 p-4 backdrop-blur">
+                <h4 class="m-0 text-maroc-dor">Exigences du mot de passe :</h4>
+                <ul class="m-0 list-inside list-disc p-0">
+                  <li [ngClass]="{ 'text-emerald-400': registerForm.get('motDePasse')?.value?.length >= 8 }">Au moins 8 caractères</li>
+                  <li [ngClass]="{ 'text-emerald-400': hasUppercase() }">Une lettre majuscule</li>
+                  <li [ngClass]="{ 'text-emerald-400': hasLowercase() }">Une lettre minuscule</li>
+                  <li [ngClass]="{ 'text-emerald-400': hasNumber() }">Un chiffre</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="mb-4 flex-shrink-0">
+          <div *ngIf="error" class="mb-2 flex items-center gap-2 rounded-lg border border-rose-300/40 bg-rose-900/20 px-3 py-2 text-rose-100">⚠ <span>{{ error }}</span></div>
+          <div *ngIf="success" class="flex items-center gap-2 rounded-lg border border-emerald-300/40 bg-emerald-900/20 px-3 py-2 text-emerald-100">✓ <span>{{ success }}</span></div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mb-2 flex items-center gap-3">
+          <button type="button" *ngIf="step > 1" [disabled]="loading"
+                  class="rounded-xl border border-white/25 px-4 py-3 font-semibold text-white hover:bg-white/10 disabled:opacity-60"
+                  (click)="goPrev()">
+            ← Précédent
+          </button>
+          <div class="flex-1"></div>
+          <button type="button" *ngIf="step < 4" class="rounded-xl bg-gradient-to-r from-maroc-vert to-maroc-dor px-4 py-3 font-extrabold text-slate-900"
+                  (click)="goNext()">
+            Suivant →
+          </button>
+          <button type="submit" *ngIf="step === 4" [disabled]="loading"
+                  class="min-w-[200px] rounded-xl bg-gradient-to-r from-maroc-vert to-maroc-dor px-4 py-3 font-extrabold text-slate-900 disabled:opacity-60">
+            <span *ngIf="!loading">Créer mon compte</span>
+            <span *ngIf="loading" class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white align-middle"></span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Lien login -->
+      <div class="mt-2 border-t border-white/10 pt-3 text-center">
+        <p class="m-0 text-sm opacity-85">Vous avez déjà un compte ?</p>
+        <button type="button" class="text-md cursor-pointer font-semibold text-maroc-dor underline hover:text-maroc-rouge" (click)="goToLogin()">Se connecter</button>
       </div>
-
-      <!-- Informations spécifiques au locateur -->
-      <div *ngIf="registerForm.get('typeUtilisateur')?.value === 'LOCATEUR'" class="form-section">
-        <h3><i class="fas fa-home"></i> Informations professionnelles - Locateur</h3>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="description">Description professionnelle *</label>
-            <textarea 
-              id="description" 
-              formControlName="description" 
-              placeholder="Décrivez votre activité de location, votre expérience, vos spécialités..."
-              rows="4"
-              [class.error]="registerForm.get('description')?.invalid && registerForm.get('description')?.touched"></textarea>
-            <div *ngIf="registerForm.get('description')?.invalid && registerForm.get('description')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              La description est requise et doit contenir au moins 20 caractères.
-            </div>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="adresseProfessionnelle">Adresse professionnelle *</label>
-            <input 
-              type="text" 
-              id="adresseProfessionnelle" 
-              formControlName="adresseProfessionnelle" 
-              placeholder="Ex: 15 Avenue des Sports, 75001 Paris"
-              [class.error]="registerForm.get('adresseProfessionnelle')?.invalid && registerForm.get('adresseProfessionnelle')?.touched">
-            <div *ngIf="registerForm.get('adresseProfessionnelle')?.invalid && registerForm.get('adresseProfessionnelle')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              L'adresse professionnelle est requise.
-            </div>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="numeroSiret">Numéro SIRET (optionnel)</label>
-            <input 
-              type="text" 
-              id="numeroSiret" 
-              formControlName="numeroSiret" 
-              placeholder="Ex: 12345678901234">
-          </div>
-
-          <div class="form-group">
-            <label for="raisonSociale">Raison sociale (optionnel)</label>
-            <input 
-              type="text" 
-              id="raisonSociale" 
-              formControlName="raisonSociale" 
-              placeholder="Ex: Location CAF 2025 SARL">
-          </div>
-        </div>
-      </div>
-
-      <!-- Informations spécifiques au locataire -->
-      <div *ngIf="registerForm.get('typeUtilisateur')?.value === 'LOCATAIRE'" class="form-section">
-        <h3><i class="fas fa-briefcase"></i> Informations professionnelles - Locataire</h3>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="profession">Profession *</label>
-            <input 
-              type="text" 
-              id="profession" 
-              formControlName="profession" 
-              placeholder="Ex: Ingénieure informatique"
-              [class.error]="registerForm.get('profession')?.invalid && registerForm.get('profession')?.touched">
-            <div *ngIf="registerForm.get('profession')?.invalid && registerForm.get('profession')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              La profession est requise.
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="employeur">Employeur *</label>
-            <input 
-              type="text" 
-              id="employeur" 
-              formControlName="employeur" 
-              placeholder="Ex: TechCorp SAS"
-              [class.error]="registerForm.get('employeur')?.invalid && registerForm.get('employeur')?.touched">
-            <div *ngIf="registerForm.get('employeur')?.invalid && registerForm.get('employeur')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              L'employeur est requis.
-            </div>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="revenuAnnuel">Revenu annuel (€) *</label>
-            <input 
-              type="number" 
-              id="revenuAnnuel" 
-              formControlName="revenuAnnuel" 
-              placeholder="Ex: 65000"
-              [class.error]="registerForm.get('revenuAnnuel')?.invalid && registerForm.get('revenuAnnuel')?.touched">
-            <div *ngIf="registerForm.get('revenuAnnuel')?.invalid && registerForm.get('revenuAnnuel')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              Le revenu annuel est requis et doit être positif.
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="dateEmbauche">Date d'embauche *</label>
-            <input 
-              type="date" 
-              id="dateEmbauche" 
-              formControlName="dateEmbauche" 
-              [class.error]="registerForm.get('dateEmbauche')?.invalid && registerForm.get('dateEmbauche')?.touched">
-            <div *ngIf="registerForm.get('dateEmbauche')?.invalid && registerForm.get('dateEmbauche')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              La date d'embauche est requise.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sécurité -->
-      <div class="form-section">
-        <h3><i class="fas fa-lock"></i> Sécurité</h3>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="motDePasse">Mot de passe *</label>
-            <input 
-              type="password" 
-              id="motDePasse" 
-              formControlName="motDePasse" 
-              placeholder="Minimum 8 caractères"
-              [class.error]="registerForm.get('motDePasse')?.invalid && registerForm.get('motDePasse')?.touched">
-            <div *ngIf="registerForm.get('motDePasse')?.invalid && registerForm.get('motDePasse')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              Le mot de passe doit contenir au moins 8 caractères.
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="confirmPassword">Confirmer le mot de passe *</label>
-            <input 
-              type="password" 
-              id="confirmPassword" 
-              formControlName="confirmPassword" 
-              placeholder="Répétez votre mot de passe"
-              [class.error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
-            <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched" class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              Les mots de passe ne correspondent pas.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="error" class="alert alert-danger">
-        <i class="fas fa-exclamation-circle"></i>
-        {{ error }}
-      </div>
-
-      <div *ngIf="success" class="alert alert-success">
-        <i class="fas fa-check-circle"></i>
-        {{ success }}
-      </div>
-
-      <button 
-        type="submit" 
-        class="btn btn-primary" 
-        [disabled]="registerForm.invalid || loading">
-        <span *ngIf="!loading">
-          <i class="fas fa-user-plus"></i>
-          Créer mon compte professionnel
-        </span>
-        <span *ngIf="loading">
-          <i class="fas fa-spinner fa-spin"></i>
-          Création en cours...
-        </span>
-      </button>
-    </form>
-
-    <div class="register-footer">
-      <p>Vous avez déjà un compte ?</p>
-      <button class="btn btn-secondary" (click)="goToLogin()">
-        <i class="fas fa-sign-in-alt"></i>
-        Se connecter maintenant
-      </button>
     </div>
   </div>
-</div> 
+</div>

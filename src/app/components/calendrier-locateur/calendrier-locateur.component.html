@@ -1,122 +1,74 @@
-<!-- Calendrier Locateur - Design Professionnel et Compact -->
-<div class="calendrier-locateur">
+<div class="rounded-2xl border border-slate-200 bg-white shadow">
   <!-- En-tête du calendrier -->
-  <div class="calendrier-header">
-    <button class="btn-nav" (click)="moisPrecedent()" [disabled]="isLoading" title="Mois précédent">
+  <div class="flex items-center justify-between gap-2 border-b bg-slate-50 px-4 py-3">
+    <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 disabled:opacity-60" (click)="moisPrecedent()" [disabled]="isLoading" title="Mois précédent">
       <i class="fas fa-chevron-left"></i>
     </button>
-    
-    <h2 class="mois-titre">{{ formaterMois() }} 2025</h2>
-    
-    <button class="btn-nav" (click)="moisSuivant()" [disabled]="isLoading" title="Mois suivant">
+    <h2 class="m-0 text-lg font-extrabold text-slate-900">{{ formaterMois() }}</h2>
+    <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 disabled:opacity-60" (click)="moisSuivant()" [disabled]="isLoading" title="Mois suivant">
       <i class="fas fa-chevron-right"></i>
     </button>
   </div>
 
   <!-- État de chargement -->
-  <div class="calendrier-loading" *ngIf="isLoading">
-    <div class="spinner"></div>
-    <p>Chargement de la disponibilité...</p>
+  <div class="grid place-items-center px-6 py-8 text-center" *ngIf="isLoading">
+    <div class="mb-2 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-maroc-vert"></div>
+    <p class="m-0 text-slate-600">Chargement de la disponibilité...</p>
   </div>
 
   <!-- État d'erreur -->
-  <div class="calendrier-error" *ngIf="errorMessage">
-    <div class="error-message">{{ errorMessage }}</div>
-    <button class="btn-retry" (click)="chargerJoursReserves()">
+  <div class="px-4 py-3" *ngIf="errorMessage">
+    <div class="mb-2 rounded-lg border border-rose-300/60 bg-rose-50 px-3 py-2 text-rose-700">{{ errorMessage }}</div>
+    <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" (click)="chargerJoursReserves()">
       <i class="fas fa-redo me-2"></i>Réessayer
     </button>
   </div>
 
-  <!-- Corps du calendrier -->
-  <div class="calendrier-body" *ngIf="!isLoading && !errorMessage">
-    <!-- En-têtes des jours de la semaine -->
-    <div class="semaine-header">
-      <div class="jour-header" *ngFor="let jour of ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']">
-        {{ jour }}
-      </div>
+  <!-- Corps du calendrier (grille compacte "dézoomée") -->
+  <div class="px-4 py-4" *ngIf="!isLoading && !errorMessage">
+    <!-- Jours de la semaine -->
+    <div class="grid grid-cols-7 rounded-t-lg bg-slate-50">
+      <div class="px-1 py-2 text-center text-[11px] font-bold uppercase tracking-wide text-slate-600" *ngFor="let jour of ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']">{{ jour }}</div>
     </div>
 
-    <!-- Semaines du mois -->
-    <div class="semaine" *ngFor="let semaine of calendrier">
-      <div 
-        class="jour"
-        [class]="getClassesJour(date)"
-        [title]="getTooltipJour(date)"
-        (click)="onJourClick(date)"
-        [class.clickable]="estJourReserve(date)"
-        *ngFor="let date of semaine"
-      >
-        <span class="numero-jour">{{ date.getDate() }}</span>
-        
-        <!-- Indicateur de réservation avec design amélioré -->
-        <div class="indicateur-reservation" *ngIf="estJourReserve(date)"></div>
-        
-        <!-- Nombre de réservations avec design amélioré -->
-        <div class="nombre-reservations" *ngIf="getNombreReservationsPourDate(date) > 0">
-          {{ getNombreReservationsPourDate(date) }}
-        </div>
-      </div>
+    <!-- Grille mois -->
+    <div class="grid grid-cols-7 gap-px overflow-hidden rounded-b-lg bg-slate-200">
+      <ng-container *ngFor="let semaine of calendrier">
+        <ng-container *ngFor="let date of semaine">
+          <div class="relative aspect-square bg-white text-[12px]"
+               [ngClass]="(isDansMois(date) ? 'cursor-pointer hover:bg-emerald-50' : 'opacity-40 bg-slate-50') + ' ' + getClassesJour(date)"
+               [title]="getTooltipJour(date)"
+               (click)="onJourClick(date)">
+            <div class="absolute left-1 top-1 text-[11px] font-semibold text-slate-800">{{ date.getDate() }}</div>
+            <div class="absolute right-1 top-1 h-2 w-2 rounded-full bg-maroc-rouge" *ngIf="estJourReserve(date)"></div>
+            <div class="absolute bottom-1 right-1 grid h-5 w-5 place-items-center rounded-full border border-white bg-maroc-vert text-[10px] font-bold text-white" *ngIf="getNombreReservationsPourDate(date) > 0">{{ getNombreReservationsPourDate(date) }}</div>
+          </div>
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 
   <!-- Popup des informations de réservation -->
-  <div class="reservation-popup" *ngIf="jourSelectionnePourInfo" (click)="fermerPopupInfo()">
-    <div class="popup-content" (click)="$event.stopPropagation()">
-      <div class="popup-header">
-        <h4>
-          <i class="fas fa-calendar-day me-2"></i>
-          Réservations du {{ jourSelectionnePourInfo | date:'dd/MM/yyyy' }}
-        </h4>
-        <button class="btn-close" (click)="fermerPopupInfo()">
-          <i class="fas fa-times"></i>
-        </button>
+  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="jourSelectionnePourInfo" (click)="fermerPopupInfo()">
+    <div class="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
+        <h4 class="m-0 text-lg font-extrabold text-slate-900"><i class="fas fa-calendar-day"></i> Réservations du {{ jourSelectionnePourInfo | date:'dd/MM/yyyy' }}</h4>
+        <button class="grid h-8 w-8 place-items-center rounded-full border border-slate-200" (click)="fermerPopupInfo()"><i class="fas fa-times"></i></button>
       </div>
-      
-      <div class="reservations-details">
+      <div class="px-5 py-4">
         <ng-container *ngIf="jourSelectionnePourInfo">
-          <div class="reservation-detail" *ngFor="let reservation of getReservationsPourDate(jourSelectionnePourInfo)">
-            <div class="reservation-header">
-              <span class="statut-reservation" 
-                    [class]="'statut-' + reservation.statut?.toLowerCase()">
-                {{ reservation.statut }}
-              </span>
-              <div class="reservation-time text-muted">
-                <i class="fas fa-clock me-1"></i>
-                <span>{{ reservation.dateCreation | date:'HH:mm' }}</span>
-              </div>
+          <div class="rounded-lg border-l-4 border-maroc-vert bg-slate-50 p-3 shadow" *ngFor="let reservation of getReservationsPourDate(jourSelectionnePourInfo)">
+            <div class="mb-2 flex items-center justify-between text-sm">
+              <span class="rounded bg-rose-600 px-2 py-0.5 font-bold text-white">{{ reservation.statut }}</span>
+              <div class="text-slate-500"><i class="fas fa-clock"></i> {{ reservation.dateCreation | date:'HH:mm' }}</div>
             </div>
-            
-            <div class="locataire-info">
-              <div class="info-item">
-                <i class="fas fa-user"></i>
-                <span class="label">Nom:</span>
-                <span class="value">{{ reservation.locataire?.nom || 'Inconnu' }}</span>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-user"></i>
-                <span class="label">Prénom:</span>
-                <span class="value">{{ reservation.locataire?.prenom || 'Inconnu' }}</span>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-envelope"></i>
-                <span class="label">Email:</span>
-                <span class="value">{{ reservation.locataire?.email || 'Non renseigné' }}</span>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-phone"></i>
-                <span class="label">Téléphone:</span>
-                <span class="value">{{ reservation.locataire?.telephone || 'Non renseigné' }}</span>
-              </div>
-              <div class="info-item" *ngIf="reservation.locataire?.profession">
-                <i class="fas fa-briefcase"></i>
-                <span class="label">Profession:</span>
-                <span class="value">{{ reservation.locataire.profession }}</span>
-              </div>
-              <div class="info-item" *ngIf="reservation.locataire?.employeur">
-                <i class="fas fa-building"></i>
-                <span class="label">Employeur:</span>
-                <span class="value">{{ reservation.locataire.employeur }}</span>
-              </div>
+            <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
+              <div class="flex items-center gap-2"><i class="fas fa-user text-maroc-vert"></i><span class="font-semibold">Nom:</span><span>{{ reservation.locataire?.nom || 'Inconnu' }}</span></div>
+              <div class="flex items-center gap-2"><i class="fas fa-user text-maroc-vert"></i><span class="font-semibold">Prénom:</span><span>{{ reservation.locataire?.prenom || 'Inconnu' }}</span></div>
+              <div class="flex items-center gap-2"><i class="fas fa-envelope text-maroc-vert"></i><span class="font-semibold">Email:</span><span>{{ reservation.locataire?.email || 'Non renseigné' }}</span></div>
+              <div class="flex items-center gap-2"><i class="fas fa-phone text-maroc-vert"></i><span class="font-semibold">Téléphone:</span><span>{{ reservation.locataire?.telephone || 'Non renseigné' }}</span></div>
+              <div class="flex items-center gap-2" *ngIf="reservation.locataire?.profession"><i class="fas fa-briefcase text-maroc-vert"></i><span class="font-semibold">Profession:</span><span>{{ reservation.locataire.profession }}</span></div>
+              <div class="flex items-center gap-2" *ngIf="reservation.locataire?.employeur"><i class="fas fa-building text-maroc-vert"></i><span class="font-semibold">Employeur:</span><span>{{ reservation.locataire.employeur }}</span></div>
             </div>
           </div>
         </ng-container>
@@ -124,40 +76,47 @@
     </div>
   </div>
 
-  <!-- Légende pour locateur -->
-  <div class="calendrier-legend">
-    <h4>
-      <i class="fas fa-info-circle me-2"></i>
-      Légende des Réservations
-    </h4>
-    <div class="legend-grid">
-      <div class="legend-item" *ngFor="let item of legendItems">
-        <div class="color-indicator" [class]="item.class"></div>
-        <span>{{ item.label }}</span>
-        <span class="badge" *ngIf="item.count > 0">({{ item.count }})</span>
+  <!-- Légende + bouton résumé en popup -->
+  <div class="flex items-center justify-between border-t bg-slate-50 px-4 py-3">
+    <h4 class="m-0 mb-2 inline-flex items-center gap-2 text-sm font-bold text-slate-900"><i class="fas fa-info-circle"></i> Légende des Réservations</h4>
+    <button class="rounded-lg border border-slate-300 bg-white px-3 py-1 text-sm font-semibold text-slate-800" (click)="openResumeModal()">
+      <i class="fas fa-list"></i> Voir le résumé
+    </button>
+  </div>
+  <div class="px-4 pb-3">
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+      <div class="flex items-center gap-2" *ngFor="let item of legendItems">
+        <div class="h-3 w-3 rounded" [ngClass]="item.class"></div>
+        <span class="text-sm">{{ item.label }}</span>
+        <span class="text-xs text-slate-500" *ngIf="item.count > 0">({{ item.count }})</span>
       </div>
     </div>
   </div>
 
-  <!-- Résumé des réservations pour locateur -->
-  <div class="calendrier-legend" *ngIf="getDatesReservees().length > 0">
-    <h4>
-      <i class="fas fa-chart-bar me-2"></i>
-      Résumé des Réservations ({{ getDatesReservees().length }} jour(s))
-    </h4>
-    <div class="legend-grid">
-      <div class="legend-item" *ngFor="let date of getDatesReservees()">
-        <div class="color-indicator bg-primary-subtle"></div>
-        <span>{{ date | date:'dd/MM' }}</span>
-        <div class="reservation-badges">
-          <div *ngFor="let reservation of getReservationsPourDateFromString(date)">
-            <span class="statut-reservation" 
-                  [class]="'statut-' + reservation.statut?.toLowerCase()">
-              {{ reservation.statut }}
-            </span>
-            <span class="badge bg-secondary">
-              {{ reservation.locataire?.prenom }} {{ reservation.locataire?.nom }}
-            </span>
+  <!-- Popup Résumé des réservations -->
+  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="getDatesReservees().length > 0 && resumeModalOpen" (click)="closeResumeModal()">
+    <div class="w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
+        <h3 class="m-0 text-lg font-extrabold text-slate-900"><i class="fas fa-chart-bar"></i> Résumé des réservations</h3>
+        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="closeResumeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="px-5 py-4">
+        <div class="mb-3 text-sm text-slate-600">{{ getDatesReservees().length }} jour(s) avec réservation(s)</div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm" *ngFor="let date of getDatesReservees()">
+            <div class="mb-2 flex items-center justify-between">
+              <div class="inline-flex items-center gap-2 text-sm font-semibold text-slate-800"><i class="fas fa-calendar-day text-maroc-vert"></i> {{ date | date:'dd/MM' }}</div>
+              <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-maroc-vert" *ngIf="getReservationsPourDateFromString(date)?.length">{{ getReservationsPourDateFromString(date).length }} rés.</span>
+            </div>
+            <div class="space-y-2">
+              <div class="rounded-lg border border-slate-200 bg-slate-50 p-2" *ngFor="let reservation of getReservationsPourDateFromString(date)">
+                <div class="mb-1 flex items-center justify-between text-[11px]">
+                  <span class="rounded bg-rose-600 px-2 py-0.5 font-bold text-white">{{ reservation.statut }}</span>
+                  <span class="text-slate-500"><i class="fas fa-clock"></i> {{ reservation.dateCreation | date:'HH:mm' }}</span>
+                </div>
+                <div class="text-[12px] text-slate-700"><i class="fas fa-user text-maroc-vert"></i> {{ reservation.locataire?.prenom }} {{ reservation.locataire?.nom }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

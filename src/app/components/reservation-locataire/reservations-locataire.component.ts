@@ -1,191 +1,245 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, of, Subject, takeUntil } from 'rxjs';
-import { catchError, finalize } from 'rxjs/operators';
-import { EntityDetailsService, ReservationDetails } from '../../services/entity-details.service';
-import { AuthService } from '../../services/auth.service';
+import { Subject, takeUntil, Observable, of } from 'rxjs';
+import { catchError, finalize, map, timeout } from 'rxjs/operators';
 
-// Interface pour les informations d'annonce enrichie
-interface AnnonceInfoEnrichie {
+// Angular Material
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
+// PrimeNG
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { ChipModule } from 'primeng/chip';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { TabViewModule } from 'primeng/tabview';
+import { BadgeModule } from 'primeng/badge';
+import { TooltipModule } from 'primeng/tooltip';
+import { DividerModule } from 'primeng/divider';
+import { AvatarModule } from 'primeng/avatar';
+import { TagModule } from 'primeng/tag';
+
+import { ReservationService } from '../../services/reservation.service';
+import { Reservation } from '../../models/reservation.model';
+import { AuthService } from '../../services/auth.service';
+import { HttpClient } from '@angular/common/http';
+
+// Interface pour une réservation simple
+interface ReservationLocataire {
   id: string;
-  titre: string;
-  description: string;
-  adresse: {
+  dateArrivee: string;
+  dateDepart: string;
+  statut: 'EN_ATTENTE' | 'CONFIRMEE' | 'EN_COURS' | 'TERMINEE' | 'ANNULEE';
+  prixTotal: number;
+  nombreNuits?: number;
+  nombreVoyageurs?: number;
+  modePaiement?: string;
+  numeroTransaction?: string | null;
+  datePaiement?: string | null;
+  fraisService?: number;
+  fraisNettoyage?: number;
+  fraisDepot?: number;
+  annonce: {
     id: string;
-    rue: string;
-    numero: string;
-    codePostal: string;
-    ville: string;
-    pays: string;
-    complement?: string;
-    surface?: number;
-    locateurId: string;
-    nomLocateur: string;
-    dateCreation: string;
-    dateModification: string;
-    estActive: boolean;
+    titre: string;
+    adresse: {
+      numero?: string;
+      rue?: string;
+      codePostal?: string;
+      ville: string;
+      pays: string;
+    };
+    prixParNuit: number;
+    images: string[];
   };
-  prixParNuit: number;
-  prixParSemaine: number;
-  prixParMois: number;
-  capacite: number;
-  nombreChambres: number;
-  nombreSallesDeBain: number;
-  typeMaison: string;
-  estActive: boolean;
-  dateCreation: string;
-  dateModification: string;
-  equipements: string[];
-  regles: string[];
-  images: string[];
-  imagesBlob: any[];
-  noteMoyenne: number;
-  nombreAvis: number;
   locateur: {
     id: string;
     nom: string;
     prenom: string;
-    email: string | null;
-    telephone: string | null;
-    photoProfil: string | null;
-    description: string | null;
-    noteMoyenne: number;
-    nombreAnnonces: number;
-    estVerifie: boolean;
-    raisonSociale: string | null;
   };
-  latitude: number | null;
-  longitude: number | null;
-  distancesStades: any;
-  stadeLePlusProche: any;
+  dateCreation: string;
+  dateConfirmation?: string;
+  dateAnnulation?: string;
 }
 
-// Interface pour les informations de locateur simplifiée
-interface LocateurInfoSimple {
-  id: string;
-  nom: string;
-  prenom: string;
-  email: string;
-  telephone?: string;
-  avatarUrl?: string;
-}
-
-// Interface pour les informations complètes du locateur
-interface LocateurInfoComplet {
-  id: string;
-  nom: string;
-  prenom: string;
-  email: string;
-  telephone: string;
-  avatarUrl?: string;
-  dateInscription: string;
-  nombreAnnonces: number;
-  noteMoyenne: number;
-  adresse: string;
-  bio?: string;
-}
-
-// Interface pour les statistiques de réservation
-interface StatistiquesReservation {
+// Interface pour les statistiques
+interface Statistiques {
   total: number;
   enAttente: number;
   confirmees: number;
   enCours: number;
   terminees: number;
   annulees: number;
-  revenus: number;
+}
+
+// Interface pour la création de réservation
+interface CreationReservation {
+  annonceId: string;
+  dateArrivee: string;
+  dateDepart: string;
+  nombrePersonnes: number;
+  commentaires?: string;
+}
+
+// Interface pour la vérification de disponibilité
+interface Disponibilite {
+  disponible: boolean;
+  message?: string;
+}
+
+// Interface pour les favoris
+interface Favori {
+  id: string;
+  annonceId: string;
+  dateAjout: string;
 }
 
 @Component({
   selector: 'app-reservations-locataire',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './reservations-locataire.component.html',
-  styleUrls: ['./reservations-locataire.component.css']
+  styleUrls: ['./reservations-locataire.component.css'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    ReactiveFormsModule,
+    // Angular Material
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTabsModule,
+    MatBadgeModule,
+    MatTooltipModule,
+    MatPaginatorModule,
+    // PrimeNG
+    CardModule,
+    ButtonModule,
+    ChipModule,
+    ProgressSpinnerModule,
+    ToastModule,
+    DialogModule,
+    InputTextModule,
+    DropdownModule,
+    CalendarModule,
+    TabViewModule,
+    BadgeModule,
+    TooltipModule,
+    DividerModule,
+    AvatarModule,
+    TagModule
+  ]
 })
 export class ReservationsLocataireComponent implements OnInit, OnDestroy {
-  // Math pour le template
-  Math = Math;
+  // Réservations
+  reservations: ReservationLocataire[] = [];
+  reservationsFutures: ReservationLocataire[] = [];
+  reservationsPassees: ReservationLocataire[] = [];
+  reservationsFiltrees: ReservationLocataire[] = [];
+  reservationsAffichees: ReservationLocataire[] = [];
+  totalReservations: number = 0;
+  reservationSelectionnee: ReservationLocataire | null = null;
+  favoris: Favori[] = [];
   
-  // États du composant
+  // États de chargement
   loading = false;
+  loadingReservations = false;
+  loadingFavoris = false;
+  loadingCreation = false;
+  
+  // Messages
   error = '';
   success = '';
+  message: { type: 'success' | 'danger'; text: string } | null = null;
   
-  // Données des réservations - maintenant utilisant ReservationDetails
-  toutes: ReservationDetails[] = [];
-  enAttente: ReservationDetails[] = [];
-  confirmees: ReservationDetails[] = [];
-  enCours: ReservationDetails[] = [];
-  terminees: ReservationDetails[] = [];
-  annulees: ReservationDetails[] = [];
-  futures: ReservationDetails[] = [];
-  passees: ReservationDetails[] = [];
-  
-  // Statistiques
-  statistiques: StatistiquesReservation | null = null;
-  
-  // Informations des annonces et locateurs
-  annoncesInfo: Map<string, AnnonceInfoEnrichie> = new Map();
-  locateursInfo: Map<string, LocateurInfoSimple> = new Map();
-  
-  // Popups
-  showAnnoncePopup = false;
-  showLocateurPopup = false;
-  annonceSelectionnee: AnnonceInfoEnrichie | null = null;
-  locateurSelectionne: LocateurInfoComplet | null = null;
-  
-  // Filtres et recherche
-  filtreStatut = 'TOUS';
-  recherche = '';
-  filtrePeriode = 'TOUTES';
-  
-  // Formulaire de modification de statut
-  showStatutForm = false;
-  reservationSelectionnee: ReservationDetails | null = null;
-  statutForm: FormGroup;
-  
-  // Récapitulatif de réservation
-  recapitulatif: {
-    prixTotal: number;
-    nombreNuits: number;
-    fraisService: number;
-    fraisNettoyage: number;
-    fraisDepot: number;
-  } | null = null;
+  // Filtres
+  filtreStatut: string = '';
+  filtrePeriode: string = '';
+  recherche: string = '';
+  ongletActif: string = 'toutes';
   
   // Pagination
   page = 1;
-  pageSize = 10;
+  reservationsParPage = 10;
   
-  // Formulaire de création
-  showCreationForm = false;
-  creationForm: FormGroup;
+  // Formulaires
+  formulaireCreation: FormGroup;
+  formulaireRecherche: FormGroup;
   
-  // Gestion de la destruction
+  // États des modals
+  modalCreationOuverte = false;
+  modalDetailsOuverte = false;
+  
+  // Statistiques
+  statistiques: Statistiques = {
+    total: 0,
+    enAttente: 0,
+    confirmees: 0,
+    enCours: 0,
+    terminees: 0,
+    annulees: 0
+  };
+  statistiquesArray: Array<{ key: string; value: number; label: string; icon: string; class: string }> = [];
+  
+  // URL de base de l'API
+  private apiUrl = 'http://localhost:8083';
   private destroy$ = new Subject<void>();
+  // Suppression du cache d'annonces: on utilise les champs de l'API directement
 
   constructor(
-    private entityDetailsService: EntityDetailsService,
-    private formBuilder: FormBuilder,
-    private auth: AuthService
+    private http: HttpClient,
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private reservationService: ReservationService,
+    private cdr: ChangeDetectorRef
   ) {
-    this.statutForm = this.formBuilder.group({
-      nouveauStatut: ['', Validators.required],
-      message: ['']
-    });
-    
-    this.creationForm = this.formBuilder.group({
+    this.formulaireCreation = this.fb.group({
+      annonceId: ['', Validators.required],
       dateArrivee: ['', Validators.required],
       dateDepart: ['', Validators.required],
-      nombreVoyageurs: [1, [Validators.required, Validators.min(1)]],
-      message: ['']
+      nombrePersonnes: [1, [Validators.required, Validators.min(1)]],
+      commentaires: ['']
+    });
+    
+    this.formulaireRecherche = this.fb.group({
+      recherche: [''],
+      statut: ['TOUS'],
+      periode: ['TOUTES']
     });
   }
 
   ngOnInit(): void {
     this.chargerReservations();
+    this.chargerFavoris();
   }
 
   ngOnDestroy(): void {
@@ -194,1018 +248,460 @@ export class ReservationsLocataireComponent implements OnInit, OnDestroy {
   }
 
   // ===== CHARGEMENT DES DONNÉES =====
+
   chargerReservations(): void {
-    this.loading = true;
+    const locataireId = this.authService.getLocataireId();
+    if (!locataireId) {
+      this.error = 'Aucun identifiant locataire trouvé. Veuillez vous reconnecter.';
+      return;
+    }
+
+    this.loadingReservations = true;
     this.error = '';
 
-    const locataireId = this.auth.getLocataireId();
-    if (!locataireId) {
-      this.error = 'Utilisateur non connecté';
-      this.loading = false;
-      return;
-    }
-
-    // Utilisation de l'API documentée : GET /api/reservations/locataire/{locataireId}
-    // this.http.get<ReservationDetails[]>(`${environment.apiUrl}/reservations/locataire/${locataireId}`)
-    //   .pipe(
-    //     catchError(error => {
-    //       console.error('Erreur lors du chargement des réservations:', error);
-    //       this.error = 'Erreur lors du chargement des réservations';
-    //       return of([]);
-    //     }),
-    //     finalize(() => this.loading = false)
-    //   )
-    //   .subscribe({
-    //     next: (reservations: ReservationDetails[]) => {
-    //       this.toutes = reservations;
-    //       this.categoriserReservations();
-    //       this.calculerStatistiques();
-    //       this.extraireInfosAnnoncesEtLocateurs();
-    //     },
-    //     error: (error) => {
-    //       console.error('Erreur lors du chargement des réservations:', error);
-    //       this.error = 'Erreur lors du chargement des réservations';
-    //     }
-    //   });
-
-    // Simulation de l'API documentée pour le développement
-    // Simuler des données de réservations selon la structure de l'API
-    setTimeout(() => {
-      const reservationsSimulees: ReservationDetails[] = [
-        {
-          id: "res-001",
-          annonce: {
-            id: "annonce-001",
-            titre: "Appartement de charme au cœur de Paris",
-            description: "Magnifique appartement rénové avec vue sur la Seine",
-            adresse: {
-              id: "adresse-001",
-              rue: "Rue de Rivoli",
-              numero: "15",
-              codePostal: "75001",
-              ville: "Paris",
-              pays: "France",
-              complement: "2ème étage",
-              surface: 65,
-              locateurId: "locateur-001",
-              nomLocateur: "Jean Dupont",
-              dateCreation: "2024-01-01T00:00:00",
-              dateModification: "2024-01-01T00:00:00",
-              estActive: true
-            },
-            prixParNuit: 150.00,
-            prixParSemaine: 900.00,
-            prixParMois: 3500.00,
-            capacite: 4,
-            nombreChambres: 2,
-            nombreSallesDeBain: 1,
-            typeMaison: "APPARTEMENT",
-            estActive: true,
-            dateCreation: "2024-01-01T00:00:00",
-            dateModification: "2024-01-01T00:00:00",
-            equipements: ["WiFi", "Cuisine équipée", "Climatisation"],
-            regles: ["Non-fumeur", "Pas d'animaux"],
-            images: ["image1.jpg", "image2.jpg"],
-            imagesBlob: [],
-            noteMoyenne: 4.8,
-            nombreAvis: 25,
-            locateur: {
-              id: "locateur-001",
-              nom: "Dupont",
-              prenom: "Jean",
-              email: "jean.dupont@email.com",
-              telephone: "+33123456789",
-              photoProfil: "photo1.jpg",
-              description: "Propriétaire expérimenté",
-              noteMoyenne: 4.9,
-              nombreAnnonces: 3,
-              estVerifie: true,
-              raisonSociale: null
-            },
-            latitude: 48.8566,
-            longitude: 2.3522,
-            distancesStades: null,
-            stadeLePlusProche: null
-          },
-          locataire: {
-            id: locataireId,
-            role: "LOCATAIRE",
-            nom: "Martin",
-            prenom: "Sophie",
-            email: "sophie.martin@email.com",
-            telephone: "+33987654321",
-            statutKyc: "VÉRIFIÉ",
-            dateInscription: "2024-01-01T00:00:00",
-            derniereConnexion: "2024-01-15T10:00:00",
-            estActif: true,
-            photoProfil: "photo2.jpg",
-            dateModification: "2024-01-15T10:00:00"
-          },
-          dateArrivee: "2024-07-15",
-          dateDepart: "2024-07-22",
-          nombreNuits: 7,
-          nombreVoyageurs: 2,
-          prixParNuit: 150.00,
-          prixTotal: 1050.00,
-          fraisService: 52.50,
-          fraisNettoyage: 80.00,
-          fraisDepot: 200.00,
-          montantTotal: 1382.50,
-          statut: "CONFIRMEE",
-          libelleStatut: "Confirmée",
-          messageProprietaire: "Bonjour, nous aimerions réserver votre logement pour nos vacances d'été.",
-          dateCreation: "2024-01-15T10:30:00",
-          dateModification: "2024-01-16T14:20:00",
-          dateConfirmation: "2024-01-16T14:20:00",
-          dateAnnulation: null,
-          raisonAnnulation: null
-        },
-        {
-          id: "res-002",
-          annonce: {
-            id: "annonce-002",
-            titre: "Maison avec vue sur la mer",
-            description: "Superbe maison moderne avec terrasse panoramique",
-            adresse: {
-              id: "adresse-002",
-              rue: "Promenade des Anglais",
-              numero: "25",
-              codePostal: "06000",
-              ville: "Nice",
-              pays: "France",
-              complement: "Résidence Le Palais",
-              surface: 120,
-              locateurId: "locateur-002",
-              nomLocateur: "Marie Laurent",
-              dateCreation: "2024-01-01T00:00:00",
-              dateModification: "2024-01-01T00:00:00",
-              estActive: true
-            },
-            prixParNuit: 200.00,
-            prixParSemaine: 1200.00,
-            prixParMois: 4500.00,
-            capacite: 6,
-            nombreChambres: 3,
-            nombreSallesDeBain: 2,
-            typeMaison: "MAISON",
-            estActive: true,
-            dateCreation: "2024-01-01T00:00:00",
-            dateModification: "2024-01-01T00:00:00",
-            equipements: ["Piscine", "Jardin", "Parking privé"],
-            regles: ["Animaux acceptés", "Fêtes autorisées"],
-            images: ["image3.jpg", "image4.jpg"],
-            imagesBlob: [],
-            noteMoyenne: 4.9,
-            nombreAvis: 18,
-            locateur: {
-              id: "locateur-002",
-              nom: "Laurent",
-              prenom: "Marie",
-              email: "marie.laurent@email.com",
-              telephone: "+33456789012",
-              photoProfil: "photo3.jpg",
-              description: "Passionnée de décoration",
-              noteMoyenne: 4.8,
-              nombreAnnonces: 2,
-              estVerifie: true,
-              raisonSociale: null
-            },
-            latitude: 43.7102,
-            longitude: 7.2620,
-            distancesStades: null,
-            stadeLePlusProche: null
-          },
-          locataire: {
-            id: locataireId,
-            role: "LOCATAIRE",
-            nom: "Martin",
-            prenom: "Sophie",
-            email: "sophie.martin@email.com",
-            telephone: "+33987654321",
-            statutKyc: "VÉRIFIÉ",
-            dateInscription: "2024-01-01T00:00:00",
-            derniereConnexion: "2024-01-15T10:00:00",
-            estActif: true,
-            photoProfil: "photo2.jpg",
-            dateModification: "2024-01-15T10:00:00"
-          },
-          dateArrivee: "2024-08-01",
-          dateDepart: "2024-08-08",
-          nombreNuits: 7,
-          nombreVoyageurs: 4,
-          prixParNuit: 200.00,
-          prixTotal: 1400.00,
-          fraisService: 70.00,
-          fraisNettoyage: 100.00,
-          fraisDepot: 300.00,
-          montantTotal: 1870.00,
-          statut: "EN_ATTENTE",
-          libelleStatut: "En attente de confirmation",
-          messageProprietaire: "Bonjour, nous cherchons un logement pour nos vacances en famille.",
-          dateCreation: "2024-01-20T15:45:00",
-          dateModification: "2024-01-20T15:45:00",
-          dateConfirmation: null,
-          dateAnnulation: null,
-          raisonAnnulation: null
-        }
-      ];
-
-      this.toutes = reservationsSimulees;
-      this.categoriserReservations();
-      this.calculerStatistiques();
-      this.extraireInfosAnnoncesEtLocateurs();
-      this.loading = false;
-    }, 1000);
+    this.reservationService.getReservationsLocataire(locataireId)
+      .pipe(
+        timeout(10000),
+        takeUntil(this.destroy$),
+        catchError(error => {
+          console.error('Erreur lors du chargement des réservations:', error);
+          this.error = 'Erreur lors du chargement des réservations';
+          return of<Reservation[]>([]);
+        }),
+        finalize(() => this.loadingReservations = false)
+      )
+      .subscribe((reservationsApi: any) => {
+        const reservationsArray = this.normalizeReservationsResponse(reservationsApi);
+        const mapped = reservationsArray.map(r => this.mapperReservation(r));
+        this.reservations = mapped;
+        this.reservationsFiltrees = [...mapped];
+        this.calculerStatistiques();
+        this.updateReservationsAffichees();
+        this.chargerReservationsFutures();
+        this.chargerReservationsPassees();
+      });
   }
 
-  // ===== CATÉGORISATION DES RÉSERVATIONS =====
-  categoriserReservations(): void {
-    this.enAttente = this.toutes.filter(r => r.statut === 'EN_ATTENTE');
-    this.confirmees = this.toutes.filter(r => r.statut === 'CONFIRMEE');
-    this.enCours = this.toutes.filter(r => r.statut === 'EN_COURS');
-    this.terminees = this.toutes.filter(r => r.statut === 'TERMINEE');
-    this.annulees = this.toutes.filter(r => r.statut === 'ANNULEE');
+  chargerReservationsFutures(): void {
+    const locataireId = this.authService.getLocataireId();
+    if (!locataireId) return;
+
+    this.reservationService.getReservationsFuturesLocataire(locataireId)
+      .pipe(
+        timeout(10000),
+        takeUntil(this.destroy$),
+        catchError(() => of<Reservation[]>([]))
+      )
+      .subscribe(reservations => {
+        const arr = this.normalizeReservationsResponse(reservations);
+        this.reservationsFutures = arr.map(r => this.mapperReservation(r));
+      });
+  }
+
+  chargerReservationsPassees(): void {
+    const locataireId = this.authService.getLocataireId();
+    if (!locataireId) return;
+
+    this.reservationService.getReservationsPasseesLocataire(locataireId)
+      .pipe(
+        timeout(10000),
+        takeUntil(this.destroy$),
+        catchError(() => of<Reservation[]>([]))
+      )
+      .subscribe(reservations => {
+        const arr = this.normalizeReservationsResponse(reservations);
+        this.reservationsPassees = arr.map(r => this.mapperReservation(r));
+      });
+  }
+
+  chargerFavoris(): void {
+    const locataireId = this.authService.getLocataireId();
+    if (!locataireId) return;
+
+    this.loadingFavoris = true;
+
+    this.http.get<Favori[]>(`${this.apiUrl}/api/locataires/${locataireId}/favoris`)
+      .pipe(
+        timeout(10000),
+        takeUntil(this.destroy$),
+        catchError(() => of([])),
+        finalize(() => this.loadingFavoris = false)
+      )
+      .subscribe(favoris => {
+        this.favoris = favoris;
+      });
+  }
+
+  // ===== CRÉATION DE RÉSERVATION =====
+
+  ouvrirModalCreation(): void {
+    this.modalCreationOuverte = true;
+    this.formulaireCreation.reset();
+  }
+
+  fermerModalCreation(): void {
+    this.modalCreationOuverte = false;
+    this.cdr.markForCheck();
+  }
+
+  creerReservation(): void {
+    if (this.formulaireCreation.valid) {
+      this.loadingCreation = true;
+      // Logique de création de réservation
+      setTimeout(() => {
+        this.loadingCreation = false;
+        this.modalCreationOuverte = false;
+        this.success = 'Réservation créée avec succès !';
+      }, 2000);
+    }
+  }
+
+  // ===== GESTION DES FAVORIS =====
+
+  estFavori(annonceId: string): boolean {
+    return this.favoris.some(f => f.annonceId === annonceId);
+  }
+
+  ajouterAuxFavoris(annonceId: string): void {
+    if (!annonceId) return;
     
-    // Réservations futures (dates à venir)
-    const aujourdhui = new Date();
-    this.futures = this.toutes.filter(r => {
-      const dateArrivee = new Date(r.dateArrivee);
-      return dateArrivee > aujourdhui;
-    });
+    const locataireId = this.authService.getLocataireId();
+    if (!locataireId) return;
     
-    // Réservations passées (dates terminées)
-    this.passees = this.toutes.filter(r => {
-      const dateDepart = new Date(r.dateDepart);
-      return dateDepart < aujourdhui;
-    });
-  }
-
-  // ===== CALCUL DES STATISTIQUES =====
-  calculerStatistiques(): void {
-    if (this.toutes.length === 0) {
-      this.statistiques = null;
-      return;
-    }
-
-    const total = this.toutes.length;
-    const enAttente = this.enAttente.length;
-    const confirmees = this.confirmees.length;
-    const enCours = this.enCours.length;
-    const terminees = this.terminees.length;
-    const annulees = this.annulees.length;
-
-    const revenus = this.toutes
-      .filter(r => r.statut === 'CONFIRMEE' || r.statut === 'EN_COURS' || r.statut === 'TERMINEE')
-      .reduce((sum, r) => sum + r.montantTotal, 0);
-
-    this.statistiques = {
-      total,
-      enAttente,
-      confirmees,
-      enCours,
-      terminees,
-      annulees,
-      revenus
-    };
-  }
-
-  // ===== EXTRACTION DES INFORMATIONS =====
-  extraireInfosAnnoncesEtLocateurs(): void {
-    this.toutes.forEach(reservation => {
-      // Informations de l'annonce
-      const annonceInfo: AnnonceInfoEnrichie = {
-        id: reservation.annonce.id,
-        titre: reservation.annonce.titre,
-        description: reservation.annonce.description,
-        adresse: {
-          id: reservation.annonce.adresse.id,
-          rue: reservation.annonce.adresse.rue,
-          numero: reservation.annonce.adresse.numero,
-          codePostal: reservation.annonce.adresse.codePostal,
-          ville: reservation.annonce.adresse.ville,
-          pays: reservation.annonce.adresse.pays,
-          complement: reservation.annonce.adresse.complement,
-          surface: reservation.annonce.adresse.surface,
-          locateurId: reservation.annonce.adresse.locateurId,
-          nomLocateur: reservation.annonce.adresse.nomLocateur,
-          dateCreation: reservation.annonce.adresse.dateCreation,
-          dateModification: reservation.annonce.adresse.dateModification,
-          estActive: reservation.annonce.adresse.estActive
+    this.http.post<any>(`${this.apiUrl}/api/locataires/${locataireId}/favoris/${annonceId}`, {})
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.success = 'Ajouté aux favoris avec succès';
+          this.chargerFavoris();
         },
-        prixParNuit: reservation.annonce.prixParNuit,
-        prixParSemaine: reservation.annonce.prixParSemaine,
-        prixParMois: reservation.annonce.prixParMois,
-        capacite: reservation.annonce.capacite,
-        nombreChambres: reservation.annonce.nombreChambres,
-        nombreSallesDeBain: reservation.annonce.nombreSallesDeBain,
-        typeMaison: reservation.annonce.typeMaison,
-        estActive: reservation.annonce.estActive,
-        dateCreation: reservation.annonce.dateCreation,
-        dateModification: reservation.annonce.dateModification,
-        equipements: reservation.annonce.equipements,
-        regles: reservation.annonce.regles,
-        images: reservation.annonce.images,
-        imagesBlob: reservation.annonce.imagesBlob,
-        noteMoyenne: reservation.annonce.noteMoyenne,
-        nombreAvis: reservation.annonce.nombreAvis,
-        locateur: {
-          id: reservation.annonce.locateur.id,
-          nom: reservation.annonce.locateur.nom,
-          prenom: reservation.annonce.locateur.prenom,
-                     email: reservation.annonce.locateur.email,
-           telephone: reservation.annonce.locateur.telephone,
-           photoProfil: reservation.annonce.locateur.photoProfil,
-           description: reservation.annonce.locateur.description,
-           noteMoyenne: reservation.annonce.locateur.noteMoyenne,
-           nombreAnnonces: reservation.annonce.locateur.nombreAnnonces,
-           estVerifie: reservation.annonce.locateur.estVerifie,
-           raisonSociale: reservation.annonce.locateur.raisonSociale
-        },
-        latitude: reservation.annonce.latitude,
-        longitude: reservation.annonce.longitude,
-        distancesStades: reservation.annonce.distancesStades,
-        stadeLePlusProche: reservation.annonce.stadeLePlusProche
-      };
-      this.annoncesInfo.set(reservation.annonce.id, annonceInfo);
-
-      // Informations du locateur
-      const locateurInfo: LocateurInfoSimple = {
-        id: reservation.annonce.locateur.id,
-        nom: reservation.annonce.locateur.nom,
-        prenom: reservation.annonce.locateur.prenom,
-        email: reservation.annonce.locateur.email || '',
-        telephone: reservation.annonce.locateur.telephone || '',
-        avatarUrl: reservation.annonce.locateur.photoProfil || undefined
-      };
-      this.locateursInfo.set(reservation.annonce.locateur.id, locateurInfo);
-    });
-  }
-
-  // ===== MÉTHODES UTILITAIRES =====
-  
-  // Obtenir la date minimale (aujourd'hui) pour les champs de date
-  getDateMin(): string {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  }
-
-  // ===== MÉTHODES DE FILTRAGE ET PAGINATION =====
-  
-  // Obtenir les réservations filtrées selon les critères
-  getReservationsFiltrees(): ReservationDetails[] {
-    let reservations = this.toutes;
-
-    // Filtre par statut
-    if (this.filtreStatut !== 'TOUS') {
-      reservations = reservations.filter(r => r.statut === this.filtreStatut);
-    }
-
-    // Filtre par période
-    if (this.filtrePeriode !== 'TOUTES') {
-      const maintenant = new Date();
-      reservations = reservations.filter(r => {
-        const dateArrivee = new Date(r.dateArrivee);
-        const dateDepart = new Date(r.dateDepart);
-        
-        switch (this.filtrePeriode) {
-          case 'AVENIR':
-            return dateArrivee > maintenant;
-          case 'PASSE':
-            return dateDepart < maintenant;
-          case 'EN_COURS':
-            return dateArrivee <= maintenant && dateDepart >= maintenant;
-          default:
-            return true;
+        error: (err) => {
+          console.error('Erreur lors de l\'ajout aux favoris:', err);
+          this.error = 'Erreur lors de l\'ajout aux favoris';
         }
       });
-    }
+  }
 
+  retirerDesFavoris(annonceId: string): void {
+    if (!annonceId) return;
+    
+    const locataireId = this.authService.getLocataireId();
+    if (!locataireId) return;
+    
+    this.http.delete<any>(`${this.apiUrl}/api/locataires/${locataireId}/favoris/${annonceId}`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.success = 'Retiré des favoris avec succès';
+          this.chargerFavoris();
+        },
+        error: (err) => {
+          console.error('Erreur lors du retrait des favoris:', err);
+          this.error = 'Erreur lors du retrait des favoris';
+        }
+      });
+  }
+
+  // ===== FILTRAGE ET RECHERCHE =====
+
+  appliquerFiltres(): void {
+    this.page = 1;
+    this.filtrerReservations();
+    this.updateReservationsAffichees();
+  }
+
+  filtrerReservations(): void {
+    let reservationsFiltrees = [...this.reservations];
+    
+    // Filtre par statut
+    if (this.filtreStatut) {
+      reservationsFiltrees = reservationsFiltrees.filter(r => r.statut === this.filtreStatut);
+    }
+    
+    // Filtre par période
+    if (this.filtrePeriode) {
+      const maintenant = new Date();
+      switch (this.filtrePeriode) {
+        case 'FUTURES':
+          reservationsFiltrees = reservationsFiltrees.filter(r => new Date(r.dateArrivee) > maintenant);
+          break;
+        case 'EN_COURS':
+          reservationsFiltrees = reservationsFiltrees.filter(r => 
+            new Date(r.dateArrivee) <= maintenant && new Date(r.dateDepart) >= maintenant
+          );
+          break;
+        case 'PASSEES':
+          reservationsFiltrees = reservationsFiltrees.filter(r => new Date(r.dateDepart) < maintenant);
+          break;
+      }
+    }
+    
     // Filtre par recherche
     if (this.recherche.trim()) {
       const rechercheLower = this.recherche.toLowerCase();
-      reservations = reservations.filter(r => 
-        r.annonce.titre.toLowerCase().includes(rechercheLower) ||
-        r.annonce.locateur.nom.toLowerCase().includes(rechercheLower) ||
-        r.annonce.locateur.prenom.toLowerCase().includes(rechercheLower) ||
-        r.annonce.adresse.ville.toLowerCase().includes(rechercheLower)
+      reservationsFiltrees = reservationsFiltrees.filter(r => 
+        r.annonce?.titre?.toLowerCase().includes(rechercheLower) ||
+        this.getAdresseFormatee(r).toLowerCase().includes(rechercheLower) ||
+        r.locateur?.nom?.toLowerCase().includes(rechercheLower) ||
+        r.locateur?.prenom?.toLowerCase().includes(rechercheLower)
       );
     }
-
-    return reservations;
-  }
-
-  // Obtenir les réservations paginées
-  getReservationsPaginees(): ReservationDetails[] {
-    const reservations = this.getReservationsFiltrees();
-    const start = (this.page - 1) * this.pageSize;
-    return reservations.slice(start, start + this.pageSize);
-  }
-
-  // Obtenir le nombre total de pages
-  getNombrePages(): number {
-    const reservations = this.getReservationsFiltrees();
-    return Math.ceil(reservations.length / this.pageSize);
-  }
-
-  // ===== MÉTHODES DE FORMATAGE =====
-  
-  // Formater le statut pour l'affichage
-  formaterStatut(statut: string): string {
-    switch (statut) {
-      case 'EN_ATTENTE': return 'En attente';
-      case 'CONFIRMEE': return 'Confirmée';
-      case 'EN_COURS': return 'En cours';
-      case 'TERMINEE': return 'Terminée';
-      case 'ANNULEE': return 'Annulée';
-      default: return statut;
-    }
-  }
-
-  // Obtenir la classe CSS pour le statut
-  getClasseStatut(statut: string): string {
-    switch (statut) {
-      case 'EN_ATTENTE': return 'en-attente';
-      case 'CONFIRMEE': return 'confirmee';
-      case 'EN_COURS': return 'en-cours';
-      case 'TERMINEE': return 'terminee';
-      case 'ANNULEE': return 'annulee';
-      default: return 'en-attente';
-    }
-  }
-
-  // Obtenir l'icône pour le statut
-  getIconeStatut(statut: string): string {
-    switch (statut) {
-      case 'EN_ATTENTE': return 'fa-clock';
-      case 'CONFIRMEE': return 'fa-check-circle';
-      case 'EN_COURS': return 'fa-play-circle';
-      case 'TERMINEE': return 'fa-flag-checkered';
-      case 'ANNULEE': return 'fa-times-circle';
-      default: return 'fa-question-circle';
-    }
-  }
-
-  // Formater la date pour l'affichage
-  formaterDate(date: string): string {
-    if (!date) return 'Date non définie';
-    return new Date(date).toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  }
-
-  // Formater le prix pour l'affichage
-  formaterPrix(prix: number): string {
-    if (!prix) return '0,00 €';
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(prix);
-  }
-
-  // Calculer la durée du séjour
-  calculerDureeSejour(dateArrivee: string, dateDepart: string): number {
-    if (!dateArrivee || !dateDepart) return 0;
-    const arrivee = new Date(dateArrivee);
-    const depart = new Date(dateDepart);
-    const difference = depart.getTime() - arrivee.getTime();
-    return Math.ceil(difference / (1000 * 3600 * 24));
-  }
-
-  // Obtenir le nombre de réservations par statut
-  getNombreReservationsParStatut(statut: string): number {
-    switch (statut) {
-      case 'EN_ATTENTE': return this.enAttente.length;
-      case 'CONFIRMEE': return this.confirmees.length;
-      case 'EN_COURS': return this.enCours.length;
-      case 'TERMINEE': return this.terminees.length;
-      case 'ANNULEE': return this.annulees.length;
-      case 'FUTURES': return this.futures.length;
-      case 'PASSEES': return this.passees.length;
-      default: return this.toutes.length;
-    }
-  }
-
-  // Obtenir les numéros de page à afficher
-  getPages(): number[] {
-    const totalPages = this.getNombrePages();
-    const currentPage = this.page;
-    const pages: number[] = [];
     
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 4) {
-        for (let i = 1; i <= 5; i++) {
-          pages.push(i);
-        }
-      } else if (currentPage >= totalPages - 3) {
-        for (let i = totalPages - 4; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pages.push(i);
-        }
-      }
-    }
-    
-    return pages;
+    this.reservationsFiltrees = reservationsFiltrees;
+    this.page = 1;
+    this.updateReservationsAffichees();
   }
 
-  // ===== MÉTHODES DE GESTION DES POPUPS =====
-  
-  // Ouvrir le popup de l'annonce
-  ouvrirPopupAnnonce(reservation: ReservationDetails): void {
-    const annonceInfo = this.annoncesInfo.get(reservation.annonce.id);
-    if (annonceInfo) {
-      this.annonceSelectionnee = annonceInfo;
-      this.showAnnoncePopup = true;
-    } else {
-      this.error = 'Informations de l\'annonce non disponibles';
-    }
+  // ===== GESTION DES ONGLETS =====
+
+  getOngletIndex(): number {
+    const onglets = ['toutes', 'futures', 'passees'];
+    return onglets.indexOf(this.ongletActif);
   }
 
-  // Ouvrir le popup du locateur
-  ouvrirPopupLocateur(reservation: ReservationDetails): void {
-    if (reservation.annonce.locateur) {
-      this.locateurSelectionne = {
-        id: reservation.annonce.locateur.id,
-        nom: reservation.annonce.locateur.nom,
-        prenom: reservation.annonce.locateur.prenom,
-        email: reservation.annonce.locateur.email || '',
-        telephone: reservation.annonce.locateur.telephone || '',
-        avatarUrl: reservation.annonce.locateur.photoProfil || undefined,
-        dateInscription: '2024-01-01', // À récupérer depuis l'API
-        nombreAnnonces: reservation.annonce.locateur.nombreAnnonces,
-        noteMoyenne: reservation.annonce.locateur.noteMoyenne,
-        adresse: `${reservation.annonce.adresse.ville}, ${reservation.annonce.adresse.pays}`,
-        bio: reservation.annonce.locateur.description || 'Aucune description disponible'
-      };
-      this.showLocateurPopup = true;
-    } else {
-      this.error = 'Informations du locateur non disponibles';
+  changerOnglet(index: number): void {
+    const onglets = ['toutes', 'futures', 'passees'];
+    this.ongletActif = onglets[index];
+    this.page = 1;
+    this.updateReservationsAffichees();
+  }
+
+  // ===== PAGINATION =====
+
+  private updateReservationsAffichees(): void {
+    const source = this.reservationsFiltrees.length > 0 ? this.reservationsFiltrees : this.reservations;
+    this.totalReservations = source.length;
+    const debut = (this.page - 1) * this.reservationsParPage;
+    const fin = debut + this.reservationsParPage;
+    this.reservationsAffichees = source.slice(debut, fin);
+  }
+
+  changerPage(event: any): void {
+    if (event.pageIndex !== undefined) {
+      this.page = event.pageIndex + 1;
+      this.updateReservationsAffichees();
     }
   }
 
-  // Fermer le popup de l'annonce
-  fermerPopupAnnonce(): void {
-    this.showAnnoncePopup = false;
-    this.annonceSelectionnee = null;
-  }
+  // ===== MODALS =====
 
-  // Fermer le popup du locateur
-  fermerPopupLocateur(): void {
-    this.showLocateurPopup = false;
-    this.locateurSelectionne = null;
-  }
-
-  // ===== MÉTHODES DE GESTION DES FORMULAIRES =====
-  
-  // Fermer le formulaire de statut
-  fermerFormulaireStatut(): void {
-    this.showStatutForm = false;
-    this.reservationSelectionnee = null;
-    this.statutForm.reset();
-    this.recapitulatif = null;
-  }
-
-  // Ouvrir le formulaire de statut
-  ouvrirFormulaireStatut(reservation: ReservationDetails): void {
+  voirDetails(reservation: ReservationLocataire): void {
     this.reservationSelectionnee = reservation;
-    this.showStatutForm = true;
-    
-    // Calculer le récapitulatif
-    this.recapitulatif = {
-      prixTotal: reservation.prixTotal || 0,
-      nombreNuits: reservation.nombreNuits || 0,
-      fraisService: reservation.fraisService || 0,
-      fraisNettoyage: reservation.fraisNettoyage || 0,
-      fraisDepot: reservation.fraisDepot || 0
+    this.modalDetailsOuverte = true;
+  }
+
+  fermerModalDetails(): void {
+    this.modalDetailsOuverte = false;
+    this.reservationSelectionnee = null;
+    this.cdr.markForCheck();
+  }
+
+  fermerModalOnBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.fermerModalDetails();
+    }
+  }
+
+  // ===== UTILITAIRES =====
+
+  private buildStatistiquesArray(): void {
+    this.statistiquesArray = [
+      { key: 'total', value: this.statistiques.total, label: 'Total', icon: 'list', class: 'stat-total' },
+      { key: 'enAttente', value: this.statistiques.enAttente, label: 'En attente', icon: 'schedule', class: 'stat-attente' },
+      { key: 'confirmees', value: this.statistiques.confirmees, label: 'Confirmées', icon: 'check_circle', class: 'stat-confirmee' },
+      { key: 'enCours', value: this.statistiques.enCours, label: 'En cours', icon: 'play_circle', class: 'stat-encours' },
+      { key: 'terminees', value: this.statistiques.terminees, label: 'Terminées', icon: 'flag', class: 'stat-terminee' },
+      { key: 'annulees', value: this.statistiques.annulees, label: 'Annulées', icon: 'cancel', class: 'stat-annulee' }
+    ];
+  }
+
+  getStatClass(key: string): string {
+    return `stat-${key}`;
+  }
+
+  getCardClass(statut: string): string {
+    return `card-${statut.toLowerCase().replace('_', '-')}`;
+  }
+
+  getStatutIcon(statut: string): string {
+    const icones = {
+      'EN_ATTENTE': 'schedule',
+      'CONFIRMEE': 'check_circle',
+      'EN_COURS': 'play_circle',
+      'TERMINEE': 'flag',
+      'ANNULEE': 'cancel'
     };
+    return icones[statut as keyof typeof icones] || 'help';
   }
 
-  // Confirmer une réservation
-  confirmerReservation(): void {
-    if (!this.recapitulatif) {
-      this.error = 'Impossible de confirmer la réservation : récapitulatif manquant';
-      return;
-    }
-
-    this.loading = true;
-    this.error = '';
-
-    // Simulation pour l'instant
-    setTimeout(() => {
-      this.loading = false;
-      this.success = 'Réservation confirmée avec succès !';
-      this.fermerFormulaireStatut();
-      setTimeout(() => this.success = '', 5000);
-    }, 2000);
-  }
-
-  // ===== MÉTHODES DE GESTION DES RÉSERVATIONS =====
-  
-  // Annuler une réservation
-  annulerReservation(reservation: ReservationDetails): void {
-    if (!reservation) {
-      this.error = 'Aucune réservation sélectionnée pour l\'annulation';
-      return;
-    }
-
-    if (reservation.statut !== 'EN_ATTENTE' && reservation.statut !== 'CONFIRMEE') {
-      this.error = 'Cette réservation ne peut plus être annulée';
-      return;
-    }
-
-    if (confirm(`Êtes-vous sûr de vouloir annuler votre réservation pour "${reservation.annonce.titre}" ?`)) {
-      this.loading = true;
-      this.error = '';
-
-      // Simulation de l'API d'annulation : PUT /api/reservations/{id}/annuler
-      setTimeout(() => {
-        reservation.statut = 'ANNULEE';
-        reservation.libelleStatut = 'Annulée';
-        reservation.dateAnnulation = new Date().toISOString();
-        reservation.raisonAnnulation = 'Annulation par le locataire';
-        
-        this.categoriserReservations();
-        this.calculerStatistiques();
-        
-        this.success = 'Réservation annulée avec succès';
-        this.loading = false;
-        setTimeout(() => this.success = '', 5000);
-      }, 1000);
-    }
-  }
-
-  // Traiter le paiement d'une réservation
-  traiterPaiement(reservation: ReservationDetails): void {
-    if (!reservation) {
-      this.error = 'Aucune réservation sélectionnée pour le paiement';
-      return;
-    }
-
-    if (reservation.statut !== 'CONFIRMEE') {
-      this.error = 'Seules les réservations confirmées peuvent être payées';
-      return;
-    }
-
-    this.loading = true;
-    this.error = '';
-
-    // Simulation de l'API de paiement
-    setTimeout(() => {
-      this.success = `Paiement de ${this.formaterPrix(reservation.montantTotal)} traité avec succès pour "${reservation.annonce.titre}"`;
-      this.loading = false;
-      setTimeout(() => this.success = '', 5000);
-    }, 2000);
-  }
-
-  // Voir les détails d'une réservation
-  detailsReservation(reservation: ReservationDetails): void {
-    if (!reservation) {
-      this.error = 'Aucune réservation sélectionnée';
-      return;
-    }
-
-    // Ici vous pouvez implémenter l'ouverture d'un modal ou la navigation vers une page de détails
-    console.log('Détails de la réservation:', reservation);
-    
-    // Exemple d'affichage des détails
-    const details = `
-      Réservation : ${reservation.annonce.titre}
-      Statut : ${reservation.libelleStatut}
-      Dates : ${this.formaterDate(reservation.dateArrivee)} → ${this.formaterDate(reservation.dateDepart)}
-      Durée : ${reservation.nombreNuits} nuits
-      Voyageurs : ${reservation.nombreVoyageurs}
-      Montant total : ${this.formaterPrix(reservation.montantTotal)}
-      Message : ${reservation.messageProprietaire || 'Aucun message'}
-    `;
-    
-    alert(details);
-  }
-
-  // ===== MÉTHODES DE GESTION DES FAVORIS =====
-  
-  // Ajouter une annonce aux favoris
-  ajouterAuxFavorisAPI(annonceId: string): void {
-    const locataireId = this.auth.getLocataireId();
-    if (!locataireId) {
-      this.error = 'Utilisateur non connecté';
-      return;
-    }
-
-    // API documentée : POST /api/locataires/{locataireId}/favoris/{annonceId}
-    // Simulation pour le développement
-    this.success = 'Annonce ajoutée aux favoris avec succès !';
-    setTimeout(() => this.success = '', 5000);
-  }
-
-  // Retirer une annonce des favoris
-  retirerDesFavorisAPI(annonceId: string): void {
-    const locataireId = this.auth.getLocataireId();
-    if (!locataireId) {
-      this.error = 'Utilisateur non connecté';
-      return;
-    }
-
-    // API documentée : DELETE /api/locataires/{locataireId}/favoris/{annonceId}
-    // Simulation pour le développement
-    this.success = 'Annonce retirée des favoris avec succès !';
-    setTimeout(() => this.success = '', 5000);
-  }
-
-  // Consulter ses annonces favorites
-  consulterFavoris(): void {
-    const locataireId = this.auth.getLocataireId();
-    if (!locataireId) {
-      this.error = 'Utilisateur non connecté';
-      return;
-    }
-
-    // API documentée : GET /api/locataires/{locataireId}/favoris
-    this.success = 'Consultation des favoris...';
-    setTimeout(() => this.success = '', 3000);
-  }
-
-  // Vérifier si une annonce est dans les favoris
-  verifierFavori(annonceId: string): Observable<boolean> {
-    const locataireId = this.auth.getLocataireId();
-    if (!locataireId) {
-      this.error = 'Utilisateur non connecté';
-      return of(false);
-    }
-
-    // API documentée : GET /api/locataires/{locataireId}/favoris/{annonceId}/check
-    // Simulation pour le développement
-    return of(false);
-  }
-
-  // ===== MÉTHODES DE VÉRIFICATION DE DISPONIBILITÉ =====
-  
-  // Vérifier la disponibilité d'une annonce
-  verifierDisponibilite(annonceId: string, dateArrivee: string, dateDepart: string): Observable<boolean> {
-    // API documentée : GET /api/reservations/disponibilite?annonceId=...&dateArrivee=...&dateDepart=...
-    // Simulation pour le développement
-    return of(true);
-  }
-
-  // ===== MÉTHODES DE GESTION DES FORMULAIRES =====
-  
-  // Ouvrir le formulaire de création
-  ouvrirFormulaireCreation(): void {
-    this.showCreationForm = true;
-    this.creationForm.reset({
-      nombreVoyageurs: 1
-    });
-  }
-
-  // Fermer le formulaire de création
-  fermerFormulaireCreation(): void {
-    this.showCreationForm = false;
-    this.creationForm.reset();
-  }
-
-  // Créer une nouvelle réservation
-  creerReservation(annonceId: string, donneesReservation: any): void {
-    this.loading = true;
-    this.error = '';
-
-    const reservationData = {
-      annonceId: annonceId,
-      dateArrivee: donneesReservation.dateArrivee,
-      dateDepart: donneesReservation.dateDepart,
-      nombreVoyageurs: donneesReservation.nombreVoyageurs,
-      messageProprietaire: donneesReservation.message || ''
+  getStatutClass(statut: string): string {
+    const classes = {
+      'EN_ATTENTE': 'statut-attente',
+      'CONFIRMEE': 'statut-confirmee',
+      'EN_COURS': 'statut-encours',
+      'TERMINEE': 'statut-terminee',
+      'ANNULEE': 'statut-annulee'
     };
-
-    // API documentée : POST /api/reservations?locataireId=...
-    // Simulation pour le développement
-    setTimeout(() => {
-      this.loading = false;
-      this.success = 'Réservation créée avec succès !';
-      this.chargerReservations();
-      this.fermerFormulaireCreation();
-      setTimeout(() => this.success = '', 5000);
-    }, 2000);
+    return classes[statut as keyof typeof classes] || 'statut-defaut';
   }
 
-  // ===== MÉTHODES DE GESTION DES FORMULAIRES DE CRÉATION =====
-  
-  // Calculer le récapitulatif avec vérification
-  calculerRecapitulatifAvecVerification(): void {
-    if (this.creationForm.valid) {
-      const formData = this.creationForm.value;
-      const dateArrivee = new Date(formData.dateArrivee);
-      const dateDepart = new Date(formData.dateDepart);
-      
-      if (dateArrivee >= dateDepart) {
-        this.error = 'La date de départ doit être postérieure à la date d\'arrivée';
-        return;
-      }
-      
-      const nombreNuits = this.calculerDureeSejour(formData.dateArrivee, formData.dateDepart);
-      
-      // Ici vous pouvez ajouter la logique de calcul des prix
-      // Pour l'instant, on simule
-      this.success = `Récapitulatif calculé : ${nombreNuits} nuits pour ${formData.nombreVoyageurs} voyageurs`;
-      setTimeout(() => this.success = '', 3000);
-    } else {
-      this.error = 'Veuillez remplir tous les champs obligatoires';
-    }
+  getStatutLabel(statut: string): string {
+    return this.formaterStatut(statut);
   }
 
-  // Soumettre la réservation
-  soumettreReservation(): void {
-    if (this.creationForm.valid) {
-      const formData = this.creationForm.value;
-      
-      // Ici vous devriez appeler la méthode creerReservation avec l'ID de l'annonce
-      // Pour l'instant, on simule avec un ID fictif
-      this.creerReservation('annonce-simulee', formData);
-    } else {
-      this.error = 'Veuillez remplir tous les champs obligatoires';
-    }
+  getAdresseFormatee(reservation: ReservationLocataire): string {
+    if (!reservation.annonce?.adresse) return 'Adresse non disponible';
+    
+    const adresse = reservation.annonce.adresse;
+    const parts = [
+      adresse.numero,
+      adresse.rue,
+      adresse.codePostal,
+      adresse.ville,
+      adresse.pays
+    ].filter(Boolean);
+    
+    return parts.join(', ');
   }
 
-  // ===== MÉTHODES DE PAGINATION =====
-  
-  // Aller à la page précédente
-  pagePrecedente(): void {
-    if (this.page > 1) {
-      this.page--;
-    }
+  // ===== CALCULS ET FORMATAGE =====
+
+  calculerStatistiques(): void {
+    this.statistiques = {
+      total: this.reservations.length,
+      enAttente: this.reservations.filter(r => r.statut === 'EN_ATTENTE').length,
+      confirmees: this.reservations.filter(r => r.statut === 'CONFIRMEE').length,
+      enCours: this.reservations.filter(r => r.statut === 'EN_COURS').length,
+      terminees: this.reservations.filter(r => r.statut === 'TERMINEE').length,
+      annulees: this.reservations.filter(r => r.statut === 'ANNULEE').length
+    };
+    this.buildStatistiquesArray();
   }
 
-  // Aller à la page suivante
-  pageSuivante(): void {
-    if (this.page < this.getNombrePages()) {
-      this.page++;
-    }
+  formaterDate(date: string): string {
+    if (!date) return 'Date indisponible';
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) return 'Date invalide';
+    return parsed.toLocaleDateString('fr-FR');
   }
 
-  // Aller à une page spécifique
-  allerAPage(page: number): void {
-    if (page >= 1 && page <= this.getNombrePages()) {
-      this.page = page;
-    }
+  formaterPrix(prix: number): string {
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix || 0);
   }
 
-  // ===== MÉTHODES DE FILTRAGE AVANCÉ =====
-  
-  // Filtrer par statut avec mise à jour automatique
-  filtrerParStatut(statut: string): void {
-    this.filtreStatut = statut;
-    this.page = 1; // Retour à la première page
-    this.categoriserReservations();
-    this.calculerStatistiques();
+  formaterStatut(statut: string): string {
+    const statuts = {
+      'EN_ATTENTE': 'En attente',
+      'CONFIRMEE': 'Confirmée',
+      'EN_COURS': 'En cours',
+      'TERMINEE': 'Terminée',
+      'ANNULEE': 'Annulée'
+    };
+    return statuts[statut as keyof typeof statuts] || statut;
   }
 
-  // Filtrer par période
-  filtrerParPeriode(periode: string): void {
-    this.filtrePeriode = periode;
-    this.page = 1;
-  }
+  // ===== GESTION DES MESSAGES =====
 
-  // Recherche avancée
-  rechercher(): void {
-    this.page = 1;
-    // La logique de recherche est déjà implémentée dans getReservationsFiltrees()
-  }
-
-  // Réinitialiser tous les filtres
-  reinitialiserFiltres(): void {
-    this.filtreStatut = 'TOUS';
-    this.filtrePeriode = 'TOUTES';
-    this.recherche = '';
-    this.page = 1;
-  }
-
-  // ===== MÉTHODES DE COMPTAGE ET STATISTIQUES =====
-  
-  // Obtenir le nombre total de réservations
-  getNombreTotalReservations(): number {
-    return this.toutes.length;
-  }
-
-  // Obtenir le montant total des réservations confirmées
-  getMontantTotalReservationsConfirmees(): number {
-    return this.confirmees.reduce((sum, r) => sum + r.montantTotal, 0);
-  }
-
-  // Obtenir le montant total des réservations en cours
-  getMontantTotalReservationsEnCours(): number {
-    return this.enCours.reduce((sum, r) => sum + r.montantTotal, 0);
-  }
-
-  // Obtenir le montant total des réservations terminées
-  getMontantTotalReservationsTerminees(): number {
-    return this.terminees.reduce((sum, r) => sum + r.montantTotal, 0);
-  }
-
-  // ===== MÉTHODES DE VÉRIFICATION =====
-  
-  // Vérifier si une réservation est en cours actuellement
-  estReservationEnCours(reservation: ReservationDetails): boolean {
-    const maintenant = new Date();
-    const dateArrivee = new Date(reservation.dateArrivee);
-    const dateDepart = new Date(reservation.dateDepart);
-    return dateArrivee <= maintenant && dateDepart >= maintenant;
-  }
-
-  // Vérifier si une réservation est future
-  estReservationFuture(reservation: ReservationDetails): boolean {
-    const maintenant = new Date();
-    const dateArrivee = new Date(reservation.dateArrivee);
-    return dateArrivee > maintenant;
-  }
-
-  // Vérifier si une réservation est passée
-  estReservationPassee(reservation: ReservationDetails): boolean {
-    const maintenant = new Date();
-    const dateDepart = new Date(reservation.dateDepart);
-    return dateDepart < maintenant;
-  }
-
-  // ===== MÉTHODES UTILITAIRES POUR LE TEMPLATE =====
-  
-  // Obtenir l'adresse courte d'une réservation
-  getShortAddress(reservation: ReservationDetails): string {
-    if (reservation.annonce.adresse) {
-      return `${reservation.annonce.adresse.ville}, ${reservation.annonce.adresse.pays}`;
-    }
-    return 'Adresse non disponible';
-  }
-
-  // Obtenir l'adresse formatée d'une réservation
-  getFormattedAddress(reservation: ReservationDetails): string {
-    if (reservation.annonce.adresse) {
-      const adresse = reservation.annonce.adresse;
-      let formatted = '';
-      if (adresse.numero && adresse.rue) {
-        formatted += `${adresse.numero} ${adresse.rue}`;
-      }
-      if (adresse.codePostal && adresse.ville) {
-        formatted += formatted ? ', ' : '';
-        formatted += `${adresse.codePostal} ${adresse.ville}`;
-      }
-      if (adresse.pays) {
-        formatted += formatted ? ', ' : '';
-        formatted += adresse.pays;
-      }
-      return formatted || 'Adresse non disponible';
-    }
-    return 'Adresse non disponible';
-  }
-
-  // Obtenir le nom complet d'une personne
-  getFullName(reservation: ReservationDetails, type: 'locataire' | 'locateur'): string {
-    if (type === 'locataire' && reservation.locataire) {
-      return `${reservation.locataire.prenom} ${reservation.locataire.nom}`;
-    } else if (type === 'locateur' && reservation.annonce.locateur) {
-      return `${reservation.annonce.locateur.prenom} ${reservation.annonce.locateur.nom}`;
-    }
-    return 'Nom non disponible';
-  }
-
-  // ===== MÉTHODES DE GESTION DES MESSAGES =====
-  
-  // Effacer l'erreur
-  effacerErreur(): void {
+  effacerMessage(): void {
+    this.message = null;
     this.error = '';
-  }
-
-  // Effacer le succès
-  effacerSucces(): void {
     this.success = '';
   }
 
-  // ===== MÉTHODES D'EXPORT ET UTILITAIRES =====
-  
-  // Rafraîchir les données
-  rafraichir(): void {
-    this.chargerReservations();
+  private mapperReservation(r: Reservation): ReservationLocataire {
+    const anyR: any = r as any;
+    const titreAnnonce: string = this.sanitizeTitle(anyR.titreAnnonce || '');
+    const adresseAnnonce: string | undefined = anyR.adresseAnnonce;
+    const nomLocateurComplet: string = anyR.nomLocateur || '';
+    const { nom: nomLocateur, prenom: prenomLocateur } = this.parseNomComplet(nomLocateurComplet);
+
+    return {
+      id: r.id,
+      dateArrivee: r.dateArrivee,
+      dateDepart: r.dateDepart,
+      statut: r.statut as ReservationLocataire['statut'],
+      prixTotal: anyR.prixTotal ?? r.montantTotal ?? 0,
+      nombreNuits: anyR.nombreNuits ?? undefined,
+      nombreVoyageurs: anyR.nombreVoyageurs ?? r.nombreVoyageurs ?? undefined,
+      modePaiement: anyR.modePaiement ?? undefined,
+      numeroTransaction: anyR.numeroTransaction ?? null,
+      datePaiement: anyR.datePaiement ?? null,
+      fraisService: anyR.fraisService ?? undefined,
+      fraisNettoyage: anyR.fraisNettoyage ?? undefined,
+      fraisDepot: anyR.fraisDepot ?? undefined,
+      annonce: {
+        id: r.annonceId,
+        titre: titreAnnonce,
+        adresse: this.parseAdresseString(adresseAnnonce),
+        prixParNuit: 0,
+        images: []
+      },
+      locateur: {
+        id: r.locateurId || '',
+        nom: nomLocateur,
+        prenom: prenomLocateur
+      },
+      dateCreation: r.dateCreation || ''
+    };
   }
 
-  // Exporter les données
-  exporterDonnees(): void {
-    // Logique d'export à implémenter
-    console.log('Export des données...');
-    this.success = 'Export des données en cours...';
-    setTimeout(() => this.success = '', 3000);
+  private normalizeReservationsResponse(response: any): Reservation[] {
+    if (Array.isArray(response)) return response as Reservation[];
+    if (response && Array.isArray(response.content)) return response.content as Reservation[];
+    if (response && Array.isArray(response.data)) return response.data as Reservation[];
+    return [];
   }
 
-  // Obtenir la classe du badge de statut
-  getStatutBadgeClass(reservation: ReservationDetails): string {
-    return this.entityDetailsService.getStatusBadgeClassForReservation(reservation);
+  private parseAdresseString(adresse: string | undefined | null): { numero?: string; rue?: string; codePostal?: string; ville: string; pays: string } {
+    const base = { ville: '', pays: '' } as { numero?: string; rue?: string; codePostal?: string; ville: string; pays: string };
+    if (!adresse) return base;
+    const parts = adresse.split(',').map(p => p.trim()).filter(Boolean);
+    if (parts.length === 1) {
+      base.rue = parts[0];
+      return base;
+    }
+    if (parts.length >= 2) {
+      base.pays = parts[parts.length - 1] || '';
+      const villeEtCp = parts[parts.length - 2] || '';
+      const match = villeEtCp.match(/^(\d{4,6})\s+(.*)$/);
+      if (match) {
+        base.codePostal = match[1];
+        base.ville = match[2];
+      } else {
+        base.ville = villeEtCp;
+      }
+      base.rue = parts.slice(0, parts.length - 2).join(', ');
+      return base;
+    }
+    return base;
   }
 
-  // Obtenir le libellé du statut
-  getLibelleStatut(reservation: ReservationDetails): string {
-    return reservation.libelleStatut || reservation.statut;
+  private parseNomComplet(nomComplet: string): { nom: string; prenom: string } {
+    if (!nomComplet) return { nom: '', prenom: '' };
+    const tokens = nomComplet.trim().split(/\s+/);
+    if (tokens.length === 1) return { nom: tokens[0], prenom: '' };
+    const prenom = tokens[tokens.length - 1];
+    const nom = tokens.slice(0, -1).join(' ');
+    return { nom, prenom };
+  }
+
+  private sanitizeTitle(title: string): string {
+    if (!title) return '';
+    // Supprimer tout UUID (ex: 5c513425-8c37-4571-80dd-2b220cfdb0c3)
+    const withoutUuid = title.replace(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/g, '').trim();
+    // Supprimer paires de crochets/parenthèses résiduelles autour de vide
+    return withoutUuid.replace(/[()\[\]]/g, '').replace(/\s{2,}/g, ' ').trim();
+  }
+
+  formaterModePaiement(mode?: string): string {
+    if (!mode) return '—';
+    return mode.toString().replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase());
+  }
+
+  // Suppression: plus d'enrichissement d'annonces, on s'appuie sur les champs titreAnnonce/adresseAnnonce de l'API
+
+  // ===== TRACKBY POUR NGFOR =====
+  trackByReservationId(index: number, item: ReservationLocataire): string {
+    return item.id;
   }
 } 

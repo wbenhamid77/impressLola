@@ -1,204 +1,126 @@
-<div class="reservation-container">
-  <!-- En-tête de la page -->
-  <div class="page-header">
-    <div class="header-content">
-      <h1 class="main-title">
-        <i class="fas fa-calendar-check"></i>
-        Système de Réservation
-      </h1>
-      <p class="subtitle">Réservez votre séjour en toute simplicité</p>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 px-4 py-6">
+  <!-- En-tête -->
+  <div class="mx-auto mb-5 max-w-6xl rounded-2xl border border-emerald-700/20 bg-gradient-to-r from-maroc-vert to-emerald-700 p-6 text-white shadow">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="m-0 text-2xl font-extrabold"><i class="fas fa-calendar-check"></i> Système de Réservation</h1>
+        <p class="m-0 opacity-90">Réservez votre séjour en toute simplicité</p>
+      </div>
     </div>
   </div>
 
-  <div class="content-wrapper">
+  <div class="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
     <!-- Formulaire de réservation -->
-    <div class="reservation-form-section">
-      <div class="form-card">
-        <div class="card-header">
-          <h2><i class="fas fa-plus-circle"></i> Nouvelle Réservation</h2>
-          <p>Remplissez les informations pour créer votre réservation</p>
-        </div>
-
-        <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()" class="reservation-form">
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+      <div class="border-b bg-slate-50 p-5">
+        <h2 class="m-0 text-xl font-bold text-slate-900"><i class="fas fa-plus-circle"></i> Nouvelle Réservation</h2>
+        <p class="m-0 text-slate-600">Remplissez les informations pour créer votre réservation</p>
+      </div>
+      <div class="p-5">
+        <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()" class="grid gap-4">
           <!-- Sélection de l'annonce -->
-          <div class="form-group">
-            <label for="annonceId">
-              <i class="fas fa-home"></i>
-              Sélectionner une Annonce
-            </label>
-            <select
-              id="annonceId"
-              formControlName="annonceId"
-              class="form-control"
-            >
+          <label class="grid gap-1">
+            <span class="text-sm font-semibold text-slate-700"><i class="fas fa-home"></i> Sélectionner une Annonce</span>
+            <select id="annonceId" formControlName="annonceId" class="rounded-lg border border-slate-300 px-3 py-2 focus:border-maroc-vert focus:outline-none focus:ring-2 focus:ring-maroc-vert/20">
               <option value="">Choisissez une annonce</option>
               <option value="1E8447B6-62C6-40E1-BB9A-2228627D2572">Appartement Paris Centre - 120€/nuit</option>
               <option value="2F9558C7-73D7-51F2-CC0B-3339738E3683">Maison Provence - 95€/nuit</option>
               <option value="3G0669D8-84E8-62G3-DD1C-4440849F4794">Studio Lyon - 80€/nuit</option>
             </select>
-            <div class="form-help">
-              <small>Sélectionnez l'annonce de votre choix dans la liste</small>
-            </div>
-          </div>
+            <small class="text-slate-500">Sélectionnez l'annonce de votre choix dans la liste</small>
+          </label>
 
-          <!-- Dates d'arrivée et de départ -->
-          <div class="form-row">
-            <div class="form-group">
-              <label for="dateArrivee">
-                <i class="fas fa-plane-arrival"></i>
-                Date d'Arrivée
-              </label>
-              <input
-                type="date"
-                id="dateArrivee"
-                formControlName="dateArrivee"
-                class="form-control"
-                [min]="getTodayDate()"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="dateDepart">
-                <i class="fas fa-plane-departure"></i>
-                Date de Départ
-              </label>
-              <input
-                type="date"
-                id="dateDepart"
-                formControlName="dateDepart"
-                class="form-control"
-                [min]="getTodayDate()"
-              />
-            </div>
-          </div>
-
-          <!-- Nombre de voyageurs -->
-          <div class="form-group">
-            <label for="nombreVoyageurs">
-              <i class="fas fa-users"></i>
-              Nombre de Voyageurs
+          <!-- Dates -->
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="grid gap-1">
+              <span class="text-sm font-semibold text-slate-700"><i class="fas fa-plane-arrival"></i> Date d'Arrivée</span>
+              <input type="date" id="dateArrivee" formControlName="dateArrivee" class="rounded-lg border border-slate-300 px-3 py-2 focus:border-maroc-vert focus:outline-none focus:ring-2 focus:ring-maroc-vert/20" [min]="getTodayDate()" />
             </label>
-            <div class="number-input-wrapper">
-              <button type="button" class="number-btn" (click)="decrementVoyageurs()">
-                <i class="fas fa-minus"></i>
-              </button>
-              <input
-                type="number"
-                id="nombreVoyageurs"
-                formControlName="nombreVoyageurs"
-                class="form-control number-input"
-                min="1"
-                max="10"
-              />
-              <button type="button" class="number-btn" (click)="incrementVoyageurs()">
-                <i class="fas fa-plus"></i>
-              </button>
-            </div>
-            <div class="form-help">
-              <small>Entre 1 et 10 voyageurs maximum</small>
-            </div>
+            <label class="grid gap-1">
+              <span class="text-sm font-semibold text-slate-700"><i class="fas fa-plane-departure"></i> Date de Départ</span>
+              <input type="date" id="dateDepart" formControlName="dateDepart" class="rounded-lg border border-slate-300 px-3 py-2 focus:border-maroc-vert focus:outline-none focus:ring-2 focus:ring-maroc-vert/20" [min]="getTodayDate()" />
+            </label>
           </div>
 
-          <!-- Bouton de soumission -->
-          <div class="form-actions">
-            <button
-              type="submit"
-              class="btn-submit"
-              [disabled]="!reservationForm.valid || isLoading"
-            >
-              <span *ngIf="!isLoading">
-                <i class="fas fa-check"></i>
-                Créer la Réservation
-              </span>
-              <span *ngIf="isLoading" class="loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                Création en cours...
-              </span>
+          <!-- Voyageurs -->
+          <div>
+            <label for="nombreVoyageurs" class="mb-1 block text-sm font-semibold text-slate-700"><i class="fas fa-users"></i> Nombre de Voyageurs</label>
+            <div class="inline-flex items-stretch overflow-hidden rounded-lg border border-slate-300">
+              <button type="button" class="px-3 py-2 text-slate-700 hover:bg-slate-50" (click)="decrementVoyageurs()"><i class="fas fa-minus"></i></button>
+              <input type="number" id="nombreVoyageurs" formControlName="nombreVoyageurs" class="w-20 border-x border-slate-300 px-3 py-2 text-center outline-none" min="1" max="10" />
+              <button type="button" class="px-3 py-2 text-slate-700 hover:bg-slate-50" (click)="incrementVoyageurs()"><i class="fas fa-plus"></i></button>
+            </div>
+            <small class="block text-slate-500">Entre 1 et 10 voyageurs maximum</small>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-2 flex items-center justify-end gap-2 border-t pt-3">
+            <button type="submit" class="rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-700 px-4 py-2 font-extrabold text-white disabled:opacity-60" [disabled]="!reservationForm.valid || isLoading">
+              <span *ngIf="!isLoading"><i class="fas fa-check"></i> Créer la Réservation</span>
+              <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i> Création en cours...</span>
             </button>
           </div>
 
-          <!-- Messages de statut -->
-          <div class="status-messages">
-            <div *ngIf="messageSucces" class="message success">
-              <i class="fas fa-check-circle"></i>
-              {{ messageSucces }}
-            </div>
-            <div *ngIf="messageErreur" class="message error">
-              <i class="fas fa-exclamation-circle"></i>
-              {{ messageErreur }}
-            </div>
+          <!-- Messages -->
+          <div class="grid gap-2">
+            <div *ngIf="messageSucces" class="rounded-lg border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-emerald-700"><i class="fas fa-check-circle"></i> {{ messageSucces }}</div>
+            <div *ngIf="messageErreur" class="rounded-lg border border-rose-300/60 bg-rose-50 px-3 py-2 text-rose-700"><i class="fas fa-exclamation-circle"></i> {{ messageErreur }}</div>
           </div>
         </form>
       </div>
-    </div>
+    </section>
 
-    <!-- Section des informations de réservation -->
-    <div class="reservation-info-section">
+    <!-- Infos réservation -->
+    <section class="space-y-4">
       <!-- Périodes réservées -->
-      <div class="info-card">
-        <div class="card-header">
-          <h3><i class="fas fa-calendar-times"></i> Périodes Déjà Réservées</h3>
-          <button class="refresh-btn" (click)="chargerPeriodesReservees()">
-            <i class="fas fa-sync-alt"></i>
-          </button>
+      <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="flex items-center justify-between border-b bg-slate-50 p-4">
+          <h3 class="m-0 text-lg font-bold text-slate-900"><i class="fas fa-calendar-times"></i> Périodes Déjà Réservées</h3>
+          <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="chargerPeriodesReservees()"><i class="fas fa-sync-alt"></i></button>
         </div>
-        
-        <div class="periodes-list">
-          <div *ngIf="periodesReservees.length === 0" class="empty-state">
-            <i class="fas fa-calendar-check"></i>
-            <p>Aucune période réservée pour le moment</p>
-          </div>
-          
-          <div *ngFor="let periode of periodesReservees" class="periode-item">
-            <div class="periode-dates">
-              <span class="date-label">Du:</span>
-              <span class="date-value">{{ periode.dateDebut | date:'dd/MM/yyyy' }}</span>
-              <span class="date-label">Au:</span>
-              <span class="date-value">{{ periode.dateFin | date:'dd/MM/yyyy' }}</span>
+        <div class="p-4">
+          <div class="grid place-items-center rounded-lg border border-slate-200 bg-slate-50 p-6 text-slate-500" *ngIf="periodesReservees.length === 0">
+            <div class="text-center">
+              <i class="fas fa-calendar-check mb-2 text-2xl"></i>
+              <p class="m-0">Aucune période réservée pour le moment</p>
             </div>
-            <div class="periode-statut" [style.background-color]="getStatutColor(periode.statut)">
-              {{ getStatutLabel(periode.statut) }}
+          </div>
+          <div class="space-y-2" *ngIf="periodesReservees.length > 0">
+            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2" *ngFor="let periode of periodesReservees">
+              <div class="inline-flex items-center gap-2">
+                <span class="text-slate-600">Du:</span>
+                <span class="font-bold">{{ periode.dateDebut | date:'dd/MM/yyyy' }}</span>
+                <span class="text-slate-600">Au:</span>
+                <span class="font-bold">{{ periode.dateFin | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="rounded-full px-2 py-0.5 text-xs font-bold text-white" [style.background-color]="getStatutColor(periode.statut)">
+                {{ getStatutLabel(periode.statut) }}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Jours réservés -->
-      <div class="info-card">
-        <div class="card-header">
-          <h3><i class="fas fa-calendar-day"></i> Jours Individuels Réservés</h3>
-          <button class="refresh-btn" (click)="chargerJoursReserves()">
-            <i class="fas fa-sync-alt"></i>
-          </button>
+      <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="flex items-center justify-between border-b bg-slate-50 p-4">
+          <h3 class="m-0 text-lg font-bold text-slate-900"><i class="fas fa-calendar-day"></i> Jours Individuels Réservés</h3>
+          <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="chargerJoursReserves()"><i class="fas fa-sync-alt"></i></button>
         </div>
-        
-        <div class="jours-list">
-          <div *ngIf="joursReserves.length === 0" class="empty-state">
-            <i class="fas fa-calendar-day"></i>
-            <p>Aucun jour individuel réservé</p>
+        <div class="p-4">
+          <div class="grid place-items-center rounded-lg border border-slate-200 bg-slate-50 p-6 text-slate-500" *ngIf="joursReserves.length === 0">
+            <div class="text-center">
+              <i class="fas fa-calendar-day mb-2 text-2xl"></i>
+              <p class="m-0">Aucun jour individuel réservé</p>
+            </div>
           </div>
-          
-          <div class="jours-grid">
-            <span *ngFor="let jour of joursReserves" class="jour-reserve">
-              {{ jour | date:'dd/MM' }}
-            </span>
+          <div *ngIf="joursReserves.length > 0">
+            <div class="flex flex-wrap gap-2">
+              <span class="rounded-lg border border-slate-200 bg-white px-2 py-1 font-semibold" *ngFor="let jour of joursReserves">{{ jour | date:'dd/MM' }}</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Footer informatif -->
-  <div class="info-footer">
-    <div class="footer-content">
-      <div class="footer-item">
-        <i class="fas fa-info-circle"></i>
-        <span>Vérifiez les disponibilités avant de réserver</span>
-      </div>
-      <div class="footer-item">
-        <i class="fas fa-clock"></i>
-        <span>Les réservations sont traitées dans les 24h</span>
-      </div>
-    </div>
+    </section>
   </div>
 </div> 

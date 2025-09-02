@@ -4,11 +4,16 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { CreateAnnonceRequest } from '../../models/annonce.model';
-import { GoogleMapService, MapLocation } from '../../services/google-map.service';
-import { SimpleMapService } from '../../services/simple-map.service';
-import { BasicMapService } from '../../services/basic-map.service';
+// Services de carte supprimés - utilisation de Leaflet uniquement
 import { StadeService } from '../../services/stade.service';
 import * as L from 'leaflet';
+
+// Configuration des icônes par défaut de Leaflet
+(L.Icon.Default as any).mergeOptions({
+  iconRetinaUrl: 'assets/images/marker-icon-2x.png',
+  iconUrl: 'assets/images/marker-icon.png',
+  shadowUrl: 'assets/images/marker-shadow.png'
+});
 
 @Component({
   selector: 'app-ajouter-annonce',
@@ -26,14 +31,19 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
   isLocateur = false;
   formInitialized = false;
 
-  // Propriétés pour la carte
-  private map: any = null;
-  private marker: any = null;
-  mapInitialized = false;
+  // Gestion du formulaire multi-étapes
+  currentStep = 1;
+  readonly totalSteps = 7; // 1: Infos, 2: Images, 3: Caractéristiques, 4: Localisation, 5: Équipements, 6: Règles, 7: Résumé
+
+  // Propriétés pour les cartes
+  private mapStep4: any = null;
+  private mapStep7: any = null;
+  private markerStep4: any = null;
+  private markerStep7: any = null;
+  mapStep4Initialized = false;
+  mapStep7Initialized = false;
   mapError = false;
-  searchQuery = '';
-  searchResults: MapLocation[] = [];
-  showSearchResults = false;
+  // Variables de recherche supprimées - utilisation de Leaflet uniquement
 
   // Propriétés pour la gestion des images
   selectedImages: Array<{file: File, preview: string, name: string, size: number}> = [];
@@ -160,9 +170,6 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
     private fb: FormBuilder,
     private apiService: ApiService,
     private router: Router,
-    private mapService: GoogleMapService,
-    private simpleMapService: SimpleMapService,
-    private basicMapService: BasicMapService,
     private stadeService: StadeService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -170,79 +177,121 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnInit(): void {
     this.verifierRole();
     this.initForm();
+    this.updateStepProgress();
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.initMap();
-    }, 1000);
+  // Navigation entre étapes
+  goToStep(step: number): void {
+    if (step < 1 || step > this.totalSteps) return;
+    this.currentStep = step;
+    // Initialiser la carte selon l'étape
+    if (this.currentStep === 4) {
+      setTimeout(() => this.initMapStep4(), 100);
+    } else if (this.currentStep === 7) {
+      setTimeout(() => this.initMapStep7(), 100);
+    }
+    // Mettre à jour la progression visuelle
+    this.updateStepProgress();
   }
 
-  ngOnDestroy(): void {
-    if (this.map) {
-      this.map.remove();
+  nextStep(): void {
+    if (this.currentStep < this.totalSteps) {
+      this.currentStep++;
+      if (this.currentStep === 4) {
+        setTimeout(() => this.initMapStep4(), 100);
+      } else if (this.currentStep === 7) {
+        setTimeout(() => this.initMapStep7(), 100);
+      }
+      this.updateStepProgress();
     }
   }
 
-  private async initMap(): Promise<void> {
-    if (this.mapInitialized) return;
+  prevStep(): void {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+      this.updateStepProgress();
+    }
+  }
+
+  private updateStepProgress(): void {
+    // Mettre à jour la variable CSS pour la progression
+    document.documentElement.style.setProperty('--current-step', this.currentStep.toString());
+  }
+
+  ngAfterViewInit(): void {
+    // Forcer l'initialisation de la carte selon l'étape
+    setTimeout(() => {
+      console.log('ngAfterViewInit - Étape courante:', this.currentStep);
+      if (this.currentStep === 4) {
+        console.log('Tentative d\'initialisation carte étape 4...');
+        this.initMapStep4();
+      } else if (this.currentStep === 7) {
+        console.log('Tentative d\'initialisation carte étape 7...');
+        this.initMapStep7();
+      }
+    }, 100);
+  }
+
+  ngOnDestroy(): void {
+    if (this.mapStep4) {
+      this.mapStep4.remove();
+    }
+    if (this.mapStep7) {
+      this.mapStep7.remove();
+    }
+  }
+
+  private async initMapStep4(): Promise<void> {
+    if (this.mapStep4Initialized) {
+      console.log('Carte étape 4 déjà initialisée');
+      return;
+    }
 
     try {
-      console.log('Début de l\'initialisation de la carte...');
+      console.log('🗺️ DÉBUT initialisation carte étape 4...');
       
       // Coordonnées par défaut (Casablanca, Maroc)
       const defaultLat = 33.5731;
       const defaultLng = -7.5898;
 
-      // Attendre que le DOM soit prêt
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const mapContainer = document.getElementById('map');
-      console.log('Container map trouvé:', !!mapContainer);
+      const mapContainer = document.getElementById('map-step4');
+      console.log('📍 Container map-step4 trouvé:', !!mapContainer);
       
       if (!mapContainer) {
-        console.error('Container map non trouvé');
+        console.error('❌ Container map-step4 non trouvé');
         this.mapError = true;
+        this.cdr.detectChanges();
             return;
       }
 
-      // Vider le conteneur et s'assurer qu'il a les bonnes dimensions
+      // Nettoyer et configurer le conteneur
       mapContainer.innerHTML = '';
       mapContainer.style.width = '100%';
-      mapContainer.style.height = '100%';
+      mapContainer.style.height = '450px';
       mapContainer.style.position = 'relative';
-      mapContainer.style.borderRadius = '12px';
-      mapContainer.style.overflow = 'hidden';
+      mapContainer.style.backgroundColor = '#f0f0f0';
 
-      console.log('Création de la carte Leaflet...');
+      console.log('📐 Conteneur configuré');
 
-      // Créer la carte Leaflet avec des options optimisées
-      this.map = L.map('map', {
+      // Créer la carte Leaflet simple
+      console.log('🌍 Création de la carte Leaflet...');
+      this.mapStep4 = L.map(mapContainer, {
         center: [defaultLat, defaultLng],
-        zoom: 12,
-        zoomControl: false, // On va ajouter nos propres contrôles
-        scrollWheelZoom: true,
-        doubleClickZoom: true,
-        dragging: true,
-        touchZoom: true,
-        attributionControl: true,
-        fadeAnimation: true,
-        zoomAnimation: true,
-        markerZoomAnimation: true
+        zoom: 13,
+        zoomControl: true,
+        attributionControl: true
       });
 
-      console.log('Carte Leaflet créée');
+      console.log('✅ Carte Leaflet créée');
 
-      // Ajouter la couche de tuiles OpenStreetMap avec style personnalisé
+      // Ajouter les tuiles (version simple sans timeout)
       const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-        minZoom: 3,
-        subdomains: 'abc'
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18
       });
 
-      tileLayer.addTo(this.map);
-      console.log('Couche de tuiles ajoutée');
+      tileLayer.addTo(this.mapStep4);
+      console.log('🗺️ Tuiles ajoutées');
 
       // Créer un marqueur personnalisé avec les couleurs du Maroc
       const customIcon = L.divIcon({
@@ -273,16 +322,16 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
         popupAnchor: [0, -30]
       });
 
-      this.marker = L.marker([defaultLat, defaultLng], {
+      this.markerStep4 = L.marker([defaultLat, defaultLng], {
         draggable: true,
         title: 'Emplacement du logement',
         icon: customIcon
-      }).addTo(this.map);
+      }).addTo(this.mapStep4);
 
       console.log('Marqueur ajouté');
 
       // Ajouter un popup au marqueur avec style Maroc
-      this.marker.bindPopup(`
+      this.markerStep4.bindPopup(`
         <div style="text-align: center; min-width: 220px; padding: 8px;">
           <h4 style="margin: 0 0 8px 0; color: #c1272d; font-size: 14px; font-weight: bold;">
             📍 Emplacement du logement
@@ -300,7 +349,7 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
       `);
 
       // Écouter les événements de déplacement du marqueur
-      this.marker.on('dragend', (event: L.DragEndEvent) => {
+      this.markerStep4.on('dragend', (event: L.DragEndEvent) => {
         const marker = event.target;
         const position = marker.getLatLng();
         
@@ -340,12 +389,12 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
       });
 
       // Écouter les clics sur la carte pour placer le marqueur
-      this.map.on('click', (event: L.LeafletMouseEvent) => {
+      this.mapStep4.on('click', (event: L.LeafletMouseEvent) => {
         const lat = event.latlng.lat;
         const lng = event.latlng.lng;
         
         // Déplacer le marqueur
-        this.marker.setLatLng([lat, lng]);
+        this.markerStep4.setLatLng([lat, lng]);
         
         // Mettre à jour les propriétés du composant
         this.latitude = lat;
@@ -359,7 +408,7 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         // Mettre à jour le popup
-        this.marker.setPopupContent(`
+        this.markerStep4.setPopupContent(`
           <div style="text-align: center; min-width: 220px; padding: 8px;">
             <h4 style="margin: 0 0 8px 0; color: #c1272d; font-size: 14px; font-weight: bold;">
               📍 Emplacement du logement
@@ -382,34 +431,303 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
         console.log('Clic sur la carte:', lat, lng);
       });
 
+      // Finaliser l'initialisation
+      setTimeout(() => {
+        if (this.mapStep4) {
+          this.mapStep4.invalidateSize();
+          console.log('🔄 Carte redimensionnée');
+        }
+      }, 100);
+      
+      // IMPORTANT: Marquer comme initialisée
+      this.mapStep4Initialized = true;
+      this.mapError = false;
+      
+      // Forcer la détection des changements
+      this.cdr.detectChanges();
+      
+      console.log('✅ Carte étape 4 - Initialisation TERMINÉE');
+
+    } catch (error) {
+      console.error('❌ Erreur carte étape 4:', error);
+      console.log('🔄 Activation du fallback...');
+      
+      // Créer la carte de fallback
+      this.createFallbackMap('map-step4');
+      
+      // Marquer comme initialisée (fallback compte comme initialisation)
+      this.mapStep4Initialized = true;
+      this.mapError = false;
+      
+      // Forcer la détection des changements
+      this.cdr.detectChanges();
+      
+      console.log('✅ Fallback carte étape 4 activé');
+    }
+  }
+
+  private async initMapStep7(): Promise<void> {
+    if (this.mapStep7Initialized) return;
+
+    try {
+      console.log('Début de l\'initialisation de la carte étape 7...');
+      
+      // Utiliser les coordonnées du formulaire si disponibles
+      const lat = this.latitude || 33.5731;
+      const lng = this.longitude || -7.5898;
+
+      // Attendre que le DOM soit prêt
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const mapContainer = document.getElementById('map-step7');
+      console.log('Container map étape 7 trouvé:', !!mapContainer);
+      
+      if (!mapContainer) {
+        console.error('Container map étape 7 non trouvé');
+        this.mapError = true;
+        return;
+      }
+
+      // Vider le conteneur et s'assurer qu'il a les bonnes dimensions
+      mapContainer.innerHTML = '';
+      mapContainer.style.width = '100%';
+      mapContainer.style.height = '100%';
+      mapContainer.style.position = 'relative';
+      mapContainer.style.borderRadius = '12px';
+      mapContainer.style.overflow = 'hidden';
+
+      console.log('Création de la carte Leaflet étape 7...');
+
+      // Créer la carte Leaflet (lecture seule pour le résumé)
+      this.mapStep7 = L.map('map-step7', {
+        center: [lat, lng],
+        zoom: 15,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        dragging: true,
+        touchZoom: true,
+        attributionControl: true
+      });
+
+      console.log('Carte Leaflet étape 7 créée');
+
+      // Ajouter la couche de tuiles
+      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+        minZoom: 3,
+        subdomains: 'abc'
+      });
+
+      tileLayer.addTo(this.mapStep7);
+
+      // Créer un marqueur fixe pour le résumé
+      const customIcon = L.divIcon({
+        className: 'custom-marker-preview',
+        html: `
+          <div style="
+              width: 40px;
+              height: 40px;
+              background: linear-gradient(135deg, #059669, #dc2626);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+              border: 3px solid white;
+            ">
+            <i class="fas fa-home" style="color: white; font-size: 16px;"></i>
+          </div>
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+      });
+
+      this.markerStep7 = L.marker([lat, lng], {
+        icon: customIcon,
+        draggable: false
+      }).addTo(this.mapStep7);
+
+      // Popup avec informations de l'annonce
+      this.markerStep7.bindPopup(`
+        <div style="text-align: center; min-width: 250px; padding: 12px;">
+          <h4 style="margin: 0 0 8px 0; color: #059669; font-size: 16px; font-weight: bold;">
+            🏠 ${this.annonceForm.get('titre')?.value || 'Votre logement'}
+          </h4>
+          <p style="margin: 4px 0; color: #6b7280; font-size: 13px;">
+            📍 ${this.annonceForm.get('ville')?.value || 'Ville'}, ${this.annonceForm.get('pays')?.value || 'Maroc'}
+          </p>
+          <p style="margin: 4px 0; color: #dc2626; font-size: 14px; font-weight: bold;">
+            💰 ${this.annonceForm.get('prixParNuit')?.value || '0'} DH/nuit
+          </p>
+          <small style="color: #6b7280; font-size: 11px; display: block; margin-top: 8px;">
+            Coordonnées: ${lat.toFixed(4)}, ${lng.toFixed(4)}
+          </small>
+        </div>
+      `);
+
       // Forcer le rafraîchissement de la carte
       setTimeout(() => {
-        if (this.map) {
-          this.map.invalidateSize();
-          console.log('Carte rafraîchie');
+        if (this.mapStep7) {
+          this.mapStep7.invalidateSize();
+          console.log('Carte étape 7 rafraîchie');
         }
       }, 500);
       
-      this.mapInitialized = true;
-      this.mapError = false;
-      console.log('Initialisation de la carte terminée avec succès');
+      this.mapStep7Initialized = true;
+      console.log('Initialisation de la carte étape 7 terminée avec succès');
 
     } catch (error) {
-      console.error('Erreur lors de l\'initialisation de la carte:', error);
-      this.mapError = true;
+      console.error('Erreur lors de l\'initialisation de la carte étape 7:', error);
+      console.log('Utilisation du fallback pour la carte étape 7...');
+      this.createFallbackMap('map-step7');
+      this.mapStep7Initialized = true;
+      this.mapError = false;
+      this.cdr.detectChanges();
     }
   }
 
   retryMapLoad(): void {
     this.mapError = false;
-    this.mapInitialized = false;
-    this.initMap();
+    this.mapStep4Initialized = false;
+    this.mapStep7Initialized = false;
+    if (this.currentStep === 4) {
+      this.initMapStep4();
+    } else if (this.currentStep === 7) {
+      this.initMapStep7();
+    }
+  }
+
+  // Méthode de fallback pour tester
+  private createFallbackMap(containerId: string): void {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = `
+      <div style="
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        color: #0f172a;
+      ">
+        <div style="
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, #059669, #dc2626);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        ">
+          <i class="fas fa-map-marker-alt" style="color: white; font-size: 32px;"></i>
+        </div>
+        <h4 style="margin: 0 0 8px 0; font-size: 18px; font-weight: bold; color: #059669;">
+          📍 Carte Interactive
+        </h4>
+        <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280;">
+          Casablanca, Maroc
+        </p>
+        <div style="
+          background: rgba(255,255,255,0.8);
+          padding: 12px 16px;
+          border-radius: 8px;
+          font-size: 12px;
+          color: #374151;
+          border: 1px solid #e5e7eb;
+        ">
+          <strong>Coordonnées:</strong><br>
+          Lat: ${this.latitude || 33.5731}<br>
+          Lng: ${this.longitude || -7.5898}
+        </div>
+      </div>
+    `;
+  }
+
+  // Méthode de compatibilité
+  private async initMap(): Promise<void> {
+    if (this.currentStep === 4) {
+      return this.initMapStep4();
+    } else if (this.currentStep === 7) {
+      return this.initMapStep7();
+    }
+  }
+
+  // Méthode de test publique (accessible depuis la console)
+  public testMap(): void {
+    console.log('=== TEST DE LA CARTE ===');
+    console.log('Étape actuelle:', this.currentStep);
+    console.log('MapStep4 initialisée:', this.mapStep4Initialized);
+    console.log('MapStep7 initialisée:', this.mapStep7Initialized);
+    console.log('Erreur carte:', this.mapError);
+    
+    const container4 = document.getElementById('map-step4');
+    const container7 = document.getElementById('map-step7');
+    
+    console.log('Container étape 4 existe:', !!container4);
+    console.log('Container étape 7 existe:', !!container7);
+    
+    if (container4) {
+      console.log('Contenu container 4:', container4.innerHTML.length > 0 ? 'Présent' : 'Vide');
+    }
+    if (container7) {
+      console.log('Contenu container 7:', container7.innerHTML.length > 0 ? 'Présent' : 'Vide');
+    }
+    
+    console.log('=== FIN TEST ===');
+  }
+
+  // Test simple sans Leaflet pour diagnostic
+  public createSimpleMap(): void {
+    console.log('🚀 Création d\'une carte simple pour test...');
+    const container = document.getElementById('map-step4');
+    if (container) {
+      this.createFallbackMap('map-step4');
+      this.mapStep4Initialized = true;
+      this.mapError = false;
+      this.cdr.detectChanges();
+      console.log('✅ Carte simple créée avec succès !');
+    } else {
+      console.error('❌ Container map-step4 non trouvé');
+    }
+  }
+
+  // Méthode de force reset - si la carte est bloquée
+  public forceMapReset(): void {
+    console.log('🔄 RESET FORCÉ de la carte...');
+    this.mapStep4Initialized = false;
+    this.mapStep7Initialized = false;
+    this.mapError = false;
+    
+    if (this.mapStep4) {
+      this.mapStep4.remove();
+      this.mapStep4 = null;
+    }
+    
+    this.cdr.detectChanges();
+    
+    // Relancer l'initialisation
+    setTimeout(() => {
+      this.initMapStep4();
+    }, 100);
+    
+    console.log('✅ Reset terminé, initialisation relancée');
   }
 
   private async updateMarkerPopup(lat: number, lng: number): Promise<void> {
-    if (this.marker && this.map) {
-      this.marker.setLatLng([lat, lng]);
-      this.marker.setPopupContent(`
+    if (this.markerStep4 && this.mapStep4) {
+      this.markerStep4.setLatLng([lat, lng]);
+      this.markerStep4.setPopupContent(`
         <div style="text-align: center; min-width: 200px;">
           <h4 style="margin: 0 0 8px 0; color: #2d3748; font-size: 14px;">Emplacement du logement</h4>
           <p style="margin: 4px 0; color: #718096; font-size: 12px; font-family: 'Courier New', monospace;">
@@ -426,54 +744,11 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  async onSearchInput(): Promise<void> {
-    if (this.searchQuery.length < 3) {
-      this.showSearchResults = false;
-      this.searchResults = [];
-      return;
-    }
-
-    try {
-      const results = await this.mapService.searchAddress(this.searchQuery);
-      this.searchResults = results;
-      this.showSearchResults = true;
-    } catch (error) {
-      console.error('Erreur lors de la recherche:', error);
-      this.searchResults = [];
-      this.showSearchResults = false;
-    }
-  }
-
-  selectSearchResult(result: MapLocation): void {
-    this.searchQuery = result.address || '';
-    this.showSearchResults = false;
-    
-    if (this.map && this.marker) {
-      this.map.setView([result.lat, result.lng], 15);
-      this.marker.setLatLng([result.lat, result.lng]);
-      
-      if (this.annonceForm) {
-        this.annonceForm.patchValue({
-          latitude: result.lat,
-          longitude: result.lng
-        });
-      }
-      
-      this.updateMarkerPopup(result.lat, result.lng);
-      this.updateCoordinatesDisplay(result.lat, result.lng);
-    }
-  }
-
-  onDocumentClick(event: Event): void {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.search-results-container') && !target.closest('.search-input-wrapper')) {
-      this.showSearchResults = false;
-    }
-  }
+  // Méthodes de recherche Google supprimées - utilisation directe de Leaflet
 
   centerOnParis(): void {
-    if (this.map) {
-      this.map.setView([48.8566, 2.3522], 13);
+    if (this.mapStep4) {
+      this.mapStep4.setView([48.8566, 2.3522], 13);
     }
   }
 
@@ -616,6 +891,11 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onSubmit(): void {
+    // Demander confirmation avant l'envoi
+    const confirmed = window.confirm("Êtes-vous sûr de vouloir publier cette annonce ? Le locataire verra toutes les informations que vous avez saisies.");
+    if (!confirmed) {
+      return;
+    }
     if (this.annonceForm.invalid) {
       this.error = 'Veuillez remplir tous les champs obligatoires.';
       return;
@@ -847,10 +1127,10 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
           }
           
           // Centrer la carte sur la position actuelle
-          if (this.map) {
-            this.map.setView([lat, lng], 15);
-            if (this.marker) {
-              this.marker.setLatLng([lat, lng]);
+          if (this.mapStep4) {
+            this.mapStep4.setView([lat, lng], 15);
+            if (this.markerStep4) {
+              this.markerStep4.setLatLng([lat, lng]);
             }
           }
           
@@ -869,23 +1149,33 @@ export class AjouterAnnonceComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   zoomIn(): void {
-    if (this.map) {
-      this.map.zoomIn();
+    if (this.mapStep4) {
+      this.mapStep4.zoomIn();
+    }
+    if (this.mapStep7) {
+      this.mapStep7.zoomIn();
     }
   }
 
   zoomOut(): void {
-    if (this.map) {
-      this.map.zoomOut();
+    if (this.mapStep4) {
+      this.mapStep4.zoomOut();
+    }
+    if (this.mapStep7) {
+      this.mapStep7.zoomOut();
     }
   }
 
   centerMap(): void {
-    if (this.map) {
       // Centrer sur Casablanca par défaut ou sur la position actuelle du marqueur
       const currentLat = this.annonceForm?.get('latitude')?.value || 33.5731;
       const currentLng = this.annonceForm?.get('longitude')?.value || -7.5898;
-      this.map.setView([currentLat, currentLng], 13);
+    
+    if (this.mapStep4) {
+      this.mapStep4.setView([currentLat, currentLng], 13);
+    }
+    if (this.mapStep7) {
+      this.mapStep7.setView([currentLat, currentLng], 13);
     }
   }
 } 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { StadePopupService } from '../../services/stade-popup.service';
 import { Stade } from '../../models/stade.model';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-stade-popup',
@@ -58,7 +59,14 @@ import { Stade } from '../../models/stade.model';
               </div>
               <div class="year-built">
                 <i class="fas fa-calendar"></i>
-                <span>Construit en {{ selectedStade.dateConstruction }}</span>
+                <span>
+                  <ng-container *ngIf="selectedStade.dateConstruction && selectedStade.dateConstruction > 0; else yearUnknown">
+                    Construit en {{ selectedStade.dateConstruction }}
+                  </ng-container>
+                  <ng-template #yearUnknown>
+                    Construit en {{ selectedStade.dateCreation ? (selectedStade.dateCreation | date:'yyyy') : '—' }}
+                  </ng-template>
+                </span>
               </div>
             </div>
 
@@ -77,7 +85,7 @@ import { Stade } from '../../models/stade.model';
                   <i class="fas fa-map-marker-alt"></i>
                   <div class="location-text">
                     <strong>Adresse :</strong>
-                    <span>{{ selectedStade.adresse }}</span>
+                    <span>{{ selectedStade.adresseComplete || selectedStade.adresse }}</span>
                   </div>
                 </div>
                 <div class="location-item">
@@ -87,6 +95,9 @@ import { Stade } from '../../models/stade.model';
                     <span>{{ selectedStade.latitude }}, {{ selectedStade.longitude }}</span>
                   </div>
                 </div>
+              </div>
+              <div class="map-wrapper">
+                <div id="stade-map" class="stade-map" aria-label="Carte du stade"></div>
               </div>
               
               <!-- Boutons de navigation -->
@@ -110,7 +121,7 @@ import { Stade } from '../../models/stade.model';
                 </div>
                 <div class="stat-content">
                   <span class="stat-label">Surface de jeu</span>
-                  <span class="stat-value">{{ selectedStade.surfaceJeu }}</span>
+                  <span class="stat-value">{{ selectedStade.surfaceJeu || selectedStade.surfaceType || '—' }}</span>
                 </div>
               </div>
               
@@ -121,6 +132,51 @@ import { Stade } from '../../models/stade.model';
                 <div class="stat-content">
                   <span class="stat-label">Équipe résidente</span>
                   <span class="stat-value">{{ selectedStade.equipeResident }}</span>
+                </div>
+              </div>
+              <div class="stat-item" *ngIf="selectedStade.dimensions">
+                <div class="stat-icon">
+                  <i class="fas fa-ruler-combined"></i>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Dimensions</span>
+                  <span class="stat-value">{{ selectedStade.dimensions }}</span>
+                </div>
+              </div>
+              <div class="stat-item" *ngIf="selectedStade.surfaceMetresCarres">
+                <div class="stat-icon">
+                  <i class="fas fa-border-all"></i>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Surface</span>
+                  <span class="stat-value">{{ selectedStade.surfaceMetresCarres }} m²</span>
+                </div>
+              </div>
+              <div class="stat-item" *ngIf="selectedStade.distance !== undefined">
+                <div class="stat-icon">
+                  <i class="fas fa-route"></i>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Distance</span>
+                  <span class="stat-value">{{ selectedStade.distance }} km</span>
+                </div>
+              </div>
+              <div class="stat-item" *ngIf="selectedStade.tempsTrajetFormate || selectedStade.tempsTrajetMinutes">
+                <div class="stat-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Temps de trajet</span>
+                  <span class="stat-value">{{ selectedStade.tempsTrajetFormate || (selectedStade.tempsTrajetMinutes + ' min') }}</span>
+                </div>
+              </div>
+              <div class="stat-item" *ngIf="selectedStade.modeTransport">
+                <div class="stat-icon">
+                  <i class="fas fa-car-side"></i>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Transport</span>
+                  <span class="stat-value">{{ selectedStade.modeTransport }}</span>
                 </div>
               </div>
             </div>
@@ -138,6 +194,59 @@ import { Stade } from '../../models/stade.model';
                 >
                   <i class="fas fa-check-circle"></i>
                   <span>{{ equipement }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Informations supplémentaires -->
+            <div class="extra-info">
+              <div class="extra-row" *ngIf="selectedStade.categories?.length">
+                <i class="fas fa-layer-group"></i>
+                <div>
+                  <strong>Catégories</strong>
+                  <div>{{ selectedStade.categories?.join(', ') }}</div>
+                </div>
+              </div>
+              <div class="extra-row" *ngIf="selectedStade.prixMin !== undefined">
+                <i class="fas fa-tag"></i>
+                <div>
+                  <strong>Prix</strong>
+                  <div>{{ selectedStade.prixMin }} - {{ selectedStade.prixMax }} MAD</div>
+                </div>
+              </div>
+              <div class="extra-row" *ngIf="selectedStade.siteWeb">
+                <i class="fas fa-globe"></i>
+                <div>
+                  <strong>Site Web</strong>
+                  <div><a [href]="selectedStade.siteWeb || ''" target="_blank" rel="noopener">{{ selectedStade.siteWeb }}</a></div>
+                </div>
+              </div>
+              <div class="extra-row" *ngIf="selectedStade.telephone">
+                <i class="fas fa-phone"></i>
+                <div>
+                  <strong>Téléphone</strong>
+                  <div><a [href]="'tel:' + selectedStade.telephone">{{ selectedStade.telephone }}</a></div>
+                </div>
+              </div>
+              <div class="extra-row" *ngIf="selectedStade.estActif !== undefined">
+                <i class="fas" [ngClass]="selectedStade.estActif ? 'fa-check-circle text-emerald-600' : 'fa-times-circle text-rose-600'"></i>
+                <div>
+                  <strong>Statut</strong>
+                  <div>{{ selectedStade.estActif ? 'Actif' : 'Inactif' }}</div>
+                </div>
+              </div>
+              <div class="extra-row" *ngIf="selectedStade.dateCreation">
+                <i class="fas fa-calendar-plus"></i>
+                <div>
+                  <strong>Créé le</strong>
+                  <div>{{ selectedStade.dateCreation | date:'dd/MM/yyyy HH:mm' }}</div>
+                </div>
+              </div>
+              <div class="extra-row" *ngIf="selectedStade.dateModification">
+                <i class="fas fa-calendar-check"></i>
+                <div>
+                  <strong>Modifié le</strong>
+                  <div>{{ selectedStade.dateModification | date:'dd/MM/yyyy HH:mm' }}</div>
                 </div>
               </div>
             </div>
@@ -169,6 +278,8 @@ export class StadePopupComponent implements OnInit, OnDestroy {
   selectedStade: Stade | null = null;
   currentImageIndex = 0;
   private subscriptions: Subscription[] = [];
+  private map: L.Map | null = null;
+  private marker: L.Marker | null = null;
 
   constructor(private stadePopupService: StadePopupService) {}
 
@@ -178,17 +289,24 @@ export class StadePopupComponent implements OnInit, OnDestroy {
         this.showPopup = show;
         if (show) {
           this.currentImageIndex = 0;
+          // Initialiser la carte légèrement après l'ouverture pour garantir le rendu
+          setTimeout(() => this.initMap(), 150);
+        } else {
+          this.destroyMap();
         }
       }),
       this.stadePopupService.selectedStade$.subscribe(stade => {
         this.selectedStade = stade;
         this.currentImageIndex = 0;
+        // Rafraîchir la carte si déjà ouverte
+        setTimeout(() => this.initMap(), 150);
       })
     );
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.destroyMap();
   }
 
   closePopup(): void {
@@ -245,6 +363,48 @@ export class StadePopupComponent implements OnInit, OnDestroy {
       
       const wazeUrl = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes&address=${encodeURIComponent(address)}`;
       window.open(wazeUrl, '_blank');
+    }
+  }
+
+  private initMap(): void {
+    if (!this.showPopup || !this.selectedStade) return;
+    const container = document.getElementById('stade-map');
+    if (!container) return;
+
+    // Si le container a déjà une carte, la détruire
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
+
+    const lat = Number(this.selectedStade.latitude);
+    const lng = Number(this.selectedStade.longitude);
+    if (isNaN(lat) || isNaN(lng)) return;
+
+    this.map = L.map('stade-map', {
+      center: [lat, lng],
+      zoom: 15,
+      scrollWheelZoom: true,
+      attributionControl: true
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(this.map);
+
+    this.marker = L.marker([lat, lng]).addTo(this.map);
+
+    setTimeout(() => {
+      this.map?.invalidateSize();
+    }, 100);
+  }
+
+  private destroyMap(): void {
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+      this.marker = null;
     }
   }
 } 

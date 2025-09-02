@@ -1,239 +1,78 @@
-<div class="login-page">
-  <!-- Background thème Maroc -->
-  <div class="login-background">
-    <div class="background-overlay"></div>
-    
-    <!-- Motif géométrique marocain -->
-    <div class="geometric-pattern">
-      <div class="pattern-element" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]"></div>
-    </div>
-    
-    <!-- Éléments flottants marocains -->
-    <div class="floating-elements">
-      <div class="floating-element circle-element" data-aos="float" data-aos-duration="3000" data-aos-delay="0">
-        <div class="circle-icon"></div>
-        <div class="glow-effect"></div>
+<div class="fixed inset-0 grid place-items-center overflow-hidden bg-slate-900 text-white">
+  <div class="mx-auto grid w-[min(1120px,96vw)] grid-cols-1 gap-5 md:grid-cols-[1.2fr,1fr]">
+    <section class="grid gap-3 rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur">
+      <div class="relative h-44 overflow-hidden rounded-xl bg-white/5">
+        <div class="absolute left-2 top-2 inline-flex items-center gap-2 rounded-full border border-black/10 bg-gradient-to-r from-maroc-dor to-yellow-300 px-3 py-1 font-extrabold text-slate-900">CAN 2025</div>
+        <img *ngIf="canImageUrl" [src]="canImageUrl" [alt]="canImageAlt" (error)="onImageError()" class="absolute inset-0 m-auto max-h-full max-w-[80%] object-contain drop-shadow-2xl" />
       </div>
-      <div class="floating-element square-element" data-aos="float" data-aos-duration="3000" data-aos-delay="500">
-        <div class="square-icon"></div>
-        <div class="glow-effect"></div>
-      </div>
-      <div class="floating-element triangle-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1000">
-        <div class="triangle-icon"></div>
-        <div class="glow-effect"></div>
-      </div>
-      <div class="floating-element diamond-element" data-aos="float" data-aos-duration="3000" data-aos-delay="1500">
-        <div class="diamond-icon"></div>
-        <div class="glow-effect"></div>
-      </div>
-    </div>
-    
-    <!-- Particules animées -->
-    <div class="particles">
-      <div class="particle" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]"></div>
-    </div>
-    
-    <!-- Vagues animées -->
-    <div class="wave-container">
-      <div class="wave wave-1"></div>
-      <div class="wave wave-2"></div>
-      <div class="wave wave-3"></div>
-    </div>
-    
-    <!-- Grille marocaine -->
-    <div class="moroccan-grid">
-      <div class="grid-line" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]"></div>
-    </div>
-    
-    <!-- Éléments de lumière marocaine -->
-    <div class="moroccan-lights">
-      <div class="light-beam" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
-    </div>
-  </div>
+      <h2 class="m-0 text-xl font-extrabold">Bienvenue — Maroc, CAN 2025</h2>
+      <p class="m-0 opacity-90">Une plateforme moderne pour réserver et gérer vos locations en toute confiance pendant la CAN 2025.</p>
+      <ul class="m-0 grid list-none gap-2 p-0">
+        <li class="relative pl-6 before:absolute before:left-0 before:top-2 before:h-2.5 before:w-2.5 before:rounded-full before:bg-gradient-to-br before:from-maroc-vert before:to-maroc-dor">Sécurité renforcée et authentification fiable</li>
+        <li class="relative pl-6 before:absolute before:left-0 before:top-2 before:h-2.5 before:w-2.5 before:rounded-full before:bg-gradient-to-br before:from-maroc-vert before:to-maroc-dor">Tableau de bord clair, suivi en temps réel</li>
+        <li class="relative pl-6 before:absolute before:left-0 before:top-2 before:h-2.5 before:w-2.5 before:rounded-full before:bg-gradient-to-br before:from-maroc-vert before:to-maroc-dor">Support prioritaire et assistance locale</li>
+      </ul>
 
-  <!-- Container principal -->
-  <div class="login-container">
-    <!-- Header avec badge CAN 2025 -->
-    <header class="login-header" data-aos="fade-down" data-aos-duration="800">
-      <div class="header-badge" data-aos="zoom-in" data-aos-delay="200">
-        <div class="badge-icon"></div>
-        <span>CAN 2025 - Maroc</span>
-      </div>
-      <h1 class="main-title" data-aos="fade-up" data-aos-delay="400">
-        <span class="title-highlight">Bienvenue</span> au Maroc
-      </h1>
-      <p class="main-subtitle" data-aos="fade-up" data-aos-delay="600">
-        Connectez-vous à votre espace personnel pour la Coupe d'Afrique des Nations 2025
-      </p>
-    </header>
-
-    <!-- Carte de connexion -->
-    <div class="login-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-      <div class="card-header">
-        <div class="logo-section">
-          <div class="logo-icon" data-aos="zoom-in" data-aos-delay="300">
-            <div class="logo-symbol"></div>
-          </div>
-          <div class="logo-text" data-aos="fade-left" data-aos-delay="500">
-            <h2>Connexion</h2>
-            <p>Accédez à votre compte CAN 2025</p>
-          </div>
+      <div class="mt-2 grid w-fit grid-flow-col gap-2">
+        <div class="rounded-xl border border-white/15 bg-white/10 p-2 text-center">
+          <div class="text-lg font-extrabold text-maroc-dor">10k+</div>
+          <div class="opacity-90">Biens disponibles</div>
+        </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 p-2 text-center">
+          <div class="text-lg font-extrabold text-maroc-dor">24/7</div>
+          <div class="opacity-90">Support dédié</div>
+        </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 p-2 text-center">
+          <div class="text-lg font-extrabold text-maroc-dor">4.8★</div>
+          <div class="opacity-90">Satisfaction moyenne</div>
         </div>
       </div>
 
-      <!-- Formulaire de connexion -->
-      <form (ngSubmit)="onSubmit()" class="login-form" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
-        <div class="form-group" data-aos="fade-right" data-aos-duration="800" data-aos-delay="600">
-          <label for="email" class="form-label">
-            <i class="fas fa-envelope"></i>
-            Adresse email
-          </label>
-          <div class="input-wrapper">
-            <input 
-              type="email" 
-              id="email"
-              [(ngModel)]="email" 
-              name="email"
-              class="form-input"
-              placeholder="votre@email.com"
-              required
-              [class.input-error]="errorMessage && !email"
-            >
-            <i class="fas fa-envelope input-icon"></i>
-            <div class="input-focus-border"></div>
+      <div class="mt-3 grid w-fit grid-flow-col gap-2">
+        <button type="button" class="rounded-xl bg-gradient-to-r from-maroc-vert to-maroc-dor px-4 py-2 font-bold text-slate-900" (click)="navigateExplore()">Découvrir les offres</button>
+        <button type="button" class="rounded-xl border border-white/25 px-4 py-2 font-semibold text-white hover:bg-white/10" (click)="navigateSupport()">Contacter le support</button>
+      </div>
+    </section>
+
+    <div class="relative w-[min(420px,90vw)] place-self-center rounded-2xl border border-white/20 bg-white/10 p-7 shadow-2xl backdrop-blur-md md:w-auto">
+      <div class="mb-4 text-center">
+        <div class="mb-3 h-1 w-full rounded bg-gradient-to-r from-maroc-rouge via-maroc-dor to-maroc-vert"></div>
+        <h1 class="m-0 text-2xl font-bold">ImpressLola</h1>
+        <p class="m-0 opacity-85">Location au Maroc — CAN 2025</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+        <div class="mt-3 grid gap-2">
+          <label for="email" class="text-sm opacity-95">Email</label>
+          <input id="email" type="email" name="email" required autocomplete="email" [(ngModel)]="email" placeholder="nom@exemple.com"
+                 class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2" />
+        </div>
+
+        <div class="mt-3 grid gap-2">
+          <label for="password" class="text-sm opacity-95">Mot de passe</label>
+          <div class="grid grid-cols-[1fr,auto] items-center gap-2">
+            <input id="password" [type]="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" [(ngModel)]="password" placeholder="Votre mot de passe"
+                   class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2" />
+            <button type="button" (click)="togglePasswordVisibility()" aria-label="Afficher/masquer le mot de passe"
+                    class="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white transition hover:bg-white/15">{{ showPassword ? 'Masquer' : 'Afficher' }}</button>
           </div>
         </div>
 
-        <div class="form-group" data-aos="fade-left" data-aos-duration="800" data-aos-delay="800">
-          <label for="password" class="form-label">
-            <i class="fas fa-lock"></i>
-            Mot de passe
-          </label>
-          <div class="input-wrapper">
-            <input 
-              [type]="showPassword ? 'text' : 'password'"
-              id="password"
-              [(ngModel)]="password" 
-              name="password"
-              class="form-input"
-              placeholder="Votre mot de passe"
-              required
-              [class.input-error]="errorMessage && !password"
-            >
-            <i class="fas fa-lock input-icon"></i>
-            <button 
-              type="button" 
-              class="password-toggle"
-              (click)="togglePasswordVisibility()"
-              [class.active]="showPassword"
-            >
-              <i class="fas" [class]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-            </button>
-            <div class="input-focus-border"></div>
-          </div>
+        <div class="mt-4">
+          <button class="w-full rounded-xl bg-gradient-to-r from-maroc-vert to-maroc-dor px-4 py-3 font-extrabold text-slate-900 disabled:opacity-70" type="submit" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Se connecter</span>
+            <span *ngIf="isLoading" class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black/70 align-middle" aria-label="Chargement"></span>
+          </button>
         </div>
 
-        <!-- Options supplémentaires -->
-        <div class="form-options" data-aos="fade-up" data-aos-duration="800" data-aos-delay="900">
-          <label class="checkbox-wrapper">
-            <input type="checkbox" class="checkbox-input">
-            <span class="checkbox-custom"></span>
-            <span class="checkbox-label">Se souvenir de moi</span>
-          </label>
-          <a href="#" class="forgot-password">Mot de passe oublié ?</a>
-        </div>
+        <div class="mt-3 rounded-lg border border-rose-300/40 bg-rose-900/20 px-3 py-2 text-rose-100" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
 
-        <button 
-          type="submit" 
-          class="btn btn-primary login-btn"
-          [disabled]="isLoading"
-          data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1000"
-        >
-          <span *ngIf="!isLoading">
-            <i class="fas fa-sign-in-alt"></i>
-            Se connecter
-          </span>
-          <span *ngIf="isLoading">
-            <div class="spinner"></div>
-            Connexion...
-          </span>
-        </button>
+        <div class="mt-3 flex items-center justify-center gap-2 text-sm">
+          <span>Pas de compte ?</span>
+          <a class="cursor-pointer text-maroc-dor underline" (click)="navigateToInscription()">Créer un compte</a>
+        </div>
       </form>
-
-      <!-- Message d'erreur -->
-      <div *ngIf="errorMessage" class="error-message" data-aos="shake" data-aos-duration="800">
-        <i class="fas fa-exclamation-triangle"></i>
-        {{ errorMessage }}
-      </div>
-
-      <!-- Séparateur -->
-      <div class="separator" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1100">
-        <span>ou</span>
-      </div>
-
-      <!-- Connexion sociale -->
-      <div class="social-login" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1200">
-        <button class="btn btn-social btn-google">
-          <i class="fab fa-google"></i>
-          Continuer avec Google
-        </button>
-        <button class="btn btn-social btn-facebook">
-          <i class="fab fa-facebook-f"></i>
-          Continuer avec Facebook
-        </button>
-      </div>
-
-      <!-- Footer de la carte -->
-      <div class="card-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1300">
-        <p class="footer-text">Pas encore de compte ?</p>
-        <button class="btn btn-secondary" (click)="navigateToInscription()">
-          <i class="fas fa-user-plus"></i>
-          Créer un compte gratuitement
-        </button>
-      </div>
     </div>
-
-    <!-- Section d'informations -->
-    <div class="info-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1400">
-      <div class="info-card">
-        <div class="info-header">
-          <div class="info-icon"></div>
-          <h3>CAN 2025 - Maroc</h3>
-        </div>
-        <p class="info-description">
-          Vivez l'expérience unique de la Coupe d'Afrique des Nations au Maroc, 
-          terre d'hospitalité et de passion footballistique
-        </p>
-        <div class="features-grid">
-          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1600">
-            <div class="feature-icon"></div>
-            <span>Hospitalité marocaine</span>
-          </div>
-          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1800">
-            <div class="feature-icon"></div>
-            <span>Stades modernes</span>
-          </div>
-          <div class="feature-item" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="2000">
-            <div class="feature-icon"></div>
-            <span>Championnat d'Afrique</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer de la page -->
-    <footer class="page-footer" data-aos="fade-up" data-aos-duration="800" data-aos-delay="2200">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <div class="footer-icon"></div>
-          <span>CAN 2025</span>
-        </div>
-        <p>Coupe d'Afrique des Nations - Maroc</p>
-        <div class="footer-symbols">
-          <div class="footer-symbol"></div>
-          <div class="footer-symbol"></div>
-        </div>
-      </div>
-    </footer>
   </div>
-</div> 
+</div>
+

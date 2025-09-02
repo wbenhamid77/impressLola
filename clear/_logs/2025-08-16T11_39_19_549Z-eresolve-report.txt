@@ -1,0 +1,18 @@
+'Log files:
+C:\impresslola\clear\_logs\2025-08-16T11_39_19_549Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: impress-lola@0.0.0
+Found: @angular/common@19.2.14
+node_modules/@angular/common
+  @angular/common@"^19.2.0" from the root project
+
+Could not resolve dependency:
+peer @angular/common@"^20.0.0" from @ng-bootstrap/ng-bootstrap@19.0.1
+node_modules/@ng-bootstrap/ng-bootstrap
+  @ng-bootstrap/ng-bootstrap@"*" from the root project
+
+Fix the upstream dependency conflict, or retry
+this command with --force or --legacy-peer-deps
+to accept an incorrect (and potentially broken) dependency resolution.

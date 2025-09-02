@@ -1,261 +1,131 @@
-<div class="reservation-create-container">
-  <!-- En-tête -->
-  <div class="create-header">
-    <h3>
-      <i class="fas fa-calendar-plus"></i>
-      Nouvelle Réservation
-    </h3>
-    <button class="btn-close" (click)="annuler()">
-      <i class="fas fa-times"></i>
-    </button>
+<div class="mx-auto max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+  <div class="flex items-center justify-between border-b bg-gradient-to-r from-maroc-vert to-emerald-700 px-5 py-3 text-white">
+    <h3 class="m-0 text-lg font-extrabold"><i class="fas fa-calendar-plus"></i> Nouvelle Réservation</h3>
+    <button class="grid h-9 w-9 place-items-center rounded-full bg-white/15" (click)="annuler()"><i class="fas fa-times"></i></button>
   </div>
 
-  <!-- Messages d'état -->
-  <div class="messages-section" *ngIf="error || success">
-    <div class="alert alert-danger" *ngIf="error">
-      <i class="fas fa-exclamation-triangle"></i>
-      {{ error }}
-      <button class="btn-close" (click)="effacerErreur()">
-        <i class="fas fa-times"></i>
-      </button>
+  <div class="px-5 py-4">
+    <div class="mb-3 grid gap-2" *ngIf="error || success">
+      <div class="inline-flex items-center gap-2 rounded-lg border border-rose-300/60 bg-rose-50 px-3 py-2 text-rose-700" *ngIf="error">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ error }}
+        <button class="ml-auto grid h-8 w-8 place-items-center rounded-full bg-white/40" (click)="effacerErreur()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="inline-flex items-center gap-2 rounded-lg border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-emerald-700" *ngIf="success">
+        <i class="fas fa-check-circle"></i>
+        {{ success }}
+        <button class="ml-auto grid h-8 w-8 place-items-center rounded-full bg-white/40" (click)="effacerSucces()"><i class="fas fa-times"></i></button>
+      </div>
     </div>
-    
-    <div class="alert alert-success" *ngIf="success">
-      <i class="fas fa-check-circle"></i>
-      {{ success }}
-      <button class="btn-close" (click)="effacerSucces()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  </div>
 
-  <!-- Formulaire de création -->
-  <form [formGroup]="creationForm" (ngSubmit)="calculerRecapitulatif()" class="creation-form">
-    <!-- Informations de base -->
-    <div class="form-section">
-      <h4>Informations de base</h4>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="annonceId">Sélectionner une annonce *</label>
-          <select 
-            id="annonceId" 
-            class="form-control" 
-            formControlName="annonceId"
-            [disabled]="!!annonceId"
-          >
+    <form [formGroup]="creationForm" (ngSubmit)="calculerRecapitulatif()" class="grid gap-4">
+      <div>
+        <h4 class="m-0 text-base font-bold text-slate-900">Informations de base</h4>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="grid gap-1 sm:col-span-2">
+          <span class="text-sm font-semibold text-slate-700">Sélectionner une annonce *</span>
+          <select id="annonceId" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="annonceId" [disabled]="!!annonceId">
             <option value="">Choisissez une annonce</option>
             <option value="1E8447B6-62C6-40E1-BB9A-2228627D2572">Appartement Paris Centre - 120€/nuit</option>
             <option value="2F9558C7-73D7-51F2-CC0B-3339738E3683">Maison Provence - 95€/nuit</option>
             <option value="3G0669D8-84E8-62G3-DD1C-4440849F4794">Studio Lyon - 80€/nuit</option>
           </select>
-          <div class="form-error" *ngIf="creationForm.get('annonceId')?.invalid && creationForm.get('annonceId')?.touched">
-            La sélection d'une annonce est requise
-          </div>
-        </div>
-      </div>
+          <div class="text-sm text-rose-700" *ngIf="creationForm.get('annonceId')?.invalid && creationForm.get('annonceId')?.touched">La sélection d'une annonce est requise</div>
+        </label>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="dateArrivee">Date d'arrivée *</label>
-          <input 
-            type="date" 
-            id="dateArrivee" 
-            class="form-control" 
-            formControlName="dateArrivee"
-            (change)="onDateArriveeChange()"
-          >
-          <div class="form-error" *ngIf="creationForm.get('dateArrivee')?.invalid && creationForm.get('dateArrivee')?.touched">
-            La date d'arrivée est requise
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="dateDepart">Date de départ *</label>
-          <input 
-            type="date" 
-            id="dateDepart" 
-            class="form-control" 
-            formControlName="dateDepart"
-          >
-          <div class="form-error" *ngIf="creationForm.get('dateDepart')?.invalid && creationForm.get('dateDepart')?.touched">
-            La date de départ est requise
-          </div>
-        </div>
-      </div>
+        <label class="grid gap-1">
+          <span class="text-sm font-semibold text-slate-700">Date d'arrivée *</span>
+          <input type="date" id="dateArrivee" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="dateArrivee" (change)="onDateArriveeChange()" />
+          <div class="text-sm text-rose-700" *ngIf="creationForm.get('dateArrivee')?.invalid && creationForm.get('dateArrivee')?.touched">La date d'arrivée est requise</div>
+        </label>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="nombreVoyageurs">Nombre de voyageurs *</label>
-          <select id="nombreVoyageurs" class="form-control" formControlName="nombreVoyageurs">
-            <option *ngFor="let num of nombreVoyageursOptions" [value]="num">
-              {{ num }} {{ num === 1 ? 'voyageur' : 'voyageurs' }}
-            </option>
+        <label class="grid gap-1">
+          <span class="text-sm font-semibold text-slate-700">Date de départ *</span>
+          <input type="date" id="dateDepart" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="dateDepart" />
+          <div class="text-sm text-rose-700" *ngIf="creationForm.get('dateDepart')?.invalid && creationForm.get('dateDepart')?.touched">La date de départ est requise</div>
+        </label>
+
+        <label class="grid gap-1">
+          <span class="text-sm font-semibold text-slate-700">Nombre de voyageurs *</span>
+          <select id="nombreVoyageurs" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="nombreVoyageurs">
+            <option *ngFor="let num of nombreVoyageursOptions" [value]="num">{{ num }} {{ num === 1 ? 'voyageur' : 'voyageurs' }}</option>
           </select>
-          <div class="form-error" *ngIf="creationForm.get('nombreVoyageurs')?.invalid && creationForm.get('nombreVoyageurs')?.touched">
-            Le nombre de voyageurs doit être entre 1 et 10
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="modePaiement">Mode de paiement</label>
-          <select id="modePaiement" class="form-control" formControlName="modePaiement">
-            <option *ngFor="let option of modePaiementOptions" [value]="option.value">
-              {{ option.label }}
-            </option>
+          <div class="text-sm text-rose-700" *ngIf="creationForm.get('nombreVoyageurs')?.invalid && creationForm.get('nombreVoyageurs')?.touched">Le nombre de voyageurs doit être entre 1 et 10</div>
+        </label>
+
+        <label class="grid gap-1">
+          <span class="text-sm font-semibold text-slate-700">Mode de paiement</span>
+          <select id="modePaiement" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="modePaiement">
+            <option *ngFor="let option of modePaiementOptions" [value]="option.value">{{ option.label }}</option>
           </select>
+        </label>
+
+        <label class="grid gap-1 sm:col-span-2">
+          <span class="text-sm font-semibold text-slate-700">Message au propriétaire</span>
+          <textarea id="messageProprietaire" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="messageProprietaire" rows="3" placeholder="Votre message au propriétaire (optionnel)"></textarea>
+        </label>
+      </div>
+
+      <div>
+        <h4 class="m-0 text-base font-bold text-slate-900">Frais additionnels (optionnels)</h4>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        <label class="grid gap-1">
+          <span class="text-sm font-semibold text-slate-700">Frais de service (€)</span>
+          <input type="number" id="fraisService" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="fraisService" min="0" step="0.01" />
+          <div class="text-sm text-rose-700" *ngIf="creationForm.get('fraisService')?.invalid && creationForm.get('fraisService')?.touched">Les frais de service ne peuvent pas être négatifs</div>
+        </label>
+
+        <label class="grid gap-1">
+          <span class="text-sm font-semibold text-slate-700">Frais de nettoyage (€)</span>
+          <input type="number" id="fraisNettoyage" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="fraisNettoyage" min="0" step="0.01" />
+          <div class="text-sm text-rose-700" *ngIf="creationForm.get('fraisNettoyage')?.invalid && creationForm.get('fraisNettoyage')?.touched">Les frais de nettoyage ne peuvent pas être négatifs</div>
+        </label>
+
+        <label class="grid gap-1">
+          <span class="text-sm font-semibold text-slate-700">Frais de dépôt (€)</span>
+          <input type="number" id="fraisDepot" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="fraisDepot" min="0" step="0.01" />
+          <div class="text-sm text-rose-700" *ngIf="creationForm.get('fraisDepot')?.invalid && creationForm.get('fraisDepot')?.touched">Les frais de dépôt ne peuvent pas être négatifs</div>
+        </label>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-slate-50 p-3" *ngIf="dureeSejour > 0">
+        <div class="inline-flex items-center gap-2 text-slate-700"><i class="fas fa-calendar-alt"></i> <span class="font-semibold">Durée du séjour :</span> <span class="font-extrabold">{{ dureeSejour }} {{ dureeSejour === 1 ? 'jour' : 'jours' }}</span></div>
+      </div>
+
+      <div class="mt-2 flex flex-wrap items-center justify-end gap-2 border-t pt-3">
+        <button type="submit" class="rounded-xl bg-gradient-to-r from-sky-600 to-sky-700 px-4 py-2 font-extrabold text-white disabled:opacity-60" [disabled]="creationForm.invalid || loading">
+          <i class="fas fa-calculator" *ngIf="!loading"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+          Calculer le récapitulatif
+        </button>
+        <button type="button" class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="annuler()" [disabled]="loading">Annuler</button>
+      </div>
+    </form>
+
+    <div class="border-t pt-4" *ngIf="recapitulatif">
+      <h4 class="m-0 mb-3 text-center text-base font-bold text-slate-900"><i class="fas fa-receipt"></i> Récapitulatif de la réservation</h4>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:col-span-2">
+          <div class="text-sm font-semibold text-slate-600">Prix total :</div>
+          <div class="text-2xl font-extrabold text-maroc-rouge">{{ recapitulatif.prixTotal }}€</div>
         </div>
+        <div class="rounded-lg border border-slate-200 bg-white p-3"><span class="block text-sm font-semibold text-slate-600">Nombre de nuits</span><span class="text-xl font-extrabold text-slate-900">{{ recapitulatif.nombreNuits }}</span></div>
+        <div class="rounded-lg border border-slate-200 bg-white p-3" *ngIf="recapitulatif.fraisService && recapitulatif.fraisService > 0"><span class="block text-sm font-semibold text-slate-600">Frais de service</span><span class="text-xl font-extrabold text-slate-900">{{ recapitulatif.fraisService }}€</span></div>
+        <div class="rounded-lg border border-slate-200 bg-white p-3" *ngIf="recapitulatif.fraisNettoyage && recapitulatif.fraisNettoyage > 0"><span class="block text-sm font-semibold text-slate-600">Frais de nettoyage</span><span class="text-xl font-extrabold text-slate-900">{{ recapitulatif.fraisNettoyage }}€</span></div>
+        <div class="rounded-lg border border-slate-200 bg-white p-3" *ngIf="recapitulatif.fraisDepot && recapitulatif.fraisDepot > 0"><span class="block text-sm font-semibold text-slate-600">Frais de dépôt</span><span class="text-xl font-extrabold text-slate-900">{{ recapitulatif.fraisDepot }}€</span></div>
       </div>
-
-      <div class="form-group">
-        <label for="messageProprietaire">Message au propriétaire</label>
-        <textarea 
-          id="messageProprietaire" 
-          class="form-control" 
-          formControlName="messageProprietaire"
-          rows="3"
-          placeholder="Votre message au propriétaire (optionnel)"
-        ></textarea>
+      <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+        <button class="rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-700 px-4 py-2 font-extrabold text-white disabled:opacity-60" (click)="confirmerReservation()" [disabled]="loading || !isFormValid">
+          <i class="fas fa-check" *ngIf="!loading"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+          Confirmer la réservation
+        </button>
+        <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="reinitialiserFormulaire()" [disabled]="loading"><i class="fas fa-redo"></i> Recommencer</button>
       </div>
-    </div>
-
-    <!-- Frais additionnels -->
-    <div class="form-section">
-      <h4>Frais additionnels (optionnels)</h4>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="fraisService">Frais de service (€)</label>
-          <input 
-            type="number" 
-            id="fraisService" 
-            class="form-control" 
-            formControlName="fraisService"
-            min="0"
-            step="0.01"
-          >
-          <div class="form-error" *ngIf="creationForm.get('fraisService')?.invalid && creationForm.get('fraisService')?.touched">
-            Les frais de service ne peuvent pas être négatifs
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="fraisNettoyage">Frais de nettoyage (€)</label>
-          <input 
-            type="number" 
-            id="fraisNettoyage" 
-            class="form-control" 
-            formControlName="fraisNettoyage"
-            min="0"
-            step="0.01"
-          >
-          <div class="form-error" *ngIf="creationForm.get('fraisNettoyage')?.invalid && creationForm.get('fraisNettoyage')?.touched">
-            Les frais de nettoyage ne peuvent pas être négatifs
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="fraisDepot">Frais de dépôt (€)</label>
-          <input 
-            type="number" 
-            id="fraisDepot" 
-            class="form-control" 
-            formControlName="fraisDepot"
-            min="0"
-            step="0.01"
-          >
-          <div class="form-error" *ngIf="creationForm.get('fraisDepot')?.invalid && creationForm.get('fraisDepot')?.touched">
-            Les frais de dépôt ne peuvent pas être négatifs
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Résumé de la période -->
-    <div class="period-summary" *ngIf="dureeSejour > 0">
-      <div class="summary-item">
-        <i class="fas fa-calendar-alt"></i>
-        <span class="label">Durée du séjour :</span>
-        <span class="value">{{ dureeSejour }} {{ dureeSejour === 1 ? 'jour' : 'jours' }}</span>
-      </div>
-    </div>
-
-    <!-- Actions du formulaire -->
-    <div class="form-actions">
-      <button 
-        type="submit" 
-        class="btn btn-primary" 
-        [disabled]="creationForm.invalid || loading"
-      >
-        <i class="fas fa-calculator" *ngIf="!loading"></i>
-        <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
-        Calculer le récapitulatif
-      </button>
-      
-      <button 
-        type="button" 
-        class="btn btn-secondary" 
-        (click)="annuler()"
-        [disabled]="loading"
-      >
-        Annuler
-      </button>
-    </div>
-  </form>
-
-  <!-- Récapitulatif -->
-  <div class="recapitulatif-section" *ngIf="recapitulatif">
-    <h4>
-      <i class="fas fa-receipt"></i>
-      Récapitulatif de la réservation
-    </h4>
-    
-    <div class="recap-details">
-      <div class="recap-item main">
-        <span class="label">Prix total :</span>
-        <span class="value">{{ recapitulatif.prixTotal }}€</span>
-      </div>
-      
-      <div class="recap-item">
-        <span class="label">Nombre de nuits :</span>
-        <span class="value">{{ recapitulatif.nombreNuits }}</span>
-      </div>
-      
-      <div class="recap-item" *ngIf="recapitulatif.fraisService && recapitulatif.fraisService > 0">
-        <span class="label">Frais de service :</span>
-        <span class="value">{{ recapitulatif.fraisService }}€</span>
-      </div>
-      
-      <div class="recap-item" *ngIf="recapitulatif.fraisNettoyage && recapitulatif.fraisNettoyage > 0">
-        <span class="label">Frais de nettoyage :</span>
-        <span class="value">{{ recapitulatif.fraisNettoyage }}€</span>
-      </div>
-      
-      <div class="recap-item" *ngIf="recapitulatif.fraisDepot && recapitulatif.fraisDepot > 0">
-        <span class="label">Frais de dépôt :</span>
-        <span class="value">{{ recapitulatif.fraisDepot }}€</span>
-      </div>
-    </div>
-
-    <div class="recap-actions">
-      <button 
-        class="btn btn-success" 
-        (click)="confirmerReservation()"
-        [disabled]="loading || !isFormValid"
-      >
-        <i class="fas fa-check" *ngIf="!loading"></i>
-        <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
-        Confirmer la réservation
-      </button>
-      
-      <button 
-        class="btn btn-outline-secondary" 
-        (click)="reinitialiserFormulaire()"
-        [disabled]="loading"
-      >
-        <i class="fas fa-redo"></i>
-        Recommencer
-      </button>
     </div>
   </div>
 </div> 

@@ -1,11 +1,12 @@
-import { Component, OnInit, HostListener, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, HostListener, AfterViewInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
+import { CommonModule, NgIfContext } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { LocateurPopupService } from '../../services/locateur-popup.service';
 import { LocateurPopupComponent } from '../locateur-popup/locateur-popup.component';
-import { StadeService } from '../../services/stade.service';
+// Distances désormais récupérées depuis le backend
+import { AnnonceStadeDistance } from '../../services/api.service';
 import { StadePopupService } from '../../services/stade-popup.service';
 import { StadePopupComponent } from '../stade-popup/stade-popup.component';
 import { TousStadesPopupComponent } from '../tous-stades-popup/tous-stades-popup.component';
@@ -22,7 +23,7 @@ import { CalendrierLocateurComponent } from '../calendrier-locateur/calendrier-l
   standalone: true,
   imports: [CommonModule, LocateurPopupComponent, StadePopupComponent, TousStadesPopupComponent, ImageFallbackDirective, ReservationPopupComponent, CalendrierLocataireComponent, CalendrierLocateurComponent],
   templateUrl: './detail-annonce.component.html',
-  styleUrl: './detail-annonce.component.css'
+  styleUrls: ['./detail-annonce.component.css']
 })
 export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy {
   annonce: any = null;
@@ -34,12 +35,16 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
   
   // Propriétés pour les stades
   stadesProches: StadeAvecDistance[] = [];
+  stadesDistancesApi: AnnonceStadeDistance[] = [];
+  afficherTousLesStades = false;
   
   // Propriétés pour la carte
   private map: any = null;
   private marker: any = null;
   mapInitialized = false;
   mapError = false;
+  mapLoading = false;
+  viewInitialized = false;
 
   // Réservation popup state
   @ViewChild('reservationPopup') reservationPopup?: ReservationPopupComponent;
@@ -47,6 +52,7 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
   // Dates sélectionnées dans le calendrier
   dateArriveeSelectionnee: string = '';
   dateDepartSelectionnee: string = '';
+notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,7 +60,6 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
     private apiService: ApiService,
     private authService: AuthService,
     private locateurPopupService: LocateurPopupService,
-    private stadeService: StadeService,
     private stadePopupService: StadePopupService
   ) {}
 
@@ -71,6 +76,53 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
       mirror: false,
       offset: 100,
     });
+
+    // Marquer que la vue est initialisée
+    this.viewInitialized = true;
+    console.log('✅ Vue initialisée');
+    
+    // Essayer d'initialiser la carte si les données sont déjà disponibles
+    this.tryInitMap();
+  }
+
+  private mapperDistancesApi(distances: AnnonceStadeDistance[]): StadeAvecDistance[] {
+    this.stadesDistancesApi = distances;
+    // Adapter la structure backend -> front (StadeAvecDistance)
+    return distances.map(d => ({
+      id: d.stade.id,
+      nom: d.stade.nom,
+      ville: d.stade.ville,
+      capacite: d.stade.capacite ?? 0,
+      latitude: Number(d.stade.latitude),
+      longitude: Number(d.stade.longitude),
+      adresse: d.stade.adresseComplete || '',
+      description: d.stade.description || '',
+      images: Array.isArray(d.stade.images) ? d.stade.images : [],
+      equipements: [],
+      dateConstruction: 0,
+      surfaceJeu: '',
+      // champs backend enrichis mappés sur Stade
+      adresseComplete: d.stade.adresseComplete,
+      estActif: d.stade.estActif,
+      dateCreation: d.stade.dateCreation,
+      dateModification: d.stade.dateModification,
+      surfaceMetresCarres: d.stade.surfaceMetresCarres,
+      categories: d.stade.categories,
+      categoriesPlaces: d.stade.categoriesPlaces,
+      prixMin: d.stade.prixMin,
+      prixMax: d.stade.prixMax,
+      imagesBlob: d.stade.imagesBlob,
+      surfaceType: d.stade.surfaceType,
+      dimensions: d.stade.dimensions,
+      siteWeb: d.stade.siteWeb,
+      telephone: d.stade.telephone,
+      // Ajouts distance/transport côté stade
+      tempsTrajetMinutes: d.tempsTrajetMinutes,
+      tempsTrajetFormate: d.tempsTrajetFormate,
+      modeTransport: d.modeTransport,
+      estLePlusProche: d.estLePlusProche,
+      distance: Number((d.distance ?? 0).toFixed(2))
+    })).sort((a, b) => a.distance - b.distance);
   }
 
   ngOnDestroy(): void {
@@ -94,17 +146,20 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
       
       if (response) {
         this.annonce = response;
-        
-        // Calculer les stades proches
-        if (this.annonce.latitude && this.annonce.longitude) {
-          this.stadesProches = this.stadeService.getStadesAvecDistances(
-            this.annonce.latitude, 
-            this.annonce.longitude
-          );
+
+        // Récupérer les distances depuis le backend
+        const distancesApi = await this.apiService.getAnnonceDistances(annonceId).toPromise();
+        if (distancesApi && Array.isArray(distancesApi)) {
+          this.stadesProches = this.mapperDistancesApi(distancesApi);
+        } else {
+          this.stadesProches = [];
         }
         
-        // Initialiser la carte immédiatement après le chargement de l'annonce
-        this.initMap();
+        // Marquer que les données sont prêtes pour la carte
+        console.log('📊 Données de l\'annonce chargées, coordonnées disponibles');
+        
+        // Essayer d'initialiser la carte si la vue est déjà initialisée
+        this.tryInitMap();
         
         // Initialiser les placeholders d'images après le rendu
         setTimeout(() => {
@@ -125,57 +180,156 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
     this.router.navigate(['/annonces']);
   }
 
+  // Méthode pour diagnostiquer l'état du DOM
+  diagnosticDOM(): void {
+    const mapContainer = document.getElementById('location-map');
+    const mapSection = document.querySelector('.dp-card');
+    const mapContainerDiv = document.querySelector('.map-container');
+    
+    console.log('🔬 Diagnostic DOM:', {
+      locationMapExists: !!mapContainer,
+      mapSectionExists: !!mapSection,
+      mapContainerExists: !!mapContainerDiv,
+      bodyChildren: document.body.children.length,
+      allElementsWithMap: Array.from(document.querySelectorAll('[id*="map"], [class*="map"]')).map(el => ({
+        tagName: el.tagName,
+        id: el.id,
+        className: el.className
+      })),
+      mapLoading: this.mapLoading,
+      mapError: this.mapError,
+      viewInitialized: this.viewInitialized
+    });
+  }
+
+  // Méthode pour essayer d'initialiser la carte quand tout est prêt
+  tryInitMap(): void {
+    console.log('🔍 Vérification des conditions pour initialiser la carte...', {
+      viewInitialized: this.viewInitialized,
+      annonce: !!this.annonce,
+      latitude: this.annonce?.latitude,
+      longitude: this.annonce?.longitude,
+      mapInitialized: this.mapInitialized
+    });
+
+    if (this.viewInitialized && 
+        this.annonce && 
+        this.annonce.latitude && 
+        this.annonce.longitude && 
+        !this.mapInitialized) {
+      
+      console.log('✅ Conditions réunies, initialisation de la carte dans 500ms...');
+      setTimeout(() => {
+        this.diagnosticDOM();
+        this.initMap();
+      }, 500);
+    }
+  }
+
   async initMap(): Promise<void> {
+    console.log('🗺️ Initialisation de la carte...', { 
+      annonce: !!this.annonce, 
+      latitude: this.annonce?.latitude, 
+      longitude: this.annonce?.longitude 
+    });
+
     if (!this.annonce || !this.annonce.latitude || !this.annonce.longitude) {
-      console.log('Coordonnées manquantes pour la carte');
+      console.warn('❌ Coordonnées manquantes pour la carte');
+      this.mapError = true;
+      this.mapLoading = false;
       return;
     }
 
-    try {
-      // Attendre que le DOM soit prêt (délai réduit pour un affichage plus rapide)
-      await new Promise(resolve => setTimeout(resolve, 100));
+    this.mapLoading = true;
+    this.mapError = false;
 
-      const mapContainer = document.getElementById('location-map');
+    try {
+      // Attendre que le DOM soit prêt et faire plusieurs tentatives
+      let mapContainer = null;
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      while (!mapContainer && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        mapContainer = document.getElementById('location-map');
+        attempts++;
+        console.log(`🔍 Tentative ${attempts}/${maxAttempts} de recherche du container de carte...`);
+      }
+
       if (!mapContainer) {
-        console.error('Container de carte non trouvé');
-        return;
+        console.error('❌ Container de carte non trouvé après', maxAttempts, 'tentatives');
+        console.log('🔍 Éléments disponibles:', document.querySelectorAll('[id*="map"]'));
+        
+        // Tentative de fallback : chercher le container parent et créer l'élément
+        const mapContainerParent = document.querySelector('.map-container');
+        if (mapContainerParent) {
+          console.log('🔧 Tentative de création du container de carte...');
+          const newMapContainer = document.createElement('div');
+          newMapContainer.id = 'location-map';
+          newMapContainer.className = 'location-map';
+          newMapContainer.style.height = '350px';
+          newMapContainer.style.width = '100%';
+          newMapContainer.style.borderRadius = '0 0 16px 16px';
+          newMapContainer.style.overflow = 'hidden';
+          mapContainerParent.appendChild(newMapContainer);
+          mapContainer = newMapContainer;
+          console.log('✅ Container de carte créé avec succès');
+        } else {
+          console.error('❌ Container parent (.map-container) non trouvé, abandon');
+          this.mapError = true;
+          this.mapLoading = false;
+          return;
+        }
+      }
+
+      console.log('📍 Container trouvé, dimensions:', {
+        width: mapContainer.offsetWidth,
+        height: mapContainer.offsetHeight,
+        visible: mapContainer.offsetParent !== null,
+        inDOM: document.body.contains(mapContainer)
+      });
+
+      // Vérifier que le container est visible
+      if (mapContainer.offsetWidth === 0 || mapContainer.offsetHeight === 0) {
+        console.warn('⚠️ Container trouvé mais dimensions nulles, attendre un peu plus...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
+      // Nettoyer la carte existante si elle existe
+      if (this.map) {
+        this.map.remove();
+        this.map = null;
       }
 
       // Coordonnées de l'annonce
       const lat = parseFloat(this.annonce.latitude);
       const lng = parseFloat(this.annonce.longitude);
 
+      console.log('📍 Coordonnées:', { lat, lng });
+
       // Initialiser la carte
       this.map = L.map('location-map', {
         center: [lat, lng],
         zoom: 15,
         zoomControl: true,
-        attributionControl: true
+        attributionControl: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true
       });
 
       // Ajouter la couche de tuiles
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
       }).addTo(this.map);
 
       // Créer un marqueur personnalisé avec les couleurs marocaines
       const customIcon = L.divIcon({
-        className: 'custom-marker',
+        className: 'custom-marker-maroc',
         html: `
-          <div style="
-            background: linear-gradient(135deg, #c1272d, #006233);
-            color: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: bold;
-            border: 3px solid white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-          ">
+          <div class="marker-content">
             <i class="fas fa-home"></i>
           </div>
         `,
@@ -203,12 +357,22 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
 
       this.marker.bindPopup(popupContent);
 
+      // Forcer un redimensionnement de la carte
+      setTimeout(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+          console.log('✅ Carte initialisée avec succès');
+        }
+      }, 100);
+
       this.mapInitialized = true;
       this.mapError = false;
+      this.mapLoading = false;
 
     } catch (error) {
-      console.error('Erreur lors de l\'initialisation de la carte:', error);
+      console.error('❌ Erreur lors de l\'initialisation de la carte:', error);
       this.mapError = true;
+      this.mapLoading = false;
     }
   }
 
@@ -669,7 +833,37 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   getAutresStades(): StadeAvecDistance[] {
-    return this.stadesProches.slice(1, 4); // Afficher les 3 autres stades les plus proches
+    const autresStades = this.stadesProches.slice(1); // Tous les stades sauf le premier
+    if (this.afficherTousLesStades || autresStades.length <= 4) {
+      return autresStades; // Afficher tous si demandé ou s'il y en a 4 ou moins
+    }
+    return autresStades.slice(0, 4); // Sinon afficher seulement les 4 premiers
+  }
+
+  getNombreStadesRestants(): number {
+    const autresStades = this.stadesProches.slice(1);
+    return Math.max(0, autresStades.length - 4);
+  }
+
+  basculerAffichageStades(): void {
+    this.afficherTousLesStades = !this.afficherTousLesStades;
+  }
+
+  // Méthode pour recharger la carte en cas d'erreur
+  rechargerCarte(): void {
+    console.log('🔄 Rechargement de la carte...');
+    this.mapError = false;
+    this.mapInitialized = false;
+    this.mapLoading = false;
+    
+    // Nettoyer la carte existante
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
+    
+    // Relancer la tentative d'initialisation
+    this.tryInitMap();
   }
 
   formatDistance(distance: number): string {
@@ -711,11 +905,19 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // Ouvrir la réservation avec les dates pré-sélectionnées
   ouvrirReservationAvecDates(): void {
+    console.log('🎯 Bouton réservation cliqué!', { 
+      dateArrivee: this.dateArriveeSelectionnee, 
+      dateDepart: this.dateDepartSelectionnee,
+      reservationPopup: !!this.reservationPopup
+    });
+    
     if (this.dateArriveeSelectionnee && this.dateDepartSelectionnee) {
       // Ouvrir le popup de réservation avec les dates pré-remplies
+      console.log('📅 Ouverture avec dates pré-remplies');
       this.reservationPopup?.openWithDates(this.dateArriveeSelectionnee, this.dateDepartSelectionnee);
     } else {
       // Ouvrir le popup normal
+      console.log('📝 Ouverture popup normal');
       this.reservationPopup?.open();
     }
   }

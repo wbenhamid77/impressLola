@@ -17,6 +17,7 @@ export class DetailAnnonceLocateurComponent implements OnInit, AfterViewInit, On
   annonce: Annonce | null = null;
   isLoading = false;
   errorMessage = '';
+  calModalOpen = false;
   
   // Statistiques des réservations
   nombreReservationsEnAttente = 0;
@@ -231,6 +232,20 @@ export class DetailAnnonceLocateurComponent implements OnInit, AfterViewInit, On
   modifierProfilProprietaire(): void {
     console.log('👤 Modification du profil propriétaire');
     // TODO: Implémenter la logique de modification du profil
+  }
+
+  /**
+   * Ouvre le popup calendrier (locateur)
+   */
+  ouvrirCalendrierReservation(): void {
+    this.calModalOpen = true;
+  }
+
+  /**
+   * Ferme le popup calendrier (locateur)
+   */
+  fermerCalendrierModal(): void {
+    this.calModalOpen = false;
   }
 
   /**

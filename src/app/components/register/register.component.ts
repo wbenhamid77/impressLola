@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -12,17 +13,27 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   loading = false;
   error = '';
   success = '';
+  step = 1;
+
+  private sidebarState = {
+    bodyHadWithSidebar: false,
+    bodyHadCompact: false,
+    appRootHadWithSidebar: false,
+    appRootHadCompact: false,
+    sidebarDisplays: [] as Array<{ el: HTMLElement; display: string }>
+  };
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.registerForm = this.fb.group({
       // Informations de base
@@ -69,6 +80,100 @@ export class RegisterComponent {
     });
   }
 
+  ngOnInit(): void {
+    const body = this.document.body;
+    const appRoot = this.document.querySelector('app-root') as HTMLElement | null;
+
+    this.sidebarState.bodyHadWithSidebar = body.classList.contains('with-sidebar');
+    this.sidebarState.bodyHadCompact = body.classList.contains('compact');
+    if (appRoot) {
+      this.sidebarState.appRootHadWithSidebar = appRoot.classList.contains('with-sidebar');
+      this.sidebarState.appRootHadCompact = appRoot.classList.contains('compact');
+    }
+
+    body.classList.remove('with-sidebar');
+    body.classList.remove('compact');
+    if (appRoot) {
+      appRoot.classList.remove('with-sidebar');
+      appRoot.classList.remove('compact');
+    }
+
+    const sidebars = this.document.querySelectorAll('.sidebar, .app-sidebar, [data-sidebar]');
+    sidebars.forEach((el) => {
+      const htmlEl = el as HTMLElement;
+      this.sidebarState.sidebarDisplays.push({ el: htmlEl, display: htmlEl.style.display });
+      htmlEl.style.display = 'none';
+    });
+  }
+
+  ngOnDestroy(): void {
+    const body = this.document.body;
+    const appRoot = this.document.querySelector('app-root') as HTMLElement | null;
+
+    if (this.sidebarState.bodyHadWithSidebar) body.classList.add('with-sidebar');
+    if (this.sidebarState.bodyHadCompact) body.classList.add('compact');
+    if (appRoot) {
+      if (this.sidebarState.appRootHadWithSidebar) appRoot.classList.add('with-sidebar');
+      if (this.sidebarState.appRootHadCompact) appRoot.classList.add('compact');
+    }
+
+    this.sidebarState.sidebarDisplays.forEach(({ el, display }) => {
+      el.style.display = display;
+    });
+  }
+
+  private markTouched(controlNames: string[]): void {
+    for (const name of controlNames) {
+      this.registerForm.get(name)?.markAsTouched();
+    }
+  }
+
+  private isStepValid(step: number): boolean {
+    const type = this.registerForm.get('typeUtilisateur')?.value;
+    switch (step) {
+      case 1: {
+        const controls = ['nom', 'prenom', 'email', 'telephone'];
+        this.markTouched(controls);
+        return controls.every(n => this.registerForm.get(n)?.valid);
+      }
+      case 2: {
+        const controls = ['typeUtilisateur'];
+        this.markTouched(controls);
+        return controls.every(n => this.registerForm.get(n)?.valid);
+      }
+      case 3: {
+        if (type === 'LOCATEUR') {
+          const controls = ['description', 'adresseProfessionnelle'];
+          this.markTouched(controls);
+          return controls.every(n => this.registerForm.get(n)?.valid);
+        } else {
+          const controls = ['profession', 'revenuAnnuel', 'employeur', 'dateEmbauche'];
+          this.markTouched(controls);
+          return controls.every(n => this.registerForm.get(n)?.valid);
+        }
+      }
+      case 4: {
+        const controls = ['motDePasse', 'confirmPassword'];
+        this.markTouched(controls);
+        return controls.every(n => this.registerForm.get(n)?.valid) && !this.registerForm.errors?.['passwordMismatch'];
+      }
+      default:
+        return true;
+    }
+  }
+
+  goNext(): void {
+    if (this.step < 4 && this.isStepValid(this.step)) {
+      this.step += 1;
+    }
+  }
+
+  goPrev(): void {
+    if (this.step > 1) {
+      this.step -= 1;
+    }
+  }
+
   updateValidation(type: string): void {
     if (type === 'LOCATEUR') {
       // Valider les champs locateur
@@ -107,7 +212,25 @@ export class RegisterComponent {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
+  hasUppercase(): boolean {
+    const password = this.registerForm.get('motDePasse')?.value;
+    return password ? /[A-Z]/.test(password) : false;
+  }
+
+  hasLowercase(): boolean {
+    const password = this.registerForm.get('motDePasse')?.value;
+    return password ? /[a-z]/.test(password) : false;
+  }
+
+  hasNumber(): boolean {
+    const password = this.registerForm.get('motDePasse')?.value;
+    return password ? /[0-9]/.test(password) : false;
+  }
+
   async onSubmit(): Promise<void> {
+    if (!this.isStepValid(4)) {
+      return;
+    }
     if (this.registerForm.valid) {
       // Validation supplémentaire selon le type d'utilisateur
       const formData = this.registerForm.value;
@@ -219,5 +342,11 @@ export class RegisterComponent {
 
   goToLogin(): void {
     this.router.navigate(['/login']);
+  }
+
+  selectUserType(type: string): void {
+    this.registerForm.patchValue({typeUtilisateur: type});
+    // Trigger validation update for the new type
+    this.updateValidation(type);
   }
 } 

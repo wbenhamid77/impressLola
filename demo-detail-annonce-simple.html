@@ -1,521 +1,784 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Démo - Détail Annonce Locataire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Démo Ultra-Premium - Détail Annonce CAN 2025</title>
+    
+    <!-- Meta Tags Premium -->
+    <meta name="description" content="Démonstration ultra-professionnelle du système de design marocain pour la CAN 2025">
+    <meta name="keywords" content="CAN 2025, Maroc, design professionnel, glassmorphism, UI moderne">
+    <meta name="author" content="ImpressLola Team">
+    
+    <!-- Polices Premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons Premium -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
+    
+    <!-- Styles CSS -->
     <link rel="stylesheet" href="src/app/components/detail-annonce-locataire/detail-annonce-locataire.component.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="src/app/styles/variables.css">
+    <link rel="stylesheet" href="src/app/styles/components.css">
+    <link rel="stylesheet" href="src/app/styles/globals.css">
+    <link rel="stylesheet" href="src/styles.css">
+    
     <style>
+        /* Variables CSS Ultra-Premium pour la démo */
+        :root {
+            --demo-bg: linear-gradient(135deg, #FAFBFC 0%, #F4F6F8 100%);
+            --demo-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C1272D' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        /* Corps ultra-premium */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f1f5f9;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--demo-bg);
+            background-image: var(--demo-pattern);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             min-height: 100vh;
+            color: #111827;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
         
-        .container {
-            max-width: 1400px;
+        /* Conteneur principal ultra-premium */
+        .demo-container {
+            max-width: 1600px;
             margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            position: relative;
         }
         
+        /* Header de démo ultra-premium */
         .demo-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             text-align: center;
-            margin-bottom: 40px;
-            color: #1e293b;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
         
-        .demo-header h1 {
-            font-size: 2.5rem;
+        .demo-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            z-index: 1;
+        }
+        
+        .demo-header:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.5rem;
+            font-weight: 800;
             margin: 0;
-            font-weight: 700;
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
         }
         
-        .demo-header p {
-            font-size: 1.2rem;
-            margin: 10px 0 0 0;
-            color: #64748b;
+        .demo-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin: 0;
+            font-weight: 500;
         }
         
+        .demo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 1.5rem;
+            box-shadow: 0 10px 25px -3px rgba(193, 39, 45, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-badge:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 20px 25px -5px rgba(193, 39, 45, 0.4);
+        }
+        
+        /* Section info ultra-premium */
         .demo-info {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #D4AF37 0%, #CD853F 100%);
+            opacity: 0.8;
+        }
+        
+        .demo-info:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
         
         .demo-info h3 {
-            color: #1e40af;
-            margin-top: 0;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #C1272D;
+            margin: 0 0 1rem 0;
         }
         
-        .demo-info ul {
-            margin: 10px 0;
-            padding-left: 20px;
+        .demo-info p {
+            color: #4B5563;
+            line-height: 1.7;
+            margin: 0;
         }
         
-        .demo-info li {
-            margin: 5px 0;
-            color: #374151;
+        /* Grille de fonctionnalités ultra-premium */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px -3px rgba(193, 39, 45, 0.3);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: icon-shine 3s ease-in-out infinite;
+            transform: rotate(45deg);
+        }
+        
+        @keyframes icon-shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(0) translateY(0) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 20px 25px -5px rgba(193, 39, 45, 0.4);
+        }
+        
+        .feature-icon i {
+            font-size: 1.5rem;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .feature-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 0.75rem 0;
+        }
+        
+        .feature-description {
+            color: #6B7280;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        /* Section de démonstration ultra-premium */
+        .demo-showcase {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(193, 39, 45, 0.2);
+            border-radius: 3rem;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.3), 0 10px 25px -3px rgba(193, 39, 45, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(135deg, #C1272D 0%, #D4AF37 50%, #006233 100%);
+        }
+        
+        .showcase-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 0 0 2rem 0;
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Boutons d'action ultra-premium */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn-ultra {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-ultra::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.3s ease;
+            z-index: 1;
+        }
+        
+        .btn-ultra:hover::before {
+            left: 100%;
+        }
+        
+        .btn-ultra i,
+        .btn-ultra span {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn-primary-ultra {
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            color: white;
+            box-shadow: 0 10px 25px -3px rgba(193, 39, 45, 0.3);
+        }
+        
+        .btn-primary-ultra:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 25px 50px -12px rgba(193, 39, 45, 0.4);
+            color: white;
+        }
+        
+        .btn-secondary-ultra {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border: 2px solid #C1272D;
+            color: #C1272D;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .btn-secondary-ultra:hover {
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-4px) scale(1.05);
+        }
+        
+        /* Footer ultra-premium */
+        .demo-footer {
+            background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+            color: white;
+            border-radius: 2rem;
+            padding: 3rem;
+            margin-top: 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+            animation: pattern-float 20s linear infinite;
+        }
+        
+        @keyframes pattern-float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-60px) translateY(-60px); }
+        }
+        
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .footer-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+        }
+        
+        .footer-text {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin: 0;
+            line-height: 1.7;
+        }
+        
+        /* Animations d'entrée */
+        .animate-fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+        
+        /* Responsive ultra-premium */
+        @media (max-width: 768px) {
+            .demo-container {
+                padding: 1rem;
+            }
+            
+            .demo-header {
+                padding: 2rem;
+                border-radius: 1.5rem;
+            }
+            
+            .demo-title {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .demo-showcase {
+                padding: 2rem;
+                border-radius: 2rem;
+            }
+            
+            .showcase-title {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-ultra {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .demo-title {
+                font-size: 2rem;
+            }
+            
+            .showcase-title {
+                font-size: 1.75rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+                color: #F8FAFC;
+            }
+            
+            .demo-header,
+            .demo-info,
+            .feature-card,
+            .demo-showcase {
+                background: rgba(15, 23, 42, 0.95);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+        }
+        
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .demo-header,
+            .demo-info,
+            .feature-card,
+            .demo-showcase {
+                border: 2px solid #111827;
+            }
+        }
+        
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .feature-card:hover,
+            .demo-header:hover,
+            .btn-ultra:hover {
+                transform: none;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="demo-header">
-            <h1>🏠 Démo - Détail Annonce Locataire</h1>
-            <p>Composant corrigé et fonctionnel</p>
-        </div>
-        
-        <div class="demo-info">
-            <h3>✅ Problèmes résolus :</h3>
-            <ul>
-                <li><strong>Dépendances manquantes :</strong> Suppression des composants ReservationPopup et CalendrierLocataire inexistants</li>
-                <li><strong>Modèle de données :</strong> Correction pour correspondre à l'interface Annonce réelle</li>
-                <li><strong>Gestion d'erreurs :</strong> Remplacement de toPromise() déprécié par firstValueFrom()</li>
-                <li><strong>Données d'exemple :</strong> Ajout de données de démo pour tester sans API</li>
-                <li><strong>Fonctionnalités manquantes :</strong> Ajout de sections équipements, règles et prix</li>
-                <li><strong>Boutons de test :</strong> Ajout de boutons pour simuler la sélection de dates</li>
-            </ul>
+    <!-- Conteneur principal -->
+    <div class="demo-container">
+        <!-- Header de démonstration -->
+        <header class="demo-header animate-fade-in-up">
+            <h1 class="demo-title">Design System Ultra-Professionnel</h1>
+            <p class="demo-subtitle">Thème Marocain Premium pour la CAN 2025</p>
+            <div class="demo-badge">
+                <i class="fas fa-crown"></i>
+                <span>Version Premium</span>
+            </div>
+        </header>
+
+        <!-- Section d'information -->
+        <section class="demo-info animate-fade-in-up delay-100">
+            <h3><i class="fas fa-magic"></i> Glassmorphism & Micro-interactions</h3>
+            <p>
+                Découvrez notre système de design ultra-moderne utilisant les dernières tendances en matière d'UI/UX. 
+                Avec des effets glassmorphism, des micro-interactions fluides, et une palette de couleurs inspirée 
+                du patrimoine marocain, cette interface offre une expérience utilisateur exceptionnelle.
+            </p>
+        </section>
+
+        <!-- Grille de fonctionnalités -->
+        <section class="features-grid">
+            <div class="feature-card animate-fade-in-up delay-200">
+                <div class="feature-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h3 class="feature-title">Palette Marocaine Premium</h3>
+                <p class="feature-description">
+                    Couleurs authentiques du drapeau marocain avec des nuances premium 
+                    et des dégradés sophistiqués pour une identité visuelle forte.
+                </p>
+            </div>
+
+            <div class="feature-card animate-fade-in-up delay-300">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">Responsive Ultra-Fluide</h3>
+                <p class="feature-description">
+                    Design adaptatif parfait sur tous les appareils avec des breakpoints 
+                    optimisés et des animations fluides pour une expérience cohérente.
+                </p>
+            </div>
+
+            <div class="feature-card animate-fade-in-up delay-400">
+                <div class="feature-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="feature-title">Performance Optimisée</h3>
+                <p class="feature-description">
+                    CSS optimisé, animations GPU-accélérées, et lazy loading pour 
+                    des performances exceptionnelles même sur les appareils moins puissants.
+                </p>
+            </div>
+
+            <div class="feature-card animate-fade-in-up delay-500">
+                <div class="feature-icon">
+                    <i class="fas fa-universal-access"></i>
+                </div>
+                <h3 class="feature-title">Accessibilité Premium</h3>
+                <p class="feature-description">
+                    Conforme aux standards WCAG 2.1 AA avec support du mode sombre, 
+                    high contrast, et reduced motion pour une inclusion totale.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section showcase -->
+        <section class="demo-showcase animate-fade-in-up delay-300">
+            <h2 class="showcase-title">Composant Détail Annonce</h2>
             
-            <h3>🎯 Fonctionnalités ajoutées :</h3>
-            <ul>
-                <li><strong>Section équipements :</strong> Affichage des équipements disponibles avec icônes</li>
-                <li><strong>Section règles :</strong> Affichage des règles de la maison</li>
-                <li><strong>Section prix :</strong> Affichage des tarifs par nuit, semaine et mois</li>
-                <li><strong>Simulation de réservation :</strong> Boutons pour tester la sélection de dates</li>
-                <li><strong>Calcul automatique :</strong> Prix total basé sur la durée du séjour</li>
-            </ul>
-        </div>
-        
-        <!-- Composant detail-annonce-locataire -->
-        <div class="detail-annonce-locataire">
-            <!-- En-tête de l'annonce -->
-            <div class="annonce-header">
-                <div class="header-content">
-                    <h1 class="annonce-titre">Appartement moderne au cœur de la ville</h1>
-                    <p class="annonce-sous-titre">Magnifique appartement rénové avec vue panoramique, idéalement situé près des transports et commerces. Parfait pour un séjour confortable en ville.</p>
-                    <div class="annonce-meta">
-                        <span class="meta-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Paris, France
-                        </span>
-                        <span class="meta-item">
-                            <i class="fas fa-users"></i>
-                            2 chambres
-                        </span>
-                        <span class="meta-item">
-                            <i class="fas fa-bed"></i>
-                            4 personnes
-                        </span>
-                        <span class="meta-item">
-                            <i class="fas fa-euro-sign"></i>
-                            120€/nuit
-                        </span>
+            <!-- Intégration du composant original -->
+            <div id="detail-annonce-component">
+                <!-- Le contenu du composant sera affiché ici -->
+                <div class="card-maroc-ultra">
+                    <div class="card-maroc-ultra-header">
+                        <h3><i class="fas fa-home"></i> Villa Luxueuse - Rabat</h3>
+                        <p>Découvrez cette magnifique propriété pour la CAN 2025</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Galerie d'images -->
-            <div class="galerie-section">
-                <div class="galerie-header">
-                    <h3>📸 Photos du logement</h3>
-                </div>
-                <div class="galerie-images">
-                    <div class="image-principale">
-                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=400&fit=crop" 
-                             alt="Appartement moderne" 
-                             class="main-image">
-                    </div>
-                    <div class="images-secondaires">
-                        <div class="image-item">
-                            <img src="https://images.unsplash.com/photo-1560448075-bb485b067938?w=200&h=80&fit=crop" alt="Chambre" class="secondary-image">
-                        </div>
-                        <div class="image-item">
-                            <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salon" class="secondary-image">
-                        </div>
-                        <div class="image-item">
-                            <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Cuisine" class="secondary-image">
-                        </div>
-                        <div class="image-item">
-                            <img src="https://images.unsplash.com/photo-1560448204-60394e4be125?w=200&h=80&fit=crop" alt="Salle de bain" class="secondary-image">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Informations détaillées -->
-            <div class="info-section">
-                <div class="info-header">
-                    <h3>ℹ️ Informations détaillées</h3>
-                </div>
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-home"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Type de logement</h4>
-                            <p>Appartement</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-ruler-combined"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Surface</h4>
-                            <p>65 m²</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-car"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Parking</h4>
-                            <p>Disponible</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-wifi"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>WiFi</h4>
-                            <p>Inclus</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section des équipements -->
-            <div class="equipements-section">
-                <div class="equipements-header">
-                    <h3>🔧 Équipements disponibles</h3>
-                </div>
-                <div class="equipements-grid">
-                    <div class="equipement-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>WiFi</span>
-                    </div>
-                    <div class="equipement-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Parking</span>
-                    </div>
-                    <div class="equipement-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Climatisation</span>
-                    </div>
-                    <div class="equipement-item">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Cuisine équipée</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section des règles -->
-            <div class="regles-section">
-                <div class="regles-header">
-                    <h3>📋 Règles de la maison</h3>
-                </div>
-                <div class="regles-grid">
-                    <div class="regle-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Pas de fête</span>
-                    </div>
-                    <div class="regle-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Pas d'animaux</span>
-                    </div>
-                    <div class="regle-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Arrivée après 15h</span>
-                    </div>
-                    <div class="regle-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Départ avant 11h</span>
-                    </div>
-                    <div class="regle-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Pas de tabac</span>
-                    </div>
-                    <div class="regle-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Respect des voisins</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section de réservation -->
-            <div class="reservation-section">
-                <div class="reservation-header">
-                    <h3>🎯 Réserver ce logement</h3>
-                    <p class="reservation-subtitle">Sélectionnez vos dates de séjour</p>
-                </div>
-                
-                <!-- Boutons de démo pour tester -->
-                <div class="demo-buttons">
-                    <button class="btn-demo" onclick="simulerSelectionDates()">
-                        <i class="fas fa-calendar-plus"></i>
-                        Simuler sélection dates
-                    </button>
-                    <button class="btn-demo" onclick="effacerToutesDates()">
-                        <i class="fas fa-calendar-minus"></i>
-                        Effacer dates
-                    </button>
-                </div>
-                
-                <div class="dates-selectionnees" id="dates-selectionnees" style="display: none;">
-                    <div class="date-item" id="date-arrivee" style="display: none;">
-                        <div class="date-label">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Arrivée</span>
-                        </div>
-                        <div class="date-value" id="date-arrivee-value"></div>
-                        <button class="btn-clear" onclick="effacerDateArrivee()" title="Effacer la date d'arrivée">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="date-item" id="date-depart" style="display: none;">
-                        <div class="date-label">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Départ</span>
-                        </div>
-                        <div class="date-value" id="date-depart-value"></div>
-                        <button class="btn-clear" onclick="effacerDateDepart()" title="Effacer la date de départ">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="periode-info" id="periode-info" style="display: none;">
-                        <div class="duree-sejour">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span id="duree-sejour-text"></span>
-                        </div>
-                        <div class="prix-total">
-                            <i class="fas fa-euro-sign"></i>
-                            <span id="prix-total-text"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn-reserve" id="btn-reserve" disabled>
-                    <i class="fas fa-calendar-check"></i>
-                    <span id="btn-reserve-text">Sélectionnez vos dates pour réserver</span>
-                </button>
-            </div>
-
-            <!-- Carte propriétaire -->
-            <div class="owner-card">
-                <div class="owner-header">
-                    <h3>👤 À propos du propriétaire</h3>
-                </div>
-                <div class="owner-content">
-                    <div class="owner-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <div class="owner-info">
-                        <h4>Marie Dupont</h4>
-                        <p class="owner-description">
-                            Propriétaire expérimentée et disponible pour vous accompagner. J'aime partager ma passion pour l'accueil et m'assurer que votre séjour soit parfait.
-                        </p>
-                        <div class="owner-rating">
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                    <div class="card-maroc-ultra-body">
+                        <p>Cette villa exceptionnelle offre tout le confort moderne dans un cadre traditionnel marocain. Parfaite pour accueillir les visiteurs de la CAN 2025 avec style et authenticité.</p>
+                        
+                        <div class="features-grid" style="margin-top: 2rem;">
+                            <div class="stat-maroc-ultra">
+                                <div class="stat-maroc-ultra-icon">
+                                    <i class="fas fa-bed"></i>
+                                </div>
+                                <div class="stat-maroc-ultra-number">5</div>
+                                <div class="stat-maroc-ultra-label">Chambres</div>
                             </div>
-                            <span class="rating-text">4.8 (12 avis)</span>
+                            
+                            <div class="stat-maroc-ultra">
+                                <div class="stat-maroc-ultra-icon">
+                                    <i class="fas fa-bath"></i>
+                                </div>
+                                <div class="stat-maroc-ultra-number">3</div>
+                                <div class="stat-maroc-ultra-label">Salles de bain</div>
+                            </div>
+                            
+                            <div class="stat-maroc-ultra">
+                                <div class="stat-maroc-ultra-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-maroc-ultra-number">10</div>
+                                <div class="stat-maroc-ultra-label">Personnes</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-maroc-ultra-footer">
+                        <div class="badge-maroc-ultra">
+                            <i class="fas fa-star"></i>
+                            <span>Premium</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gradient-maroc-primary">
+                            1.200€/nuit
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Section des prix -->
-            <div class="prix-section">
-                <div class="prix-header">
-                    <h3>💰 Tarifs</h3>
-                </div>
-                <div class="prix-grid">
-                    <div class="prix-card">
-                        <div class="prix-montant">120€</div>
-                        <div class="prix-periode">par nuit</div>
-                    </div>
-                    <div class="prix-card">
-                        <div class="prix-montant">750€</div>
-                        <div class="prix-periode">par semaine</div>
-                    </div>
-                    <div class="prix-card">
-                        <div class="prix-montant">2800€</div>
-                        <div class="prix-periode">par mois</div>
-                    </div>
-                </div>
+            <div class="action-buttons">
+                <a href="#" class="btn-ultra btn-primary-ultra">
+                    <i class="fas fa-eye"></i>
+                    <span>Voir le Composant</span>
+                </a>
+                <a href="#" class="btn-ultra btn-secondary-ultra">
+                    <i class="fas fa-code"></i>
+                    <span>Voir le Code</span>
+                </a>
             </div>
-        </div>
+        </section>
+
+        <!-- Section d'informations techniques -->
+        <section class="demo-info animate-fade-in-up delay-400">
+            <h3><i class="fas fa-cogs"></i> Technologies Utilisées</h3>
+            <p>
+                <strong>Frontend :</strong> Angular 17, TailwindCSS, PrimeNG<br>
+                <strong>Design :</strong> Glassmorphism, CSS Variables, CSS Grid & Flexbox<br>
+                <strong>Animations :</strong> CSS Keyframes, Cubic-bezier, GPU Acceleration<br>
+                <strong>Polices :</strong> Inter, Poppins, Playfair Display<br>
+                <strong>Icônes :</strong> FontAwesome 6.5, Material Icons<br>
+                <strong>Accessibilité :</strong> WCAG 2.1 AA, Support Screen Readers
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="demo-footer animate-fade-in-up delay-500">
+            <div class="footer-content">
+                <h3 class="footer-title">
+                    <i class="fas fa-heart"></i>
+                    Conçu avec passion pour la CAN 2025
+                </h3>
+                <p class="footer-text">
+                    Un design system ultra-professionnel célébrant l'art et la culture marocaine, 
+                    optimisé pour offrir la meilleure expérience utilisateur possible.
+                </p>
+            </div>
+        </footer>
     </div>
 
+    <!-- Scripts pour les interactions -->
     <script>
-        // Variables globales pour les dates
-        let dateArriveeSelectionnee = '';
-        let dateDepartSelectionnee = '';
+        // Animation des cartes au scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-        // Simuler la sélection de dates
-        function simulerSelectionDates() {
-            const aujourdhui = new Date();
-            const arrivee = new Date(aujourdhui);
-            arrivee.setDate(aujourdhui.getDate() + 7); // Dans une semaine
-            
-            const depart = new Date(arrivee);
-            depart.setDate(arrivee.getDate() + 7); // Une semaine plus tard
-            
-            dateArriveeSelectionnee = arrivee.toISOString().split('T')[0];
-            dateDepartSelectionnee = depart.toISOString().split('T')[0];
-            
-            afficherDates();
-            console.log('📅 Dates simulées:', dateArriveeSelectionnee, dateDepartSelectionnee);
-        }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0s';
+                    entry.target.classList.add('animate-fade-in-up');
+                }
+            });
+        }, observerOptions);
 
-        // Effacer toutes les dates
-        function effacerToutesDates() {
-            dateArriveeSelectionnee = '';
-            dateDepartSelectionnee = '';
-            masquerDates();
-            console.log('🗑️ Toutes les dates effacées');
-        }
+        // Observer tous les éléments avec animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.feature-card, .demo-info, .demo-showcase');
+            animatedElements.forEach(el => observer.observe(el));
 
-        // Effacer la date d'arrivée
-        function effacerDateArrivee() {
-            dateArriveeSelectionnee = '';
-            if (!dateArriveeSelectionnee && !dateDepartSelectionnee) {
-                masquerDates();
-            } else {
-                afficherDates();
-            }
-            console.log('🗑️ Date d\'arrivée effacée');
-        }
+            // Ajout d'interactions pour les boutons
+            const buttons = document.querySelectorAll('.btn-ultra');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Effet ripple
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.6);
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    
+                    btn.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
 
-        // Effacer la date de départ
-        function effacerDateDepart() {
-            dateDepartSelectionnee = '';
-            if (!dateArriveeSelectionnee && !dateDepartSelectionnee) {
-                masquerDates();
-            } else {
-                afficherDates();
-            }
-            console.log('🗑️ Date de départ effacée');
-        }
-
-        // Afficher les dates sélectionnées
-        function afficherDates() {
-            const datesContainer = document.getElementById('dates-selectionnees');
-            const dateArriveeDiv = document.getElementById('date-arrivee');
-            const dateDepartDiv = document.getElementById('date-depart');
-            const periodeInfoDiv = document.getElementById('periode-info');
-            const btnReserve = document.getElementById('btn-reserve');
-            const btnReserveText = document.getElementById('btn-reserve-text');
-
-            datesContainer.style.display = 'block';
-
-            if (dateArriveeSelectionnee) {
-                document.getElementById('date-arrivee-value').textContent = formatDate(dateArriveeSelectionnee);
-                dateArriveeDiv.style.display = 'flex';
-            }
-
-            if (dateDepartSelectionnee) {
-                document.getElementById('date-depart-value').textContent = formatDate(dateDepartSelectionnee);
-                dateDepartDiv.style.display = 'flex';
-            }
-
-            if (dateArriveeSelectionnee && dateDepartSelectionnee) {
-                const duree = calculerDureeSejour();
-                const prixTotal = duree * 120;
-                
-                document.getElementById('duree-sejour-text').textContent = `Durée du séjour: ${duree} jour(s)`;
-                document.getElementById('prix-total-text').textContent = `Prix total: ${prixTotal}€`;
-                periodeInfoDiv.style.display = 'flex';
-                
-                btnReserve.disabled = false;
-                btnReserveText.textContent = `Réserver du ${formatDateShort(dateArriveeSelectionnee)} au ${formatDateShort(dateDepartSelectionnee)}`;
-            } else {
-                periodeInfoDiv.style.display = 'none';
-                btnReserve.disabled = true;
-                btnReserveText.textContent = 'Sélectionnez vos dates pour réserver';
-            }
-        }
-
-        // Masquer les dates
-        function masquerDates() {
-            const datesContainer = document.getElementById('dates-selectionnees');
-            const dateArriveeDiv = document.getElementById('date-arrivee');
-            const dateDepartDiv = document.getElementById('date-depart');
-            const periodeInfoDiv = document.getElementById('periode-info');
-            const btnReserve = document.getElementById('btn-reserve');
-            const btnReserveText = document.getElementById('btn-reserve-text');
-
-            datesContainer.style.display = 'none';
-            dateArriveeDiv.style.display = 'none';
-            dateDepartDiv.style.display = 'none';
-            periodeInfoDiv.style.display = 'none';
-            btnReserve.disabled = true;
-            btnReserveText.textContent = 'Sélectionnez vos dates pour réserver';
-        }
-
-        // Calculer la durée du séjour
-        function calculerDureeSejour() {
-            if (!dateArriveeSelectionnee || !dateDepartSelectionnee) {
-                return 0;
-            }
-
-            const arrivee = new Date(dateArriveeSelectionnee);
-            const depart = new Date(dateDepartSelectionnee);
-            const difference = depart.getTime() - arrivee.getTime();
-            const jours = Math.ceil(difference / (1000 * 3600 * 24));
-            
-            return jours;
-        }
-
-        // Formater une date complète
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR');
-        }
-
-        // Formater une date courte
-        function formatDateShort(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
-        }
-
-        // Gérer le clic sur le bouton de réservation
-        document.getElementById('btn-reserve').addEventListener('click', function() {
-            if (dateArriveeSelectionnee && dateDepartSelectionnee) {
-                const duree = calculerDureeSejour();
-                const prixTotal = duree * 120;
-                
-                const confirmation = confirm(
-                    `Confirmer votre réservation ?\n\n` +
-                    `Arrivée: ${dateArriveeSelectionnee}\n` +
-                    `Départ: ${dateDepartSelectionnee}\n` +
-                    `Durée: ${duree} jour(s)\n` +
-                    `Prix total: ${prixTotal}€`
-                );
-                
-                if (confirmation) {
-                    alert('Réservation confirmée avec succès !');
-                    console.log('✅ Réservation confirmée');
+        // Style pour l'effet ripple
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
                 }
             }
-        });
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html> 

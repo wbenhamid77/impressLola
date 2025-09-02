@@ -1,76 +1,48 @@
-<div class="reservations-locateur-container">
-  <!-- En-tête avec statistiques -->
-  <div class="header-section">
-    <h1 class="page-title">
-      <i class="fas fa-home"></i>
-      🏆 Gestion des Réservations
-    </h1>
-    
-    <!-- Statistiques -->
-    <div class="stats-cards" *ngIf="statistiques">
-      <div class="stat-card">
-        <div class="stat-number">{{ statistiques.total }}</div>
-        <div class="stat-label">🎯 Total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ statistiques.enAttente }}</div>
-        <div class="stat-label">⏳ En attente</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ statistiques.confirmees }}</div>
-        <div class="stat-label">✅ Confirmées</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ statistiques.enCours }}</div>
-        <div class="stat-label">🏃 En cours</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ statistiques.terminees }}</div>
-        <div class="stat-label">🏁 Terminées</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ statistiques.annulees }}</div>
-        <div class="stat-label">❌ Annulées</div>
-      </div>
-      <div class="stat-card revenue">
-        <div class="stat-number">{{ statistiques.revenus }}€</div>
-        <div class="stat-label">💰 Revenus</div>
-      </div>
-    </div>
+<div class="mx-auto max-w-6xl p-4">
+  <div class="mb-4 flex items-center justify-between gap-3">
+    <h1 class="m-0 text-2xl font-extrabold text-slate-900"><i class="fas fa-home"></i> Gestion des Réservations - CAN 2025</h1>
+    <button class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-800 shadow" (click)="chargerReservations()" [disabled]="loading">
+      <i class="fas fa-sync-alt" [ngClass]="{ 'fa-spin': loading }"></i>
+      Actualiser
+    </button>
+  </div>
 
-    <div class="header-actions">
-      <button class="btn btn-secondary" (click)="chargerReservations()" [disabled]="loading">
-        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
-        🔄 Actualiser
-      </button>
+  <div class="mb-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-7" *ngIf="statistiques">
+    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
+      <div class="text-2xl font-extrabold text-maroc-vert">{{ statistiques.total }}</div>
+      <div class="text-sm font-semibold text-slate-600">Total</div>
+    </div>
+    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
+      <div class="text-2xl font-extrabold text-amber-600">{{ statistiques.enAttente }}</div>
+      <div class="text-sm font-semibold text-slate-600">En attente</div>
+    </div>
+    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
+      <div class="text-2xl font-extrabold text-emerald-600">{{ statistiques.confirmees }}</div>
+      <div class="text-sm font-semibold text-slate-600">Confirmées</div>
+    </div>
+    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
+      <div class="text-2xl font-extrabold text-sky-600">{{ statistiques.enCours }}</div>
+      <div class="text-sm font-semibold text-slate-600">En cours</div>
+    </div>
+    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
+      <div class="text-2xl font-extrabold text-slate-600">{{ statistiques.terminees }}</div>
+      <div class="text-sm font-semibold text-slate-600">Terminées</div>
+    </div>
+    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
+      <div class="text-2xl font-extrabold text-rose-600">{{ statistiques.annulees }}</div>
+      <div class="text-sm font-semibold text-slate-600">Annulées</div>
+    </div>
+    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
+      <div class="text-2xl font-extrabold text-maroc-rouge">{{ statistiques.revenus }}€</div>
+      <div class="text-sm font-semibold text-slate-600">Revenus</div>
     </div>
   </div>
 
-  <!-- Messages d'état -->
-  <div class="messages-section" *ngIf="error || success">
-    <div class="alert alert-danger" *ngIf="error">
-      <i class="fas fa-exclamation-triangle"></i>
-      {{ error }}
-      <button class="btn-close" (click)="error = ''">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div class="alert alert-success" *ngIf="success">
-      <i class="fas fa-check-circle"></i>
-      {{ success }}
-      <button class="btn-close" (click)="success = ''">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- Filtres et recherche -->
-  <div class="filters-section">
-    <div class="filters-row">
-      <div class="filter-group">
-        <label for="filtreStatut">Statut :</label>
-        <select id="filtreStatut" class="form-select" [(ngModel)]="filtreStatut" (change)="page = 1">
+  <div class="mb-3 grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow">
+    <div class="grid gap-3 sm:grid-cols-3">
+      <label class="grid gap-1">
+        <span class="text-sm font-semibold text-slate-700">Statut</span>
+        <select class="rounded-lg border border-slate-300 px-3 py-2" [(ngModel)]="filtreStatut" (change)="page = 1">
           <option value="TOUS">Tous les statuts</option>
           <option value="EN_ATTENTE">En attente</option>
           <option value="CONFIRMEE">Confirmée</option>
@@ -78,546 +50,158 @@
           <option value="TERMINEE">Terminée</option>
           <option value="ANNULEE">Annulée</option>
         </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="filtrePeriode">Période :</label>
-        <select id="filtrePeriode" class="form-select" [(ngModel)]="filtrePeriode" (change)="page = 1">
+      </label>
+      <label class="grid gap-1">
+        <span class="text-sm font-semibold text-slate-700">Période</span>
+        <select class="rounded-lg border border-slate-300 px-3 py-2" [(ngModel)]="filtrePeriode" (change)="page = 1">
           <option value="TOUTES">Toutes les périodes</option>
           <option value="FUTURES">Futures</option>
           <option value="EN_COURS">En cours</option>
           <option value="PASSEES">Passées</option>
         </select>
-      </div>
+      </label>
+      <label class="grid gap-1">
+        <span class="text-sm font-semibold text-slate-700">Rechercher</span>
+        <input type="text" class="rounded-lg border border-slate-300 px-3 py-2" [(ngModel)]="recherche" (ngModelChange)="recherche = $event; page = 1" placeholder="Titre, adresse, locataire..." />
+      </label>
+    </div>
+  </div>
 
-      <div class="search-group">
-        <label for="recherche">Rechercher :</label>
-        <div class="search-input">
-          <input 
-            type="text" 
-            id="recherche" 
-            class="form-control" 
-            [(ngModel)]="recherche" 
-            placeholder="Annonce, locataire, dates..."
-            (keyup.enter)="page = 1"
-          >
-          <button class="btn btn-outline-primary" (click)="page = 1">
-            <i class="fas fa-search"></i>
-          </button>
+  <div class="mb-3 grid gap-3" *ngIf="!loading">
+    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow" *ngFor="let reservation of getReservationsPaginees()">
+      <div class="flex items-start justify-between gap-2 border-b pb-3">
+        <div class="text-sm font-semibold text-slate-700">📅 {{ formaterDate(reservation.dateArrivee || '') }} - {{ formaterDate(reservation.dateDepart || '') }}</div>
+        <span class="rounded-full border px-2 py-1 text-xs font-bold" [ngClass]="getClasseStatut(reservation.statut)">
+          {{ getIconeStatut(reservation.statut) }} {{ formaterStatut(reservation.statut) }}
+        </span>
+      </div>
+      <div class="grid gap-4 pt-3 md:grid-cols-3">
+        <div class="space-y-1">
+          <h4 class="m-0 text-base font-bold">🏠 Informations du logement</h4>
+          <p class="m-0"><strong>Titre :</strong> {{ reservation.annonce?.titre || 'Titre non disponible' }}</p>
+          <p class="m-0"><strong>📍 Adresse :</strong> {{ getAdresseFormatee(reservation) || 'Adresse non disponible' }}</p>
+          <p class="m-0"><strong>💰 Prix par nuit :</strong> {{ formaterPrix(reservation.prixParNuit || 0) }}</p>
+          <p class="m-0"><strong>🌙 Nuits :</strong> {{ reservation.nombreNuits || 0 }}</p>
         </div>
+        <div class="space-y-1">
+          <h4 class="m-0 text-base font-bold">👤 Informations du locataire</h4>
+          <p class="m-0"><strong>Nom :</strong> {{ reservation.locataire?.nom || 'Nom non disponible' }}</p>
+          <p class="m-0"><strong>Prénom :</strong> {{ reservation.locataire?.prenom || 'Prénom non disponible' }}</p>
+          <p class="m-0"><strong>📧 Email :</strong> {{ reservation.locataire?.email || 'Email non disponible' }}</p>
+          <p class="m-0"><strong>👥 Voyageurs :</strong> {{ reservation.nombreVoyageurs || 0 }}</p>
+        </div>
+        <div class="space-y-1">
+          <h4 class="m-0 text-base font-bold">📅 Dates et montants</h4>
+          <p class="m-0"><strong>📅 Arrivée :</strong> {{ formaterDate(reservation.dateArrivee || '') }}</p>
+          <p class="m-0"><strong>📅 Départ :</strong> {{ formaterDate(reservation.dateDepart || '') }}</p>
+          <p class="m-0"><strong>💳 Mode de paiement :</strong> {{ reservation.libelleStatut || 'Non spécifié' }}</p>
+          <p class="m-0"><strong>💰 Montant total :</strong> {{ formaterPrix(reservation.montantTotal || 0) }}</p>
+        </div>
+        <div class="space-y-1 md:col-span-3">
+          <h4 class="m-0 text-base font-bold">📝 Détails</h4>
+          <p class="m-0"><strong>📅 Création :</strong> {{ formaterDate(reservation.dateCreation || '') }}</p>
+          <p class="m-0"><strong>📝 Message :</strong> {{ reservation.messageProprietaire || 'Aucun message' }}</p>
+          <p class="m-0"><strong>🔄 Dernière modification :</strong> {{ formaterDate(reservation.dateModification || '') }}</p>
+        </div>
+      </div>
+      <div class="mt-3 flex flex-wrap items-center justify-center gap-2 border-t pt-3">
+        <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" *ngIf="reservation.annonce?.id" (click)="ouvrirPopupAnnonce(reservation.annonce.id)"><i class="fas fa-home"></i> Voir l'annonce</button>
+        <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" *ngIf="reservation.locataire?.id" (click)="ouvrirPopupLocataire(reservation.locataire.id)"><i class="fas fa-user"></i> Voir le locataire</button>
+        <button class="rounded-xl bg-emerald-600 px-3 py-1 font-semibold text-white disabled:opacity-60" *ngIf="reservation.statut === 'EN_ATTENTE'" (click)="confirmerReservation(reservation)">✅ Confirmer</button>
+        <button class="rounded-xl bg-amber-500 px-3 py-1 font-semibold text-slate-900 disabled:opacity-60" *ngIf="reservation.statut === 'EN_ATTENTE' || reservation.statut === 'CONFIRMEE'" (click)="ouvrirFormulaireStatut(reservation)">🔄 Changer statut</button>
+        <button class="rounded-xl bg-rose-600 px-3 py-1 font-semibold text-white disabled:opacity-60" *ngIf="reservation.statut === 'EN_ATTENTE' || reservation.statut === 'CONFIRMEE'" (click)="annulerReservation(reservation)">❌ Annuler</button>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-center gap-3" *ngIf="getNombrePages() > 1">
+      <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800 disabled:opacity-60" [disabled]="page === 1" (click)="changerPage(page - 1)">← Précédent</button>
+      <span class="text-slate-700">Page {{ page }} sur {{ getNombrePages() }}</span>
+      <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800 disabled:opacity-60" [disabled]="page === getNombrePages()" (click)="changerPage(page + 1)">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- Modale changement de statut -->
+  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="showStatutForm">
+    <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
+        <h2 class="m-0 text-lg font-extrabold text-slate-900">Changer le statut de la réservation</h2>
+        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerFormulaireStatut()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="px-5 py-4">
+        <form [formGroup]="statutForm" (ngSubmit)="changerStatutReservation()" class="grid gap-3">
+          <label class="grid gap-1">
+            <span class="text-sm font-semibold text-slate-700">Nouveau statut</span>
+            <select class="rounded-lg border border-slate-300 px-3 py-2" formControlName="nouveauStatut">
+              <option value="EN_ATTENTE">En attente</option>
+              <option value="CONFIRMEE">Confirmée</option>
+              <option value="EN_COURS">En cours</option>
+              <option value="TERMINEE">Terminée</option>
+              <option value="ANNULEE">Annulée</option>
+            </select>
+          </label>
+          <label class="grid gap-1">
+            <span class="text-sm font-semibold text-slate-700">Raison du changement (optionnel)</span>
+            <input type="text" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="raison" placeholder="Raison du changement de statut" />
+          </label>
+          <label class="grid gap-1">
+            <span class="text-sm font-semibold text-slate-700">Commentaire (optionnel)</span>
+            <textarea class="rounded-lg border border-slate-300 px-3 py-2" formControlName="commentaire" rows="3" placeholder="Commentaire additionnel..."></textarea>
+          </label>
+        </form>
+      </div>
+      <div class="flex items-center justify-end gap-2 border-t bg-slate-50 px-5 py-3">
+        <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerFormulaireStatut()">Annuler</button>
+        <button class="rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-700 px-4 py-2 font-semibold text-white disabled:opacity-60" [disabled]="!statutForm.valid || loading" (click)="changerStatutReservation()">
+          <i class="fas fa-save" [ngClass]="{ 'fa-spin': loading }"></i>
+          Enregistrer
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Contenu principal -->
-  <div class="main-content">
-    <!-- Onglets -->
-    <div class="tabs-container">
-      <div class="tab-nav">
-        <button 
-          class="tab-btn active" 
-          (click)="filtreStatut = 'TOUS'; page = 1"
-          [class.active]="filtreStatut === 'TOUS'"
-        >
-          🎯 Toutes ({{ toutes.length }})
-        </button>
-        <button 
-          class="tab-btn" 
-          (click)="filtreStatut = 'EN_ATTENTE'; page = 1"
-          [class.active]="filtreStatut === 'EN_ATTENTE'"
-        >
-          ⏳ En attente ({{ enAttente.length }})
-        </button>
-        <button 
-          class="tab-btn" 
-          (click)="filtreStatut = 'CONFIRMEE'; page = 1"
-          [class.active]="filtreStatut === 'CONFIRMEE'"
-        >
-          ✅ Confirmées ({{ confirmees.length }})
-        </button>
-        <button 
-          class="tab-btn" 
-          (click)="filtreStatut = 'EN_COURS'; page = 1"
-          [class.active]="filtreStatut === 'EN_COURS'"
-        >
-          🏃 En cours ({{ enCours.length }})
-        </button>
-        <button 
-          class="tab-btn" 
-          (click)="filtreStatut = 'TERMINEE'; page = 1"
-          [class.active]="filtreStatut === 'TERMINEE'"
-        >
-          🏁 Terminées ({{ terminees.length }})
-        </button>
-        <button 
-          class="tab-btn" 
-          (click)="filtreStatut = 'ANNULEE'; page = 1"
-          [class.active]="filtreStatut === 'ANNULEE'"
-        >
-          ❌ Annulées ({{ annulees.length }})
-        </button>
+  <!-- Modale annonce -->
+  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="showAnnoncePopup">
+    <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
+        <h2 class="m-0 text-lg font-extrabold text-slate-900">Détails de l'annonce</h2>
+        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerPopupAnnonce()"><i class="fas fa-times"></i></button>
       </div>
-    </div>
-
-    <!-- Liste des réservations -->
-    <div class="reservations-list" *ngIf="!loading; else loadingTemplate">
-      <div class="reservation-card" *ngFor="let reservation of getReservationsPaginees()">
-        <div class="reservation-header">
-          <div class="reservation-id">
-            <strong>Réf. #{{ reservation.id?.substring(0, 8) }}</strong>
-          </div>
-          <div class="reservation-status">
-            <span class="badge" [ngClass]="'badge-' + (reservation.statut === 'CONFIRMEE' ? 'success' : reservation.statut === 'EN_ATTENTE' ? 'warning' : reservation.statut === 'EN_COURS' ? 'info' : reservation.statut === 'TERMINEE' ? 'secondary' : 'danger')">
-              {{ formaterStatut(reservation.statut) }}
-            </span>
-          </div>
-        </div>
-
-        <div class="reservation-details">
-          <div class="detail-row">
-            <div class="detail-item">
-              <i class="fas fa-home"></i>
-              <span class="label">Annonce :</span>
-              <div class="annonce-info clickable" (click)="ouvrirPopupAnnonce(reservation)">
-                <div class="annonce-titre">
-                  {{ reservation.annonce.titre }}
-                </div>
-                <div class="annonce-adresse">
-                  {{ getShortAddress(reservation) }}
-                </div>
-              </div>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-user"></i>
-              <span class="label">Locataire :</span>
-              <div class="locataire-info clickable" (click)="ouvrirPopupLocataire(reservation)">
-                <div class="locataire-nom">
-                  {{ reservation.locataire.prenom }} {{ reservation.locataire.nom }}
-                </div>
-                <div class="locataire-email">
-                  {{ reservation.locataire.email }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="detail-item">
-              <i class="fas fa-calendar-day"></i>
-              <span class="label">Arrivée :</span>
-              <span class="value">{{ formaterDate(reservation.dateArrivee) }}</span>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-calendar-check"></i>
-              <span class="label">Départ :</span>
-              <span class="value">{{ formaterDate(reservation.dateDepart) }}</span>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="detail-item">
-              <i class="fas fa-users"></i>
-              <span class="label">Voyageurs :</span>
-              <span class="value">{{ reservation.nombreVoyageurs }}</span>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-clock"></i>
-              <span class="label">Durée :</span>
-              <span class="value">{{ reservation.nombreNuits }} jours</span>
-            </div>
-          </div>
-
-          <div class="detail-row" *ngIf="reservation.montantTotal">
-            <div class="detail-item">
-              <i class="fas fa-euro-sign"></i>
-              <span class="label">Montant :</span>
-              <span class="value">{{ reservation.montantTotal }}€</span>
-            </div>
-            <div class="detail-item" *ngIf="reservation.dateCreation">
-              <i class="fas fa-calendar-plus"></i>
-              <span class="label">Créée le :</span>
-              <span class="value">{{ formaterDate(reservation.dateCreation) }}</span>
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="detail-item">
-              <i class="fas fa-tag"></i>
-              <span class="label">Type :</span>
-              <span class="value">{{ reservation.annonce.typeMaison }}</span>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-euro-sign"></i>
-              <span class="label">Prix/nuit :</span>
-              <span class="value">{{ reservation.prixParNuit }}€</span>
-            </div>
-          </div>
-
-          <div class="detail-row" *ngIf="reservation.locataire.telephone">
-            <div class="detail-item">
-              <i class="fas fa-phone"></i>
-              <span class="label">Téléphone :</span>
-              <span class="value">{{ reservation.locataire.telephone }}</span>
-            </div>
-          </div>
-
-          <div class="detail-row" *ngIf="reservation.messageProprietaire">
-            <div class="detail-item full-width">
-              <i class="fas fa-comment"></i>
-              <span class="label">Message du locataire :</span>
-              <span class="value">{{ reservation.messageProprietaire }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="reservation-actions">
-          <!-- Actions pour réservations en attente -->
-          <div class="action-group" *ngIf="reservation.statut === 'EN_ATTENTE'">
-            <button class="btn btn-success btn-sm" (click)="confirmerReservation(reservation)">
-              <i class="fas fa-check"></i>
-              ✅ Confirmer
-            </button>
-            <button class="btn btn-danger btn-sm" (click)="annulerReservation(reservation)">
-              <i class="fas fa-times"></i>
-              ❌ Refuser
-            </button>
-          </div>
-
-          <!-- Actions pour réservations confirmées -->
-          <div class="action-group" *ngIf="reservation.statut === 'CONFIRMEE'">
-            <button class="btn btn-info btn-sm" (click)="changerStatutReservation(reservation)">
-              <i class="fas fa-play"></i>
-              🏃 Démarrer
-            </button>
-            <button class="btn btn-warning btn-sm" (click)="changerStatutReservation(reservation)">
-              <i class="fas fa-edit"></i>
-              ✏️ Modifier
-            </button>
-          </div>
-
-          <!-- Actions pour réservations en cours -->
-          <div class="action-group" *ngIf="reservation.statut === 'EN_COURS'">
-            <button class="btn btn-secondary btn-sm" (click)="changerStatutReservation(reservation)">
-              <i class="fas fa-flag-checkered"></i>
-              🏁 Terminer
-            </button>
-          </div>
-
-          <!-- Actions pour toutes les réservations -->
-          <div class="action-group">
-            <button class="btn btn-outline-primary btn-sm" (click)="changerStatutReservation(reservation)">
-              <i class="fas fa-edit"></i>
-              🔄 Changer statut
-            </button>
-          </div>
+      <div class="px-5 py-4" *ngIf="annonceSelectionnee">
+        <div class="space-y-2">
+          <h3 class="m-0 text-lg font-bold">{{ annonceSelectionnee.titre }}</h3>
+          <p class="m-0"><strong>📍 Adresse :</strong> {{ annonceSelectionnee.adresse }}</p>
+          <p class="m-0"><strong>💰 Prix :</strong> {{ formaterPrix(annonceSelectionnee.prix) }}</p>
+          <p class="m-0"><strong>🏠 Type :</strong> {{ annonceSelectionnee.type }}</p>
+          <p class="m-0"><strong>📝 Description :</strong> {{ annonceSelectionnee.description }}</p>
         </div>
       </div>
-
-      <!-- Message si aucune réservation -->
-      <div class="no-reservations" *ngIf="getReservationsFiltrees().length === 0">
-        <i class="fas fa-calendar-times"></i>
-        <h3>⚽ Aucune réservation trouvée</h3>
-        <p *ngIf="filtreStatut !== 'TOUS' || filtrePeriode !== 'TOUTES' || recherche">
-          Aucune réservation ne correspond à vos critères de filtrage.
-        </p>
-        <p *ngIf="filtreStatut === 'TOUS' && filtrePeriode === 'TOUTES' && !recherche">
-          Vous n'avez pas encore de réservations pour vos annonces.
-        </p>
-      </div>
-  </div>
-
-    <!-- Pagination -->
-    <div class="pagination-container" *ngIf="getTotalPages() > 1">
-      <nav class="pagination-nav">
-        <button 
-          class="btn btn-outline-primary" 
-          [disabled]="page === 1"
-          (click)="pagePrecedente()"
-        >
-          <i class="fas fa-chevron-left"></i>
-          ⬅️ Précédent
-        </button>
-
-        <div class="page-numbers">
-          <button 
-            class="btn btn-outline-secondary" 
-            *ngFor="let pageNum of getPageNumbers()"
-            [class.active]="pageNum === page"
-            [disabled]="pageNum === -1"
-            (click)="pageNum !== -1 && allerAPage(pageNum)"
-          >
-            <span *ngIf="pageNum !== -1">{{ pageNum }}</span>
-            <span *ngIf="pageNum === -1">...</span>
-          </button>
-        </div>
-
-        <button 
-          class="btn btn-outline-primary" 
-          [disabled]="page === getTotalPages()"
-          (click)="pageSuivante()"
-        >
-          Suivant ➡️
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </nav>
-    </div>
-  </div>
-
-  <!-- Template de chargement -->
-  <ng-template #loadingTemplate>
-    <div class="loading-container">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Chargement...</span>
-      </div>
-      <p>⚽ Chargement de vos réservations...</p>
-    </div>
-  </ng-template>
-</div>
-
-<!-- Modal de changement de statut -->
-<div class="modal-overlay" *ngIf="showStatutForm" (click)="fermerFormulaireStatut()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>Changer le statut de la réservation</h3>
-      <button class="btn-close" (click)="fermerFormulaireStatut()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="modal-body">
-      <div class="reservation-info" *ngIf="reservationSelectionnee">
-        <h4>Réservation Réf. #{{ reservationSelectionnee.id?.substring(0, 8) }}</h4>
-        <p><strong>Statut actuel :</strong> {{ formaterStatut(reservationSelectionnee.statut) }}</p>
-        <p><strong>Annonce :</strong> {{ reservationSelectionnee.annonce.titre || 'Annonce sélectionnée' }}</p>
-        <p><strong>Période :</strong> {{ formaterDate(reservationSelectionnee.dateArrivee) }} - {{ formaterDate(reservationSelectionnee.dateDepart) }}</p>
-      </div>
-
-      <form [formGroup]="statutForm" (ngSubmit)="appliquerChangementStatut()">
-        <div class="form-group">
-          <label for="nouveauStatut">Nouveau statut *</label>
-          <select id="nouveauStatut" class="form-control" formControlName="nouveauStatut">
-            <option value="EN_ATTENTE">En attente</option>
-            <option value="CONFIRMEE">Confirmée</option>
-            <option value="EN_COURS">En cours</option>
-            <option value="TERMINEE">Terminée</option>
-            <option value="ANNULEE">Annulée</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="commentaire">Commentaire (optionnel)</label>
-          <textarea 
-            id="commentaire" 
-            class="form-control" 
-            formControlName="commentaire"
-            rows="3"
-            placeholder="Commentaire sur le changement de statut..."
-          ></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button 
-            type="submit" 
-            class="btn btn-primary" 
-            [disabled]="statutForm.invalid || loading"
-          >
-            <i class="fas fa-save" *ngIf="!loading"></i>
-            <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
-            Appliquer le changement
-          </button>
-          <button 
-            type="button" 
-            class="btn btn-secondary" 
-            (click)="fermerFormulaireStatut()"
-          >
-            Annuler
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div> 
-
-<!-- Popup de détails d'annonce -->
-<div class="modal-overlay" *ngIf="showAnnoncePopup" (click)="fermerPopupAnnonce()">
-  <div class="modal-content annonce-details-modal" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>
-        <i class="fas fa-home"></i>
-        Détails de l'Annonce
-      </h3>
-      <button class="btn-close" (click)="fermerPopupAnnonce()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="modal-body" *ngIf="annonceSelectionnee">
-      <!-- Image de l'annonce -->
-      <div class="annonce-image" *ngIf="annonceSelectionnee.imageUrl">
-        <img [src]="annonceSelectionnee.imageUrl" [alt]="annonceSelectionnee.titre">
-      </div>
-
-      <!-- Informations principales -->
-      <div class="annonce-main-info">
-        <h4 class="annonce-titre">{{ annonceSelectionnee.titre }}</h4>
-        <div class="annonce-adresse">
-          <i class="fas fa-map-marker-alt"></i>
-          {{ annonceSelectionnee.adresse }}
-        </div>
-      </div>
-
-      <!-- Caractéristiques -->
-      <div class="annonce-caracteristiques">
-        <div class="carac-item">
-          <i class="fas fa-tag"></i>
-          <span class="label">Type :</span>
-          <span class="value">{{ annonceSelectionnee.type }}</span>
-        </div>
-        <div class="carac-item">
-          <i class="fas fa-euro-sign"></i>
-          <span class="label">Prix/nuit :</span>
-          <span class="value">{{ annonceSelectionnee.prix }}€</span>
-        </div>
-        <div class="carac-item">
-          <i class="fas fa-expand-arrows-alt"></i>
-          <span class="label">Superficie :</span>
-          <span class="value">{{ annonceSelectionnee.superficie }} m²</span>
-        </div>
-        <div class="carac-item">
-          <i class="fas fa-bed"></i>
-          <span class="label">Chambres :</span>
-          <span class="value">{{ annonceSelectionnee.nombreChambres }}</span>
-        </div>
-        <div class="carac-item">
-          <i class="fas fa-bath"></i>
-          <span class="label">Salles de bain :</span>
-          <span class="value">{{ annonceSelectionnee.nombreSallesDeBain }}</span>
-        </div>
-      </div>
-
-      <!-- Description -->
-      <div class="annonce-description" *ngIf="annonceSelectionnee.description">
-        <h5>Description</h5>
-        <p>{{ annonceSelectionnee.description }}</p>
-      </div>
-
-      <!-- Équipements -->
-      <div class="annonce-equipements" *ngIf="annonceSelectionnee.equipements?.length">
-        <h5>Équipements</h5>
-        <div class="equipements-list">
-          <span class="equipement-tag" *ngFor="let equipement of annonceSelectionnee.equipements">
-            {{ equipement }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Informations du propriétaire -->
-      <div class="annonce-proprietaire" *ngIf="annonceSelectionnee.proprietaire">
-        <h5>Propriétaire</h5>
-        <div class="proprietaire-info">
-          <div class="proprietaire-avatar" *ngIf="annonceSelectionnee.proprietaire.avatarUrl">
-            <img [src]="annonceSelectionnee.proprietaire.avatarUrl" [alt]="annonceSelectionnee.proprietaire.nom">
-          </div>
-          <div class="proprietaire-details">
-            <div class="proprietaire-nom">
-              {{ annonceSelectionnee.proprietaire.prenom }} {{ annonceSelectionnee.proprietaire.nom }}
-            </div>
-            <div class="proprietaire-email">
-              <i class="fas fa-envelope"></i>
-              {{ annonceSelectionnee.proprietaire.email }}
-            </div>
-            <div class="proprietaire-telephone" *ngIf="annonceSelectionnee.proprietaire.telephone">
-              <i class="fas fa-phone"></i>
-              {{ annonceSelectionnee.proprietaire.telephone }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading state -->
-    <div class="modal-body loading-state" *ngIf="loading">
-      <div class="spinner-container">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Chargement...</span>
-        </div>
-        <p>Chargement des détails de l'annonce...</p>
+      <div class="flex items-center justify-end gap-2 border-t bg-slate-50 px-5 py-3">
+        <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerPopupAnnonce()">Fermer</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Popup de détails du locataire -->
-<div class="modal-overlay" *ngIf="showLocatairePopup" (click)="fermerPopupLocataire()">
-  <div class="modal-content locataire-details-modal" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>
-        <i class="fas fa-user"></i>
-        Profil du Locataire
-      </h3>
-      <button class="btn-close" (click)="fermerPopupLocataire()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="modal-body" *ngIf="locataireSelectionne">
-      <!-- Avatar et informations principales -->
-      <div class="locataire-header">
-        <div class="locataire-avatar" *ngIf="locataireSelectionne.avatarUrl">
-          <img [src]="locataireSelectionne.avatarUrl" [alt]="locataireSelectionne.nom">
-        </div>
-        <div class="locataire-main-info">
-          <h4 class="locataire-nom">{{ locataireSelectionne.prenom }} {{ locataireSelectionne.nom }}</h4>
-          <div class="locataire-email">
-            <i class="fas fa-envelope"></i>
-            {{ locataireSelectionne.email }}
-          </div>
-          <div class="locataire-telephone">
-            <i class="fas fa-phone"></i>
-            {{ locataireSelectionne.telephone }}
-          </div>
+  <!-- Modale locataire -->
+  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="showLocatairePopup">
+    <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
+        <h2 class="m-0 text-lg font-extrabold text-slate-900">Détails du locataire</h2>
+        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerPopupLocataire()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="px-5 py-4" *ngIf="locataireSelectionne">
+        <div class="space-y-2">
+          <h3 class="m-0 text-lg font-bold">{{ locataireSelectionne.prenom }} {{ locataireSelectionne.nom }}</h3>
+          <p class="m-0"><strong>📧 Email :</strong> {{ locataireSelectionne.email }}</p>
+          <p class="m-0"><strong>📱 Téléphone :</strong> {{ locataireSelectionne.telephone }}</p>
+          <p class="m-0"><strong>📍 Adresse :</strong> {{ locataireSelectionne.adresse }}</p>
+          <p class="m-0"><strong>📅 Inscription :</strong> {{ formaterDate(locataireSelectionne.dateInscription) }}</p>
+          <p class="m-0"><strong>🏠 Réservations :</strong> {{ locataireSelectionne.nombreReservations }}</p>
+          <p class="m-0"><strong>⭐ Note moyenne :</strong> {{ locataireSelectionne.noteMoyenne }}/5</p>
+          <p class="m-0"><strong>📝 Bio :</strong> {{ locataireSelectionne.bio || 'Aucune description disponible' }}</p>
         </div>
       </div>
-
-      <!-- Statistiques -->
-      <div class="locataire-stats">
-        <div class="stat-item">
-          <div class="stat-value">{{ locataireSelectionne.nombreReservations }}</div>
-          <div class="stat-label">Réservations</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ locataireSelectionne.noteMoyenne }}/100</div>
-          <div class="stat-label">Note moyenne</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ formaterDate(locataireSelectionne.dateInscription) }}</div>
-          <div class="stat-label">Membre depuis</div>
-        </div>
-      </div>
-
-      <!-- Adresse -->
-      <div class="locataire-adresse">
-        <h5>Adresse</h5>
-        <div class="adresse-content">
-          <i class="fas fa-map-marker-alt"></i>
-          {{ locataireSelectionne.adresse }}
-        </div>
-      </div>
-
-      <!-- Bio -->
-      <div class="locataire-bio" *ngIf="locataireSelectionne.bio">
-        <h5>À propos</h5>
-        <p>{{ locataireSelectionne.bio }}</p>
-      </div>
-    </div>
-
-    <!-- Loading state -->
-    <div class="modal-body loading-state" *ngIf="loading">
-      <div class="spinner-container">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Chargement...</span>
-        </div>
-        <p>Chargement du profil du locataire...</p>
+      <div class="flex items-center justify-end gap-2 border-t bg-slate-50 px-5 py-3">
+        <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerPopupLocataire()">Fermer</button>
       </div>
     </div>
   </div>

@@ -1,23 +1,27 @@
-<div class="mes-annonces-page">
-  <!-- Header Professionnel avec Animation -->
+<div class="dashboard-page">
   <header class="page-header" data-aos="fade-down" data-aos-duration="800">
     <div class="header-container">
       <div class="header-left">
-        <button class="btn-back" (click)="retourAccueil()">
-          <i class="fas fa-arrow-left"></i>
-          <span>Retour à l'accueil</span>
-        </button>
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="user-details">
+            <h3 class="user-name">Mes annonces</h3>
+            <span class="user-role">Gestion</span>
+          </div>
+        </div>
       </div>
       <div class="header-center">
-        <div class="header-badge" data-aos="zoom-in" data-aos-delay="200">
+        <div class="header-badge" data-aos="zoom-in">
           <i class="fas fa-trophy"></i>
           <span>CAN 2025 - Maroc</span>
         </div>
-        <h1 class="page-title" data-aos="fade-up" data-aos-delay="400">Mes Annonces</h1>
-        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="600">Gérez vos logements pour la Coupe d'Afrique des Nations</p>
+        <h1 class="page-title" data-aos="fade-up">Espace Annonces</h1>
+        <p class="page-subtitle" data-aos="fade-up">Gérez vos annonces et optimisez vos réservations</p>
       </div>
       <div class="header-right">
-        <button class="btn-add-annonce" (click)="ajouterAnnonce()" data-aos="fade-left" data-aos-delay="800">
+        <button class="btn-deconnexion" (click)="ajouterAnnonce()" data-aos="fade-left">
           <i class="fas fa-plus"></i>
           <span>Nouvelle annonce</span>
         </button>
@@ -25,9 +29,7 @@
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="main-container">
-    <!-- Loading avec Animation -->
     <div *ngIf="isLoading" class="loading-container" data-aos="fade-in">
       <div class="loading-spinner">
         <div class="spinner-ring"></div>
@@ -37,7 +39,6 @@
       <p>Chargement de vos annonces...</p>
     </div>
 
-    <!-- Error avec Animation -->
     <div *ngIf="errorMessage" class="error-container" data-aos="shake">
       <div class="error-message">
         <i class="fas fa-exclamation-triangle"></i>
@@ -49,224 +50,191 @@
       </button>
     </div>
 
-    <!-- Statistiques -->
-    <section class="stats-section" *ngIf="!isLoading && !errorMessage" data-aos="fade-up" data-aos-duration="800">
-      <div class="stats-grid">
-        <div class="stat-card" data-aos="zoom-in" data-aos-delay="200">
-          <div class="stat-icon">
+    <div *ngIf="!isLoading && !errorMessage" class="dashboard-content">
+      <section class="stats-section" data-aos="fade-up" data-aos-duration="800">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-chart-line"></i>
+            Statistiques de vos annonces
+          </h2>
+          <p class="section-subtitle">Vue d'ensemble de votre activité</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" data-aos="zoom-in">
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{ annonces.length }}</div>
+              <div class="stat-label">Total annonces</div>
+            </div>
+          </div>
+          <div class="stat-card" data-aos="zoom-in">
+            <div class="stat-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{ getActiveAnnoncesCount() }}</div>
+              <div class="stat-label">Annonces actives</div>
+            </div>
+          </div>
+          <div class="stat-card" data-aos="zoom-in">
+            <div class="stat-icon">
+              <i class="fas fa-pause-circle"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{ getInactiveAnnoncesCount() }}</div>
+              <div class="stat-label">Annonces inactives</div>
+            </div>
+          </div>
+          <div class="stat-card" data-aos="zoom-in">
+            <div class="stat-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number">{{ getAverageRating() }}</div>
+              <div class="stat-label">Note moyenne</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="search-section" data-aos="fade-up" data-aos-duration="800">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-search"></i>
+            Mes annonces
+          </h2>
+          <p class="section-subtitle">Gérez et suivez vos annonces</p>
+        </div>
+
+        <div class="search-container">
+          <div class="search-input-group">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+              type="text" 
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="filterAnnonces()"
+              placeholder="Rechercher dans vos annonces..."
+              class="search-input"
+            >
+          </div>
+        </div>
+
+        <div class="advanced-filters" data-aos="slide-down">
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">Statut</label>
+              <select [(ngModel)]="activeFilter" (change)="filterAnnonces()" class="filter-select">
+                <option value="all">Tous</option>
+                <option value="active">Actives</option>
+                <option value="inactive">Inactives</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Trier par</label>
+              <select [(ngModel)]="sortKey" (change)="filterAnnonces()" class="filter-select">
+                <option value="recent">Plus récentes</option>
+                <option value="prixAsc">Prix croissant</option>
+                <option value="prixDesc">Prix décroissant</option>
+                <option value="noteDesc">Meilleures notes</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-clear-filters" (click)="clearFilters()">
+            <i class="fas fa-times"></i>
+            Effacer les filtres
+          </button>
+        </div>
+      </section>
+
+      <section class="annonces-section" data-aos="fade-up" data-aos-duration="800">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-list"></i>
+            Mes annonces
+          </h2>
+          <p class="section-subtitle">{{ filteredAnnonces.length }} annonce(s) trouvée(s)</p>
+        </div>
+
+        <div class="annonces-grid" *ngIf="filteredAnnonces.length > 0">
+          <div 
+            *ngFor="let annonce of filteredAnnonces; trackBy: trackByAnnonce" 
+            class="annonce-card"
+            data-aos="zoom-in"
+          >
+            <div class="card-image">
+              <img 
+                *ngIf="annonce.images && annonce.images.length > 0"
+                [src]="getImagePath(annonce.images[0])" 
+                [alt]="annonce.titre"
+                class="post-image"
+                loading="lazy"
+              >
+              <div *ngIf="!annonce.images || annonce.images.length === 0" class="image-placeholder">
+                <i class="fas fa-home"></i>
+                <span>Aucune image</span>
+              </div>
+              <div class="image-badges">
+                <div class="badge badge-type">{{ getTypeMaisonLabel(annonce.typeMaison) }}</div>
+                <div class="badge badge-price">{{ formaterPrix(annonce.prixParNuit) }}/nuit</div>
+                <div class="badge status-badge" [class]="getStatusClass(annonce.estActive)">
+                  <i [class]="getStatusIcon(annonce.estActive)"></i>
+                  {{ getStatusText(annonce.estActive) }}
+                </div>
+              </div>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title" (click)="voirDetails(annonce.id)">{{ annonce.titre || 'Annonce' }}</h3>
+              <div class="card-info">
+                <div class="info-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>{{ annonce.adresse?.ville || 'Ville' }}<ng-container *ngIf="annonce.adresse?.pays">, {{ annonce.adresse?.pays }}</ng-container></span>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-calendar"></i>
+                  <span>Créée le {{ formaterDate(annonce.dateCreation) }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="action-btn btn-view" (click)="voirDetails(annonce.id)">
+                <i class="fas fa-eye"></i>
+                Voir
+              </button>
+              <button class="action-btn btn-edit" (click)="modifierAnnonce(annonce.id)">
+                <i class="fas fa-edit"></i>
+                Modifier
+              </button>
+              <button class="action-btn btn-delete" (click)="supprimerAnnonce(annonce.id)">
+                <i class="fas fa-trash"></i>
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredAnnonces.length === 0 && !isLoading" class="empty-state" data-aos="zoom-in">
+          <div class="empty-icon">
             <i class="fas fa-home"></i>
           </div>
-          <div class="stat-content">
-            <h3 class="stat-number">{{ annonces.length }}</h3>
-            <p class="stat-label">Total annonces</p>
-          </div>
-        </div>
-        <div class="stat-card" data-aos="zoom-in" data-aos-delay="400">
-          <div class="stat-icon active">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="stat-content">
-            <h3 class="stat-number">{{ getActiveAnnoncesCount() }}</h3>
-            <p class="stat-label">Annonces actives</p>
-          </div>
-        </div>
-        <div class="stat-card" data-aos="zoom-in" data-aos-delay="600">
-          <div class="stat-icon inactive">
-            <i class="fas fa-pause-circle"></i>
-          </div>
-          <div class="stat-content">
-            <h3 class="stat-number">{{ getInactiveAnnoncesCount() }}</h3>
-            <p class="stat-label">Annonces inactives</p>
-          </div>
-        </div>
-        <div class="stat-card" data-aos="zoom-in" data-aos-delay="800">
-          <div class="stat-icon total">
-            <i class="fas fa-star"></i>
-          </div>
-          <div class="stat-content">
-            <h3 class="stat-number">{{ getAverageRating() }}</h3>
-            <p class="stat-label">Note moyenne</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Filtres et Actions -->
-    <section class="filters-section" *ngIf="!isLoading && !errorMessage && annonces.length > 0" data-aos="fade-up" data-aos-duration="800">
-      <div class="filters-container">
-        <div class="search-box" data-aos="fade-right" data-aos-delay="200">
-          <i class="fas fa-search"></i>
-          <input 
-            type="text" 
-            placeholder="Rechercher une annonce..."
-            [(ngModel)]="searchTerm"
-            (input)="filterAnnonces()"
-          >
-        </div>
-        <div class="filter-buttons" data-aos="fade-left" data-aos-delay="400">
-          <button 
-            class="filter-btn" 
-            [class.active]="activeFilter === 'all'"
-            (click)="setFilter('all')"
-          >
-            <i class="fas fa-list"></i>
-            Toutes
+          <h3>Aucune annonce trouvée</h3>
+          <p *ngIf="annonces.length === 0">
+            Vous n'avez pas encore créé d'annonce. Commencez par en créer une !
+          </p>
+          <p *ngIf="annonces.length > 0">
+            Aucune annonce ne correspond à vos critères de recherche.
+          </p>
+          <button *ngIf="annonces.length === 0" class="btn-primary" (click)="ajouterAnnonce()">
+            <i class="fas fa-plus"></i>
+            Créer ma première annonce
           </button>
-          <button 
-            class="filter-btn" 
-            [class.active]="activeFilter === 'active'"
-            (click)="setFilter('active')"
-          >
-            <i class="fas fa-check-circle"></i>
-            Actives
-          </button>
-          <button 
-            class="filter-btn" 
-            [class.active]="activeFilter === 'inactive'"
-            (click)="setFilter('inactive')"
-          >
-            <i class="fas fa-pause-circle"></i>
-            Inactives
+          <button *ngIf="annonces.length > 0" class="btn-clear-filters" (click)="clearFilters()">
+            <i class="fas fa-times"></i>
+            Effacer les filtres
           </button>
         </div>
-      </div>
-    </section>
-
-    <!-- Liste des Annonces -->
-    <section class="annonces-section" *ngIf="!isLoading && !errorMessage">
-      <!-- Annonces trouvées -->
-      <div *ngIf="filteredAnnonces.length > 0" class="annonces-grid">
-        <div 
-          *ngFor="let annonce of filteredAnnonces; let i = index" 
-          class="annonce-card"
-          [attr.data-aos]="i % 2 === 0 ? 'fade-right' : 'fade-left'"
-          data-aos-duration="800"
-          [attr.data-aos-delay]="i * 100"
-        >
-          <!-- Image de l'annonce -->
-          <div class="card-image">
-            <div class="image-placeholder" *ngIf="!annonce.images || annonce.images.length === 0">
-              <div class="image-content">
-                <i class="fas fa-home"></i>
-                <span class="image-text">Photo du logement</span>
-              </div>
-            </div>
-            <img 
-              *ngIf="annonce.images && annonce.images.length > 0"
-              [src]="getImagePath(annonce.images[0])" 
-              [alt]="'Photo du logement'"
-              class="card-image-content"
-              (error)="onImageError($event)"
-              (load)="onImageLoad($event)"
-              loading="lazy"
-            >
-            
-            <!-- Overlay avec badges -->
-            <div class="image-overlay" *ngIf="annonce.images && annonce.images.length > 0">
-              <span class="image-badge badge-type">{{ getTypeMaisonLabel(annonce.typeMaison) }}</span>
-              <span class="image-badge badge-price">{{ formaterPrix(annonce.prixParNuit) }}/nuit</span>
-            </div>
-            
-            <!-- Badge de statut -->
-            <div class="status-badge" [class]="getStatusClass(annonce.estActive)">
-              <i class="fas" [class]="getStatusIcon(annonce.estActive)"></i>
-              <span>{{ getStatusText(annonce.estActive) }}</span>
-            </div>
-
-            <!-- Badge de proximité stade -->
-            <div class="stade-badge" *ngIf="annonce.stadePlusProche">
-              <i class="fas fa-futbol"></i>
-              <span>{{ annonce.distanceStade }}km</span>
-            </div>
-
-            <!-- Badge de nombre d'images -->
-            <div class="images-count-badge" *ngIf="annonce.images && annonce.images.length > 0">
-              <i class="fas fa-images"></i>
-              <span>{{ annonce.images.length }}</span>
-            </div>
-          </div>
-
-          <!-- Contenu de la carte -->
-          <div class="card-content">
-            <div class="annonce-header">
-              <h3 class="annonce-title">{{ annonce.titre || 'Annonce sans titre' }}</h3>
-              <div class="annonce-prix">{{ formaterPrix(annonce.prixParNuit) }}</div>
-            </div>
-
-            <div class="annonce-info">
-              <div class="info-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>{{ annonce.adresse?.numero }} {{ annonce.adresse?.rue }}, {{ annonce.adresse?.ville }}</span>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-home"></i>
-                <span>{{ getTypeMaisonLabel(annonce.typeMaison) }}</span>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-users"></i>
-                <span>{{ annonce.capacite || 0 }} personne{{ (annonce.capacite || 0) > 1 ? 's' : '' }}</span>
-              </div>
-              <div class="info-item" *ngIf="annonce.stadePlusProche">
-                <i class="fas fa-futbol"></i>
-                <span>{{ annonce.stadePlusProche }} ({{ annonce.distanceStade }}km)</span>
-              </div>
-            </div>
-
-            <div class="annonce-description">
-              <p>{{ annonce.description || 'Aucune description disponible' }}</p>
-            </div>
-
-            <div class="annonce-stats" *ngIf="annonce.nombreAvis > 0">
-              <div class="rating">
-                <i class="fas fa-star"></i>
-                <span>{{ annonce.noteMoyenne }}/5</span>
-                <span class="reviews-count">({{ annonce.nombreAvis }} avis)</span>
-              </div>
-            </div>
-
-            <div class="card-footer">
-              <div class="date-creation">
-                <i class="fas fa-calendar-plus"></i>
-                <span>Créée le {{ formaterDate(annonce.dateCreation) }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Actions de la carte -->
-          <div class="card-actions">
-            <button class="action-btn btn-view" (click)="voirDetails(annonce.id)">
-              <i class="fas fa-eye"></i>
-              <span>Voir détails</span>
-            </button>
-            <button class="action-btn btn-edit" (click)="modifierAnnonce(annonce.id)">
-              <i class="fas fa-edit"></i>
-              <span>Modifier</span>
-            </button>
-            <button class="action-btn btn-delete" (click)="supprimerAnnonce(annonce.id)">
-              <i class="fas fa-trash"></i>
-              <span>Supprimer</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Aucune annonce trouvée -->
-      <div *ngIf="filteredAnnonces.length === 0 && !isLoading && !errorMessage" class="no-annonces" data-aos="zoom-in">
-        <div class="no-annonces-icon">
-          <i class="fas fa-home"></i>
-        </div>
-        <h3>Aucune annonce trouvée</h3>
-        <p *ngIf="searchTerm || activeFilter !== 'all'">
-          Aucune annonce ne correspond à vos critères de recherche.
-        </p>
-        <p *ngIf="!searchTerm && activeFilter === 'all'">
-          Vous n'avez pas encore créé d'annonces. Commencez par en créer une !
-        </p>
-        <button class="btn-add-annonce-large" (click)="ajouterAnnonce()">
-          <i class="fas fa-plus"></i>
-          Créer ma première annonce
-        </button>
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
-</div> 
+</div>

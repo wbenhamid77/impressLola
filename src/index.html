@@ -1,13 +1,456 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr" class="scroll-smooth">
 <head>
+  <!-- Meta Tags Essentiels -->
   <meta charset="utf-8">
-  <title>ImpressLola</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no">
+  
+  <!-- Titre et Description -->
+  <title>ImpressLola - CAN 2025 Maroc | Plateforme Premium de Réservation</title>
+  <meta name="description" content="Plateforme ultra-moderne de réservation pour la Coupe d'Afrique des Nations 2025 au Maroc. Design professionnel marocain avec expérience utilisateur premium.">
+  <meta name="keywords" content="CAN 2025, Maroc, réservation, football, hébergement, plateforme premium, design marocain">
+  <meta name="author" content="ImpressLola Team">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://impresslola.com/">
+  <meta property="og:title" content="ImpressLola - CAN 2025 Maroc | Plateforme Premium">
+  <meta property="og:description" content="Plateforme ultra-moderne de réservation pour la CAN 2025 au Maroc avec design professionnel marocain.">
+  <meta property="og:image" content="/assets/images/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="ImpressLola">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://impresslola.com/">
+  <meta property="twitter:title" content="ImpressLola - CAN 2025 Maroc | Plateforme Premium">
+  <meta property="twitter:description" content="Plateforme ultra-moderne de réservation pour la CAN 2025 au Maroc avec design professionnel marocain.">
+  <meta property="twitter:image" content="/assets/images/twitter-image.jpg">
+  <meta name="twitter:creator" content="@impresslola">
+  <meta name="twitter:site" content="@impresslola">
+  
+  <!-- Favicons Ultra-Premium -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/site.webmanifest">
+  <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#C1272D">
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#C1272D">
+  <meta name="msapplication-config" content="/assets/icons/browserconfig.xml">
+  <meta name="theme-color" content="#C1272D">
+  
+  <!-- Base URL -->
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- Preconnect vers CDN pour optimiser les performances -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  
+  <!-- Polices Premium Ultra-Modernes -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  
+  <!-- Fallback pour les polices -->
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  </noscript>
+  
+  <!-- Material Icons et FontAwesome -->
+  <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  
+  <!-- Fallback pour les icônes -->
+  <noscript>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  </noscript>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- SEO et Performance -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="bingbot" content="index, follow">
+  <link rel="canonical" href="https://impresslola.com/">
+  
+  <!-- Security Headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https: http://localhost:8083;">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <!-- X-Frame-Options doit être défini côté serveur; retiré ici pour éviter les warnings en dev -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  
+  <!-- Performance Hints -->
+  <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">
+  
+  <!-- Structured Data pour SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ImpressLola",
+    "description": "Plateforme ultra-moderne de réservation pour la CAN 2025 au Maroc",
+    "url": "https://impresslola.com",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "category": "Booking Platform"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "ImpressLola Team"
+    },
+    "inLanguage": "fr-FR",
+    "isAccessibleForFree": true,
+    "applicationSubCategory": "Sports Event Booking"
+  }
+  </script>
+  
+  <!-- Styles Critiques Inline pour optimiser le LCP -->
+  <style>
+    /* Critical CSS pour éviter le FOUC */
+    html {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      color: #111827;
+      overflow-x: hidden;
+    }
+    
+    /* Loading Screen Ultra-Premium */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+    
+    .loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .loading-logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(20px);
+      animation: pulse-loading 2s ease-in-out infinite;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #ffffff;
+      border-radius: 50%;
+      animation: spin-loading 1s linear infinite;
+    }
+    
+    .loading-text {
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      opacity: 0.9;
+    }
+    
+    @keyframes pulse-loading {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes spin-loading {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* App Root Initial State */
+    app-root {
+      display: block;
+      min-height: 100vh;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    app-root.loaded {
+      opacity: 1;
+    }
+    
+    /* Error Fallback */
+    .error-fallback {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f8fafc;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9998;
+    }
+    
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      background: #ef4444;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      color: white;
+      font-size: 2rem;
+    }
+    
+    .error-message {
+      color: #374151;
+      font-size: 1.125rem;
+      font-weight: 600;
+      text-align: center;
+      max-width: 400px;
+      margin-bottom: 1rem;
+    }
+    
+    .error-description {
+      color: #6b7280;
+      font-size: 0.875rem;
+      text-align: center;
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+    
+    .retry-button {
+      background: linear-gradient(135deg, #C1272D 0%, #006233 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .retry-button:hover {
+      transform: translateY(-2px);
+    }
+    
+    /* Performance optimizations */
+    * {
+      box-sizing: border-box;
+    }
+    
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
 </head>
-<body>
-  <app-root></app-root>
+
+<body class="antialiased theme-maroc-light">
+  <!-- Loading Screen Ultra-Premium -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-logo">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="loading-text">ImpressLola CAN 2025</div>
+  </div>
+  
+  <!-- Error Fallback -->
+  <div id="error-fallback" class="error-fallback">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <div class="error-message">
+      Une erreur est survenue lors du chargement de l'application
+    </div>
+    <div class="error-description">
+      Veuillez vérifier votre connexion Internet et réessayer. Si le problème persiste, contactez notre support technique.
+    </div>
+    <button class="retry-button" onclick="window.location.reload()">
+      <i class="fas fa-redo-alt"></i> Réessayer
+    </button>
+  </div>
+  
+  <!-- Application Principal -->
+  <app-root id="app-root"></app-root>
+  
+  <!-- Scripts pour optimiser le chargement -->
+  <script>
+    // Gestion du loading screen et des performances
+    document.addEventListener('DOMContentLoaded', function() {
+      const loadingScreen = document.getElementById('loading-screen');
+      const appRoot = document.getElementById('app-root');
+      const errorFallback = document.getElementById('error-fallback');
+      
+      // Timer de sécurité pour le loading
+      const loadingTimeout = setTimeout(() => {
+        hideLoadingScreen();
+      }, 10000);
+      
+      // Fonction pour masquer le loading screen
+      function hideLoadingScreen() {
+        clearTimeout(loadingTimeout);
+        loadingScreen.classList.add('hidden');
+        appRoot.classList.add('loaded');
+        
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 500);
+      }
+      
+      // Attendre que Angular soit chargé
+      function checkAngularLoaded() {
+        if (window.ng && document.querySelector('app-root').children.length > 0) {
+          hideLoadingScreen();
+        } else {
+          setTimeout(checkAngularLoaded, 100);
+        }
+      }
+      
+      // Démarrer la vérification
+      setTimeout(checkAngularLoaded, 1000);
+      
+      // Gestion des erreurs globales
+      window.addEventListener('error', function(e) {
+        console.error('Erreur de chargement:', e);
+        if (performance.now() < 30000) { // Seulement dans les 30 premières secondes
+          loadingScreen.style.display = 'none';
+          errorFallback.style.display = 'flex';
+        }
+      });
+      
+      // Performance monitoring
+      if ('performance' in window) {
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            if (perfData) {
+              console.log('🚀 Performance ImpressLola:', {
+                'Temps de chargement': Math.round(perfData.loadEventEnd - perfData.fetchStart) + 'ms',
+                'DOM Ready': Math.round(perfData.domContentLoadedEventEnd - perfData.fetchStart) + 'ms',
+                'First Paint': Math.round(performance.getEntriesByType('paint')[0]?.startTime || 0) + 'ms'
+              });
+            }
+          }, 0);
+        });
+      }
+    });
+    
+    // Optimisation des polices
+    if ('fonts' in document) {
+      Promise.all([
+        document.fonts.load('400 16px Inter'),
+        document.fonts.load('600 16px Inter'),
+        document.fonts.load('700 16px Inter')
+      ]).then(function() {
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+    
+    // Service Worker pour PWA (si disponible)
+    if ('serviceWorker' in navigator && 'production' === 'production') {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('✅ Service Worker enregistré:', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('❌ Échec Service Worker:', error);
+          });
+      });
+    }
+    
+    // Optimisation des images lazy loading
+    if ('IntersectionObserver' in window) {
+      document.addEventListener('DOMContentLoaded', function() {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                observer.unobserve(img);
+              }
+            }
+          });
+        });
+        
+        // Observer toutes les images avec data-src
+        setTimeout(() => {
+          document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+          });
+        }, 1000);
+      });
+    }
+  </script>
+  
+  <!-- Google Analytics 4 (si nécessaire) -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID', {
+      page_title: 'ImpressLola CAN 2025',
+      page_location: window.location.href
+    });
+  </script>
+  -->
+  
+  <!-- Hotjar ou autres outils d'analytics (si nécessaire) -->
+  <!--
+  <script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:YOUR_HOTJAR_ID,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+  </script>
+  -->
 </body>
 </html>

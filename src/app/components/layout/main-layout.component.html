@@ -1,4 +1,4 @@
-<div class="layout-container">
+<div class="flex min-h-screen">
   <!-- Sidebar fixe -->
   <app-sidebar 
     [currentPage]="currentPage" 
@@ -6,7 +6,7 @@
   </app-sidebar>
 
   <!-- Contenu principal -->
-  <main class="main-content">
+  <main class="flex-1 min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 to-slate-200">
     <router-outlet></router-outlet>
   </main>
-</div> 
+</div>

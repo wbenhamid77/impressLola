@@ -1,37 +1,31 @@
 <div class="moroccan-top-banner"></div>
-<div class="dashboard-page">
-  <!-- Header avec thème Maroc-CAF 2025 -->
-  <header class="page-header" data-aos="fade-down" data-aos-duration="800">
-    <div class="header-container">
-      <div class="header-left">
-        <div class="user-info">
-          <div class="user-avatar">
+<div class="dashboard-page can2025-theme">
+  <div class="min-h-0">
+    <header class="bg-gradient-to-r from-maroc-vert to-emerald-700 text-white shadow">
+      <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="grid h-9 w-9 place-items-center rounded-lg bg-white/15"><i class="fas fa-trophy"></i></div>
+          <div>
+            <h1 class="m-0 text-xl font-extrabold">Tableau de bord Locateur</h1>
+            <span class="text-sm opacity-90">CAN 2025 · Maroc</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1">
             <i class="fas fa-user-tie"></i>
+            <div class="leading-tight">
+              <span class="block font-semibold">{{ username }}</span>
+              <span class="block text-xs opacity-80">Locateur</span>
+            </div>
           </div>
-          <div class="user-details">
-            <h3 class="user-name">{{ username }}</h3>
-            <span class="user-role">Locateur</span>
-          </div>
+          <button class="rounded-lg border border-white/30 bg-white/10 px-3 py-1 font-semibold hover:bg-white/20" (click)="deconnexion()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="ml-1">Déconnexion</span>
+          </button>
         </div>
       </div>
-      
-      <div class="header-center">
-        <div class="header-badge" data-aos="zoom-in" data-aos-delay="200">
-          <i class="fas fa-trophy"></i>
-          <span>CAN 2025 - Maroc</span>
-        </div>
-        <h1 class="page-title" data-aos="fade-up" data-aos-delay="400">Tableau de bord Locateur</h1>
-        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="600">Gérez vos annonces et maximisez vos revenus</p>
-      </div>
-      
-      <div class="header-right">
-        <button class="btn-deconnexion" (click)="deconnexion()" data-aos="fade-left" data-aos-delay="600">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Déconnexion</span>
-        </button>
-      </div>
-    </div>
-  </header>
+    </header>
+  </div>
 
   <!-- Main Content -->
   <main class="main-container">
@@ -59,7 +53,6 @@
 
     <!-- Dashboard Content -->
     <div *ngIf="!isLoading && !errorMessage" class="dashboard-content">
-      
       <!-- Section Statistiques -->
       <section class="stats-section" data-aos="fade-up" data-aos-duration="800">
         <div class="section-header">
@@ -71,7 +64,7 @@
         </div>
         
         <div class="stats-grid">
-          <div class="stat-card" data-aos="zoom-in" data-aos-delay="200">
+          <div class="stat-card" data-aos="zoom-in">
             <div class="stat-icon">
               <i class="fas fa-home"></i>
             </div>
@@ -81,7 +74,7 @@
             </div>
           </div>
           
-          <div class="stat-card" data-aos="zoom-in" data-aos-delay="300">
+          <div class="stat-card" data-aos="zoom-in">
             <div class="stat-icon">
               <i class="fas fa-check-circle"></i>
             </div>
@@ -91,7 +84,7 @@
             </div>
           </div>
           
-          <div class="stat-card" data-aos="zoom-in" data-aos-delay="400">
+          <div class="stat-card" data-aos="zoom-in">
             <div class="stat-icon">
               <i class="fas fa-pause-circle"></i>
             </div>
@@ -101,7 +94,7 @@
             </div>
           </div>
           
-          <div class="stat-card" data-aos="zoom-in" data-aos-delay="500">
+          <div class="stat-card" data-aos="zoom-in">
             <div class="stat-icon">
               <i class="fas fa-euro-sign"></i>
             </div>
@@ -111,7 +104,7 @@
             </div>
           </div>
           
-          <div class="stat-card" data-aos="zoom-in" data-aos-delay="600">
+          <div class="stat-card" data-aos="zoom-in">
             <div class="stat-icon">
               <i class="fas fa-star"></i>
             </div>
@@ -124,7 +117,7 @@
       </section>
 
       <!-- Section Actions Rapides -->
-      <section class="quick-actions" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+      <section class="quick-actions" data-aos="fade-up" data-aos-duration="800">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-bolt"></i>
@@ -134,7 +127,7 @@
         </div>
         
         <div class="actions-grid">
-          <div class="action-card" (click)="ajouterAnnonce()" data-aos="slide-up" data-aos-delay="300">
+          <div class="action-card" (click)="ajouterAnnonce()" data-aos="slide-up">
             <div class="action-icon">
               <i class="fas fa-plus"></i>
             </div>
@@ -144,7 +137,7 @@
             </div>
           </div>
           
-          <div class="action-card" (click)="voirToutesAnnonces()" data-aos="slide-up" data-aos-delay="400">
+          <div class="action-card" (click)="voirToutesAnnonces()" data-aos="slide-up">
             <div class="action-icon">
               <i class="fas fa-search"></i>
             </div>
@@ -154,7 +147,7 @@
             </div>
           </div>
           
-          <div class="action-card" (click)="voirProfil()" data-aos="slide-up" data-aos-delay="500">
+          <div class="action-card" (click)="voirProfil()" data-aos="slide-up">
             <div class="action-icon">
               <i class="fas fa-user-cog"></i>
             </div>
@@ -167,7 +160,7 @@
       </section>
 
       <!-- Section Recherche et Filtres -->
-      <section class="search-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+      <section class="search-section" data-aos="fade-up" data-aos-duration="800">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-search"></i>
@@ -182,7 +175,7 @@
             <input 
               type="text" 
               [(ngModel)]="searchTerm"
-              (input)="filterAnnonces()"
+              (ngModelChange)="filterAnnonces()"
               placeholder="Rechercher dans vos annonces..."
               class="search-input"
             >
@@ -234,7 +227,7 @@
       </section>
 
       <!-- Section Mes Annonces -->
-      <section class="annonces-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="600">
+      <section class="annonces-section" data-aos="fade-up" data-aos-duration="800">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-list"></i>
@@ -248,7 +241,6 @@
             *ngFor="let annonce of filteredAnnonces; trackBy: trackByAnnonceId; let i = index" 
             class="annonce-card"
             data-aos="zoom-in"
-            [attr.data-aos-delay]="i * 100"
           >
             <!-- Image du logement -->
             <div class="card-image">
@@ -256,8 +248,6 @@
                 *ngIf="annonce.images && annonce.images.length > 0"
                 [src]="getImagePath(annonce.images[0])" 
                 [alt]="annonce.titre"
-                (error)="onImageError($event)"
-                (load)="onImageLoad($event)"
                 class="post-image"
                 loading="lazy"
               >
@@ -290,24 +280,9 @@
                 </div>
                 
                 <div class="info-item">
-                  <i class="fas fa-users"></i>
-                  <span>{{ annonce.capacite }} personne(s)</span>
-                </div>
-                
-                <div class="info-item">
                   <i class="fas fa-calendar"></i>
                   <span>Créée le {{ formaterDate(annonce.dateCreation) }}</span>
                 </div>
-              </div>
-              
-              <div class="card-rating" *ngIf="annonce.noteMoyenne">
-                <div class="stars">
-                  <span *ngFor="let etoile of getNoteEtoiles(annonce.noteMoyenne)" 
-                        [class.filled]="etoile === '★'" class="star">
-                    {{ etoile }}
-                  </span>
-                </div>
-                <span class="rating-text">{{ annonce.noteMoyenne }}/5 ({{ annonce.nombreAvis }} avis)</span>
               </div>
             </div>
             

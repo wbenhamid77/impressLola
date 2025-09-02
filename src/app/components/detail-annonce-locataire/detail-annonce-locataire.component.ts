@@ -25,6 +25,9 @@ export class DetailAnnonceLocataireComponent implements OnInit, AfterViewInit, O
   dateArriveeSelectionnee: string = '';
   dateDepartSelectionnee: string = '';
 
+  // Affichage du calendrier dans la section Réserver
+  afficherCalendrierReservation = false;
+
   // Propriétés pour la galerie d'images
   currentImageIndex = 0;
 
@@ -67,6 +70,65 @@ export class DetailAnnonceLocataireComponent implements OnInit, AfterViewInit, O
 
   getStatusText(isActive: boolean | undefined): string {
     return isActive ? 'Disponible' : 'Non disponible';
+  }
+
+  // Bascule l'affichage du calendrier de réservation
+  toggleCalendrierReservation(): void {
+    this.afficherCalendrierReservation = !this.afficherCalendrierReservation;
+  }
+
+  // Ouvre le calendrier et fait défiler vers la section réservation
+  ouvrirCalendrierReservation(): void {
+    this.afficherCalendrierReservation = true;
+    setTimeout(() => {
+      const el = document.getElementById('reservation-calendrier');
+      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  }
+
+  // Utilitaires de formatage
+  private formatDateIso(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  // Actions rapides
+  choisirAujourdhui(): void {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    this.dateArriveeSelectionnee = this.formatDateIso(today);
+    this.dateDepartSelectionnee = this.formatDateIso(tomorrow);
+  }
+
+  choisirCeWeekend(): void {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const day = now.getDay(); // 0=dim .. 6=sam
+    // On cible ven->dim du prochain week-end
+    const daysUntilFriday = (5 - day + 7) % 7; // 5 = vendredi
+    const vendredi = new Date(now);
+    vendredi.setDate(now.getDate() + daysUntilFriday);
+    const dimanche = new Date(vendredi);
+    dimanche.setDate(vendredi.getDate() + 2);
+    this.dateArriveeSelectionnee = this.formatDateIso(vendredi);
+    this.dateDepartSelectionnee = this.formatDateIso(dimanche);
+  }
+
+  choisirSeptNuits(): void {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 7);
+    this.dateArriveeSelectionnee = this.formatDateIso(start);
+    this.dateDepartSelectionnee = this.formatDateIso(end);
+  }
+
+  effacerSelection(): void {
+    this.effacerToutesDates();
   }
 
   getNoteEtoiles(note: number): string[] {

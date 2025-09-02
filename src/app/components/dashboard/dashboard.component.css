@@ -57,6 +57,10 @@
   line-height: 1.6;
 }
 
+/* Supprimer tout espace supérieur par défaut */
+.dashboard-page { padding-top: 0; }
+.dashboard-header { margin-top: 0; }
+
 /* Header avec thème Maroc-CAF */
 .page-header {
   background: var(--gradient-morocco);
@@ -1000,3 +1004,35 @@
 .morocco-border-gold {
   border: 2px solid var(--morocco-gold) !important;
 } 
+
+/* Thème Maroc / CAF 2025 — Overrides Bootstrap-ish */
+.dashboard-page .dashboard-header{
+  background: linear-gradient(135deg, rgba(193,39,45,.85), rgba(0,98,51,.85));
+  color:#fff;
+  box-shadow: 0 16px 40px rgba(0,0,0,.18);
+}
+.dashboard-page .dashboard-title{font-weight:800;letter-spacing:.3px}
+.dashboard-page .dashboard-subtitle{opacity:.9}
+.dashboard-page .user-avatar{background: rgba(255,255,255,.15);border-radius:12px;padding:.6rem}
+
+/* Stat cards */
+.dashboard-page .stat-card{border:1px solid rgba(15,23,42,.08);border-radius:16px;box-shadow:0 12px 30px rgba(2,6,23,.08)}
+.dashboard-page .stat-icon i{color:#c1272d}
+.dashboard-page .stat-number{font-weight:800;color:#0f172a}
+.dashboard-page .stat-label{color:#475569;font-weight:600}
+
+/* Action/notification cards */
+.dashboard-page .action-card.card,.dashboard-page .notification-card.card{border:1px solid rgba(15,23,42,.08);border-radius:16px}
+.dashboard-page .btn.btn-primary{background:linear-gradient(90deg,#006233 0%,#0b7b49 48%,#c1272d 52%,#d34b52 100%);border:none;font-weight:800}
+.dashboard-page .btn.btn-secondary{background:#fff;border:1.5px solid rgba(15,23,42,.12);font-weight:700}
+.dashboard-page .btn.btn-success{background:#006233;border:none}
+
+/* Table */
+.dashboard-page .card .card-header{display:flex;align-items:center;justify-content:space-between}
+.dashboard-page .badge-success{background:#006233}
+.dashboard-page .badge-warning{background:#c1272d}
+.dashboard-page .badge-primary{background:#d4af37;color:#111}
+
+/* Calendrier */
+.dashboard-page .calendar-day{border:1px solid rgba(15,23,42,.06);border-radius:10px}
+.dashboard-page .event-indicator{background:linear-gradient(90deg,#006233,#c1272d);height:6px;border-radius:6px} 

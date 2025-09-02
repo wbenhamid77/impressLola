@@ -11,7 +11,7 @@ import * as AOS from 'aos';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit, AfterViewInit {
   email: string = '';
@@ -19,6 +19,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
   isLoading: boolean = false;
   errorMessage: string = '';
   showPassword: boolean = false;
+  formPosition: 'left' | 'right' | 'center' = 'center';
+  // URL optionnelle d'une image CAN 2025 à afficher dans la page login
+  canImageUrl: string = 'assets/images/afcon/can.png';
+  canImageAlt: string = 'CAF Africa Cup of Nations Morocco 2025';
 
   constructor(
     private authService: AuthService,
@@ -38,6 +42,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
       mirror: false,
       offset: 100,
     });
+  }
+
+  onImageError(): void {
+    // Si l'image distante échoue, on masque en vidant l'URL
+    this.canImageUrl = '';
   }
 
   async onSubmit(): Promise<void> {
@@ -111,5 +120,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   navigateToInscription(): void {
     this.router.navigate(['/register']);
+  }
+
+  navigateExplore(): void {
+    this.router.navigate(['/explore']);
+  }
+
+  navigateSupport(): void {
+    this.router.navigate(['/support']);
   }
 } 

@@ -1,14 +1,63 @@
-<div class="reservation-detail">
-  <h2>Détail de la réservation</h2>
-  <div *ngIf="loading">Chargement...</div>
-  <div class="alert error" *ngIf="error">{{ error }}</div>
-  <div *ngIf="reservation">
-    <div><strong>Référence:</strong> #{{ reservation.id?.substring(0, 8) }}</div>
-    <div><strong>Annonce:</strong> {{ reservation.annonce.titre || 'Annonce sélectionnée' }}</div>
-    <div><strong>Locataire:</strong> {{ reservation.locataire.prenom }} {{ reservation.locataire.nom }}</div>
-    <div><strong>Dates:</strong> {{ reservation.dateArrivee }} → {{ reservation.dateDepart }}</div>
-    <div><strong>Voyageurs:</strong> {{ reservation.nombreVoyageurs }}</div>
-    <div><strong>Statut:</strong> {{ reservation.statut }}</div>
-    <div *ngIf="reservation.montantTotal"><strong>Total:</strong> {{ reservation.montantTotal }}€</div>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 px-4 py-6">
+  <header class="mx-auto max-w-6xl rounded-2xl border border-emerald-700/20 bg-gradient-to-r from-maroc-vert to-emerald-700 p-6 text-white shadow">
+    <h2 class="m-0 text-2xl font-extrabold">Détail de la réservation</h2>
+    <p class="m-0 opacity-90">CAN 2025 · Maroc</p>
+  </header>
+
+  <div *ngIf="loading" class="mx-auto mt-6 grid max-w-6xl place-items-center rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-700 shadow">
+    <div class="mb-3 h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-maroc-rouge"></div>
   </div>
-</div> 
+  <div class="mx-auto mt-4 rounded-xl border border-rose-300/40 bg-rose-900/10 p-4 text-rose-700 shadow" *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="reservation" class="mx-auto mt-6 grid max-w-6xl gap-6 md:grid-cols-3">
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow md:col-span-2">
+      <div class="border-b bg-slate-50 p-5">
+        <h3 class="m-0 text-xl font-bold text-slate-900">{{ reservation.annonce?.titre || 'Annonce sélectionnée' }}</h3>
+        <p class="m-0 text-slate-600">Référence #{{ reservation.id?.substring(0, 8) }}</p>
+      </div>
+      <div class="p-5">
+        <h4 class="m-0 mb-3 inline-flex items-center gap-2 text-lg font-bold text-maroc-vert"><i class="fas fa-info-circle"></i> Informations</h4>
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div class="rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3">
+            <div class="text-sm font-semibold text-slate-600">Locataire</div>
+            <div class="text-slate-900">{{ reservation.locataire?.prenom }} {{ reservation.locataire?.nom }}</div>
+          </div>
+          <div class="rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3">
+            <div class="text-sm font-semibold text-slate-600">Arrivée</div>
+            <div class="text-slate-900">{{ reservation.dateArrivee }}</div>
+          </div>
+          <div class="rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3">
+            <div class="text-sm font-semibold text-slate-600">Départ</div>
+            <div class="text-slate-900">{{ reservation.dateDepart }}</div>
+          </div>
+          <div class="rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3">
+            <div class="text-sm font-semibold text-slate-600">Voyageurs</div>
+            <div class="text-slate-900">{{ reservation.nombreVoyageurs }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+      <div class="border-b bg-gradient-to-r from-maroc-rouge to-rose-600 p-5 text-white">
+        <div class="text-sm">Réf #{{ reservation.id?.substring(0, 8) }}</div>
+        <div class="text-lg font-bold">{{ reservation.statut }}</div>
+      </div>
+      <div class="divide-y p-5">
+        <div class="flex items-center justify-between py-2">
+          <span class="font-semibold text-maroc-vert">Arrivée</span>
+          <span class="text-slate-800">{{ reservation.dateArrivee }}</span>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <span class="font-semibold text-maroc-vert">Départ</span>
+          <span class="text-slate-800">{{ reservation.dateDepart }}</span>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <span class="font-semibold text-maroc-vert">Montant total</span>
+          <span class="text-2xl font-extrabold text-maroc-rouge" *ngIf="reservation.montantTotal != null">{{ reservation.montantTotal }}€</span>
+          <span class="text-slate-500" *ngIf="reservation.montantTotal == null">—</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

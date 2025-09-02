@@ -1,6 +1,26 @@
-/* Import AOS CSS */
-@import 'aos/dist/aos.css';
+ 
+.dashboard-page .page-header{background:linear-gradient(135deg,rgba(193,39,45,.9),rgba(0,98,51,.9));color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.18)}
+.dashboard-page .header-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:.35rem .75rem}
+.dashboard-page .section-title i{color:#c1272d}
+.dashboard-page .stat-card{border:1px solid rgba(15,23,42,.08);border-radius:16px;box-shadow:0 12px 30px rgba(2,6,23,.08)}
+.dashboard-page .action-card{border:1px solid rgba(15,23,42,.08);border-radius:16px}
+.dashboard-page .btn-filters,.dashboard-page .btn-clear-filters{background:#fff;border:1.5px solid rgba(15,23,42,.12);font-weight:700}
+.dashboard-page .annonce-card{border:1px solid rgba(15,23,42,.08);border-radius:18px;box-shadow:0 14px 32px rgba(2,6,23,.08)}
+.dashboard-page .badge-price{background:#d4af37;color:#111}
+.dashboard-page .status-badge{background:linear-gradient(90deg,#006233,#c1272d);color:#fff}
+.dashboard-page .action-btn.btn-edit{background:#006233;color:#fff;border:none}
+.dashboard-page .action-btn.btn-delete{background:#c1272d;color:#fff;border:none}
 
+/* Thème CAN 2025 - Maroc (terrain, or, rouge/vert) */
+.can2025-theme .page-header{background:linear-gradient(135deg,#c1272d 0%,#006233 100%);border-bottom:3px solid #ffd700}
+.can2025-theme .stats-section,.can2025-theme .quick-actions,.can2025-theme .search-section,.can2025-theme .annonces-section{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.can2025-theme .stat-icon,.can2025-theme .action-icon{background:linear-gradient(135deg,#c1272d,#006233);color:#fff}
+.can2025-theme .badge-price{background:#ffd700;color:#111}
+.can2025-theme .stats-section{background-image:repeating-linear-gradient(90deg,rgba(0,98,51,.04),rgba(0,98,51,.04) 1px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,rgba(0,98,51,.04),rgba(0,98,51,.04) 1px,transparent 1px,transparent 80px)}
+.can2025-theme .section-title i{color:#c1272d}
+.can2025-theme .btn-edit{background:linear-gradient(135deg,#0066cc,#0088ff);color:#fff;border:none}
+.can2025-theme .btn-reserve{background:linear-gradient(90deg,#006233 0%,#0b7b49 48%,#c1272d 52%,#d34b52 100%);color:#fff;border:none;font-weight:800}
+ 
 /* Variables CSS avec thème Maroc-CAF 2025 */
 :root {
   /* Couleurs principales Maroc */
@@ -63,8 +83,11 @@
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  padding: 20px 0;
+  padding: 0 0 20px 0;
 }
+
+/* Supprimer la bannière vide en haut */
+.moroccan-top-banner { display: none; }
 
 /* Header avec thème Maroc-CAF */
 .page-header {
@@ -940,4 +963,25 @@
     flex-direction: column;
     text-align: center;
   }
+} 
+
+/* Layout sans espace (sidebar collée) */
+.layout-maroc{display:flex;min-height:100vh}
+.sidebar-maroc{width:250px;flex:0 0 250px;background:linear-gradient(180deg,#0d1b2a,#0f172a);color:#fff;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;z-index:2}
+.sidebar-maroc::before{content:"";position:absolute;inset:0;opacity:.15;background:radial-gradient(circle at 20% 20%,#c1272d 2px,transparent 3px) 0 0/32px 32px,radial-gradient(circle at 80% 60%,#006233 2px,transparent 3px) 0 0/36px 36px}
+.sidebar-header{display:flex;align-items:center;gap:.6rem;padding:1rem 1rem .5rem}
+.sidebar-badge{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#006233,#c1272d);display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.sidebar-title{font-weight:800;letter-spacing:.3px}
+.sidebar-nav{display:flex;flex-direction:column;padding:.5rem}
+.sidebar-nav .nav-item{display:flex;align-items:center;gap:.6rem;color:#e5e7eb;text-decoration:none;padding:.6rem .75rem;border-radius:.6rem;transition:.2s}
+.sidebar-nav .nav-item i{width:18px;text-align:center;color:#d4af37}
+.sidebar-nav .nav-item:hover{background:rgba(255,255,255,.08);transform:translateX(2px)}
+.sidebar-nav .nav-item.danger i{color:#ff6b6b}
+.sidebar-sep{height:1px;background:rgba(255,255,255,.12);margin:.5rem .75rem}
+.sidebar-footer{position:absolute;left:0;right:0;bottom:.75rem;text-align:center;color:#94a3b8;font-weight:600}
+.content-area{flex:1;min-width:0}
+
+@media (max-width:991.98px){
+  .layout-maroc{flex-direction:column}
+  .sidebar-maroc{width:100%;flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,.12)}
 } 

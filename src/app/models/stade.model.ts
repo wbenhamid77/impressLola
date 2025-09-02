@@ -12,6 +12,28 @@ export interface Stade {
   dateConstruction: number;
   surfaceJeu: string;
   equipeResident?: string;
+  // distance éventuellement fournie par l'API des distances
+  distance?: number;
+  // Champs optionnels venant du backend distances
+  adresseComplete?: string;
+  estActif?: boolean;
+  dateCreation?: string;
+  dateModification?: string | null;
+  surfaceMetresCarres?: number;
+  categories?: string[];
+  categoriesPlaces?: any[];
+  prixMin?: number;
+  prixMax?: number;
+  imagesBlob?: any[];
+  surfaceType?: string | null;
+  dimensions?: string | null;
+  siteWeb?: string | null;
+  telephone?: string | null;
+  // Métadonnées de distance/transport (si présentes)
+  tempsTrajetMinutes?: number;
+  tempsTrajetFormate?: string;
+  modeTransport?: string;
+  estLePlusProche?: boolean;
 }
 
 export interface StadeAvecDistance extends Stade {

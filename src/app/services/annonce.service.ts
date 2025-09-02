@@ -40,7 +40,7 @@ export class AnnonceService {
     // Simulation d'un appel API (remplacer par votre vraie API)
     const annonce: AnnonceInfo = {
       id: id,
-      titre: `Appartement moderne ${id}`,
+      titre: `Appartement moderne`,
       adresse: `123 Rue de la Paix, 75001 Paris`,
       prix: Math.floor(Math.random() * 200) + 50,
       type: 'Appartement',

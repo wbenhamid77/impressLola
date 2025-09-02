@@ -29,6 +29,7 @@ export class CalendrierLocataireComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   jourSelectionnePourInfo: Date | null = null;
+  legendModalOpen = false;
 
   constructor(private reservationService: ReservationService) {}
 
@@ -144,14 +145,24 @@ export class CalendrierLocataireComponent implements OnInit {
       }
     }
     
-    // Ajouter les jours vides de la fin
-    while (semaine.length < 7) {
-      semaine.push(new Date(annee, mois + 1, semaine.length - 6));
-    }
-    
+    // Ajouter les jours vides de la fin uniquement si la semaine est partielle
     if (semaine.length > 0) {
+      let jourMoisSuivant = 1;
+      while (semaine.length < 7) {
+        semaine.push(new Date(annee, mois + 1, jourMoisSuivant++));
+      }
       this.calendrier.push(semaine);
     }
+  }
+
+  /**
+   * Indique si la date appartient au mois affiché
+   */
+  isDansMois(date: Date): boolean {
+    return (
+      date.getFullYear() === this.moisActuel.getFullYear() &&
+      date.getMonth() === this.moisActuel.getMonth()
+    );
   }
 
   /**
@@ -237,6 +248,10 @@ export class CalendrierLocataireComponent implements OnInit {
     this.jourSelectionnePourInfo = null;
   }
 
+  /** Ouvre/ferme la popup de légende */
+  openLegendModal(): void { this.legendModalOpen = true; }
+  closeLegendModal(): void { this.legendModalOpen = false; }
+
   /**
    * Vérifie si un jour est dans la période sélectionnée
    */
@@ -263,7 +278,7 @@ export class CalendrierLocataireComponent implements OnInit {
    * Vérifie si un jour est disponible
    */
   estJourDisponible(date: Date): boolean {
-    return !this.estJourReserve(date) && !this.estJourPasse(date);
+    return this.isDansMois(date) && !this.estJourReserve(date) && !this.estJourPasse(date);
   }
 
   /**
@@ -317,7 +332,14 @@ export class CalendrierLocataireComponent implements OnInit {
    */
   getClassesJour(date: Date): string {
     let classes = 'jour';
+    const aujourdhui = new Date();
+    aujourdhui.setHours(0, 0, 0, 0);
     
+    if (!this.isDansMois(date)) {
+      classes += ' hors-mois';
+      return classes;
+    }
+
     if (this.estJourPasse(date)) {
       classes += ' jour-passe';
     } else if (this.estJourReserve(date)) {
@@ -332,6 +354,10 @@ export class CalendrierLocataireComponent implements OnInit {
     } else {
       classes += ' jour-disponible';
     }
+
+    if (this.isDansMois(date) && date.getTime() === aujourdhui.getTime()) {
+      classes += ' aujourd-hui';
+    }
     
     return classes;
   }
@@ -340,6 +366,9 @@ export class CalendrierLocataireComponent implements OnInit {
    * Retourne le tooltip pour un jour
    */
   getTooltipJour(date: Date): string {
+    if (!this.isDansMois(date)) {
+      return '';
+    }
     if (this.estJourPasse(date)) {
       return 'Jour passé';
     }

@@ -11,7 +11,7 @@ import * as AOS from 'aos';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './mes-favoris.component.html',
-  styleUrl: './mes-favoris.component.css'
+  styleUrls: ['./mes-favoris.component.css']
 })
 export class MesFavorisComponent implements OnInit, AfterViewInit {
   annoncesFavoris: any[] = [];

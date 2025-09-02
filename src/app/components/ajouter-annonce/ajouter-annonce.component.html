@@ -25,9 +25,58 @@
       </div>
     </div>
   </header>
+  <!-- Bande décorative thème Maroc -->
+  <div class="header-pattern"></div>
 
   <!-- Container principal -->
   <div class="main-container">
+    <!-- Barre d'étapes professionnelle -->
+    <nav class="steps-nav" aria-label="Progression de création">
+      <ol class="steps-list">
+        <li class="step-item" [class.active]="currentStep === 1" [attr.aria-current]="currentStep === 1 ? 'step' : null">
+          <a class="step-link" href="#infos" (click)="$event.preventDefault(); goToStep(1)">
+            <span class="step-index">1</span>
+            <span class="step-label">Infos générales</span>
+          </a>
+        </li>
+        <li class="step-item" [class.active]="currentStep === 2" [attr.aria-current]="currentStep === 2 ? 'step' : null">
+          <a class="step-link" href="#images" (click)="$event.preventDefault(); goToStep(2)">
+            <span class="step-index">2</span>
+            <span class="step-label">Images</span>
+          </a>
+        </li>
+        <li class="step-item" [class.active]="currentStep === 3" [attr.aria-current]="currentStep === 3 ? 'step' : null">
+          <a class="step-link" href="#caracteristiques" (click)="$event.preventDefault(); goToStep(3)">
+            <span class="step-index">3</span>
+            <span class="step-label">Caractéristiques</span>
+          </a>
+        </li>
+        <li class="step-item" [class.active]="currentStep === 4" [attr.aria-current]="currentStep === 4 ? 'step' : null">
+          <a class="step-link" href="#localisation" (click)="$event.preventDefault(); goToStep(4)">
+            <span class="step-index">4</span>
+            <span class="step-label">Localisation</span>
+          </a>
+        </li>
+        <li class="step-item" [class.active]="currentStep === 5" [attr.aria-current]="currentStep === 5 ? 'step' : null">
+          <a class="step-link" href="#equipements" (click)="$event.preventDefault(); goToStep(5)">
+            <span class="step-index">5</span>
+            <span class="step-label">Équipements</span>
+          </a>
+        </li>
+        <li class="step-item" [class.active]="currentStep === 6" [attr.aria-current]="currentStep === 6 ? 'step' : null">
+          <a class="step-link" href="#regles" (click)="$event.preventDefault(); goToStep(6)">
+            <span class="step-index">6</span>
+            <span class="step-label">Règles</span>
+          </a>
+        </li>
+        <li class="step-item" [class.active]="currentStep === 7" [attr.aria-current]="currentStep === 7 ? 'step' : null">
+          <a class="step-link" href="#resume" (click)="$event.preventDefault(); goToStep(7)">
+            <span class="step-index">7</span>
+            <span class="step-label">Résumé</span>
+          </a>
+        </li>
+      </ol>
+    </nav>
     <!-- Messages d'erreur/succès -->
     <div *ngIf="error" class="alert alert-danger">
       <i class="fas fa-exclamation-triangle"></i>
@@ -49,11 +98,45 @@
       <p>Chargement du formulaire...</p>
     </div>
 
-    <!-- Formulaire principal -->
-    <form *ngIf="formInitialized && annonceForm" [formGroup]="annonceForm" (ngSubmit)="onSubmit()" class="form-container">
+    <!-- Formulaire principal avec panneau de prévisualisation -->
+    <form *ngIf="formInitialized && annonceForm" [formGroup]="annonceForm" (ngSubmit)="onSubmit()" class="form-container form-with-aside">
+      <aside class="preview-panel" *ngIf="currentStep === 7">
+        <div class="preview-header">
+          <div class="preview-badge">Aperçu</div>
+          <h3 class="preview-title">{{ annonceForm.get('titre')?.value || 'Titre de votre annonce' }}</h3>
+          <p class="preview-location">{{ annonceForm.get('ville')?.value || 'Ville' }}, {{ annonceForm.get('pays')?.value || 'Maroc' }}</p>
+        </div>
+        <div class="preview-chips">
+          <span class="chip" *ngIf="annonceForm.get('typeMaison')?.value as type">{{ type }}</span>
+          <span class="chip outlined">CAN 2025</span>
+        </div>
+        <div class="preview-gallery" [class.empty]="selectedFiles.length === 0">
+          <div *ngIf="selectedFiles.length === 0" class="preview-empty">Ajoutez des images pour voir l’aperçu</div>
+          <div class="preview-grid" *ngIf="selectedFiles.length > 0">
+            <img *ngFor="let file of selectedFiles | slice:0:4" [src]="getImagePreview(file)" alt="aperçu" />
+          </div>
+        </div>
+        <div class="preview-meta">
+          <div class="meta-item">
+            <i class="fas fa-euro-sign"></i>
+            <span>{{ annonceForm.get('prixParNuit')?.value || 0 }} € / nuit</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-bed"></i>
+            <span>{{ annonceForm.get('nombreChambres')?.value || 0 }} chambre(s)</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-users"></i>
+            <span>{{ annonceForm.get('capacite')?.value || 0 }} personne(s)</span>
+          </div>
+        </div>
+        <div class="preview-footer">
+          <div class="preview-note">Les stades proches seront calculés automatiquement</div>
+        </div>
+      </aside>
       
       <!-- Section 1: Informations Générales -->
-      <section class="form-section">
+      <section class="form-section" id="infos" *ngIf="currentStep === 1">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-info-circle"></i>
@@ -73,8 +156,13 @@
               formControlName="titre"
               placeholder="Ex: Villa luxueuse à 5 min du Stade Mohammed V"
               class="form-control"
+              required
+              autocomplete="off"
+              [attr.aria-invalid]="annonceForm.get('titre')?.invalid ? 'true' : 'false'"
+              aria-describedby="titre-hint titre-error"
             >
-            <div *ngIf="annonceForm.get('titre')?.invalid && annonceForm.get('titre')?.touched" class="error-text">
+            <small id="titre-hint" class="form-hint">Un titre clair améliore la visibilité de votre annonce.</small>
+            <div id="titre-error" *ngIf="annonceForm.get('titre')?.invalid && annonceForm.get('titre')?.touched" class="error-text" aria-live="polite">
               Le titre est requis et doit contenir au moins 10 caractères
             </div>
           </div>
@@ -89,8 +177,12 @@
               placeholder="Décrivez votre logement, ses atouts, son emplacement idéal pour la CAN 2025..."
               rows="6"
               class="form-control"
+              required
+              [attr.aria-invalid]="annonceForm.get('description')?.invalid ? 'true' : 'false'"
+              aria-describedby="description-hint description-error"
             ></textarea>
-            <div *ngIf="annonceForm.get('description')?.invalid && annonceForm.get('description')?.touched" class="error-text">
+            <small id="description-hint" class="form-hint">Mentionnez les points forts, l’emplacement et les services inclus.</small>
+            <div id="description-error" *ngIf="annonceForm.get('description')?.invalid && annonceForm.get('description')?.touched" class="error-text" aria-live="polite">
               La description est requise et doit contenir au moins 50 caractères
             </div>
           </div>
@@ -98,7 +190,7 @@
       </section>
 
       <!-- Section 2: Images du Logement -->
-      <section class="form-section">
+      <section class="form-section" id="images" *ngIf="currentStep === 2">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-images"></i>
@@ -107,6 +199,19 @@
           <p class="section-subtitle">Ajoutez des photos attractives pour attirer plus de locataires</p>
         </div>
         
+        <!-- Barre outils d'upload -->
+        <div class="upload-toolbar">
+          <div class="upload-left">
+            <span class="upload-count">
+              {{ selectedFiles.length || 0 }} / {{ maxImages }} images
+            </span>
+            <span class="upload-note">JPG, PNG, GIF • max {{ maxFileSize / (1024 * 1024) }}MB</span>
+          </div>
+          <div class="upload-progress" aria-label="Progression des images">
+            <div class="upload-progress-bar" [style.width.%]="(selectedFiles.length / maxImages) * 100"></div>
+          </div>
+        </div>
+
         <div class="images-upload-container">
           <div 
             class="upload-zone" 
@@ -144,7 +249,7 @@
       </section>
 
       <!-- Section 3: Caractéristiques du Logement -->
-      <section class="form-section">
+      <section class="form-section" id="caracteristiques" *ngIf="currentStep === 3">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-home"></i>
@@ -159,7 +264,7 @@
               <i class="fas fa-building"></i>
               Type de logement *
             </label>
-            <select formControlName="typeMaison" class="form-select">
+            <select formControlName="typeMaison" class="form-select" required aria-describedby="type-hint">
               <option value="">Sélectionnez un type</option>
               <option value="APPARTEMENT">Appartement</option>
               <option value="MAISON">Maison</option>
@@ -188,6 +293,7 @@
               min="1"
               max="20"
               class="form-control"
+              required
             >
           </div>
 
@@ -202,6 +308,7 @@
               min="1"
               max="50"
               class="form-control"
+              required
             >
           </div>
 
@@ -216,13 +323,14 @@
               min="1"
               step="0.01"
               class="form-control"
+              required
             >
           </div>
         </div>
       </section>
 
       <!-- Section 4: Localisation et Carte -->
-      <section class="form-section">
+      <section class="form-section" id="localisation" *ngIf="currentStep === 4">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-map-marker-alt"></i>
@@ -288,7 +396,28 @@
         <!-- Carte interactive -->
         <div class="map-section">
           <div class="map-container">
-            <div id="map" class="professional-map"></div>
+            <!-- Test : affichage simple -->
+            <div *ngIf="!mapStep4Initialized && !mapError" class="map-loading">
+              <div class="loading-content">
+                <i class="fas fa-map-marked-alt"></i>
+                <h4>Chargement de la carte...</h4>
+                <p>Initialisation en cours</p>
+              </div>
+            </div>
+            
+            <div id="map-step4" class="professional-map"></div>
+            
+            <!-- Message d'erreur pour la carte -->
+            <div *ngIf="mapError" class="map-error-message">
+              <div class="error-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h4>Problème de chargement de la carte</h4>
+                <p>La carte interactive ne peut pas se charger pour le moment.</p>
+                <button type="button" class="btn btn-primary" (click)="retryMapLoad()">
+                  <i class="fas fa-refresh"></i> Réessayer
+                </button>
+              </div>
+            </div>
             
             <!-- Contrôles de la carte -->
             <div class="map-controls">
@@ -324,8 +453,8 @@
         </div>
       </section>
 
-      <!-- Section 5: Équipements (Version Étendue) -->
-      <section class="form-section">
+      <!-- Section 5: Équipements -->
+      <section class="form-section" id="equipements" *ngIf="currentStep === 5">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-tools"></i>
@@ -667,8 +796,8 @@
         </div>
       </section>
 
-      <!-- Section 6: Règles de la Maison (Version Étendue) -->
-      <section class="form-section">
+      <!-- Section 6: Règles de la Maison -->
+      <section class="form-section" *ngIf="currentStep === 6">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-gavel"></i>
@@ -898,8 +1027,8 @@
         </div>
       </section>
 
-      <!-- Section 7: Information - Les stades seront calculés automatiquement -->
-      <section class="form-section">
+      <!-- Section 7: Résumé et Carte -->
+      <section class="form-section" id="resume" *ngIf="currentStep === 7">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fas fa-info-circle"></i>
@@ -908,41 +1037,81 @@
           <p class="section-subtitle">Les stades les plus proches seront calculés automatiquement à partir de votre localisation</p>
         </div>
         
-        <div class="info-box">
-          <div class="info-icon">
-            <i class="fas fa-futbol"></i>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label class="form-label">Aperçu des informations</label>
+            <div class="info-box">
+              <div class="info-icon"><i class="fas fa-file-alt"></i></div>
+              <div class="info-content">
+                <h4>{{ annonceForm.get('titre')?.value || 'Titre manquant' }}</h4>
+                <p>{{ annonceForm.get('description')?.value || 'Description manquante' }}</p>
+                <ul>
+                  <li>Type: {{ annonceForm.get('typeMaison')?.value || '-' }}</li>
+                  <li>Chambres: {{ annonceForm.get('nombreChambres')?.value || 0 }}</li>
+                  <li>Capacité: {{ annonceForm.get('capacite')?.value || 0 }}</li>
+                  <li>Prix/nuit: {{ annonceForm.get('prixParNuit')?.value || 0 }} €</li>
+                  <li>Adresse: {{ annonceForm.get('rue')?.value }}, {{ annonceForm.get('ville')?.value }}, {{ annonceForm.get('pays')?.value }}</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div class="info-content">
-            <h4>Stades de la CAN 2025</h4>
-            <p>Une fois votre annonce créée, nous calculerons automatiquement les distances vers tous les stades de la CAN 2025 au Maroc. Vous pourrez voir les stades les plus proches dans les détails de votre annonce.</p>
-            <ul>
-              <li>✅ Calcul automatique des distances</li>
-              <li>✅ Affichage du stade le plus proche</li>
-              <li>✅ Informations détaillées de tous les stades</li>
-              <li>✅ Itinéraires disponibles</li>
-            </ul>
+        </div>
+
+        <div class="map-section">
+          <div class="map-container">
+            <div id="map-step7" class="professional-map" aria-label="Carte de prévisualisation"></div>
+            
+            <!-- Message d'erreur pour la carte -->
+            <div *ngIf="mapError" class="map-error-message">
+              <div class="error-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h4>Problème de chargement de la carte</h4>
+                <p>La carte de prévisualisation ne peut pas se charger pour le moment.</p>
+                <button type="button" class="btn btn-primary" (click)="retryMapLoad()">
+                  <i class="fas fa-refresh"></i> Réessayer
+                </button>
+              </div>
+            </div>
+            <div class="map-controls">
+              <button type="button" class="map-control-btn" (click)="getCurrentLocation()" title="Ma position">
+                <i class="fas fa-crosshairs"></i>
+              </button>
+              <button type="button" class="map-control-btn" (click)="zoomIn()" title="Zoom +">
+                <i class="fas fa-plus"></i>
+              </button>
+              <button type="button" class="map-control-btn" (click)="zoomOut()" title="Zoom -">
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+            <div class="location-info">
+              <h4><i class="fas fa-map-pin"></i> Coordonnées sélectionnées</h4>
+              <div class="coordinates-display">
+                <div class="coord-item"><span>Latitude: {{ latitude }}</span></div>
+                <div class="coord-item"><span>Longitude: {{ longitude }}</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- Boutons d'action -->
       <div class="form-actions">
-        <button 
-          type="submit" 
-          class="btn btn-primary btn-large"
-          [disabled]="annonceForm.invalid || loading"
-        >
-          <i class="fas fa-plus"></i>
-          {{ loading ? 'Création en cours...' : 'Créer l\'annonce' }}
+        <button type="button" class="btn" (click)="prevStep()" [disabled]="currentStep === 1">
+          <i class="fas fa-arrow-left"></i>
+          Précédent
         </button>
-        
-        <button 
-          type="button" 
-          class="btn btn-secondary"
-          routerLink="/dashboard"
-        >
+        <div style="flex:1"></div>
+        <button type="button" class="btn btn-secondary" routerLink="/dashboard">
           <i class="fas fa-times"></i>
           Annuler
+        </button>
+        <button *ngIf="currentStep < totalSteps" type="button" class="btn btn-primary" (click)="nextStep()">
+          Continuer
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <button *ngIf="currentStep === totalSteps" type="submit" class="btn btn-primary btn-large" [disabled]="annonceForm.invalid || loading">
+          <i class="fas fa-check"></i>
+          {{ loading ? 'Création en cours...' : 'Confirmer et publier' }}
         </button>
       </div>
     </form>

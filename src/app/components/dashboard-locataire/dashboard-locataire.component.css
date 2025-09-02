@@ -1,6 +1,23 @@
-/* Import AOS CSS */
-@import 'aos/dist/aos.css';
-
+ 
+.dashboard-page .page-header{background:linear-gradient(135deg,rgba(193,39,45,.9),rgba(0,98,51,.9));color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.18)}
+.dashboard-page .header-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:.35rem .75rem}
+.dashboard-page .section-title i{color:#c1272d}
+.dashboard-page .stat-card{border:1px solid rgba(15,23,42,.08);border-radius:16px;box-shadow:0 12px 30px rgba(2,6,23,.08)}
+.dashboard-page .action-card{border:1px solid rgba(15,23,42,.08);border-radius:16px}
+.dashboard-page .btn-filters,.dashboard-page .btn-clear-filters{background:#fff;border:1.5px solid rgba(15,23,42,.12);font-weight:700}
+.dashboard-page .annonce-card{border:1px solid rgba(15,23,42,.08);border-radius:18px;box-shadow:0 14px 32px rgba(2,6,23,.08)}
+.dashboard-page .badge-price{background:#d4af37;color:#111}
+.dashboard-page .stade-badge{background:linear-gradient(90deg,#006233,#c1272d)}
+.dashboard-page .action-btn.btn-reserve{background:linear-gradient(90deg,#006233 0%,#0b7b49 48%,#c1272d 52%,#d34b52 100%);color:#fff;border:none;font-weight:800}
+ 
+/* Thème CAN 2025 - Maroc (terrain, or, rouge/vert) */
+.can2025-theme .page-header{background:linear-gradient(135deg,#c1272d 0%,#006233 100%);border-bottom:3px solid #ffd700}
+.can2025-theme .stats-section,.can2025-theme .quick-actions,.can2025-theme .search-section,.can2025-theme .annonces-section{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.can2025-theme .stat-icon,.can2025-theme .action-icon{background:linear-gradient(135deg,#c1272d,#006233);color:#fff}
+.can2025-theme .badge-price{background:#ffd700;color:#111}
+.can2025-theme .stats-section{background-image:repeating-linear-gradient(90deg,rgba(0,98,51,.04),rgba(0,98,51,.04) 1px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,rgba(0,98,51,.04),rgba(0,98,51,.04) 1px,transparent 1px,transparent 80px)}
+.can2025-theme .section-title i{color:#c1272d}
+.can2025-theme .btn-reserve{background:linear-gradient(90deg,#006233 0%,#0b7b49 48%,#c1272d 52%,#d34b52 100%);color:#fff;border:none;font-weight:800}
 /* Variables CSS avec thème Maroc-CAF 2025 */
 :root {
   /* Couleurs principales Maroc */
@@ -63,152 +80,30 @@
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  padding: 20px 0;
+  padding: 0 0 20px 0;
 }
 
-/* Header avec thème Maroc-CAF */
-.page-header {
-  background: var(--gradient-morocco);
-  border-bottom: 3px solid var(--morocco-gold);
-  padding: 30px 0;
-  margin-bottom: 40px;
-  box-shadow: var(--shadow-heavy);
-  position: relative;
-  overflow: hidden;
-}
+/* Supprimer la bannière vide en haut */
+.moroccan-top-banner { display: none; }
 
-.page-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
-  opacity: 0.3;
-}
-
-.header-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  z-index: 2;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px 20px;
-  border-radius: var(--border-radius-lg);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: var(--gradient-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: var(--text-primary);
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  color: var(--text-light);
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0;
-}
-
-.user-role {
-  color: var(--morocco-gold);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.header-center {
-  text-align: center;
-  flex: 1;
-  margin: 0 40px;
-}
-
-.header-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--gradient-gold);
-  color: var(--text-primary);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 15px;
-  box-shadow: var(--shadow-gold);
-}
-
-.header-badge i {
-  color: var(--morocco-red);
-}
-
-.page-title {
-  color: var(--text-light);
-  font-size: 32px;
-  font-weight: 800;
-  margin: 0 0 10px 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.page-subtitle {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 16px;
-  margin: 0;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-.btn-deconnexion {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-light);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 12px 20px;
-  border-radius: var(--border-radius);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(10px);
-}
-
-.btn-deconnexion:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-}
+/* Topbar professionnel */
+.topbar{background:linear-gradient(180deg,#0d1b2a,#0f172a);border-bottom:3px solid var(--morocco-gold);box-shadow:0 14px 28px rgba(2,6,23,.35);position:sticky;top:0;z-index:10}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-brand{display:flex;align-items:center;gap:12px;color:#fff}
+.brand-badge{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#006233,#c1272d);display:grid;place-items:center;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.brand-badge i{color:#ffd700}
+.brand-text{display:flex;flex-direction:column;line-height:1.1}
+.brand-title{font-size:18px;font-weight:800;margin:0;color:#fff}
+.brand-subtitle{font-size:12px;font-weight:700;color:#94a3b8}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.user-mini{display:flex;align-items:center;gap:10px;color:#e5e7eb;background:rgba(255,255,255,.06);padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px)}
+.user-mini i{font-size:18px;color:#ffd700}
+.user-info-mini{display:flex;flex-direction:column}
+.user-info-mini .user-name{font-size:13px;font-weight:700;color:#fff}
+.user-role-badge{font-size:11px;color:#cbd5e1}
+.btn-deconnexion{background:linear-gradient(135deg,#c1272d,#e34b52);color:#fff;border:none;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 10px 20px rgba(193,39,45,.35)}
+.btn-deconnexion:hover{filter:brightness(1.05);transform:translateY(-1px)}
 
 /* Main Container */
 .main-container {

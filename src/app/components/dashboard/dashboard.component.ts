@@ -5,13 +5,12 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { LocateurPopupService } from '../../services/locateur-popup.service';
-import { LocateurPopupComponent } from '../locateur-popup/locateur-popup.component';
 import * as AOS from 'aos';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocateurPopupComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

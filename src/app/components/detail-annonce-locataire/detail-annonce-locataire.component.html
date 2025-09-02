@@ -1,340 +1,157 @@
-<div class="detail-annonce-locataire">
-  <!-- Header Professionnel avec Animation -->
-  <header class="page-header" data-aos="fade-down" data-aos-duration="800">
-    <div class="header-container">
-      <div class="header-left">
-        <button class="btn-back" (click)="retourAnnonces()">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-maroc-vert to-emerald-700 text-white shadow">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+      <button class="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-3 py-2 font-semibold hover:bg-white/20" (click)="retourAnnonces()">
           <i class="fas fa-arrow-left"></i>
           <span>Retour aux annonces</span>
         </button>
+      <div class="text-center">
+        <div class="mx-auto inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-3 py-1 font-semibold"><i class="fas fa-home"></i><span>Détails du Logement</span></div>
+        <h1 class="m-0 text-2xl font-extrabold">Votre Futur Séjour</h1>
       </div>
-      <div class="header-center">
-        <div class="header-badge" data-aos="zoom-in" data-aos-delay="200">
-          <i class="fas fa-home"></i>
-          <span>Détails du Logement</span>
-        </div>
-        <h1 class="page-title" data-aos="fade-up" data-aos-delay="400">Votre Futur Séjour</h1>
-      </div>
-      <div class="header-right">
-        <div class="status-indicator" [class]="getStatusClass(annonce?.estActive)" data-aos="fade-left" data-aos-delay="600">
-          <i class="fas" [class]="getStatusIcon(annonce?.estActive)"></i>
+      <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-semibold">
+        <i class="fas" [ngClass]="getStatusIcon(annonce?.estActive)"></i>
           <span>{{ getStatusText(annonce?.estActive) }}</span>
-        </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="main-container">
-    <!-- Loading avec Animation -->
-    <div *ngIf="isLoading" class="loading-container" data-aos="fade-in">
-      <div class="loading-spinner">
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
-      </div>
-      <p>Chargement des détails...</p>
+  <main class="mx-auto max-w-6xl px-4 py-6">
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="grid place-items-center rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-700 shadow">
+      <div class="mb-3 h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-maroc-rouge"></div>
+      <p class="m-0">Chargement des détails...</p>
     </div>
 
-    <!-- Error avec Animation -->
-    <div *ngIf="errorMessage" class="error-container" data-aos="shake">
-      <div class="error-message">
-        <i class="fas fa-exclamation-triangle"></i>
-        {{ errorMessage }}
-      </div>
-      <button class="btn-retry" (click)="chargerDetailAnnonce()">
-        <i class="fas fa-redo"></i>
-        Réessayer
-      </button>
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="grid place-items-center rounded-2xl border border-rose-300/40 bg-rose-900/10 p-6 text-center text-rose-700 shadow">
+      <div class="mb-2 inline-flex items-center gap-2"><i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}</div>
+      <button class="rounded-xl border border-rose-400 bg-white px-4 py-2 font-semibold text-rose-700" (click)="chargerDetailAnnonce()"><i class="fas fa-redo"></i> Réessayer</button>
     </div>
 
-    <!-- Annonce Details -->
-    <div *ngIf="!isLoading && !errorMessage && annonce" class="annonce-details">
-      
-      <!-- Hero Section avec Galerie -->
-      <section class="hero-section" data-aos="fade-up" data-aos-duration="1000">
-        <div class="hero-image-container" *ngIf="annonce.images && annonce.images.length > 0">
-          <!-- Image principale -->
-          <div class="main-image-container">
-            <img 
-              [src]="getImagePath(annonce.images[currentImageIndex])" 
-              [alt]="'Photo ' + (currentImageIndex + 1) + ' du logement'"
-              class="hero-image"
-              appImageFallback
-              fallbackText="Photo du logement non disponible"
-              fallbackIcon="fas fa-home"
-              loading="lazy"
-            >
-            
-            <!-- Badges sur l'image -->
-            <div class="hero-badges">
-              <div class="badge can-badge" data-aos="fade-right" data-aos-delay="300">
-                <i class="fas fa-trophy"></i>
-                <span>CAN 2025</span>
-              </div>
-              <div class="badge stade-badge" *ngIf="annonce.stadePlusProche" data-aos="fade-right" data-aos-delay="500">
-                <i class="fas fa-futbol"></i>
-                <span>{{ annonce.distanceStade }}km</span>
-              </div>
+    <!-- Détails -->
+    <div *ngIf="!isLoading && !errorMessage && annonce" class="space-y-6">
+      <!-- Galerie -->
+      <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <ng-container *ngIf="annonce.images && annonce.images.length > 0; else noPhotos">
+          <div class="relative">
+            <img [src]="getImagePath(annonce.images[currentImageIndex])" [alt]="'Photo ' + (currentImageIndex + 1) + ' du logement'" class="h-96 w-full object-cover" appImageFallback loading="lazy" />
+            <div class="absolute left-3 top-3 flex gap-2">
+              <div class="rounded-lg bg-yellow-300 px-3 py-1 font-extrabold text-slate-900 shadow"><i class="fas fa-trophy"></i> CAN 2025</div>
+              <div class="rounded-lg bg-sky-600 px-3 py-1 font-semibold text-white shadow" *ngIf="annonce.stadePlusProche"><i class="fas fa-futbol"></i> {{ annonce.distanceStade }}km</div>
             </div>
+            <div class="absolute bottom-3 right-3 rounded bg-black/70 px-3 py-1 text-white">{{ currentImageIndex + 1 }} / {{ annonce.images.length }}</div>
+            <div class="absolute left-3 top-1/2 -translate-y-1/2" *ngIf="annonce.images.length > 1">
+              <button class="rounded-full bg-white/90 p-2 shadow" (click)="previousImage()" [disabled]="currentImageIndex === 0"><i class="fas fa-chevron-left"></i></button>
+            </div>
+            <div class="absolute right-3 top-1/2 -translate-y-1/2" *ngIf="annonce.images.length > 1">
+              <button class="rounded-full bg-white/90 p-2 shadow" (click)="nextImage()" [disabled]="currentImageIndex === annonce.images.length - 1"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2" *ngIf="annonce.images.length > 1">
+              <span *ngFor="let image of annonce.images; let i = index" class="h-3 w-3 cursor-pointer rounded-full" [ngClass]="i === currentImageIndex ? 'bg-maroc-vert' : 'bg-slate-400'" (click)="goToImage(i)"></span>
+          </div>
+        </div>
+        </ng-container>
+        <ng-template #noPhotos>
+          <div class="grid place-items-center p-10 text-center text-slate-600">
+            <i class="fas fa-camera mb-2 text-3xl"></i>
+            <h5 class="m-0">Aucune photo disponible</h5>
+            <p class="m-0 text-slate-500">Ce logement n'a pas encore de photos</p>
+          </div>
+        </ng-template>
+      </section>
 
-            <!-- Numéro de photo -->
-            <div class="photo-counter" data-aos="fade-up" data-aos-delay="700">
-              <span>{{ currentImageIndex + 1 }} / {{ annonce.images.length }}</span>
+      <!-- Informations principales -->
+      <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="flex flex-col gap-4 p-5 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h2 class="m-0 text-xl font-bold text-slate-900">{{ annonce.titre }}</h2>
+            <div class="mt-1 flex flex-wrap items-center gap-3 text-slate-600">
+              <span class="inline-flex items-center gap-2"><i class="fas fa-map-marker-alt text-maroc-rouge"></i>{{ annonce.adresse?.ville }}, {{ annonce.adresse?.pays }}</span>
+              <span class="inline-flex items-center gap-2" *ngIf="annonce.noteMoyenne"><i class="fas fa-star text-yellow-400"></i>{{ annonce.noteMoyenne }}/5 ({{ annonce.nombreAvis }} avis)</span>
             </div>
-
-            <!-- Navigation des images -->
-            <div class="image-navigation" *ngIf="annonce.images.length > 1">
-              <button class="nav-btn nav-prev" (click)="previousImage()" [disabled]="currentImageIndex === 0">
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              <button class="nav-btn nav-next" (click)="nextImage()" [disabled]="currentImageIndex === annonce.images.length - 1">
-                <i class="fas fa-chevron-right"></i>
-              </button>
+          </div>
+          <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
+            <div class="text-4xl font-extrabold text-slate-900"><span class="text-lg">€</span>{{ annonce.prixParNuit }}<span class="text-lg">/nuit</span></div>
+            <div class="mt-2 flex flex-col items-center gap-1 text-sm text-slate-700">
+              <span class="inline-flex items-center gap-1"><i class="fas fa-check text-emerald-600"></i> Réservation instantanée</span>
+              <span class="inline-flex items-center gap-1"><i class="fas fa-check text-emerald-600"></i> Annulation gratuite</span>
             </div>
-
-            <!-- Indicateurs -->
-            <div class="image-indicators" *ngIf="annonce.images.length > 1">
-              <div class="indicator-dots">
-                <span 
-                  *ngFor="let image of annonce.images; let i = index" 
-                  [class.active]="i === currentImageIndex"
-                  (click)="goToImage(i)"
-                  class="indicator-dot"
-                ></span>
-              </div>
-            </div>
+            <button class="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-maroc-vert to-maroc-dor px-4 py-2 font-extrabold text-slate-900" (click)="ouvrirCalendrierReservation()"><i class="fas fa-calendar-day"></i> Choisir mes dates</button>
           </div>
         </div>
       </section>
 
-      <!-- Informations Principales -->
-      <section class="info-section" data-aos="fade-up" data-aos-duration="800">
-        <div class="info-header">
-          <div class="info-title">
-            <h2>{{ annonce.titre }}</h2>
-            <div class="info-meta">
-              <span class="location">
-                <i class="fas fa-map-marker-alt"></i>
-                {{ annonce.adresse?.ville }}, {{ annonce.adresse?.pays }}
-              </span>
-              <span class="rating" *ngIf="annonce.noteMoyenne">
-                <i class="fas fa-star"></i>
-                {{ annonce.noteMoyenne }}/5 ({{ annonce.nombreAvis }} avis)
-              </span>
-            </div>
-          </div>
-          <div class="price-card">
-            <div class="price-amount">
-              <span class="currency">€</span>
-              <span class="amount">{{ annonce.prixParNuit }}</span>
-              <span class="period">/nuit</span>
-            </div>
-            <div class="price-features">
-              <span class="feature">
-                <i class="fas fa-check"></i>
-                Réservation instantanée
-              </span>
-              <span class="feature">
-                <i class="fas fa-check"></i>
-                Annulation gratuite
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Caractéristiques du Logement -->
-      <section class="features-section" data-aos="fade-up" data-aos-duration="800">
-        <div class="section-header">
-          <h3><i class="fas fa-list"></i> Caractéristiques</h3>
-        </div>
-        <div class="features-grid">
-          <div class="feature-item">
-            <i class="fas fa-users"></i>
-            <span class="feature-label">Capacité</span>
-            <span class="feature-value">{{ annonce.capacite }} personnes</span>
-          </div>
-          <div class="feature-item">
-            <i class="fas fa-home"></i>
-            <span class="feature-label">Type</span>
-            <span class="feature-value">{{ annonce.typeMaison }}</span>
-          </div>
-          <div class="feature-item">
-            <i class="fas fa-ruler-combined"></i>
-            <span class="feature-label">Surface</span>
-            <span class="feature-value">{{ annonce.adresse?.surface }} m²</span>
-          </div>
-          <div class="feature-item">
-            <i class="fas fa-bed"></i>
-            <span class="feature-label">Chambres</span>
-            <span class="feature-value">{{ annonce.nombreChambres }}</span>
-          </div>
-          <div class="feature-item">
-            <i class="fas fa-car"></i>
-            <span class="feature-label">Parking</span>
-            <span class="feature-value">{{ aEquipement('Parking') ? 'Disponible' : 'Non disponible' }}</span>
-          </div>
-          <div class="feature-item">
-            <i class="fas fa-wifi"></i>
-            <span class="feature-label">WiFi</span>
-            <span class="feature-value">{{ aEquipement('WiFi') ? 'Inclus' : 'Non inclus' }}</span>
-          </div>
+      <!-- Caractéristiques -->
+      <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="border-b bg-slate-50 p-4"><h3 class="m-0 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-list"></i> Caractéristiques</h3></div>
+        <div class="grid grid-cols-1 gap-3 p-5 md:grid-cols-3">
+          <div class="flex items-center gap-3 rounded bg-slate-50 p-3"><i class="fas fa-users text-maroc-rouge"></i><div><div class="font-bold">Capacité</div><div class="text-slate-600">{{ annonce.capacite }} personnes</div></div></div>
+          <div class="flex items-center gap-3 rounded bg-slate-50 p-3"><i class="fas fa-home text-maroc-rouge"></i><div><div class="font-bold">Type</div><div class="text-slate-600">{{ annonce.typeMaison }}</div></div></div>
+          <div class="flex items-center gap-3 rounded bg-slate-50 p-3"><i class="fas fa-ruler-combined text-maroc-rouge"></i><div><div class="font-bold">Surface</div><div class="text-slate-600">{{ annonce.adresse?.surface }} m²</div></div></div>
+          <div class="flex items-center gap-3 rounded bg-slate-50 p-3"><i class="fas fa-bed text-maroc-rouge"></i><div><div class="font-bold">Chambres</div><div class="text-slate-600">{{ annonce.nombreChambres }}</div></div></div>
+          <div class="flex items-center gap-3 rounded bg-slate-50 p-3"><i class="fas fa-car text-maroc-rouge"></i><div><div class="font-bold">Parking</div><div class="text-slate-600">{{ aEquipement('Parking') ? 'Disponible' : 'Non disponible' }}</div></div></div>
+          <div class="flex items-center gap-3 rounded bg-slate-50 p-3"><i class="fas fa-wifi text-maroc-rouge"></i><div><div class="font-bold">WiFi</div><div class="text-slate-600">{{ aEquipement('WiFi') ? 'Inclus' : 'Non inclus' }}</div></div></div>
         </div>
       </section>
 
       <!-- Description -->
-      <section class="description-section" data-aos="fade-up" data-aos-duration="800">
-        <div class="section-header">
-          <h3><i class="fas fa-align-left"></i> Description</h3>
-        </div>
-        <div class="description-content">
-          <p>{{ annonce.description }}</p>
-        </div>
+      <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="border-b bg-slate-50 p-4"><h3 class="m-0 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-align-left"></i> Description</h3></div>
+        <div class="p-5 text-slate-700"><p class="m-0">{{ annonce.description }}</p></div>
       </section>
 
       <!-- Équipements -->
-      <section class="equipments-section" data-aos="fade-up" data-aos-duration="800" *ngIf="annonce.equipements && annonce.equipements.length > 0">
-        <div class="section-header">
-          <h3><i class="fas fa-tools"></i> Équipements</h3>
-        </div>
-        <div class="equipments-grid">
-          <div class="equipment-item" *ngFor="let equipment of annonce.equipements">
-            <i class="fas fa-check"></i>
-            <span>{{ equipment }}</span>
-          </div>
+      <section *ngIf="annonce.equipements && annonce.equipements.length > 0" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="border-b bg-slate-50 p-4"><h3 class="m-0 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-tools"></i> Équipements</h3></div>
+        <div class="grid grid-cols-1 gap-2 p-5 sm:grid-cols-2 md:grid-cols-3">
+          <div class="flex items-center gap-2 rounded bg-slate-50 p-2" *ngFor="let equipment of annonce.equipements"><i class="fas fa-check text-emerald-600"></i><span>{{ equipment }}</span></div>
         </div>
       </section>
 
-      <!-- Calendrier de Disponibilité -->
-      <section class="calendar-section" data-aos="fade-up" data-aos-duration="800">
-        <div class="section-header">
-          <h3><i class="fas fa-calendar-alt"></i> Disponibilité et Réservation</h3>
-          <p class="section-subtitle">Sélectionnez vos dates de séjour</p>
-        </div>
-        <app-calendrier-locataire
-          [annonceId]="annonce.id"
-          [dateArrivee]="dateArriveeSelectionnee"
-          [dateDepart]="dateDepartSelectionnee"
-          (dateArriveeChange)="onDateArriveeChange($event)"
-          (dateDepartChange)="onDateDepartChange($event)"
-        ></app-calendrier-locataire>
-      </section>
-
-      <!-- Section de Réservation -->
-      <section class="reservation-section" data-aos="fade-up" data-aos-duration="800">
-        <div class="section-header">
-          <h3><i class="fas fa-calendar-check"></i> Réserver ce logement</h3>
-          <p class="section-subtitle">Confirmez vos dates et effectuez votre réservation</p>
-        </div>
-        
-        <div class="reservation-content">
-          <div class="dates-selectionnees" *ngIf="dateArriveeSelectionnee || dateDepartSelectionnee">
-            <div class="date-item" *ngIf="dateArriveeSelectionnee">
-              <div class="date-label">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>Arrivée</span>
-              </div>
-              <div class="date-value">{{ dateArriveeSelectionnee | date:'dd/MM/yyyy' }}</div>
-              <button class="btn-clear" (click)="effacerDateArrivee()" title="Effacer la date d'arrivée">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            
-            <div class="date-item" *ngIf="dateDepartSelectionnee">
-              <div class="date-label">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Départ</span>
-              </div>
-              <div class="date-value">{{ dateDepartSelectionnee | date:'dd/MM/yyyy' }}</div>
-              <button class="btn-clear" (click)="effacerDateDepart()" title="Effacer la date de départ">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            
-            <div class="periode-info" *ngIf="dateArriveeSelectionnee && dateDepartSelectionnee">
-              <div class="duree-sejour">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Durée du séjour: {{ calculerDureeSejour() }} jour(s)</span>
-              </div>
-            </div>
-          </div>
-
-          <button 
-            class="btn-reserve" 
-            (click)="ouvrirReservationAvecDates()" 
-            [disabled]="!dateArriveeSelectionnee || !dateDepartSelectionnee"
-            data-aos="zoom-in" 
-            data-aos-delay="600"
-          >
-            <i class="fas fa-calendar-check"></i>
-            <span *ngIf="dateArriveeSelectionnee && dateDepartSelectionnee; else reserveNormal">
-              Réserver du {{ dateArriveeSelectionnee | date:'dd/MM' }} au {{ dateDepartSelectionnee | date:'dd/MM' }}
-            </span>
-            <ng-template #reserveNormal>
-              Sélectionnez vos dates pour réserver
-            </ng-template>
+      <!-- Réservation: bouton ouvrant popup -->
+      <section id="reservation-calendrier" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="border-b bg-slate-50 p-4"><h3 class="m-0 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-calendar-check"></i> Réserver ce logement</h3><p class="m-0 text-sm text-slate-600">Ouvrir le calendrier et compléter le formulaire</p></div>
+        <div class="p-5">
+          <button class="w-full rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-700 px-4 py-3 font-extrabold text-white" (click)="ouvrirReservationAvecDates()">
+            <i class="fas fa-calendar-alt"></i> Voir le calendrier et réserver
           </button>
         </div>
       </section>
 
       <!-- Localisation -->
-      <section class="location-section" data-aos="fade-up" data-aos-duration="800">
-        <div class="section-header">
-          <h3><i class="fas fa-map-marked-alt"></i> Localisation</h3>
-        </div>
-        <div class="location-content">
-          <div class="location-info">
-            <div class="location-details">
-              <div class="location-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>{{ getAdresseComplete() }}</span>
-              </div>
-              <div class="location-item">
-                <i class="fas fa-city"></i>
-                <span>{{ annonce.adresse?.ville }}, {{ annonce.adresse?.codePostal }}</span>
-              </div>
-              <div class="location-item">
-                <i class="fas fa-globe"></i>
-                <span>{{ annonce.adresse?.pays }}</span>
-              </div>
-            </div>
+      <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="border-b bg-slate-50 p-4"><h3 class="m-0 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-map-marked-alt"></i> Localisation</h3></div>
+        <div class="grid gap-4 p-5 md:grid-cols-2">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-maroc-rouge"></i><span>{{ getAdresseComplete() }}</span></div>
+            <div class="flex items-center gap-3"><i class="fas fa-city text-maroc-rouge"></i><span>{{ annonce.adresse?.ville }}, {{ annonce.adresse?.codePostal }}</span></div>
+            <div class="flex items-center gap-3"><i class="fas fa-globe text-maroc-rouge"></i><span>{{ annonce.adresse?.pays }}</span></div>
           </div>
-          <div class="map-container">
-            <div id="location-map" class="location-map"></div>
+          <div class="rounded bg-slate-100 p-3 text-center">
+            <div id="location-map" class="h-52 w-full bg-slate-200"></div>
           </div>
         </div>
       </section>
 
       <!-- Propriétaire -->
-      <section class="owner-section" data-aos="fade-up" data-aos-duration="800">
-        <div class="section-header">
-          <h3><i class="fas fa-user-tie"></i> À propos du propriétaire</h3>
-        </div>
-        <div class="owner-card">
-          <div class="owner-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="owner-info">
-            <h4>{{ annonce.nomLocateur }}</h4>
-            <div class="owner-rating" *ngIf="annonce.noteMoyenne">
-              <div class="stars">
-                <i class="fas fa-star" *ngFor="let star of getNoteEtoiles(annonce.noteMoyenne)" [class.filled]="star === '★'"></i>
-              </div>
-              <span class="rating-text">{{ annonce.noteMoyenne }}/5</span>
+      <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+        <div class="border-b bg-slate-50 p-4"><h3 class="m-0 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-user-tie"></i> À propos du propriétaire</h3></div>
+        <div class="flex items-center gap-4 p-5">
+          <div class="grid h-20 w-20 place-items-center rounded-full bg-gradient-to-r from-maroc-vert to-emerald-600 text-white"><i class="fas fa-user text-2xl"></i></div>
+          <div>
+            <h4 class="m-0 text-lg font-bold text-slate-900">{{ annonce.nomLocateur }}</h4>
+            <div class="mt-1 flex items-center gap-2" *ngIf="annonce.noteMoyenne">
+              <div class="text-yellow-400"><i class="fas fa-star" *ngFor="let star of getNoteEtoiles(annonce.noteMoyenne)" [ngClass]="{ 'text-yellow-400': star === '★' }"></i></div>
+              <span class="text-slate-600">{{ annonce.noteMoyenne }}/5</span>
             </div>
-            <p class="owner-description">Propriétaire expérimenté et fiable</p>
+            <p class="m-0 text-slate-600">Propriétaire expérimenté et fiable</p>
           </div>
         </div>
       </section>
     </div>
   </main>
 
-  <!-- Popup de Réservation -->
-  <app-reservation-popup
-    [annonceId]="annonce?.id || ''"
-    [capaciteMax]="annonce?.capacite || 1"
-    (closed)="fermerReservationPopup()"
-    (confirmed)="onReservationConfirmed()"
-  ></app-reservation-popup>
+  <app-reservation-popup [annonceId]="annonce?.id || ''" [capaciteMax]="annonce?.capacite || 1" (closed)="fermerReservationPopup()" (confirmed)="onReservationConfirmed()"></app-reservation-popup>
 </div> 

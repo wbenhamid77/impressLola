@@ -1,185 +1,121 @@
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <div class="logo-section">
-      <div class="logo-circle">
-        <i class="fas fa-trophy"></i>
-        <div class="logo-glow"></div>
-      </div>
-      <div class="logo-text">
-        <h2>
-          <i class="fas fa-star"></i>
-          CAF 2025
-          <i class="fas fa-star"></i>
-        </h2>
-        <p>Maroc - Coupe d'Afrique</p>
-        <div class="football-elements">
-          <i class="fas fa-futbol"></i>
-          <span>Football</span>
-          <i class="fas fa-futbol"></i>
-        </div>
+<aside class="fixed left-0 top-0 z-50 h-screen border-r border-slate-200 bg-white/95 backdrop-blur-md text-slate-900 shadow-xl transition-all"
+       [ngClass]="{ 'w-16': isCollapsed, 'w-64': !isCollapsed }"
+       (mouseenter)="onMouseEnter()"
+       (mouseleave)="onMouseLeave()">
+  <!-- Header minimal -->
+  <div class="flex items-center justify-between border-b border-slate-200 p-3">
+    <div class="flex items-center gap-3">
+      <div class="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-maroc-vert to-emerald-600 text-white"><i class="fas fa-trophy"></i></div>
+      <div class="select-none" [ngClass]="{ 'hidden': isCollapsed }">
+        <h2 class="m-0 text-sm font-extrabold tracking-tight">CAN 2025</h2>
+        <span class="text-xs text-slate-500">Maroc</span>
       </div>
     </div>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-section">
-      <h3 class="nav-title">
-        <i class="fas fa-compass"></i>
-        Navigation
-      </h3>
-      <ul class="nav-list">
-        <li class="nav-item" [class.active]="isActive('dashboard')">
-          <a class="nav-link" (click)="navigateTo('dashboard')">
-            <span class="nav-icon">
-              <i class="fas fa-tachometer-alt"></i>
-            </span>
-            <span>Dashboard</span>
-            <span class="nav-badge">🏠</span>
-          </a>
-        </li>
-        <li class="nav-item" [class.active]="isActive('profile')">
-          <a class="nav-link" (click)="navigateTo('profile')">
-            <span class="nav-icon">
-              <i class="fas fa-user-circle"></i>
-            </span>
-            <span>Mon Profil</span>
-            <span class="nav-badge">👤</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Section Locataire -->
-    <div *ngIf="isLocataire" class="nav-section">
-      <h3 class="nav-title">
-        <i class="fas fa-home"></i>
-        Locataire
-      </h3>
-      <ul class="nav-list">
-        <li class="nav-item" [class.active]="isActive('annonces')">
-          <a class="nav-link" (click)="navigateTo('annonces')">
-            <span class="nav-icon">
-              <i class="fas fa-search"></i>
-            </span>
-            <span>Rechercher</span>
-            <span class="nav-badge">🔍</span>
-          </a>
-        </li>
-        <li class="nav-item" [class.active]="isActive('mes-favoris')">
-          <a class="nav-link" (click)="navigateTo('mes-favoris')">
-            <span class="nav-icon">
-              <i class="fas fa-heart"></i>
-            </span>
-            <span>Mes Favoris</span>
-            <span class="nav-badge">❤️</span>
-          </a>
-        </li>
-        <li class="nav-item" [class.active]="isActive('mes-reservations')">
-          <a class="nav-link" (click)="navigateTo('mes-reservations')">
-            <span class="nav-icon">
-              <i class="fas fa-calendar-check"></i>
-            </span>
-            <span>Mes réservations</span>
-            <span class="nav-badge">📅</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#historique">
-            <span class="nav-icon">
-              <i class="fas fa-history"></i>
-            </span>
-            <span>Historique</span>
-            <span class="nav-badge">📋</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Section Locateur -->
-    <div *ngIf="!isLocataire" class="nav-section">
-      <h3 class="nav-title">
-        <i class="fas fa-building"></i>
-        Locateur
-      </h3>
-      <ul class="nav-list">
-        <li class="nav-item" [class.active]="isActive('ajouter-annonce')">
-          <a class="nav-link" (click)="navigateTo('ajouter-annonce')">
-            <span class="nav-icon">
-              <i class="fas fa-plus-circle"></i>
-            </span>
-            <span>Ajouter annonce</span>
-            <span class="nav-badge">➕</span>
-          </a>
-        </li>
-        <li class="nav-item" [class.active]="isActive('mes-annonces')">
-          <a class="nav-link" (click)="navigateTo('mes-annonces')">
-            <span class="nav-icon">
-              <i class="fas fa-list-alt"></i>
-            </span>
-            <span>Mes annonces</span>
-            <span class="nav-badge">📋</span>
-          </a>
-        </li>
-        <li class="nav-item" [class.active]="isActive('reservations-locateur')">
-          <a class="nav-link" (click)="navigateTo('reservations-locateur')">
-            <span class="nav-icon">
-              <i class="fas fa-calendar-alt"></i>
-            </span>
-            <span>Réservations</span>
-            <span class="nav-badge">📅</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#statistiques">
-            <span class="nav-icon">
-              <i class="fas fa-chart-bar"></i>
-            </span>
-            <span>Statistiques</span>
-            <span class="nav-badge">📊</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <div class="nav-section">
-      <h3 class="nav-title">
-        <i class="fas fa-cog"></i>
-        Paramètres
-      </h3>
-      <ul class="nav-list">
-        <li class="nav-item">
-          <a class="nav-link" href="#settings">
-            <span class="nav-icon">
-              <i class="fas fa-sliders-h"></i>
-            </span>
-            <span>Configuration</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#help">
-            <span class="nav-icon">
-              <i class="fas fa-question-circle"></i>
-            </span>
-            <span>Aide</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
-  <div class="sidebar-footer">
-    <div class="user-info">
-      <div class="user-avatar">
-        <i class="fas fa-user-circle"></i>
-      </div>
-      <div class="user-details">
-        <span class="user-name">{{ username }}</span>
-        <span class="user-role">{{ isLocataire ? 'Locataire' : 'Locateur' }}</span>
-      </div>
-    </div>
-    <button class="btn btn-secondary logout-btn" (click)="logout()">
-      <i class="fas fa-sign-out-alt"></i>
-      Déconnexion
+    <button class="grid h-8 w-8 place-items-center rounded-md border border-slate-200" (click)="toggleSidebar()" [attr.aria-expanded]="!isCollapsed" aria-label="Basculer">
+      <i class="fas" [ngClass]="isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
     </button>
   </div>
-</aside> 
+
+  <!-- Mini Profil simple -->
+  <div class="flex items-center gap-3 border-b border-slate-200 p-3">
+    <div class="text-lg text-maroc-vert"><i class="fas fa-user-circle"></i></div>
+    <div class="leading-tight" [ngClass]="{ 'hidden': isCollapsed }">
+      <span class="block text-sm font-semibold">{{ username }}</span>
+      <span class="block text-xs text-slate-500">{{ isLocataire ? 'Locataire' : 'Locateur' }}</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="p-3">
+    <a *ngIf="!isLocataire" routerLink="/ajouter-annonce" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">
+      <i class="fas fa-plus-circle text-maroc-vert"></i>
+      <span [ngClass]="{ 'hidden': isCollapsed }">Nouvelle annonce</span>
+    </a>
+    <a *ngIf="isLocataire" routerLink="/annonces" class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">
+      <i class="fas fa-compass text-maroc-rouge"></i>
+      <span [ngClass]="{ 'hidden': isCollapsed }">Explorer</span>
+    </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 overflow-y-auto p-2" role="navigation" aria-label="Sidebar principal">
+    <ul class="m-0 list-none p-0">
+      <li class="mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Navigation</li>
+      <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <a routerLink="/dashboard" [attr.title]="isCollapsed ? 'Dashboard' : null" #rla0="routerLinkActive" routerLinkActive="is-active"
+           class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
+           [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla0.isActive }">
+          <i class="fas fa-home"></i>
+          <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Dashboard</span>
+        </a>
+      </li>
+
+      <ng-container *ngIf="isLocataire">
+        <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Locataire</li>
+        <li routerLinkActive="active">
+          <a routerLink="/annonces" [attr.title]="isCollapsed ? 'Explorer' : null" #rla1="routerLinkActive" routerLinkActive="is-active"
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla1.isActive }">
+            <i class="fas fa-compass"></i>
+            <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Explorer</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a routerLink="/mes-favoris" [attr.title]="isCollapsed ? 'Favoris' : null" #rla2="routerLinkActive" routerLinkActive="is-active"
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla2.isActive }">
+            <i class="fas fa-heart"></i>
+            <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Favoris</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a routerLink="/mes-reservations" [attr.title]="isCollapsed ? 'Réservations' : null" #rla3="routerLinkActive" routerLinkActive="is-active"
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla3.isActive }">
+            <i class="fas fa-calendar-check"></i>
+            <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Réservations</span>
+          </a>
+        </li>
+      </ng-container>
+
+      <ng-container *ngIf="!isLocataire">
+        <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Locateur</li>
+        <li routerLinkActive="active">
+          <a routerLink="/mes-annonces" [attr.title]="isCollapsed ? 'Mes annonces' : null" #rla4="routerLinkActive" routerLinkActive="is-active"
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla4.isActive }">
+            <i class="fas fa-list-alt"></i>
+            <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Mes annonces</span>
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a routerLink="/reservations-locateur" [attr.title]="isCollapsed ? 'Réservations' : null" #rla5="routerLinkActive" routerLinkActive="is-active"
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla5.isActive }">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Réservations</span>
+          </a>
+        </li>
+      </ng-container>
+
+      <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Paramètres</li>
+      <li routerLinkActive="active">
+        <a routerLink="/profile" [attr.title]="isCollapsed ? 'Mon Profil' : null" #rla6="routerLinkActive" routerLinkActive="is-active"
+           class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
+           [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla6.isActive }">
+          <i class="fas fa-user"></i>
+          <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Mon Profil</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Footer simple -->
+  <div class="border-t border-slate-200 p-3">
+    <button class="flex w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold text-slate-900 hover:bg-slate-50"
+            (click)="logout()" [attr.title]="isCollapsed ? 'Déconnexion' : null">
+      <i class="fas fa-sign-out-alt"></i>
+      <span [ngClass]="{ 'hidden': isCollapsed }">Déconnexion</span>
+    </button>
+  </div>
+</aside>

@@ -1,0 +1,127 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Users\21260\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.1.0
+2 info using node@v20.17.0
+3 silly config load:file:C:\Users\21260\AppData\Roaming\npm\node_modules\npm\npmrc
+4 silly config load:file:C:\impresslola\.npmrc
+5 silly config load:file:C:\Users\21260\.npmrc
+6 silly config load:file:C:\Users\21260\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm i @angular/animations@19.2.0 @angular/cdk@19.2.0 @angular/common@19.2.0 @angular/compiler@19.2.0 @angular/core@19.2.0 @angular/forms@19.2.0 @angular/google-maps@19.2.0 @angular/material@19.2.0 @angular/platform-browser@19.2.0 @angular/platform-browser-dynamic@19.2.0 @angular/router@19.2.0
+8 verbose argv "i" "--save-exact" "@angular/animations@19.2.0" "@angular/cdk@19.2.0" "@angular/common@19.2.0" "@angular/compiler@19.2.0" "@angular/core@19.2.0" "@angular/forms@19.2.0" "@angular/google-maps@19.2.0" "@angular/material@19.2.0" "@angular/platform-browser@19.2.0" "@angular/platform-browser-dynamic@19.2.0" "@angular/router@19.2.0"
+9 verbose logfile logs-max:10 dir:C:\impresslola\clear\_logs\2025-09-01T17_09_51_619Z-
+10 verbose logfile C:\impresslola\clear\_logs\2025-09-01T17_09_51_619Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly logfile done cleaning log files
+14 silly idealTree buildDeps
+15 silly fetch manifest @angular/animations@19.2.0
+16 silly packumentCache full:https://registry.npmjs.org/@angular%2fanimations cache-miss
+17 http fetch GET 200 https://registry.npmjs.org/@angular%2fanimations 2342ms (cache updated)
+18 silly packumentCache full:https://registry.npmjs.org/@angular%2fanimations set size:undefined disposed:false
+19 silly fetch manifest @angular/core@19.2.0
+20 silly packumentCache full:https://registry.npmjs.org/@angular%2fcore cache-miss
+21 http fetch GET 200 https://registry.npmjs.org/@angular%2fcore 272ms (cache updated)
+22 silly packumentCache full:https://registry.npmjs.org/@angular%2fcore set size:undefined disposed:false
+23 silly fetch manifest rxjs@~7.8.0
+24 silly packumentCache full:https://registry.npmjs.org/rxjs cache-miss
+25 http fetch GET 200 https://registry.npmjs.org/rxjs 75ms (cache revalidated)
+26 silly packumentCache full:https://registry.npmjs.org/rxjs set size:980097 disposed:false
+27 silly fetch manifest zone.js@^0.15.1
+28 silly packumentCache full:https://registry.npmjs.org/zone.js cache-miss
+29 http fetch GET 200 https://registry.npmjs.org/zone.js 76ms (cache revalidated)
+30 silly packumentCache full:https://registry.npmjs.org/zone.js set size:365274 disposed:false
+31 silly fetch manifest @angular/cdk@19.2.0
+32 silly packumentCache full:https://registry.npmjs.org/@angular%2fcdk cache-miss
+33 http fetch GET 200 https://registry.npmjs.org/@angular%2fcdk 214ms (cache updated)
+34 silly packumentCache full:https://registry.npmjs.org/@angular%2fcdk set size:undefined disposed:false
+35 silly fetch manifest @angular/common@19.2.0
+36 silly packumentCache full:https://registry.npmjs.org/@angular%2fcommon cache-miss
+37 http fetch GET 200 https://registry.npmjs.org/@angular%2fcommon 160ms (cache updated)
+38 silly packumentCache full:https://registry.npmjs.org/@angular%2fcommon set size:undefined disposed:false
+39 silly fetch manifest @angular/compiler@19.2.0
+40 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler cache-miss
+41 http fetch GET 200 https://registry.npmjs.org/@angular%2fcompiler 125ms (cache updated)
+42 silly packumentCache full:https://registry.npmjs.org/@angular%2fcompiler set size:undefined disposed:false
+43 silly fetch manifest @angular/forms@19.2.0
+44 silly packumentCache full:https://registry.npmjs.org/@angular%2fforms cache-miss
+45 http fetch GET 200 https://registry.npmjs.org/@angular%2fforms 191ms (cache updated)
+46 silly packumentCache full:https://registry.npmjs.org/@angular%2fforms set size:undefined disposed:false
+47 silly fetch manifest @angular/platform-browser@19.2.0
+48 silly packumentCache full:https://registry.npmjs.org/@angular%2fplatform-browser cache-miss
+49 http fetch GET 200 https://registry.npmjs.org/@angular%2fplatform-browser 184ms (cache updated)
+50 silly packumentCache full:https://registry.npmjs.org/@angular%2fplatform-browser set size:undefined disposed:false
+51 silly fetch manifest @angular/google-maps@19.2.0
+52 silly packumentCache full:https://registry.npmjs.org/@angular%2fgoogle-maps cache-miss
+53 http fetch GET 200 https://registry.npmjs.org/@angular%2fgoogle-maps 709ms (cache updated)
+54 silly packumentCache full:https://registry.npmjs.org/@angular%2fgoogle-maps set size:undefined disposed:false
+55 silly fetch manifest @angular/material@19.2.0
+56 silly packumentCache full:https://registry.npmjs.org/@angular%2fmaterial cache-miss
+57 http fetch GET 200 https://registry.npmjs.org/@angular%2fmaterial 601ms (cache updated)
+58 silly packumentCache full:https://registry.npmjs.org/@angular%2fmaterial set size:undefined disposed:false
+59 silly fetch manifest @angular/platform-browser-dynamic@19.2.0
+60 silly packumentCache full:https://registry.npmjs.org/@angular%2fplatform-browser-dynamic cache-miss
+61 http fetch GET 200 https://registry.npmjs.org/@angular%2fplatform-browser-dynamic 166ms (cache updated)
+62 silly packumentCache full:https://registry.npmjs.org/@angular%2fplatform-browser-dynamic set size:undefined disposed:false
+63 silly fetch manifest @angular/router@19.2.0
+64 silly packumentCache full:https://registry.npmjs.org/@angular%2frouter cache-miss
+65 http fetch GET 200 https://registry.npmjs.org/@angular%2frouter 214ms (cache updated)
+66 silly packumentCache full:https://registry.npmjs.org/@angular%2frouter set size:undefined disposed:false
+67 verbose stack Error: could not resolve
+67 verbose stack     at PlaceDep.failPeerConflict (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:503:25)
+67 verbose stack     at new PlaceDep (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:157:21)
+67 verbose stack     at #buildDepStep (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:920:18)
+67 verbose stack     at async Arborist.buildIdealTree (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:181:7)
+67 verbose stack     at async Promise.all (index 1)
+67 verbose stack     at async Arborist.reify (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\reify.js:131:5)
+67 verbose stack     at async Install.exec (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\lib\commands\install.js:149:5)
+67 verbose stack     at async Npm.exec (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\lib\npm.js:207:9)
+67 verbose stack     at async module.exports (C:\Users\21260\AppData\Roaming\npm\node_modules\npm\lib\cli\entry.js:67:5)
+68 error code ERESOLVE
+69 error ERESOLVE could not resolve
+70 error
+71 error While resolving: impress-lola@0.0.0
+71 error Found: @angular/animations@19.2.14[2m[22m
+71 error [2mnode_modules/@angular/animations[22m
+71 error   peerOptional @angular/animations@"19.2.14" from @angular/platform-browser@19.2.14[2m[22m
+71 error   [2mnode_modules/@angular/platform-browser[22m
+71 error     [95mpeer[39m @angular/platform-browser@"19.2.14" from @angular/forms@19.2.14[2m[22m
+71 error     [2mnode_modules/@angular/forms[22m
+71 error       [95mpeer[39m @angular/forms@"^19.0.0 || ^20.0.0" from @angular/material@19.2.19[2m[22m
+71 error       [2mnode_modules/@angular/material[22m
+71 error         @angular/material@"19.2.0" from the root project
+71 error       3 more (@ng-bootstrap/ng-bootstrap, primeng, the root project)
+71 error     [95mpeer[39m @angular/platform-browser@"^19.0.0 || ^20.0.0" from @angular/material@19.2.19[2m[22m
+71 error     [2mnode_modules/@angular/material[22m
+71 error       @angular/material@"19.2.0" from the root project
+71 error     4 more (@angular/platform-browser-dynamic, @angular/router, ...)
+71 error   [95mpeer[39m @angular/animations@"^19.0.0" from primeng@19.1.4[2m[22m
+71 error   [2mnode_modules/primeng[22m
+71 error     primeng@"^19.1.4" from the root project
+71 error   1 more (the root project)
+71 error
+71 error Could not resolve dependency:
+71 error @angular/animations@"19.2.0" from the root project
+71 error
+71 error Conflicting peer dependency: @angular/core@19.2.0[2m[22m
+71 error [2mnode_modules/@angular/core[22m
+71 error   [95mpeer[39m @angular/core@"19.2.0" from @angular/animations@19.2.0[2m[22m
+71 error   [2mnode_modules/@angular/animations[22m
+71 error     @angular/animations@"19.2.0" from the root project
+71 error
+71 error Fix the upstream dependency conflict, or retry
+71 error this command with --force or --legacy-peer-deps
+71 error to accept an incorrect (and potentially broken) dependency resolution.
+72 error
+72 error
+72 error For a full report see:
+72 error C:\impresslola\clear\_logs\2025-09-01T17_09_51_619Z-eresolve-report.txt
+73 silly unfinished npm timer reify 1756746592908
+74 silly unfinished npm timer reify:loadTrees 1756746592910
+75 silly unfinished npm timer idealTree:buildDeps 1756746593963
+76 silly unfinished npm timer idealTree:#root 1756746593965
+77 verbose cwd C:\impresslola
+78 verbose os Windows_NT 10.0.26100
+79 verbose node v20.17.0
+80 verbose npm  v11.1.0
+81 verbose exit 1
+82 verbose code 1
+83 error A complete log of this run can be found in: C:\impresslola\clear\_logs\2025-09-01T17_09_51_619Z-debug-0.log

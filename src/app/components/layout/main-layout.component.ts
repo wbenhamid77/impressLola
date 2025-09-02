@@ -34,7 +34,11 @@ export class MainLayoutComponent implements OnInit {
 
   updateCurrentPage(): void {
     const url = this.router.url;
-    if (url.includes('dashboard')) {
+    if (url.includes('mes-reservations')) {
+      this.currentPage = 'mes-reservations';
+    } else if (url.includes('reservations-locateur')) {
+      this.currentPage = 'reservations-locateur';
+    } else if (url.includes('dashboard')) {
       this.currentPage = 'dashboard';
     } else if (url.includes('mes-annonces')) {
       this.currentPage = 'mes-annonces';

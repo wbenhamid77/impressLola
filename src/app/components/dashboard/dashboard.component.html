@@ -1,354 +1,261 @@
-<!-- Dashboard avec thème Maroc-CAF 2025 -->
+<!-- ===== TABLEAU DE BORD PROFESSIONNEL ===== -->
+
 <div class="dashboard-page">
-  <!-- Header avec thème Maroc-CAF -->
-  <header class="page-header">
-    <div class="header-container">
-      <button class="btn-back" routerLink="/">
-        <i class="fas fa-arrow-left"></i>
-        Retour
-      </button>
-      
-      <div class="header-center">
-        <div class="header-badge">
-          <i class="fas fa-trophy"></i>
-          CAN 2025 - Maroc
-        </div>
-        <h1 class="page-title">Tableau de Bord</h1>
-        <p class="page-subtitle">Gérez vos annonces et découvrez les meilleures locations</p>
+  <!-- Header du tableau de bord -->
+  <header class="bg-gradient-to-r from-maroc-vert to-emerald-700 text-white shadow">
+    <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between gap-3">
+      <div>
+        <h1 class="m-0 text-2xl font-extrabold">Tableau de Bord</h1>
+        <p class="m-0 opacity-90">Bienvenue sur votre espace personnel CAN 2025</p>
       </div>
-      
-      <div class="user-info">
-        <div class="user-avatar">
-          <i class="fas fa-user"></i>
-        </div>
-        <div class="user-details">
-          <span class="user-name">{{ username }}</span>
-          <span class="user-role">{{ isLocataire ? 'Locataire' : 'Locateur' }}</span>
+      <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1">
+        <i class="fas fa-user"></i>
+        <div class="leading-tight">
+          <span class="block font-semibold">Utilisateur</span>
+          <span class="block text-xs opacity-80">Membre</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Container principal -->
-  <div class="main-container">
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="loading-container">
-      <div class="loading-spinner">
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
-        <div class="spinner-ring"></div>
-      </div>
-      <p>Chargement de votre tableau de bord...</p>
-    </div>
-
-    <!-- Error State -->
-    <div *ngIf="errorMessage" class="error-container">
-      <div class="error-message">
-        <i class="fas fa-exclamation-triangle"></i>
-        {{ errorMessage }}
-      </div>
-      <button class="btn-retry" (click)="chargerAnnonces()">
-        <i class="fas fa-redo"></i>
-        Réessayer
-      </button>
-    </div>
-
-    <!-- Contenu principal -->
-    <div *ngIf="!isLoading && !errorMessage" class="dashboard-content">
-      <!-- Section Statistiques -->
+  <!-- Contenu principal -->
+  <main class="dashboard-main">
+    <div class="container">
+      <!-- Statistiques rapides -->
       <section class="stats-section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <i class="fas fa-chart-bar"></i>
-            Statistiques Générales
-          </h2>
-          <p class="section-subtitle">Vue d'ensemble de votre activité</p>
-        </div>
-        
-        <div class="stats-grid">
-          <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
-            <div class="stat-icon active">
-              <i class="fas fa-home"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ filteredAnnonces.length }}</div>
-              <div class="stat-label">Annonces Disponibles</div>
-            </div>
-          </div>
-          
-          <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
-            <div class="stat-icon">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getAverageRating() }}</div>
-              <div class="stat-label">Note Moyenne</div>
-            </div>
-          </div>
-          
-          <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
-            <div class="stat-icon">
-              <i class="fas fa-euro-sign"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getAveragePrice() }}</div>
-              <div class="stat-label">Prix Moyen/Nuit</div>
-            </div>
-          </div>
-          
-          <div class="stat-card" data-aos="fade-up" data-aos-delay="400">
-            <div class="stat-icon">
-              <i class="fas fa-futbol"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getStadesCount() }}</div>
-              <div class="stat-label">Stades Proches</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section Actions Rapides -->
-      <section class="quick-actions">
-        <div class="section-header">
-          <h2 class="section-title">
-            <i class="fas fa-bolt"></i>
-            Actions Rapides
-          </h2>
-          <p class="section-subtitle">Accédez rapidement aux fonctionnalités principales</p>
-        </div>
-        
-        <div class="actions-grid">
-          <div class="action-card" routerLink="/ajouter-annonce" data-aos="fade-up" data-aos-delay="100">
-            <div class="action-icon">
-              <i class="fas fa-plus"></i>
-            </div>
-            <h3 class="action-title">Ajouter une Annonce</h3>
-            <p class="action-description">Publiez votre logement pour la CAN 2025</p>
-          </div>
-          
-          <div class="action-card" routerLink="/mes-annonces" data-aos="fade-up" data-aos-delay="200">
-            <div class="action-icon">
-              <i class="fas fa-list"></i>
-            </div>
-            <h3 class="action-title">Mes Annonces</h3>
-            <p class="action-description">Gérez vos publications existantes</p>
-          </div>
-          
-          <div class="action-card" routerLink="/favoris" data-aos="fade-up" data-aos-delay="300">
-            <div class="action-icon">
-              <i class="fas fa-heart"></i>
-            </div>
-            <h3 class="action-title">Mes Favoris</h3>
-            <p class="action-description">Consultez vos logements préférés</p>
-          </div>
-          
-          <div class="action-card" routerLink="/reservations" data-aos="fade-up" data-aos-delay="400">
-            <div class="action-icon">
-              <i class="fas fa-calendar-check"></i>
-            </div>
-            <h3 class="action-title">Mes Réservations</h3>
-            <p class="action-description">Suivez vos réservations</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section Recherche et Filtres -->
-      <section class="search-section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <i class="fas fa-search"></i>
-            Recherche Avancée
-          </h2>
-          <p class="section-subtitle">Trouvez le logement parfait pour la CAN 2025</p>
-        </div>
-        
-    <div class="search-container">
-      <div class="search-input-group">
-        <i class="fas fa-search search-icon"></i>
-        <input 
-          type="text" 
-          placeholder="Rechercher un logement, une ville, un stade..." 
-          class="search-input"
-          [(ngModel)]="searchTerm"
-          (input)="filterAnnonces()"
-        >
-      </div>
-          
-          <div class="filter-controls">
-            <button class="btn btn-secondary" (click)="clearFilters()">
-          <i class="fas fa-times"></i>
-          Effacer
-        </button>
-            <button class="btn btn-primary" (click)="showFilters = !showFilters">
-          <i class="fas fa-filter"></i>
-              Filtres Avancés
-          </button>
-      </div>
-    </div>
-
-        <!-- Filtres Avancés -->
-        <div class="advanced-filters" *ngIf="showFilters" data-aos="fade-down">
-          <div class="filters-grid">
-        <div class="filter-group">
-              <label class="filter-label">
-                <i class="fas fa-home"></i>
-                Type de logement
-              </label>
-          <select [(ngModel)]="selectedType" (change)="filterAnnonces()" class="filter-select">
-            <option value="">Tous les types</option>
-            <option value="Appartement">Appartement</option>
-            <option value="Maison">Maison</option>
-            <option value="Villa">Villa</option>
-            <option value="Studio">Studio</option>
-          </select>
-        </div>
-            
-        <div class="filter-group">
-              <label class="filter-label">
-                <i class="fas fa-euro-sign"></i>
-                Prix maximum
-              </label>
-          <select [(ngModel)]="selectedPrice" (change)="filterAnnonces()" class="filter-select">
-            <option value="">Tous les prix</option>
-            <option value="50">50€/nuit</option>
-            <option value="100">100€/nuit</option>
-            <option value="200">200€/nuit</option>
-            <option value="500">500€/nuit</option>
-          </select>
-        </div>
-            
-        <div class="filter-group">
-              <label class="filter-label">
-                <i class="fas fa-users"></i>
-                Capacité
-              </label>
-          <select [(ngModel)]="selectedCapacity" (change)="filterAnnonces()" class="filter-select">
-            <option value="">Toutes capacités</option>
-            <option value="1">1 personne</option>
-            <option value="2">2 personnes</option>
-            <option value="4">4 personnes</option>
-            <option value="6">6+ personnes</option>
-          </select>
-        </div>
-      </div>
-        </div>
-      </section>
-
-      <!-- Section Annonces -->
-      <section class="recent-annonces">
-        <div class="section-header">
-          <h2 class="section-title">
-            <i class="fas fa-building"></i>
-            Annonces Disponibles
-          </h2>
-          <p class="section-subtitle">{{ filteredAnnonces.length }} annonce(s) trouvée(s) pour la CAN 2025</p>
-    </div>
-
-    <div class="annonces-grid">
-      <div 
-        *ngFor="let annonce of filteredAnnonces; trackBy: trackByAnnonceId" 
-        class="annonce-card"
-        data-aos="fade-up"
-        data-aos-duration="600"
-        data-aos-delay="100"
-      >
-            <!-- Image de l'annonce -->
-            <div class="card-image">
-              <div class="image-placeholder" *ngIf="!annonce.images || annonce.images.length === 0">
-                <div class="image-content">
-                  <i class="fas fa-home"></i>
-                  <span class="image-text">Aucune photo</span>
-                </div>
-      </div>
-
-            <img 
-              *ngIf="annonce.images && annonce.images.length > 0"
-              [src]="getImagePath(annonce.images[0])" 
-              [alt]="annonce.titre"
-              (error)="onImageError($event)"
-              class="post-image"
-              loading="lazy"
-            >
-            
-              <!-- Badge nombre d'images -->
-            <div class="image-count-badge" *ngIf="annonce.images && annonce.images.length > 1">
-              <i class="fas fa-images"></i>
-                <span>{{ annonce.images.length }}</span>
-          </div>
-
-              <!-- Badge statut -->
-              <div class="status-badge" [class]="getStatusClass(annonce.estActive)">
-                <i [class]="getStatusIcon(annonce.estActive)"></i>
-                {{ getStatusText(annonce.estActive) }}
-          </div>
-            </div>
-
-            <!-- Contenu de la carte -->
-            <div class="card-content">
-              <h3 class="card-title">{{ annonce.titre || 'Logement pour la CAN 2025' }}</h3>
-              
-              <div class="card-price">{{ formaterPrix(annonce.prixParNuit) }}/nuit</div>
-              
-              <div class="card-info">
-                <div class="info-item">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span>{{ annonce.adresse?.ville }}, {{ annonce.adresse?.pays }}</span>
-                </div>
-                <div class="info-item">
-                  <i class="fas fa-bed"></i>
-                  <span>{{ annonce.nombreChambres }} chambre(s)</span>
-                </div>
-                <div class="info-item">
-                  <i class="fas fa-users"></i>
-                  <span>{{ annonce.capacite }} personne(s)</span>
-                </div>
-                <div class="info-item" *ngIf="annonce.stadePlusProche">
-                  <i class="fas fa-futbol"></i>
-                  <span>{{ annonce.stadePlusProche }}</span>
-        </div>
-      </div>
-
-              <div class="card-rating" *ngIf="annonce.noteMoyenne > 0">
-              <div class="stars">
-                <i *ngFor="let star of getNoteEtoiles(annonce.noteMoyenne)" 
-                   [class]="star" 
-                   class="star-icon"></i>
+        <div class="row">
+          <div class="col-3">
+            <div class="stat-card card">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
               </div>
-              <span class="rating-text">{{ annonce.noteMoyenne }}/5</span>
+              <div class="stat-content">
+                <h3 class="stat-number">12</h3>
+                <p class="stat-label">Réservations</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="stat-card card">
+              <div class="stat-icon">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">8</h3>
+                <p class="stat-label">Favoris</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="stat-card card">
+              <div class="stat-icon">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">3</h3>
+                <p class="stat-label">Stades visités</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="stat-card card">
+              <div class="stat-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">95%</h3>
+                <p class="stat-label">Satisfaction</p>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-            <!-- Actions de la carte -->
-            <div class="card-actions">
-              <button class="action-btn" (click)="voirDetails(annonce.id)">
-              <i class="fas fa-eye"></i>
-                Voir détails
-              </button>
-              <button class="action-btn primary" (click)="contacterLocateur(annonce.id)">
-                <i class="fas fa-comment"></i>
-                Contacter
-              </button>
+      <!-- Actions rapides -->
+      <section class="quick-actions">
+        <div class="row">
+          <div class="col-6">
+            <div class="action-card card">
+              <div class="card-header">
+                <h3>Actions Rapides</h3>
+              </div>
+              <div class="card-body">
+                <div class="action-buttons">
+                  <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Nouvelle Réservation
+                  </button>
+                  <button class="btn btn-secondary">
+                    <i class="fas fa-search"></i>
+                    Rechercher Stade
+                  </button>
+                  <button class="btn btn-success">
+                    <i class="fas fa-heart"></i>
+                    Mes Favoris
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="notification-card card">
+              <div class="card-header">
+                <h3>Notifications</h3>
+              </div>
+              <div class="card-body">
+                <div class="notification-list">
+                  <div class="notification-item">
+                    <div class="notification-icon">
+                      <i class="fas fa-info-circle text-info"></i>
+                    </div>
+                    <div class="notification-content">
+                      <p>Nouveau stade disponible à Casablanca</p>
+                      <span class="notification-time">Il y a 2 heures</span>
+                    </div>
+                  </div>
+                  <div class="notification-item">
+                    <div class="notification-icon">
+                      <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    <div class="notification-content">
+                      <p>Votre réservation a été confirmée</p>
+                      <span class="notification-time">Il y a 1 jour</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-        <!-- État vide -->
-    <div *ngIf="filteredAnnonces.length === 0 && !isLoading" class="empty-state">
-      <div class="empty-icon">
-        <i class="fas fa-search"></i>
-      </div>
-      <h3>Aucune annonce trouvée</h3>
-      <p>Essayez de modifier vos critères de recherche</p>
-      <button class="btn btn-primary" (click)="clearFilters()">
-        <i class="fas fa-redo"></i>
-        Effacer les filtres
-      </button>
+      <!-- Réservations récentes -->
+      <section class="recent-reservations">
+        <div class="card">
+          <div class="card-header">
+            <h3>Réservations Récentes</h3>
+            <button class="btn btn-primary btn-sm">Voir Tout</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Stade</th>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Stade Mohammed V</td>
+                    <td>15 Jan 2025</td>
+                    <td>14:00</td>
+                    <td><span class="badge badge-success">Confirmée</span></td>
+                    <td>
+                      <button class="btn btn-secondary btn-sm">Détails</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Stade Ibn Batouta</td>
+                    <td>20 Jan 2025</td>
+                    <td>16:30</td>
+                    <td><span class="badge badge-warning">En attente</span></td>
+                    <td>
+                      <button class="btn btn-secondary btn-sm">Détails</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Stade Adrar</td>
+                    <td>25 Jan 2025</td>
+                    <td>19:00</td>
+                    <td><span class="badge badge-primary">Validée</span></td>
+                    <td>
+                      <button class="btn btn-secondary btn-sm">Détails</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Calendrier des événements -->
+      <section class="events-calendar">
+        <div class="row">
+          <div class="col-8">
+            <div class="card">
+              <div class="card-header">
+                <h3>Calendrier des Événements</h3>
+              </div>
+              <div class="card-body">
+                <div class="calendar-placeholder">
+                  <div class="calendar-grid">
+                    <!-- Placeholder pour le calendrier -->
+                    <div class="calendar-day">
+                      <span class="day-number">15</span>
+                      <div class="event-indicator"></div>
+                    </div>
+                    <div class="calendar-day">
+                      <span class="day-number">16</span>
+                    </div>
+                    <div class="calendar-day">
+                      <span class="day-number">17</span>
+                    </div>
+                    <div class="calendar-day">
+                      <span class="day-number">18</span>
+                    </div>
+                    <div class="calendar-day">
+                      <span class="day-number">19</span>
+                    </div>
+                    <div class="calendar-day">
+                      <span class="day-number">20</span>
+                      <div class="event-indicator"></div>
+                    </div>
+                    <div class="calendar-day">
+                      <span class="day-number">21</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header">
+                <h3>Prochains Événements</h3>
+              </div>
+              <div class="card-body">
+                <div class="event-list">
+                  <div class="event-item">
+                    <div class="event-date">
+                      <span class="day">15</span>
+                      <span class="month">Jan</span>
+                    </div>
+                    <div class="event-details">
+                      <h4>Match CAN 2025</h4>
+                      <p>Stade Mohammed V - 14:00</p>
+                    </div>
+                  </div>
+                  <div class="event-item">
+                    <div class="event-date">
+                      <span class="day">20</span>
+                      <span class="month">Jan</span>
+                    </div>
+                    <div class="event-details">
+                      <h4>Réservation Stade</h4>
+                      <p>Stade Ibn Batouta - 16:30</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
-  </div>
+  </main>
 </div> 
-
-<!-- Composant Popup Locateur -->
-<app-locateur-popup></app-locateur-popup> 

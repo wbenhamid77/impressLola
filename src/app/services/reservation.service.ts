@@ -108,6 +108,20 @@ export class ReservationService {
       .pipe(catchError(this.handleError));
   }
 
+  /**
+   * Traite le paiement d'une réservation
+   */
+  traiterPaiement(id: string, modePaiement: string): Observable<Reservation> {
+    const url = `${this.API_BASE_URL}/api/reservations/${id}/paiement`;
+    console.log('💳 Traitement du paiement:', id, modePaiement);
+    
+    return this.http.put<Reservation>(url, { 
+      modePaiement,
+      statut: 'PAYEE'
+    })
+      .pipe(catchError(this.handleError));
+  }
+
   // ===== CONSULTATION DE RÉSERVATIONS =====
 
   /**

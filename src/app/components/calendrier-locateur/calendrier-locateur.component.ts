@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReservationService } from '../../services/reservation.service';
 import { firstValueFrom } from 'rxjs';
+import { EntityDetailsService, LocataireDetails } from '../../services/entity-details.service';
 
 @Component({
   selector: 'app-calendrier-locateur',
@@ -33,8 +34,12 @@ export class CalendrierLocateurComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   jourSelectionnePourInfo: Date | null = null;
+  resumeModalOpen = false;
 
-  constructor(private reservationService: ReservationService) {}
+  constructor(
+    private reservationService: ReservationService,
+    private entityDetailsService: EntityDetailsService
+  ) {}
 
   ngOnInit(): void {
     console.log('🏢 Calendrier Locateur initialisé pour l\'annonce:', this.annonceId);
@@ -60,8 +65,8 @@ export class CalendrierLocateurComponent implements OnInit {
       this.joursReservesConfirmes = joursConfirmes || [];
       this.joursReservesEnCours = joursEnCours || [];
 
-      // Créer un résumé des réservations basé sur les jours réservés
-      this.creerResumeReservations();
+      // Charger les réservations détaillées par jour (avec infos locataire)
+      await this.chargerReservationsParJour();
 
       console.log('📅 Jours réservés chargés pour le locateur:', {
         enAttente: this.joursReservesEnAttente,
@@ -118,6 +123,73 @@ export class CalendrierLocateurComponent implements OnInit {
   }
 
   /**
+   * Charge les réservations réelles de l'annonce et enrichit par jour avec les infos locataire
+   */
+  private async chargerReservationsParJour(): Promise<void> {
+    if (!this.annonceId) {
+      this.reservationsParJour = {};
+      return;
+    }
+
+    try {
+      // Récupère toutes les réservations de l'annonce
+      const reservations = await firstValueFrom(this.reservationService.getReservationsAnnonce(this.annonceId));
+
+      // Indexe les détails locataire par ID (appel API par locataire unique)
+      const uniqueLocataireIds = Array.from(new Set(reservations.map(r => r.locataireId).filter(Boolean)));
+      const idToLocataire: { [id: string]: LocataireDetails } = {};
+
+      await Promise.all(uniqueLocataireIds.map(async (id) => {
+        try {
+          idToLocataire[id] = await firstValueFrom(this.entityDetailsService.getLocataireDetails(id));
+        } catch {
+          idToLocataire[id] = {
+            id,
+            role: 'LOCATAIRE',
+            nom: 'Inconnu',
+            prenom: '',
+            email: 'Non renseigné',
+            telephone: 'Non renseigné',
+            statutKyc: 'NON_VERIFIE',
+            dateInscription: '',
+            derniereConnexion: '',
+            estActif: false,
+            dateModification: ''
+          } as LocataireDetails;
+        }
+      }));
+
+      // Réinitialise la map et répartit les réservations sur chaque jour couvert
+      this.reservationsParJour = {};
+      for (const res of reservations) {
+        const locataire = idToLocataire[res.locataireId];
+        const departExclue = new Date(res.dateDepart);
+        for (let d = new Date(res.dateArrivee); d < departExclue; d.setDate(d.getDate() + 1)) {
+          const dateStr = this.formaterDate(d);
+          if (!this.reservationsParJour[dateStr]) this.reservationsParJour[dateStr] = [];
+          this.reservationsParJour[dateStr].push({
+            statut: res.statut,
+            dateCreation: res.dateCreation,
+            locataire
+          });
+        }
+      }
+
+      // Met à jour les compteurs de la légende
+      this.legendItems = this.legendItems.map(item => {
+        if (item.label === 'En attente') return { ...item, count: this.joursReservesEnAttente.length };
+        if (item.label === 'Confirmée') return { ...item, count: this.joursReservesConfirmes.length };
+        if (item.label === 'En cours') return { ...item, count: this.joursReservesEnCours.length };
+        return item;
+      });
+    } catch (e) {
+      console.error('Erreur lors du chargement des réservations détaillées:', e);
+      // Fallback: conserver l'ancien résumé simplifié
+      this.creerResumeReservations();
+    }
+  }
+
+  /**
    * Génère le calendrier du mois
    */
   genererCalendrier(): void {
@@ -148,14 +220,24 @@ export class CalendrierLocateurComponent implements OnInit {
       }
     }
     
-    // Ajouter les jours vides de la fin
-    while (semaine.length < 7) {
-      semaine.push(new Date(annee, mois + 1, semaine.length - 6));
-    }
-    
+    // Ajouter les jours vides de la fin uniquement si la semaine est partielle
     if (semaine.length > 0) {
+      let jourMoisSuivant = 1;
+      while (semaine.length < 7) {
+        semaine.push(new Date(annee, mois + 1, jourMoisSuivant++));
+      }
       this.calendrier.push(semaine);
     }
+  }
+
+  /**
+   * Indique si la date appartient au mois affiché
+   */
+  isDansMois(date: Date): boolean {
+    return (
+      date.getFullYear() === this.moisActuel.getFullYear() &&
+      date.getMonth() === this.moisActuel.getMonth()
+    );
   }
 
   /**
@@ -199,11 +281,15 @@ export class CalendrierLocateurComponent implements OnInit {
     this.jourSelectionnePourInfo = null;
   }
 
+  /** Ouvre/ferme le popup Résumé */
+  openResumeModal(): void { this.resumeModalOpen = true; }
+  closeResumeModal(): void { this.resumeModalOpen = false; }
+
   /**
    * Vérifie si un jour est disponible
    */
   estJourDisponible(date: Date): boolean {
-    return !this.estJourReserve(date) && !this.estJourPasse(date);
+    return this.isDansMois(date) && !this.estJourReserve(date) && !this.estJourPasse(date);
   }
 
   /**
@@ -257,7 +343,14 @@ export class CalendrierLocateurComponent implements OnInit {
    */
   getClassesJour(date: Date): string {
     let classes = 'jour';
+    const aujourdhui = new Date();
+    aujourdhui.setHours(0, 0, 0, 0);
     
+    if (!this.isDansMois(date)) {
+      classes += ' hors-mois';
+      return classes;
+    }
+
     if (this.estJourPasse(date)) {
       classes += ' jour-passe';
     } else if (this.estJourReserve(date)) {
@@ -268,6 +361,10 @@ export class CalendrierLocateurComponent implements OnInit {
     } else {
       classes += ' jour-disponible';
     }
+
+    if (this.isDansMois(date) && date.getTime() === aujourdhui.getTime()) {
+      classes += ' aujourd-hui';
+    }
     
     return classes;
   }
@@ -276,6 +373,9 @@ export class CalendrierLocateurComponent implements OnInit {
    * Retourne le tooltip pour un jour
    */
   getTooltipJour(date: Date): string {
+    if (!this.isDansMois(date)) {
+      return '';
+    }
     if (this.estJourPasse(date)) {
       return 'Jour passé';
     }

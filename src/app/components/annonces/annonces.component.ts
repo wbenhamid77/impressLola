@@ -11,7 +11,7 @@ import * as AOS from 'aos';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './annonces.component.html',
-  styleUrl: './annonces.component.css'
+  styleUrls: ['./annonces.component.css']
 })
 export class AnnoncesComponent implements OnInit, AfterViewInit {
   annonces: any[] = [];
@@ -22,9 +22,18 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
   selectedType = '';
   selectedPrice = '';
   selectedCapacity = '';
+  selectedStade = '';
   
   // Propriétés pour les favoris
   favorisMap: { [key: string]: boolean } = {};
+
+  // Propriétés pour la vue et pagination
+  viewMode: 'grid' | 'list' = 'grid';
+  currentPage = 1;
+  itemsPerPage = 12;
+
+  // Propriétés pour le tri
+  sortBy = '';
 
   constructor(
     private router: Router,
@@ -127,6 +136,11 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
             }
   }
 
+  // Alias pour la compatibilité avec le template
+  async ajouterAuxFavoris(annonceId: string): Promise<void> {
+    return this.ajouterFavori(annonceId);
+  }
+
   // Méthode pour basculer l'état des favoris
   toggleFavori(annonceId: string, event: Event): void {
     event.stopPropagation(); // Empêcher la propagation du clic
@@ -137,6 +151,17 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
   reserver(annonceId: string): void {
     event?.stopPropagation(); // Empêcher la propagation du clic
     this.reserverAnnonce(annonceId);
+  }
+
+  // Méthode pour effacer la recherche
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filterAnnonces();
+  }
+
+  // Méthode pour changer le mode de vue
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
   }
 
   // Méthodes de filtrage et recherche
@@ -171,7 +196,42 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
       filtered = filtered.filter(annonce => annonce.capacite >= minCapacity);
     }
 
+    // Filtre par stade
+    if (this.selectedStade) {
+      filtered = filtered.filter(annonce => 
+        annonce.stadePlusProche?.toLowerCase().includes(this.selectedStade.toLowerCase())
+      );
+    }
+
     this.filteredAnnonces = filtered;
+    // Réinitialiser à la première page après filtrage
+    this.currentPage = 1;
+    
+    // Appliquer le tri si nécessaire
+    if (this.sortBy) {
+      this.sortAnnonces();
+    }
+  }
+
+  // Méthode de tri des annonces
+  sortAnnonces(): void {
+    if (!this.sortBy) return;
+
+    this.filteredAnnonces.sort((a, b) => {
+      switch (this.sortBy) {
+        case 'prix-asc':
+          return a.prixParNuit - b.prixParNuit;
+        case 'prix-desc':
+          return b.prixParNuit - a.prixParNuit;
+        case 'note-desc':
+          return (b.noteMoyenne || 0) - (a.noteMoyenne || 0);
+        case 'distance':
+          // Tri par distance du stade (simulation)
+          return (a.distanceStade || 0) - (b.distanceStade || 0);
+        default:
+          return 0;
+      }
+    });
   }
 
   clearFilters(): void {
@@ -179,7 +239,56 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
     this.selectedType = '';
     this.selectedPrice = '';
     this.selectedCapacity = '';
+    this.selectedStade = '';
+    this.sortBy = '';
     this.filteredAnnonces = [...this.annonces];
+    this.currentPage = 1;
+  }
+
+  // Alias pour la compatibilité avec le template
+  clearAllFilters(): void {
+    this.clearFilters();
+  }
+
+  // Méthodes de pagination
+  get totalPages(): number {
+    return Math.ceil(this.filteredAnnonces.length / this.itemsPerPage);
+  }
+
+  get paginatedAnnonces(): any[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredAnnonces.slice(startIndex, endIndex);
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    const halfRange = Math.floor(maxVisiblePages / 2);
+    
+    let startPage = Math.max(1, this.currentPage - halfRange);
+    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
+  }
+
+  // Méthode de trackBy pour optimiser ngFor
+  trackByAnnonceId(index: number, annonce: any): string {
+    return annonce.id;
   }
 
   // Méthodes de statistiques

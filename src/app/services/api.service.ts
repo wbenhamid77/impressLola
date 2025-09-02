@@ -3,6 +3,42 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Annonce, CreateAnnonceRequest } from '../models/annonce.model';
 
+export interface AnnonceStadeDistance {
+  id: string;
+  stade: {
+    id: string;
+    nom: string;
+    ville: string;
+    adresseComplete?: string;
+    latitude: number;
+    longitude: number;
+    capacite?: number;
+    description?: string;
+    images?: string[];
+    // Champs supplémentaires renvoyés par l'API
+    estActif?: boolean;
+    dateCreation?: string;
+    dateModification?: string | null;
+    surfaceMetresCarres?: number;
+    categories?: string[];
+    categoriesPlaces?: any[];
+    prixMin?: number;
+    prixMax?: number;
+    imagesBlob?: any[];
+    surfaceType?: string | null;
+    dimensions?: string | null;
+    siteWeb?: string | null;
+    telephone?: string | null;
+  };
+  distance: number;
+  tempsTrajetMinutes?: number;
+  modeTransport?: string;
+  estLePlusProche?: boolean;
+  dateCreation?: string;
+  dateModification?: string;
+  tempsTrajetFormate?: string;
+}
+
 export interface Locataire {
   email: string;
   motDePasse: string;
@@ -110,6 +146,11 @@ export class ApiService {
   getAnnonceById(id: string): Observable<Annonce> {
     console.log('Appel API getAnnonceById:', `${this.baseUrl}/annonces/${id}`);
     return this.http.get<Annonce>(`${this.baseUrl}/annonces/${id}`);
+  }
+
+  // Distances des stades pour une annonce donnée
+  getAnnonceDistances(id: string): Observable<AnnonceStadeDistance[]> {
+    return this.http.get<AnnonceStadeDistance[]>(`${this.baseUrl}/annonces/${id}/distances`);
   }
 
   creerAnnonce(annonce: CreateAnnonceRequest): Observable<Annonce> {

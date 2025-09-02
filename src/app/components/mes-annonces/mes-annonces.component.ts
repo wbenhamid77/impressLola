@@ -11,7 +11,7 @@ import * as AOS from 'aos';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './mes-annonces.component.html',
-  styleUrl: './mes-annonces.component.css'
+  styleUrls: ['./mes-annonces.component.css']
 })
 export class MesAnnoncesComponent implements OnInit, AfterViewInit {
   annonces: any[] = [];
@@ -20,6 +20,7 @@ export class MesAnnoncesComponent implements OnInit, AfterViewInit {
   errorMessage = '';
   searchTerm = '';
   activeFilter = 'all';
+  sortKey: 'recent' | 'prixAsc' | 'prixDesc' | 'noteDesc' = 'recent';
 
   constructor(
     private router: Router,
@@ -133,7 +134,76 @@ export class MesAnnoncesComponent implements OnInit, AfterViewInit {
       );
     }
 
+    // Tri
+    switch (this.sortKey) {
+      case 'prixAsc':
+        filtered.sort((a, b) => (a.prixParNuit || 0) - (b.prixParNuit || 0));
+        break;
+      case 'prixDesc':
+        filtered.sort((a, b) => (b.prixParNuit || 0) - (a.prixParNuit || 0));
+        break;
+      case 'noteDesc':
+        filtered.sort((a, b) => (b.noteMoyenne || 0) - (a.noteMoyenne || 0));
+        break;
+      default:
+        filtered.sort((a, b) => new Date(b.dateCreation).getTime() - new Date(a.dateCreation).getTime());
+    }
+
     this.filteredAnnonces = filtered;
+  }
+
+  onSearchInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm = target.value;
+    this.filterAnnonces();
+  }
+
+  onSearchInputText(value: string): void {
+    this.searchTerm = value;
+    this.filterAnnonces();
+  }
+
+  // Méthodes pour les statistiques avec pourcentages
+  getActivePercentage(): number {
+    if (this.annonces.length === 0) return 0;
+    return (this.getActiveAnnoncesCount() / this.annonces.length) * 100;
+  }
+
+  getInactivePercentage(): number {
+    if (this.annonces.length === 0) return 0;
+    return (this.getInactiveAnnoncesCount() / this.annonces.length) * 100;
+  }
+
+  getRatingPercentage(): number {
+    const rating = parseFloat(this.getAverageRating());
+    return (rating / 5) * 100;
+  }
+
+  // TrackBy pour optimiser les performances
+  trackByAnnonce(index: number, annonce: any): string {
+    return annonce.id;
+  }
+
+  // Méthode pour tronquer la description
+  getTruncatedDescription(description: string): string {
+    if (!description) return 'Aucune description disponible';
+    return description.length > 100 ? description.substring(0, 100) + '...' : description;
+  }
+
+  // Méthodes pour le nouveau design
+  getFilterLabel(): string {
+    switch (this.activeFilter) {
+      case 'active': return 'Actives';
+      case 'inactive': return 'Inactives';
+      default: return 'Toutes';
+    }
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.activeFilter = 'all';
+    this.sortKey = 'recent';
+    this.filterAnnonces();
   }
 
   setFilter(filter: string): void {
