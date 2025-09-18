@@ -1,3 +1,300 @@
+/* ===== STYLES MODERNES POUR LA GESTION DES RÉSERVATIONS LOCATAIRE ===== */
+
+/* Animations personnalisées */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Effet de chargement */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Effets de survol améliorés */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Effet glassmorphism amélioré */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Boutons avec effet de vague */
+.btn-wave {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-wave::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-wave:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Animations d'entrée */
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Effet de pulsation pour les éléments importants */
+.pulse-important {
+  animation: pulse 2s infinite;
+}
+
+/* Scrollbar personnalisée */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Effet de gradient animé */
+.animated-gradient {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Effet de lueur pour les éléments importants */
+.glow-effect {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.glow-effect-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+}
+
+.glow-effect-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Transitions fluides */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Effet de focus amélioré */
+.focus-ring:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: rgba(59, 130, 246, 0.5);
+  ring-offset: 2px;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+  .mobile-stack {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .mobile-full {
+    width: 100%;
+  }
+}
+
+/* Effet de parallaxe subtil */
+.parallax-bg {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Effet de texte dégradé */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Effet de bordure animée */
+.animated-border {
+  position: relative;
+  background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+  border-radius: 10px;
+}
+
+.animated-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Reservations locataire: styles assurés par Tailwind dans le template */
+
+/* Thème marocain vert/rouge + foot + motifs */
+.maroc-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 2px solid #e5e7eb;
+  background: linear-gradient(135deg, #059669 0%, #dc2626 100%);
+  box-shadow: 0 10px 30px rgba(5, 150, 105, 0.2);
+  margin-bottom: 16px;
+}
+
+.maroc-hero__inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.maroc-hero__pattern {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.15) 2px, transparent 2px);
+  background-size: 24px 24px;
+  opacity: 0.35;
+}
+
+.maroc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #064e3b;
+  border-radius: 9999px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.maroc-title { margin: 8px 0 4px; color: #fff; font-size: 28px; font-weight: 900; }
+.maroc-subtitle { margin: 0; color: rgba(255,255,255,0.9); font-weight: 600; }
+
+.btn-maroc-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #047857 0%, #dc2626 100%);
+  color: #fff; font-weight: 800; cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.btn-maroc-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.2); }
+
+.maroc-input { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 12px; background: #fff; }
+.maroc-input__field { border: 0; outline: none; }
+.maroc-select { padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 12px; background: #fff; }
+
+.stat-card { display: flex; align-items: center; gap: 12px; padding: 16px; border: 2px solid #e5e7eb; border-radius: 14px; background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,0.07); }
+.stat-card__icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; color: #fff; background: linear-gradient(135deg, #059669, #047857); }
+.stat-card__value { font-size: 20px; font-weight: 900; color: #0f172a; }
+.stat-card__label { font-size: 12px; font-weight: 700; color: #64748b; }
+
+.reservation-card { position: relative; overflow: hidden; border: 2px solid #e5e7eb; border-radius: 16px; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); margin-bottom: 12px; }
+.reservation-card__statut { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 9999px; font-size: 11px; font-weight: 900; border: 2px solid rgba(0,0,0,0.08); background: #fff; }
+.reservation-card__body { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 16px; }
+.reservation-card__title { margin: 0; font-size: 18px; font-weight: 900; color: #0f172a; }
+.reservation-card__addr { display: inline-flex; align-items: center; gap: 8px; color: #475569; font-weight: 600; margin-top: 4px; }
+.reservation-card__meta { display: flex; flex-wrap: wrap; gap: 12px; color: #334155; font-weight: 600; margin-top: 8px; }
+.reservation-card__aside { display: grid; justify-items: end; align-content: center; gap: 6px; }
+.reservation-card__price { font-size: 20px; font-weight: 900; background: linear-gradient(135deg, #059669, #047857); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.reservation-card__label { font-size: 12px; color: #64748b; font-weight: 700; }
+.reservation-card__pay { display: inline-flex; align-items: center; gap: 8px; color: #334155; font-weight: 700; }
+
+.btn-maroc-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; border: 2px solid #e5e7eb; background: #fff; font-weight: 800; color: #0f172a; cursor: pointer; }
+.btn-maroc-secondary:hover { border-color: #059669; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(5, 150, 105, 0.15); }
+
+/* Statuts couleurs */
+.statut-attente { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+.statut-confirmee { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
+.statut-encours { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #5b21b6; }
+.statut-terminee { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #075985; }
+.statut-annulee { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #7f1d1d; }
+
+@media (max-width: 768px) {
+  .maroc-hero__inner { grid-template-columns: 1fr; }
+  .reservation-card__body { grid-template-columns: 1fr; }
+  .reservation-card__aside { justify-items: start; }
+}
 
 

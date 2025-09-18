@@ -82,9 +82,17 @@ export class DashboardLocateurComponent implements OnInit, AfterViewInit {
         this.mesAnnonces = [];
         this.filteredAnnonces = [];
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors du chargement de mes annonces:', error);
-      this.errorMessage = 'Erreur lors du chargement de mes annonces';
+      // Si le backend renvoie 404/204 pour "aucune annonce", on traite comme état vide, sans erreur visible
+      const status = error?.status;
+      if (status === 404 || status === 204) {
+        this.mesAnnonces = [];
+        this.filteredAnnonces = [];
+        this.errorMessage = '';
+      } else {
+        this.errorMessage = 'Erreur lors du chargement de mes annonces';
+      }
     } finally {
       this.isLoading = false;
     }

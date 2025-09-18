@@ -1,207 +1,534 @@
-<div class="mx-auto max-w-6xl p-4">
-  <div class="mb-4 flex items-center justify-between gap-3">
-    <h1 class="m-0 text-2xl font-extrabold text-slate-900"><i class="fas fa-home"></i> Gestion des Réservations - CAN 2025</h1>
-    <button class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-800 shadow" (click)="chargerReservations()" [disabled]="loading">
-      <i class="fas fa-sync-alt" [ngClass]="{ 'fa-spin': loading }"></i>
+<!-- Background rouge, vert et blanc -->
+<div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50">
+  <!-- Header compact -->
+  <div class="bg-white border-b-2 border-red-200 shadow-sm">
+    <div class="mx-auto max-w-6xl px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md">
+            <i class="fas fa-calendar-check text-xl text-white"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">Gestion des Réservations</h1>
+            <p class="text-gray-600 text-sm">CAN 2025 - Interface Locateur</p>
+          </div>
+        </div>
+        <button 
+          class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg" 
+          (click)="chargerReservations()" 
+          [disabled]="loading">
+          <i class="fas fa-sync-alt mr-2" [ngClass]="{ 'animate-spin': loading }"></i>
       Actualiser
     </button>
   </div>
-
-  <div class="mb-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-7" *ngIf="statistiques">
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
-      <div class="text-2xl font-extrabold text-maroc-vert">{{ statistiques.total }}</div>
-      <div class="text-sm font-semibold text-slate-600">Total</div>
-    </div>
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
-      <div class="text-2xl font-extrabold text-amber-600">{{ statistiques.enAttente }}</div>
-      <div class="text-sm font-semibold text-slate-600">En attente</div>
-    </div>
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
-      <div class="text-2xl font-extrabold text-emerald-600">{{ statistiques.confirmees }}</div>
-      <div class="text-sm font-semibold text-slate-600">Confirmées</div>
-    </div>
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
-      <div class="text-2xl font-extrabold text-sky-600">{{ statistiques.enCours }}</div>
-      <div class="text-sm font-semibold text-slate-600">En cours</div>
-    </div>
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
-      <div class="text-2xl font-extrabold text-slate-600">{{ statistiques.terminees }}</div>
-      <div class="text-sm font-semibold text-slate-600">Terminées</div>
-    </div>
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
-      <div class="text-2xl font-extrabold text-rose-600">{{ statistiques.annulees }}</div>
-      <div class="text-sm font-semibold text-slate-600">Annulées</div>
-    </div>
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-4 text-center shadow">
-      <div class="text-2xl font-extrabold text-maroc-rouge">{{ statistiques.revenus }}€</div>
-      <div class="text-sm font-semibold text-slate-600">Revenus</div>
     </div>
   </div>
 
-  <div class="mb-3 grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow">
-    <div class="grid gap-3 sm:grid-cols-3">
-      <label class="grid gap-1">
-        <span class="text-sm font-semibold text-slate-700">Statut</span>
-        <select class="rounded-lg border border-slate-300 px-3 py-2" [(ngModel)]="filtreStatut" (change)="page = 1">
-          <option value="TOUS">Tous les statuts</option>
-          <option value="EN_ATTENTE">En attente</option>
-          <option value="CONFIRMEE">Confirmée</option>
-          <option value="EN_COURS">En cours</option>
-          <option value="TERMINEE">Terminée</option>
-          <option value="ANNULEE">Annulée</option>
-        </select>
-      </label>
-      <label class="grid gap-1">
-        <span class="text-sm font-semibold text-slate-700">Période</span>
-        <select class="rounded-lg border border-slate-300 px-3 py-2" [(ngModel)]="filtrePeriode" (change)="page = 1">
-          <option value="TOUTES">Toutes les périodes</option>
-          <option value="FUTURES">Futures</option>
-          <option value="EN_COURS">En cours</option>
-          <option value="PASSEES">Passées</option>
-        </select>
-      </label>
-      <label class="grid gap-1">
-        <span class="text-sm font-semibold text-slate-700">Rechercher</span>
-        <input type="text" class="rounded-lg border border-slate-300 px-3 py-2" [(ngModel)]="recherche" (ngModelChange)="recherche = $event; page = 1" placeholder="Titre, adresse, locataire..." />
-      </label>
+  <!-- Container principal -->
+  <div class="mx-auto max-w-6xl px-4 py-6">
+    <!-- Information compacte -->
+    <div class="mb-6 bg-white border border-red-200 rounded-lg p-4 shadow-sm">
+      <div class="flex items-center space-x-3 mb-3">
+        <div class="p-2 bg-gradient-to-r from-red-500 to-red-600 rounded-lg">
+          <i class="fas fa-robot text-white"></i>
     </div>
+        <h3 class="text-lg font-bold text-gray-800">Gestion Automatique des Statuts</h3>
+      </div>
+      <div class="grid md:grid-cols-3 gap-3 mb-3">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+          <div class="flex items-center space-x-2 mb-1">
+            <i class="fas fa-clock text-red-500"></i>
+            <span class="font-semibold text-red-700 text-sm">EN_ATTENTE → ANNULEE</span>
+          </div>
+          <p class="text-xs text-red-600">Si non confirmée avant l'arrivée</p>
+        </div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+          <div class="flex items-center space-x-2 mb-1">
+            <i class="fas fa-check-circle text-green-500"></i>
+            <span class="font-semibold text-green-700 text-sm">CONFIRMEE → EN_COURS</span>
+          </div>
+          <p class="text-xs text-green-600">À la date d'arrivée</p>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div class="flex items-center space-x-2 mb-1">
+            <i class="fas fa-play text-blue-500"></i>
+            <span class="font-semibold text-blue-700 text-sm">EN_COURS → TERMINEE</span>
+        </div>
+          <p class="text-xs text-blue-600">À la date de départ</p>
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-3">
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-info-circle text-yellow-600"></i>
+          <p class="text-yellow-800 text-sm font-semibold">
+            Vous ne pouvez que <span class="text-green-600">confirmer</span> ou <span class="text-red-600">annuler</span> les réservations.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques compactes -->
+    <div class="mb-6" *ngIf="statistiques">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <!-- Total -->
+        <div class="bg-white border border-gray-200 rounded-lg p-3 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-8 h-8 mx-auto mb-2 bg-gradient-to-r from-gray-500 to-gray-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-chart-bar text-white text-sm"></i>
+          </div>
+          <div class="text-xl font-bold text-gray-800 mb-1">{{ statistiques.total }}</div>
+          <div class="text-xs font-semibold text-gray-600">Total</div>
+        </div>
+
+        <!-- En attente -->
+        <div class="bg-white border border-amber-200 rounded-lg p-3 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-8 h-8 mx-auto mb-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+            <i class="fas fa-clock text-white text-sm"></i>
+          </div>
+          <div class="text-xl font-bold text-amber-600 mb-1">{{ statistiques.enAttente }}</div>
+          <div class="text-xs font-semibold text-gray-600">En attente</div>
+        </div>
+
+        <!-- Confirmées -->
+        <div class="bg-white border border-green-200 rounded-lg p-3 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-8 h-8 mx-auto mb-2 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-check-circle text-white text-sm"></i>
+          </div>
+          <div class="text-xl font-bold text-green-600 mb-1">{{ statistiques.confirmees }}</div>
+          <div class="text-xs font-semibold text-gray-600">Confirmées</div>
+        </div>
+
+        <!-- En cours -->
+        <div class="bg-white border border-blue-200 rounded-lg p-3 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-8 h-8 mx-auto mb-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-play text-white text-sm"></i>
+          </div>
+          <div class="text-xl font-bold text-blue-600 mb-1">{{ statistiques.enCours }}</div>
+          <div class="text-xs font-semibold text-gray-600">En cours</div>
+        </div>
+
+        <!-- Terminées -->
+        <div class="bg-white border border-gray-200 rounded-lg p-3 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-8 h-8 mx-auto mb-2 bg-gradient-to-r from-gray-500 to-gray-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-flag-checkered text-white text-sm"></i>
+          </div>
+          <div class="text-xl font-bold text-gray-600 mb-1">{{ statistiques.terminees }}</div>
+          <div class="text-xs font-semibold text-gray-600">Terminées</div>
+        </div>
+
+        <!-- Annulées -->
+        <div class="bg-white border border-red-200 rounded-lg p-3 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-8 h-8 mx-auto mb-2 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-times-circle text-white text-sm"></i>
+    </div>
+          <div class="text-xl font-bold text-red-600 mb-1">{{ statistiques.annulees }}</div>
+          <div class="text-xs font-semibold text-gray-600">Annulées</div>
   </div>
 
-  <div class="mb-3 grid gap-3" *ngIf="!loading">
-    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow" *ngFor="let reservation of getReservationsPaginees()">
-      <div class="flex items-start justify-between gap-2 border-b pb-3">
-        <div class="text-sm font-semibold text-slate-700">📅 {{ formaterDate(reservation.dateArrivee || '') }} - {{ formaterDate(reservation.dateDepart || '') }}</div>
-        <span class="rounded-full border px-2 py-1 text-xs font-bold" [ngClass]="getClasseStatut(reservation.statut)">
-          {{ getIconeStatut(reservation.statut) }} {{ formaterStatut(reservation.statut) }}
-        </span>
-      </div>
-      <div class="grid gap-4 pt-3 md:grid-cols-3">
-        <div class="space-y-1">
-          <h4 class="m-0 text-base font-bold">🏠 Informations du logement</h4>
-          <p class="m-0"><strong>Titre :</strong> {{ reservation.annonce?.titre || 'Titre non disponible' }}</p>
-          <p class="m-0"><strong>📍 Adresse :</strong> {{ getAdresseFormatee(reservation) || 'Adresse non disponible' }}</p>
-          <p class="m-0"><strong>💰 Prix par nuit :</strong> {{ formaterPrix(reservation.prixParNuit || 0) }}</p>
-          <p class="m-0"><strong>🌙 Nuits :</strong> {{ reservation.nombreNuits || 0 }}</p>
+        <!-- Revenus -->
+        <div class="bg-white border border-green-200 rounded-lg p-3 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-8 h-8 mx-auto mb-2 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-euro-sign text-white text-sm"></i>
+          </div>
+          <div class="text-lg font-bold text-green-600 mb-1">{{ statistiques.revenus }}€</div>
+          <div class="text-xs font-semibold text-gray-600">Revenus</div>
         </div>
-        <div class="space-y-1">
-          <h4 class="m-0 text-base font-bold">👤 Informations du locataire</h4>
-          <p class="m-0"><strong>Nom :</strong> {{ reservation.locataire?.nom || 'Nom non disponible' }}</p>
-          <p class="m-0"><strong>Prénom :</strong> {{ reservation.locataire?.prenom || 'Prénom non disponible' }}</p>
-          <p class="m-0"><strong>📧 Email :</strong> {{ reservation.locataire?.email || 'Email non disponible' }}</p>
-          <p class="m-0"><strong>👥 Voyageurs :</strong> {{ reservation.nombreVoyageurs || 0 }}</p>
-        </div>
-        <div class="space-y-1">
-          <h4 class="m-0 text-base font-bold">📅 Dates et montants</h4>
-          <p class="m-0"><strong>📅 Arrivée :</strong> {{ formaterDate(reservation.dateArrivee || '') }}</p>
-          <p class="m-0"><strong>📅 Départ :</strong> {{ formaterDate(reservation.dateDepart || '') }}</p>
-          <p class="m-0"><strong>💳 Mode de paiement :</strong> {{ reservation.libelleStatut || 'Non spécifié' }}</p>
-          <p class="m-0"><strong>💰 Montant total :</strong> {{ formaterPrix(reservation.montantTotal || 0) }}</p>
-        </div>
-        <div class="space-y-1 md:col-span-3">
-          <h4 class="m-0 text-base font-bold">📝 Détails</h4>
-          <p class="m-0"><strong>📅 Création :</strong> {{ formaterDate(reservation.dateCreation || '') }}</p>
-          <p class="m-0"><strong>📝 Message :</strong> {{ reservation.messageProprietaire || 'Aucun message' }}</p>
-          <p class="m-0"><strong>🔄 Dernière modification :</strong> {{ formaterDate(reservation.dateModification || '') }}</p>
-        </div>
-      </div>
-      <div class="mt-3 flex flex-wrap items-center justify-center gap-2 border-t pt-3">
-        <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" *ngIf="reservation.annonce?.id" (click)="ouvrirPopupAnnonce(reservation.annonce.id)"><i class="fas fa-home"></i> Voir l'annonce</button>
-        <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" *ngIf="reservation.locataire?.id" (click)="ouvrirPopupLocataire(reservation.locataire.id)"><i class="fas fa-user"></i> Voir le locataire</button>
-        <button class="rounded-xl bg-emerald-600 px-3 py-1 font-semibold text-white disabled:opacity-60" *ngIf="reservation.statut === 'EN_ATTENTE'" (click)="confirmerReservation(reservation)">✅ Confirmer</button>
-        <button class="rounded-xl bg-amber-500 px-3 py-1 font-semibold text-slate-900 disabled:opacity-60" *ngIf="reservation.statut === 'EN_ATTENTE' || reservation.statut === 'CONFIRMEE'" (click)="ouvrirFormulaireStatut(reservation)">🔄 Changer statut</button>
-        <button class="rounded-xl bg-rose-600 px-3 py-1 font-semibold text-white disabled:opacity-60" *ngIf="reservation.statut === 'EN_ATTENTE' || reservation.statut === 'CONFIRMEE'" (click)="annulerReservation(reservation)">❌ Annuler</button>
       </div>
     </div>
 
-    <div class="flex items-center justify-center gap-3" *ngIf="getNombrePages() > 1">
-      <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800 disabled:opacity-60" [disabled]="page === 1" (click)="changerPage(page - 1)">← Précédent</button>
-      <span class="text-slate-700">Page {{ page }} sur {{ getNombrePages() }}</span>
-      <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800 disabled:opacity-60" [disabled]="page === getNombrePages()" (click)="changerPage(page + 1)">Suivant →</button>
-    </div>
-  </div>
-
-  <!-- Modale changement de statut -->
-  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="showStatutForm">
-    <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
-        <h2 class="m-0 text-lg font-extrabold text-slate-900">Changer le statut de la réservation</h2>
-        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerFormulaireStatut()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="px-5 py-4">
-        <form [formGroup]="statutForm" (ngSubmit)="changerStatutReservation()" class="grid gap-3">
-          <label class="grid gap-1">
-            <span class="text-sm font-semibold text-slate-700">Nouveau statut</span>
-            <select class="rounded-lg border border-slate-300 px-3 py-2" formControlName="nouveauStatut">
+    <!-- Filtres compacts -->
+    <div class="mb-6">
+      <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+          <i class="fas fa-filter mr-2 text-red-500"></i>
+          Filtres et Recherche
+        </h3>
+        <div class="grid gap-3 sm:grid-cols-3">
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <i class="fas fa-tag mr-2 text-red-500"></i>
+              Statut
+            </label>
+            <select 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all duration-200" 
+              [(ngModel)]="filtreStatut" 
+              (change)="page = 1">
+              <option value="TOUS">Tous les statuts</option>
               <option value="EN_ATTENTE">En attente</option>
               <option value="CONFIRMEE">Confirmée</option>
               <option value="EN_COURS">En cours</option>
               <option value="TERMINEE">Terminée</option>
               <option value="ANNULEE">Annulée</option>
             </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <i class="fas fa-calendar mr-2 text-green-500"></i>
+              Période
           </label>
-          <label class="grid gap-1">
-            <span class="text-sm font-semibold text-slate-700">Raison du changement (optionnel)</span>
-            <input type="text" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="raison" placeholder="Raison du changement de statut" />
+            <select 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-200" 
+              [(ngModel)]="filtrePeriode" 
+              (change)="page = 1">
+              <option value="TOUTES">Toutes les périodes</option>
+              <option value="FUTURES">Futures</option>
+              <option value="EN_COURS">En cours</option>
+              <option value="PASSEES">Passées</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <i class="fas fa-search mr-2 text-blue-500"></i>
+              Rechercher
           </label>
-          <label class="grid gap-1">
-            <span class="text-sm font-semibold text-slate-700">Commentaire (optionnel)</span>
-            <textarea class="rounded-lg border border-slate-300 px-3 py-2" formControlName="commentaire" rows="3" placeholder="Commentaire additionnel..."></textarea>
-          </label>
-        </form>
+            <input 
+              type="text" 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-200" 
+              [(ngModel)]="recherche" 
+              (ngModelChange)="recherche = $event; page = 1" 
+              placeholder="Titre, adresse, locataire..." />
+          </div>
       </div>
-      <div class="flex items-center justify-end gap-2 border-t bg-slate-50 px-5 py-3">
-        <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerFormulaireStatut()">Annuler</button>
-        <button class="rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-700 px-4 py-2 font-semibold text-white disabled:opacity-60" [disabled]="!statutForm.valid || loading" (click)="changerStatutReservation()">
-          <i class="fas fa-save" [ngClass]="{ 'fa-spin': loading }"></i>
-          Enregistrer
+      </div>
+    </div>
+
+    <!-- Liste des réservations compactes -->
+    <div class="space-y-4" *ngIf="!loading">
+      <div 
+        class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200" 
+        *ngFor="let reservation of getReservationsPaginees()">
+        
+        <!-- Header compact -->
+        <div class="p-4 border-b border-gray-100">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="p-2 bg-gradient-to-r from-red-500 to-red-600 rounded-lg">
+                <i class="fas fa-calendar-alt text-white text-sm"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-gray-800">
+                  {{ reservation.annonce?.titre || 'Titre non disponible' }}
+                </h3>
+                <p class="text-gray-600 text-sm">
+                  {{ formaterDate(reservation.dateArrivee || '') }} - {{ formaterDate(reservation.dateDepart || '') }}
+                </p>
+              </div>
+            </div>
+            <span 
+              class="px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1" 
+              [ngClass]="getClasseStatut(reservation.statut)">
+              <span>{{ getIconeStatut(reservation.statut) }}</span>
+              <span>{{ formaterStatut(reservation.statut) }}</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Contenu compact -->
+        <div class="p-4">
+          <div class="grid gap-4 md:grid-cols-3">
+            <!-- Logement -->
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2 mb-2">
+                <i class="fas fa-home text-red-500"></i>
+                <h4 class="text-sm font-bold text-gray-800">Logement</h4>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-tag text-gray-400 text-xs"></i>
+                  <p class="text-gray-700 text-sm font-medium">{{ reservation.annonce?.titre || 'Non disponible' }}</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-map-marker-alt text-gray-400 text-xs"></i>
+                  <p class="text-gray-600 text-xs">{{ getAdresseFormatee(reservation) || 'Non disponible' }}</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-euro-sign text-green-500 text-xs"></i>
+                  <p class="text-gray-700 text-sm font-semibold">{{ formaterPrix(reservation.prixParNuit || 0) }}/nuit</p>
+      </div>
+    </div>
+  </div>
+
+            <!-- Locataire -->
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2 mb-2">
+                <i class="fas fa-user text-green-500"></i>
+                <h4 class="text-sm font-bold text-gray-800">Locataire</h4>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-user text-gray-400 text-xs"></i>
+                  <p class="text-gray-700 text-sm font-medium">{{ reservation.locataire?.prenom || 'Prénom' }} {{ reservation.locataire?.nom || 'Nom' }}</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-envelope text-gray-400 text-xs"></i>
+                  <p class="text-gray-600 text-xs">{{ reservation.locataire?.email || 'Non disponible' }}</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-users text-blue-500 text-xs"></i>
+                  <p class="text-gray-700 text-sm">{{ reservation.nombreVoyageurs || 0 }} voyageur(s)</p>
+                </div>
+              </div>
+      </div>
+
+            <!-- Détails -->
+        <div class="space-y-2">
+              <div class="flex items-center space-x-2 mb-2">
+                <i class="fas fa-calendar text-blue-500"></i>
+                <h4 class="text-sm font-bold text-gray-800">Détails</h4>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-calendar-check text-green-500 text-xs"></i>
+                  <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateArrivee || '') }}</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-calendar-times text-red-500 text-xs"></i>
+                  <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateDepart || '') }}</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-euro-sign text-green-500 text-xs"></i>
+                  <p class="text-gray-800 text-sm font-bold">{{ formaterPrix(reservation.montantTotal || 0) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Information sur les transitions automatiques -->
+          <div class="mt-4" *ngIf="getInfoTransition(reservation.statut, reservation.dateArrivee, reservation.dateDepart)">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div class="flex items-center space-x-2">
+                <i class="fas fa-info-circle text-blue-500 text-sm"></i>
+                <p class="text-blue-700 text-sm font-medium">{{ getInfoTransition(reservation.statut, reservation.dateArrivee, reservation.dateDepart) }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions compactes -->
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              <button 
+                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors" 
+                *ngIf="reservation.annonce?.id" 
+                (click)="ouvrirPopupAnnonce(reservation.annonce.id)">
+                <i class="fas fa-home mr-1"></i>
+                Annonce
+              </button>
+              
+              <button 
+                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors" 
+                *ngIf="reservation.locataire?.id" 
+                (click)="ouvrirPopupLocataire(reservation.locataire.id)">
+                <i class="fas fa-user mr-1"></i>
+                Locataire
+              </button>
+              
+              <!-- Actions principales -->
+              <button 
+                class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-1 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+                *ngIf="peutConfirmer(reservation.statut, reservation.dateArrivee)" 
+                (click)="confirmerReservation(reservation)">
+                <i class="fas fa-check mr-1"></i>
+                Confirmer
+              </button>
+              
+              <button 
+                class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-1 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+                *ngIf="peutAnnuler(reservation.statut)" 
+                (click)="annulerReservation(reservation)">
+                <i class="fas fa-times mr-1"></i>
+                Annuler
+              </button>
+              
+              <!-- Indicateur automatique -->
+              <div 
+                class="bg-gray-100 border border-gray-300 px-3 py-1 rounded-lg text-xs font-medium text-gray-600 flex items-center space-x-1" 
+                *ngIf="reservation.statut === 'EN_COURS' || reservation.statut === 'TERMINEE' || reservation.statut === 'ANNULEE'">
+                <i class="fas fa-robot"></i>
+                <span>Automatique</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination compacte -->
+      <div class="flex items-center justify-center gap-3 mt-6" *ngIf="getNombrePages() > 1">
+        <button 
+          class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
+          [disabled]="page === 1" 
+          (click)="changerPage(page - 1)">
+          <i class="fas fa-chevron-left mr-1"></i>
+          Précédent
+        </button>
+        
+        <div class="flex items-center space-x-2">
+          <span class="text-gray-600 font-medium">Page</span>
+          <span class="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-lg font-bold text-sm">{{ page }}</span>
+          <span class="text-gray-600 font-medium">sur</span>
+          <span class="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-lg font-bold text-sm">{{ getNombrePages() }}</span>
+        </div>
+        
+        <button 
+          class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
+          [disabled]="page === getNombrePages()" 
+          (click)="changerPage(page + 1)">
+          Suivant
+          <i class="fas fa-chevron-right ml-1"></i>
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- Modale annonce -->
-  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="showAnnoncePopup">
-    <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
-        <h2 class="m-0 text-lg font-extrabold text-slate-900">Détails de l'annonce</h2>
-        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerPopupAnnonce()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="px-5 py-4" *ngIf="annonceSelectionnee">
-        <div class="space-y-2">
-          <h3 class="m-0 text-lg font-bold">{{ annonceSelectionnee.titre }}</h3>
-          <p class="m-0"><strong>📍 Adresse :</strong> {{ annonceSelectionnee.adresse }}</p>
-          <p class="m-0"><strong>💰 Prix :</strong> {{ formaterPrix(annonceSelectionnee.prix) }}</p>
-          <p class="m-0"><strong>🏠 Type :</strong> {{ annonceSelectionnee.type }}</p>
-          <p class="m-0"><strong>📝 Description :</strong> {{ annonceSelectionnee.description }}</p>
+    <!-- Modale annonce compacte -->
+    <div class="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4" *ngIf="showAnnoncePopup">
+      <div class="w-full max-w-lg overflow-hidden rounded-lg bg-white border border-gray-200 shadow-xl">
+        <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
+          <div class="flex items-center space-x-2">
+            <div class="p-1 bg-gradient-to-r from-red-500 to-red-600 rounded">
+              <i class="fas fa-home text-white text-sm"></i>
+            </div>
+            <h2 class="text-lg font-bold text-gray-800">Détails de l'annonce</h2>
+          </div>
+          <button 
+            class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-8 h-8 rounded-lg transition-colors" 
+            (click)="fermerPopupAnnonce()">
+            <i class="fas fa-times text-sm"></i>
+          </button>
         </div>
-      </div>
-      <div class="flex items-center justify-end gap-2 border-t bg-slate-50 px-5 py-3">
-        <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerPopupAnnonce()">Fermer</button>
+        <div class="p-4" *ngIf="annonceSelectionnee">
+          <div class="space-y-3">
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-tag text-red-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Titre</p>
+                <p class="text-gray-800 font-semibold">{{ annonceSelectionnee.titre }}</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-map-marker-alt text-green-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Adresse</p>
+                <p class="text-gray-800 font-medium">{{ annonceSelectionnee.adresse }}</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-euro-sign text-green-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Prix</p>
+                <p class="text-gray-800 font-bold text-lg">{{ formaterPrix(annonceSelectionnee.prix) }}</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-home text-blue-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Type</p>
+                <p class="text-gray-800 font-medium">{{ annonceSelectionnee.type }}</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-align-left text-purple-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Description</p>
+                <p class="text-gray-800 font-medium">{{ annonceSelectionnee.description }}</p>
       </div>
     </div>
   </div>
-
-  <!-- Modale locataire -->
-  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="showLocatairePopup">
-    <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-      <div class="flex items-center justify-between border-b bg-slate-50 px-5 py-3">
-        <h2 class="m-0 text-lg font-extrabold text-slate-900">Détails du locataire</h2>
-        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerPopupLocataire()"><i class="fas fa-times"></i></button>
       </div>
-      <div class="px-5 py-4" *ngIf="locataireSelectionne">
-        <div class="space-y-2">
-          <h3 class="m-0 text-lg font-bold">{{ locataireSelectionne.prenom }} {{ locataireSelectionne.nom }}</h3>
-          <p class="m-0"><strong>📧 Email :</strong> {{ locataireSelectionne.email }}</p>
-          <p class="m-0"><strong>📱 Téléphone :</strong> {{ locataireSelectionne.telephone }}</p>
-          <p class="m-0"><strong>📍 Adresse :</strong> {{ locataireSelectionne.adresse }}</p>
-          <p class="m-0"><strong>📅 Inscription :</strong> {{ formaterDate(locataireSelectionne.dateInscription) }}</p>
-          <p class="m-0"><strong>🏠 Réservations :</strong> {{ locataireSelectionne.nombreReservations }}</p>
-          <p class="m-0"><strong>⭐ Note moyenne :</strong> {{ locataireSelectionne.noteMoyenne }}/5</p>
-          <p class="m-0"><strong>📝 Bio :</strong> {{ locataireSelectionne.bio || 'Aucune description disponible' }}</p>
+        <div class="flex items-center justify-end gap-2 border-t border-gray-200 bg-gray-50 px-4 py-3">
+          <button 
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors" 
+            (click)="fermerPopupAnnonce()">
+            <i class="fas fa-times mr-1"></i>
+            Fermer
+          </button>
         </div>
       </div>
-      <div class="flex items-center justify-end gap-2 border-t bg-slate-50 px-5 py-3">
-        <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerPopupLocataire()">Fermer</button>
+    </div>
+
+    <!-- Modale locataire compacte -->
+    <div class="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4" *ngIf="showLocatairePopup">
+      <div class="w-full max-w-lg overflow-hidden rounded-lg bg-white border border-gray-200 shadow-xl">
+        <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
+          <div class="flex items-center space-x-2">
+            <div class="p-1 bg-gradient-to-r from-green-500 to-green-600 rounded">
+              <i class="fas fa-user text-white text-sm"></i>
+            </div>
+            <h2 class="text-lg font-bold text-gray-800">Détails du locataire</h2>
+          </div>
+          <button 
+            class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-8 h-8 rounded-lg transition-colors" 
+            (click)="fermerPopupLocataire()">
+            <i class="fas fa-times text-sm"></i>
+          </button>
+        </div>
+        <div class="p-4" *ngIf="locataireSelectionne">
+          <div class="space-y-3">
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-user text-green-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Nom complet</p>
+                <p class="text-gray-800 font-bold">{{ locataireSelectionne.prenom }} {{ locataireSelectionne.nom }}</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-envelope text-blue-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Email</p>
+                <p class="text-gray-800 font-medium">{{ locataireSelectionne.email }}</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-phone text-red-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Téléphone</p>
+                <p class="text-gray-800 font-medium">{{ locataireSelectionne.telephone }}</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-map-marker-alt text-purple-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Adresse</p>
+                <p class="text-gray-800 font-medium">{{ locataireSelectionne.adresse }}</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex items-start space-x-2">
+                <i class="fas fa-calendar-plus text-amber-500 mt-1 text-sm"></i>
+                <div>
+                  <p class="text-gray-600 text-xs">Inscription</p>
+                  <p class="text-gray-800 font-medium text-sm">{{ formaterDate(locataireSelectionne.dateInscription) }}</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-2">
+                <i class="fas fa-home text-cyan-500 mt-1 text-sm"></i>
+                <div>
+                  <p class="text-gray-600 text-xs">Réservations</p>
+                  <p class="text-gray-800 font-medium text-sm">{{ locataireSelectionne.nombreReservations }}</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-2">
+                <i class="fas fa-star text-yellow-500 mt-1 text-sm"></i>
+                <div>
+                  <p class="text-gray-600 text-xs">Note moyenne</p>
+                  <p class="text-gray-800 font-medium text-sm">{{ locataireSelectionne.noteMoyenne }}/5</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-align-left text-gray-500 mt-1 text-sm"></i>
+              <div>
+                <p class="text-gray-600 text-xs">Bio</p>
+                <p class="text-gray-800 font-medium text-sm">{{ locataireSelectionne.bio || 'Aucune description disponible' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 border-t border-gray-200 bg-gray-50 px-4 py-3">
+          <button 
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors" 
+            (click)="fermerPopupLocataire()">
+            <i class="fas fa-times mr-1"></i>
+            Fermer
+          </button>
+        </div>
       </div>
     </div>
   </div>

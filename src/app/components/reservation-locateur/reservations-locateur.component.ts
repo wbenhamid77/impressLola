@@ -85,10 +85,7 @@ export class ReservationsLocateurComponent implements OnInit, OnDestroy {
   recherche = '';
   filtrePeriode = 'TOUTES';
   
-  // Formulaire de modification de statut
-  showStatutForm = false;
-  reservationSelectionnee: ReservationDetails | null = null;
-  statutForm: FormGroup;
+  // Note: Formulaire de changement de statut supprimé - seules les actions confirmer/annuler sont disponibles
   
   // Pagination
   page = 1;
@@ -102,15 +99,8 @@ export class ReservationsLocateurComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private annonceService: AnnonceService,
     private entityDetailsService: EntityDetailsService,
-    private http: HttpClient,
-    private fb: FormBuilder
-  ) {
-    this.statutForm = this.fb.group({
-      nouveauStatut: ['', Validators.required],
-      raison: [''],
-      commentaire: ['']
-    });
-  }
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.chargerReservations();
@@ -258,50 +248,22 @@ export class ReservationsLocateurComponent implements OnInit, OnDestroy {
 
   // ===== GESTION DES STATUTS =====
   
-  ouvrirFormulaireStatut(reservation: ReservationDetails): void {
-    this.reservationSelectionnee = reservation;
-    this.statutForm.patchValue({
-      nouveauStatut: reservation.statut,
-      raison: '',
-      commentaire: ''
-    });
-    this.showStatutForm = true;
-  }
-
-  changerStatutReservation(): void {
-    if (!this.reservationSelectionnee || !this.statutForm.valid) return;
-
-    const { nouveauStatut, raison, commentaire } = this.statutForm.value;
-    
-    this.loading = true;
-    this.error = '';
-    this.success = '';
-
-    // Appel API pour changer le statut
-    this.http.put<any>(`http://localhost:8083/api/reservations/${this.reservationSelectionnee.id}/statut`, {
-      statut: nouveauStatut,
-      raison: raison,
-      commentaire: commentaire
-    }).pipe(
-      takeUntil(this.destroy$),
-      finalize(() => this.loading = false)
-    ).subscribe({
-      next: (response) => {
-        this.success = `Statut de la réservation modifié avec succès en "${nouveauStatut}"`;
-        this.showStatutForm = false;
-        this.chargerReservations(); // Recharger pour mettre à jour l'affichage
-      },
-      error: (err) => {
-        console.error('Erreur lors du changement de statut:', err);
-        this.error = 'Erreur lors du changement de statut';
-      }
-    });
-  }
+  // Note: Avec la nouvelle logique automatique, le locateur ne peut que confirmer ou annuler
+  // Les autres transitions (EN_COURS, TERMINEE) sont gérées automatiquement par le scheduler
 
   // ===== ACTIONS SUR LES RÉSERVATIONS =====
   
   confirmerReservation(reservation: ReservationDetails): void {
-    if (!confirm('Êtes-vous sûr de vouloir confirmer cette réservation ?')) return;
+    // Vérifier si la confirmation est encore possible
+    const dateArrivee = new Date(reservation.dateArrivee || '');
+    const maintenant = new Date();
+    
+    if (dateArrivee < maintenant) {
+      this.error = 'Impossible de confirmer une réservation après la date d\'arrivée. Le système l\'annulera automatiquement.';
+      return;
+    }
+
+    if (!confirm('Êtes-vous sûr de vouloir confirmer cette réservation ?\n\nElle passera automatiquement en cours à la date d\'arrivée.')) return;
 
     this.loading = true;
     this.error = '';
@@ -314,18 +276,22 @@ export class ReservationsLocateurComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (response) => {
-          this.success = 'Réservation confirmée avec succès';
+          this.success = 'Réservation confirmée avec succès. Elle passera automatiquement en cours à la date d\'arrivée.';
           this.chargerReservations();
         },
         error: (err) => {
           console.error('Erreur lors de la confirmation:', err);
-          this.error = 'Erreur lors de la confirmation';
+          if (err.status === 400) {
+            this.error = 'Impossible de confirmer cette réservation. La date d\'arrivée est peut-être dépassée.';
+          } else {
+            this.error = 'Erreur lors de la confirmation de la réservation';
+          }
         }
       });
   }
 
   annulerReservation(reservation: ReservationDetails): void {
-    if (!confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) return;
+    if (!confirm('Êtes-vous sûr de vouloir annuler cette réservation ?\n\nCette action est définitive.')) return;
 
     this.loading = true;
     this.error = '';
@@ -390,11 +356,7 @@ export class ReservationsLocateurComponent implements OnInit, OnDestroy {
     this.locataireSelectionne = null;
   }
 
-  fermerFormulaireStatut(): void {
-    this.showStatutForm = false;
-    this.reservationSelectionnee = null;
-    this.statutForm.reset();
-  }
+  // Méthode supprimée - plus de formulaire de changement de statut
 
   // ===== FILTRAGE ET RECHERCHE =====
   
@@ -497,13 +459,13 @@ export class ReservationsLocateurComponent implements OnInit, OnDestroy {
 
   getClasseStatut(statut: string): string {
     const classes: { [key: string]: string } = {
-      'EN_ATTENTE': 'status-en-attente',
-      'CONFIRMEE': 'status-confirmee',
-      'EN_COURS': 'status-en-cours',
-      'TERMINEE': 'status-terminee',
-      'ANNULEE': 'status-annulee'
+      'EN_ATTENTE': 'bg-amber-100 border border-amber-300 text-amber-700',
+      'CONFIRMEE': 'bg-green-100 border border-green-300 text-green-700',
+      'EN_COURS': 'bg-blue-100 border border-blue-300 text-blue-700',
+      'TERMINEE': 'bg-gray-100 border border-gray-300 text-gray-700',
+      'ANNULEE': 'bg-red-100 border border-red-300 text-red-700'
     };
-    return classes[statut] || '';
+    return classes[statut] || 'bg-gray-100 border border-gray-300 text-gray-700';
   }
 
   getIconeStatut(statut: string): string {
@@ -515,6 +477,58 @@ export class ReservationsLocateurComponent implements OnInit, OnDestroy {
       'ANNULEE': '❌'
     };
     return icones[statut] || '❓';
+  }
+
+  // ===== INFORMATIONS SUR LES TRANSITIONS AUTOMATIQUES =====
+  
+  getInfoTransition(statut: string, dateArrivee?: string, dateDepart?: string): string {
+    const maintenant = new Date();
+    const arrivee = dateArrivee ? new Date(dateArrivee) : null;
+    const depart = dateDepart ? new Date(dateDepart) : null;
+    
+    switch (statut) {
+      case 'EN_ATTENTE':
+        if (arrivee && arrivee < maintenant) {
+          return '⚠️ Sera annulée automatiquement (date d\'arrivée dépassée)';
+        }
+        return '💡 Confirmez avant la date d\'arrivée pour valider la réservation';
+        
+      case 'CONFIRMEE':
+        if (arrivee && arrivee <= maintenant) {
+          return '🔄 Passera automatiquement en cours aujourd\'hui';
+        }
+        return '⏰ Passera automatiquement en cours à la date d\'arrivée';
+        
+      case 'EN_COURS':
+        if (depart && depart <= maintenant) {
+          return '🏁 Se terminera automatiquement aujourd\'hui';
+        }
+        return '⏰ Se terminera automatiquement à la date de départ';
+        
+      case 'TERMINEE':
+        return '✅ Séjour terminé avec succès';
+        
+      case 'ANNULEE':
+        return '❌ Réservation annulée';
+        
+      default:
+        return '';
+    }
+  }
+
+  peutConfirmer(statut: string, dateArrivee?: string): boolean {
+    if (statut !== 'EN_ATTENTE') return false;
+    
+    if (!dateArrivee) return true;
+    
+    const arrivee = new Date(dateArrivee);
+    const maintenant = new Date();
+    
+    return arrivee > maintenant;
+  }
+
+  peutAnnuler(statut: string): boolean {
+    return statut === 'EN_ATTENTE' || statut === 'CONFIRMEE';
   }
 
   // ===== UTILITAIRES SUPPLÉMENTAIRES =====

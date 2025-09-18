@@ -45,6 +45,22 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
     this.chargerAnnonces();
   }
 
+  /**
+   * Vérifie si l'utilisateur connecté est un locataire
+   */
+  estLocataire(): boolean {
+    const userType = localStorage.getItem('userType');
+    return userType === 'LOCATAIRE';
+  }
+
+  /**
+   * Vérifie si l'utilisateur connecté est un locateur
+   */
+  estLocateur(): boolean {
+    const userType = localStorage.getItem('userType');
+    return userType === 'LOCATEUR';
+  }
+
   ngAfterViewInit(): void {
     // Initialize AOS
     AOS.init({

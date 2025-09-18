@@ -536,13 +536,13 @@ export class ReservationsLocataireComponent implements OnInit, OnDestroy {
 
   getStatutClass(statut: string): string {
     const classes = {
-      'EN_ATTENTE': 'statut-attente',
-      'CONFIRMEE': 'statut-confirmee',
-      'EN_COURS': 'statut-encours',
-      'TERMINEE': 'statut-terminee',
-      'ANNULEE': 'statut-annulee'
+      'EN_ATTENTE': 'bg-amber-100 border border-amber-300 text-amber-700',
+      'CONFIRMEE': 'bg-green-100 border border-green-300 text-green-700',
+      'EN_COURS': 'bg-blue-100 border border-blue-300 text-blue-700',
+      'TERMINEE': 'bg-gray-100 border border-gray-300 text-gray-700',
+      'ANNULEE': 'bg-red-100 border border-red-300 text-red-700'
     };
-    return classes[statut as keyof typeof classes] || 'statut-defaut';
+    return classes[statut as keyof typeof classes] || 'bg-gray-100 border border-gray-300 text-gray-700';
   }
 
   getStatutLabel(statut: string): string {
@@ -562,6 +562,10 @@ export class ReservationsLocataireComponent implements OnInit, OnDestroy {
     ].filter(Boolean);
     
     return parts.join(', ');
+  }
+
+  getMaxDisplayed(): number {
+    return Math.min(this.page * this.reservationsParPage, this.totalReservations);
   }
 
   // ===== CALCULS ET FORMATAGE =====

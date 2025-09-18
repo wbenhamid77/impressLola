@@ -1,204 +1,647 @@
-<div class="mx-auto max-w-6xl p-4">
-  <div class="mb-4 flex items-start justify-between gap-3">
+<!-- Background rouge, vert et blanc -->
+<div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50">
+  <!-- Header compact -->
+  <div class="bg-white border-b-2 border-red-200 shadow-sm">
+    <div class="mx-auto max-w-6xl px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-md">
+            <mat-icon class="text-white">calendar_today</mat-icon>
+          </div>
     <div>
-      <h1 class="m-0 text-2xl font-extrabold text-slate-900">Mes réservations</h1>
-      <p class="m-0 text-slate-600">Gérez vos réservations, filtres et favoris</p>
+            <h1 class="text-2xl font-bold text-gray-800">Mes Réservations</h1>
+            <p class="text-gray-600 text-sm">Gérez vos réservations et favoris</p>
+          </div>
     </div>
-    <button class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-700 px-4 py-2 font-bold text-white shadow" (click)="ouvrirModalCreation()">
-      <mat-icon>add</mat-icon>
+        <button 
+          class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg" 
+          (click)="ouvrirModalCreation()">
+          <mat-icon class="mr-2">add</mat-icon>
       Nouvelle réservation
     </button>
   </div>
-
-  <div class="mb-3 grid gap-2" *ngIf="error || success" (click)="effacerMessage()">
-    <div class="inline-flex items-center gap-2 rounded-lg border border-rose-300/60 bg-rose-50 px-3 py-2 text-rose-700" *ngIf="error">
-      <mat-icon>error</mat-icon>
-      {{ error }}
-    </div>
-    <div class="inline-flex items-center gap-2 rounded-lg border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-emerald-700" *ngIf="success">
-      <mat-icon>check_circle</mat-icon>
-      {{ success }}
     </div>
   </div>
 
-  <div class="mb-3 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4" *ngIf="statistiques">
-    <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow" *ngFor="let stat of statistiquesArray" [ngClass]="getStatClass(stat.key)">
-      <div class="grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-r from-maroc-vert to-emerald-700 text-white"><mat-icon>{{ stat.icon }}</mat-icon></div>
-      <div>
-        <div class="text-xl font-extrabold text-slate-900">{{ stat.value }}</div>
-        <div class="text-sm font-semibold text-slate-500">{{ stat.label }}</div>
+  <!-- Container principal -->
+  <div class="mx-auto max-w-6xl px-4 py-6">
+
+    <!-- Messages d'erreur/succès -->
+    <div class="mb-6" *ngIf="error || success" (click)="effacerMessage()">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-3" *ngIf="error">
+        <div class="flex items-center space-x-2">
+          <mat-icon class="text-red-500">error</mat-icon>
+          <p class="text-red-700 font-medium">{{ error }}</p>
+        </div>
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded-lg p-3" *ngIf="success">
+        <div class="flex items-center space-x-2">
+          <mat-icon class="text-green-500">check_circle</mat-icon>
+          <p class="text-green-700 font-medium">{{ success }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques améliorées -->
+    <div class="mb-8" *ngIf="statistiques">
+      <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800 flex items-center">
+            <mat-icon class="mr-2 text-blue-500">analytics</mat-icon>
+            Vue d'ensemble de vos réservations
+          </h2>
+          <div class="text-sm text-gray-500">
+            {{ statistiques.total }} réservation(s) au total
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4 text-center hover:shadow-md transition-shadow" *ngFor="let stat of statistiquesArray">
+            <div class="w-10 h-10 mx-auto mb-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center shadow-sm">
+              <mat-icon class="text-white">{{ stat.icon }}</mat-icon>
+            </div>
+            <div class="text-2xl font-bold text-gray-800 mb-1">{{ stat.value }}</div>
+            <div class="text-sm font-semibold text-gray-600">{{ stat.label }}</div>
       </div>
     </div>
   </div>
-
-  <div class="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-3 shadow">
-    <div class="relative inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
-      <mat-icon>search</mat-icon>
-      <input type="text" class="border-0 outline-none" placeholder="Rechercher (annonce, adresse, locateur)" [(ngModel)]="recherche" (ngModelChange)="appliquerFiltres()" />
     </div>
-    <select class="rounded-lg border border-slate-200 bg-white px-3 py-2" [(ngModel)]="filtreStatut" (change)="appliquerFiltres()">
-      <option value="">Statut: Tous</option>
+
+    <!-- Filtres et recherche améliorés -->
+    <div class="mb-8">
+      <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800 flex items-center">
+            <mat-icon class="mr-2 text-purple-500">tune</mat-icon>
+            Filtres et Recherche
+          </h2>
+          <div class="text-sm text-gray-500">
+            Trouvez rapidement vos réservations
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-red-500">search</mat-icon>
+              Rechercher
+            </label>
+            <div class="relative">
+              <input 
+                type="text" 
+                class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 pl-10 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all duration-200" 
+                placeholder="Annonce, adresse, locateur..." 
+                [(ngModel)]="recherche" 
+                (ngModelChange)="appliquerFiltres()" />
+              <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">search</mat-icon>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-green-500">label</mat-icon>
+              Statut
+            </label>
+            <select 
+              class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-200" 
+              [(ngModel)]="filtreStatut" 
+              (change)="appliquerFiltres()">
+              <option value="">Tous les statuts</option>
       <option value="EN_ATTENTE">En attente</option>
       <option value="CONFIRMEE">Confirmée</option>
       <option value="EN_COURS">En cours</option>
       <option value="TERMINEE">Terminée</option>
       <option value="ANNULEE">Annulée</option>
     </select>
-    <select class="rounded-lg border border-slate-200 bg-white px-3 py-2" [(ngModel)]="filtrePeriode" (change)="appliquerFiltres()">
-      <option value="">Période: Toutes</option>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-blue-500">calendar_today</mat-icon>
+              Période
+            </label>
+            <select 
+              class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-200" 
+              [(ngModel)]="filtrePeriode" 
+              (change)="appliquerFiltres()">
+              <option value="">Toutes les périodes</option>
       <option value="FUTURES">Futures</option>
       <option value="EN_COURS">En cours</option>
       <option value="PASSEES">Passées</option>
     </select>
   </div>
-
-  <div class="mb-3 flex gap-2">
-    <button class="rounded-xl border px-3 py-1 font-semibold" [ngClass]="ongletActif==='toutes' ? 'border-maroc-vert bg-maroc-vert text-white' : 'border-slate-200 bg-white'" (click)="changerOnglet(0)">Toutes</button>
-    <button class="rounded-xl border px-3 py-1 font-semibold" [ngClass]="ongletActif==='futures' ? 'border-maroc-vert bg-maroc-vert text-white' : 'border-slate-200 bg-white'" (click)="changerOnglet(1)">Futures</button>
-    <button class="rounded-xl border px-3 py-1 font-semibold" [ngClass]="ongletActif==='passees' ? 'border-maroc-vert bg-maroc-vert text-white' : 'border-slate-200 bg-white'" (click)="changerOnglet(2)">Passées</button>
+        </div>
+      </div>
   </div>
 
-  <ng-container *ngIf="ongletActif==='toutes'">
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-6 text-slate-500" *ngIf="totalReservations === 0">
-      <div class="text-center">
-        <div class="mb-1 text-2xl">ℹ️</div>
-        <div>Aucune réservation trouvée.</div>
+    <!-- Onglets améliorés -->
+    <div class="mb-8">
+      <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800 flex items-center">
+            <mat-icon class="mr-2 text-indigo-500">view_list</mat-icon>
+            Mes Réservations
+          </h2>
+          <div class="text-sm text-gray-500">
+            Organisez vos réservations par catégorie
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button 
+            class="px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2" 
+            [ngClass]="ongletActif==='toutes' ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'" 
+            (click)="changerOnglet(0)">
+            <mat-icon class="text-sm">list</mat-icon>
+            <span>Toutes</span>
+          </button>
+          <button 
+            class="px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2" 
+            [ngClass]="ongletActif==='futures' ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'" 
+            (click)="changerOnglet(1)">
+            <mat-icon class="text-sm">schedule</mat-icon>
+            <span>Futures</span>
+          </button>
+          <button 
+            class="px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2" 
+            [ngClass]="ongletActif==='passees' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'" 
+            (click)="changerOnglet(2)">
+            <mat-icon class="text-sm">history</mat-icon>
+            <span>Passées</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="relative mb-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow" *ngFor="let reservation of reservationsAffichees; trackBy: trackByReservationId" [ngClass]="getCardClass(reservation.statut)">
-      <div class="absolute right-3 top-3 inline-flex items-center gap-2 rounded-full border px-2 py-1 text-xs font-bold" [ngClass]="getStatutClass(reservation.statut)">
-        <mat-icon>{{ getStatutIcon(reservation.statut) }}</mat-icon>
-        <span>{{ getStatutLabel(reservation.statut) }}</span>
+    <ng-container *ngIf="ongletActif==='toutes'">
+      <!-- Message vide amélioré -->
+      <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-sm" *ngIf="totalReservations === 0">
+        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+          <mat-icon class="text-gray-400 text-2xl">inbox</mat-icon>
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Aucune réservation trouvée</h3>
+        <p class="text-gray-600 mb-4">Il semble que vous n'ayez pas encore de réservations.</p>
+        <button 
+          class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+          (click)="ouvrirModalCreation()">
+          <mat-icon class="mr-2 text-sm">add</mat-icon>
+          Créer une réservation
+        </button>
       </div>
-      <div class="grid grid-cols-1 gap-4 p-4 md:grid-cols-3">
-        <div class="md:col-span-2">
-          <h3 class="m-0 text-lg font-extrabold text-slate-900">{{ reservation.annonce.titre || 'Annonce' }}</h3>
-          <div class="mt-1 inline-flex items-center gap-2 text-slate-600">
-            <mat-icon>place</mat-icon>
-            {{ getAdresseFormatee(reservation) }}
+
+      <!-- Liste des réservations organisées -->
+      <div class="space-y-6" *ngIf="totalReservations > 0">
+        <div 
+          class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200" 
+          *ngFor="let reservation of reservationsAffichees; trackBy: trackByReservationId">
+          
+          <!-- Header compact -->
+          <div class="p-4 border-b border-gray-100">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="p-2 bg-gradient-to-r from-green-500 to-green-600 rounded-lg">
+                  <mat-icon class="text-white text-sm">home</mat-icon>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-800">
+                    {{ reservation.annonce.titre || 'Annonce' }}
+                  </h3>
+                  <p class="text-gray-600 text-sm">
+                    {{ formaterDate(reservation.dateArrivee) }} - {{ formaterDate(reservation.dateDepart) }}
+                  </p>
+                </div>
+              </div>
+              <span 
+                class="px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1" 
+                [ngClass]="getStatutClass(reservation.statut)">
+                <mat-icon class="text-xs">{{ getStatutIcon(reservation.statut) }}</mat-icon>
+                <span>{{ getStatutLabel(reservation.statut) }}</span>
+              </span>
+            </div>
           </div>
-          <div class="mt-2 flex flex-wrap items-center gap-3 text-slate-700">
-            <span class="inline-flex items-center gap-2"><mat-icon>calendar_today</mat-icon>{{ formaterDate(reservation.dateArrivee) }} → {{ formaterDate(reservation.dateDepart) }}</span>
-            <span class="inline-flex items-center gap-2" *ngIf="reservation.nombreNuits != null"><mat-icon>night_shelter</mat-icon>{{ reservation.nombreNuits }} nuit(s)</span>
-            <span class="inline-flex items-center gap-2" *ngIf="reservation.nombreVoyageurs != null"><mat-icon>groups</mat-icon>{{ reservation.nombreVoyageurs }} voyageur(s)</span>
+
+          <!-- Contenu compact -->
+          <div class="p-4">
+            <div class="grid gap-4 md:grid-cols-3">
+              <!-- Logement -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-red-500 text-sm">home</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Logement</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-gray-400 text-xs">place</mat-icon>
+                    <p class="text-gray-700 text-sm font-medium">{{ getAdresseFormatee(reservation) }}</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-green-500 text-xs">euro</mat-icon>
+                    <p class="text-gray-700 text-sm font-semibold">{{ formaterPrix(reservation.prixTotal) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dates -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-blue-500 text-sm">calendar_today</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Dates</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-green-500 text-xs">event_available</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateArrivee) }}</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-red-500 text-xs">event_busy</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateDepart) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Détails -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-purple-500 text-sm">info</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Détails</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2" *ngIf="reservation.nombreNuits != null">
+                    <mat-icon class="text-blue-500 text-xs">night_shelter</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ reservation.nombreNuits }} nuit(s)</p>
+                  </div>
+                  <div class="flex items-center space-x-2" *ngIf="reservation.nombreVoyageurs != null">
+                    <mat-icon class="text-green-500 text-xs">groups</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ reservation.nombreVoyageurs }} voyageur(s)</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-purple-500 text-xs">credit_card</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterModePaiement(reservation.modePaiement) }}</p>
+                  </div>
           </div>
         </div>
-        <div class="grid content-center justify-items-end gap-2">
-          <div class="text-right">
-            <div class="text-xl font-extrabold text-maroc-vert">{{ formaterPrix(reservation.prixTotal) }}</div>
-            <div class="text-sm text-slate-500">Total</div>
           </div>
-          <div class="inline-flex items-center gap-2 text-slate-700"><mat-icon>credit_card</mat-icon>{{ formaterModePaiement(reservation.modePaiement) }}</div>
-          <div class="inline-flex items-center gap-2">
-            <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" (click)="voirDetails(reservation)">
-              <mat-icon>visibility</mat-icon>
-              Détails
+
+            <!-- Actions compactes -->
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex items-center justify-center">
+                <button 
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+                  (click)="voirDetails(reservation)">
+                  <mat-icon class="mr-1 text-sm">visibility</mat-icon>
+                  Voir les détails
             </button>
+              </div>
           </div>
         </div>
       </div>
     </div>
 
-    <mat-paginator class="mt-2"
+        <!-- Pagination améliorée -->
+        <div class="mt-8 bg-white border border-gray-200 rounded-xl p-4 shadow-sm" *ngIf="totalReservations > reservationsParPage">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-600">
+              Affichage de {{ (page - 1) * reservationsParPage + 1 }} à {{ getMaxDisplayed() }} sur {{ totalReservations }} réservation(s)
+            </div>
+            <mat-paginator 
+              class="bg-transparent"
       [length]="totalReservations"
       [pageSize]="reservationsParPage"
       [pageIndex]="page - 1"
       [pageSizeOptions]="[reservationsParPage]"
       (page)="changerPage($event)">
     </mat-paginator>
+          </div>
+        </div>
   </ng-container>
 
   <ng-container *ngIf="ongletActif==='futures'">
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-6 text-slate-500" *ngIf="reservationsFutures.length === 0">
-      <div class="text-center">
-        <div class="mb-1 text-2xl">📅</div>
-        <div>Aucune réservation future.</div>
+      <!-- Message vide amélioré -->
+      <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-sm" *ngIf="reservationsFutures.length === 0">
+        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full flex items-center justify-center">
+          <mat-icon class="text-green-400 text-2xl">schedule</mat-icon>
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Aucune réservation future</h3>
+        <p class="text-gray-600 mb-4">Vous n'avez pas de réservations à venir pour le moment.</p>
+        <button 
+          class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+          (click)="ouvrirModalCreation()">
+          <mat-icon class="mr-2 text-sm">add</mat-icon>
+          Créer une réservation
+        </button>
+      </div>
+
+      <!-- Liste des réservations futures organisées -->
+      <div class="space-y-6" *ngIf="reservationsFutures.length > 0">
+        <div 
+          class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200" 
+          *ngFor="let reservation of reservationsFutures">
+          
+          <!-- Header compact -->
+          <div class="p-4 border-b border-gray-100">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="p-2 bg-gradient-to-r from-green-500 to-green-600 rounded-lg">
+                  <mat-icon class="text-white text-sm">schedule</mat-icon>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-800">
+                    {{ reservation.annonce.titre || 'Annonce' }}
+                  </h3>
+                  <p class="text-gray-600 text-sm">
+                    {{ formaterDate(reservation.dateArrivee) }} - {{ formaterDate(reservation.dateDepart) }}
+                  </p>
+                </div>
+              </div>
+              <span 
+                class="px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1" 
+                [ngClass]="getStatutClass(reservation.statut)">
+                <mat-icon class="text-xs">{{ getStatutIcon(reservation.statut) }}</mat-icon>
+                <span>{{ getStatutLabel(reservation.statut) }}</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Contenu compact -->
+          <div class="p-4">
+            <div class="grid gap-4 md:grid-cols-3">
+              <!-- Logement -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-red-500 text-sm">home</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Logement</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-gray-400 text-xs">place</mat-icon>
+                    <p class="text-gray-700 text-sm font-medium">{{ getAdresseFormatee(reservation) }}</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-green-500 text-xs">euro</mat-icon>
+                    <p class="text-gray-700 text-sm font-semibold">{{ formaterPrix(reservation.prixTotal) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dates -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-blue-500 text-sm">calendar_today</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Dates</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-green-500 text-xs">event_available</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateArrivee) }}</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-red-500 text-xs">event_busy</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateDepart) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Détails -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-purple-500 text-sm">info</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Détails</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2" *ngIf="reservation.nombreNuits != null">
+                    <mat-icon class="text-blue-500 text-xs">night_shelter</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ reservation.nombreNuits }} nuit(s)</p>
+                  </div>
+                  <div class="flex items-center space-x-2" *ngIf="reservation.nombreVoyageurs != null">
+                    <mat-icon class="text-green-500 text-xs">groups</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ reservation.nombreVoyageurs }} voyageur(s)</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-purple-500 text-xs">credit_card</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterModePaiement(reservation.modePaiement) }}</p>
+                  </div>
+                </div>
       </div>
     </div>
 
-    <div class="mb-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow" *ngFor="let reservation of reservationsFutures" [ngClass]="getCardClass(reservation.statut)">
-      <div class="flex items-start justify-between gap-3 border-b bg-slate-50 p-4">
-        <div>
-          <h3 class="m-0 text-lg font-extrabold text-slate-900">{{ reservation.annonce.titre || 'Annonce' }}</h3>
-          <div class="inline-flex items-center gap-2 text-slate-600"><mat-icon>place</mat-icon>{{ getAdresseFormatee(reservation) }}</div>
+            <!-- Actions compactes -->
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex items-center justify-center">
+                <button 
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+                  (click)="voirDetails(reservation)">
+                  <mat-icon class="mr-1 text-sm">visibility</mat-icon>
+                  Voir les détails
+                </button>
         </div>
-        <div class="inline-flex items-center gap-2 rounded-full border px-2 py-1 text-xs font-bold" [ngClass]="getStatutClass(reservation.statut)">
-          <mat-icon>{{ getStatutIcon(reservation.statut) }}</mat-icon>
-          {{ getStatutLabel(reservation.statut) }}
         </div>
-      </div>
-      <div class="grid gap-3 p-4 md:grid-cols-3">
-        <div class="inline-flex items-center gap-2 md:col-span-2"><mat-icon>calendar_today</mat-icon>Du {{ formaterDate(reservation.dateArrivee) }} au {{ formaterDate(reservation.dateDepart) }}</div>
-        <div class="inline-flex items-center gap-2"><mat-icon>euro</mat-icon>{{ formaterPrix(reservation.prixTotal) }}</div>
-        <div class="md:col-span-3">
-          <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" (click)="voirDetails(reservation)"><mat-icon>visibility</mat-icon> Détails</button>
         </div>
       </div>
     </div>
   </ng-container>
 
   <ng-container *ngIf="ongletActif==='passees'">
-    <div class="grid place-items-center rounded-xl border border-slate-200 bg-white p-6 text-slate-500" *ngIf="reservationsPassees.length === 0">
-      <div class="text-center">
-        <div class="mb-1 text-2xl">✔️</div>
-        <div>Aucune réservation passée.</div>
+      <!-- Message vide amélioré -->
+      <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-sm" *ngIf="reservationsPassees.length === 0">
+        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
+          <mat-icon class="text-blue-400 text-2xl">history</mat-icon>
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Aucune réservation passée</h3>
+        <p class="text-gray-600 mb-4">Vous n'avez pas encore d'historique de réservations.</p>
+        <button 
+          class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+          (click)="ouvrirModalCreation()">
+          <mat-icon class="mr-2 text-sm">add</mat-icon>
+          Créer une réservation
+        </button>
+      </div>
+
+      <!-- Liste des réservations passées organisées -->
+      <div class="space-y-6" *ngIf="reservationsPassees.length > 0">
+        <div 
+          class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200" 
+          *ngFor="let reservation of reservationsPassees">
+          
+          <!-- Header compact -->
+          <div class="p-4 border-b border-gray-100">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="p-2 bg-gradient-to-r from-gray-500 to-gray-600 rounded-lg">
+                  <mat-icon class="text-white text-sm">history</mat-icon>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-gray-800">
+                    {{ reservation.annonce.titre || 'Annonce' }}
+                  </h3>
+                  <p class="text-gray-600 text-sm">
+                    {{ formaterDate(reservation.dateArrivee) }} - {{ formaterDate(reservation.dateDepart) }}
+                  </p>
+                </div>
+              </div>
+              <span 
+                class="px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1" 
+                [ngClass]="getStatutClass(reservation.statut)">
+                <mat-icon class="text-xs">{{ getStatutIcon(reservation.statut) }}</mat-icon>
+                <span>{{ getStatutLabel(reservation.statut) }}</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Contenu compact -->
+          <div class="p-4">
+            <div class="grid gap-4 md:grid-cols-3">
+              <!-- Logement -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-red-500 text-sm">home</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Logement</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-gray-400 text-xs">place</mat-icon>
+                    <p class="text-gray-700 text-sm font-medium">{{ getAdresseFormatee(reservation) }}</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-green-500 text-xs">euro</mat-icon>
+                    <p class="text-gray-700 text-sm font-semibold">{{ formaterPrix(reservation.prixTotal) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dates -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-blue-500 text-sm">calendar_today</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Dates</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-green-500 text-xs">event_available</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateArrivee) }}</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-red-500 text-xs">event_busy</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterDate(reservation.dateDepart) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Détails -->
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2 mb-2">
+                  <mat-icon class="text-purple-500 text-sm">info</mat-icon>
+                  <h4 class="text-sm font-bold text-gray-800">Détails</h4>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2" *ngIf="reservation.nombreNuits != null">
+                    <mat-icon class="text-blue-500 text-xs">night_shelter</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ reservation.nombreNuits }} nuit(s)</p>
+                  </div>
+                  <div class="flex items-center space-x-2" *ngIf="reservation.nombreVoyageurs != null">
+                    <mat-icon class="text-green-500 text-xs">groups</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ reservation.nombreVoyageurs }} voyageur(s)</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <mat-icon class="text-purple-500 text-xs">credit_card</mat-icon>
+                    <p class="text-gray-700 text-sm">{{ formaterModePaiement(reservation.modePaiement) }}</p>
+                  </div>
+                </div>
       </div>
     </div>
 
-    <div class="mb-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow" *ngFor="let reservation of reservationsPassees" [ngClass]="getCardClass(reservation.statut)">
-      <div class="flex items-start justify-between gap-3 border-b bg-slate-50 p-4">
-        <div>
-          <h3 class="m-0 text-lg font-extrabold text-slate-900">{{ reservation.annonce.titre || 'Annonce' }}</h3>
-          <div class="inline-flex items-center gap-2 text-slate-600"><mat-icon>place</mat-icon>{{ getAdresseFormatee(reservation) }}</div>
+            <!-- Actions compactes -->
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex items-center justify-center">
+                <button 
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md" 
+                  (click)="voirDetails(reservation)">
+                  <mat-icon class="mr-1 text-sm">visibility</mat-icon>
+                  Voir les détails
+                </button>
         </div>
-        <div class="inline-flex items-center gap-2 rounded-full border px-2 py-1 text-xs font-bold" [ngClass]="getStatutClass(reservation.statut)">
-          <mat-icon>{{ getStatutIcon(reservation.statut) }}</mat-icon>
-          {{ getStatutLabel(reservation.statut) }}
         </div>
-      </div>
-      <div class="grid gap-3 p-4 md:grid-cols-3">
-        <div class="inline-flex items-center gap-2 md:col-span-2"><mat-icon>calendar_today</mat-icon>Du {{ formaterDate(reservation.dateArrivee) }} au {{ formaterDate(reservation.dateDepart) }}</div>
-        <div class="inline-flex items-center gap-2"><mat-icon>euro</mat-icon>{{ formaterPrix(reservation.prixTotal) }}</div>
-        <div class="md:col-span-3">
-          <button class="rounded-xl border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-800" (click)="voirDetails(reservation)"><mat-icon>visibility</mat-icon> Détails</button>
         </div>
       </div>
     </div>
   </ng-container>
 
-  <!-- Modal: Création -->
-  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="modalCreationOuverte">
-    <div class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
-      <div class="mb-2 flex items-center justify-between">
-        <h3 class="m-0 text-lg font-extrabold text-slate-900">Nouvelle réservation</h3>
-        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerModalCreation()"><mat-icon>close</mat-icon></button>
+    <!-- Modal: Création compacte -->
+    <div class="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4" *ngIf="modalCreationOuverte">
+      <div class="w-full max-w-lg rounded-lg bg-white border border-gray-200 shadow-xl">
+        <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
+          <div class="flex items-center space-x-2">
+            <div class="p-1 bg-gradient-to-r from-green-500 to-green-600 rounded">
+              <mat-icon class="text-white text-sm">add</mat-icon>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">Nouvelle réservation</h3>
+          </div>
+          <button 
+            class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-8 h-8 rounded-lg transition-colors" 
+            (click)="fermerModalCreation()">
+            <mat-icon class="text-sm">close</mat-icon>
+          </button>
       </div>
-      <form [formGroup]="formulaireCreation" class="grid gap-3" (ngSubmit)="creerReservation()">
-        <label class="grid gap-1">
-          <span class="text-sm font-semibold text-slate-700">Annonce ID</span>
-          <input type="text" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="annonceId" placeholder="ID de l'annonce" />
+        <form [formGroup]="formulaireCreation" class="p-4 space-y-4" (ngSubmit)="creerReservation()">
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-red-500 text-sm">home</mat-icon>
+              Annonce ID
         </label>
-        <label class="grid gap-1">
-          <span class="text-sm font-semibold text-slate-700">Date d'arrivée</span>
-          <input type="date" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="dateArrivee" />
+            <input 
+              type="text" 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all duration-200" 
+              formControlName="annonceId" 
+              placeholder="ID de l'annonce" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-green-500 text-sm">event_available</mat-icon>
+              Date d'arrivée
         </label>
-        <label class="grid gap-1">
-          <span class="text-sm font-semibold text-slate-700">Date de départ</span>
-          <input type="date" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="dateDepart" />
+            <input 
+              type="date" 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-200" 
+              formControlName="dateArrivee" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-red-500 text-sm">event_busy</mat-icon>
+              Date de départ
         </label>
-        <label class="grid gap-1">
-          <span class="text-sm font-semibold text-slate-700">Nombre de personnes</span>
-          <input type="number" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="nombrePersonnes" min="1" />
+            <input 
+              type="date" 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all duration-200" 
+              formControlName="dateDepart" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-blue-500 text-sm">groups</mat-icon>
+              Nombre de personnes
         </label>
-        <label class="grid gap-1">
-          <span class="text-sm font-semibold text-slate-700">Commentaires</span>
-          <textarea rows="3" class="rounded-lg border border-slate-300 px-3 py-2" formControlName="commentaires" placeholder="Optionnel"></textarea>
+            <input 
+              type="number" 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-200" 
+              formControlName="nombrePersonnes" 
+              min="1" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-sm font-semibold text-gray-700 flex items-center">
+              <mat-icon class="mr-2 text-purple-500 text-sm">comment</mat-icon>
+              Commentaires
         </label>
-        <div class="mt-1 flex items-center justify-end gap-2">
-          <button type="button" class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerModalCreation()">Annuler</button>
-          <button type="submit" class="rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-700 px-4 py-2 font-bold text-white disabled:opacity-60" [disabled]="loadingCreation || !formulaireCreation.valid">
-            <mat-icon>save</mat-icon>
+            <textarea 
+              rows="3" 
+              class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all duration-200" 
+              formControlName="commentaires" 
+              placeholder="Optionnel"></textarea>
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-4 border-t border-gray-200">
+            <button 
+              type="button" 
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors" 
+              (click)="fermerModalCreation()">
+              Annuler
+            </button>
+            <button 
+              type="submit" 
+              class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-60" 
+              [disabled]="loadingCreation || !formulaireCreation.valid">
+              <mat-icon class="mr-1 text-sm">save</mat-icon>
             Créer
           </button>
         </div>
@@ -206,42 +649,206 @@
     </div>
   </div>
 
-  <!-- Modal: Détails -->
-  <div class="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4" *ngIf="modalDetailsOuverte && reservationSelectionnee" (click)="fermerModalOnBackdrop($event)">
-    <div class="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
-      <div class="mb-3 flex items-center justify-between">
-        <h3 class="m-0 text-lg font-extrabold text-slate-900">Détails de la réservation</h3>
-        <button class="grid h-9 w-9 place-items-center rounded-full border border-slate-200" (click)="fermerModalDetails()"><mat-icon>close</mat-icon></button>
+    <!-- Modal: Détails améliorée et scrollable -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" *ngIf="modalDetailsOuverte && reservationSelectionnee" (click)="fermerModalOnBackdrop($event)">
+      <div class="w-full max-w-4xl max-h-[90vh] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+        <!-- Header fixe -->
+        <div class="flex items-center justify-between border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 sticky top-0 z-10">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md">
+              <mat-icon class="text-white">info</mat-icon>
       </div>
-      <ng-container *ngIf="reservationSelectionnee as r">
-        <div class="mb-3 flex items-start justify-between gap-3">
           <div>
-            <h3 class="m-0 text-lg font-extrabold text-slate-900">{{ r.annonce.titre || 'Annonce' }}</h3>
-            <div class="inline-flex items-center gap-2 text-slate-600"><mat-icon>place</mat-icon> {{ getAdresseFormatee(r) }}</div>
+              <h3 class="text-xl font-bold text-gray-800">Détails de la réservation</h3>
+              <p class="text-sm text-gray-600">Informations complètes sur votre réservation</p>
+            </div>
           </div>
-          <div class="inline-flex items-center gap-2 rounded-full border px-2 py-1 text-xs font-bold" [ngClass]="getStatutClass(r.statut)">
-            <mat-icon>{{ getStatutIcon(r.statut) }}</mat-icon> {{ getStatutLabel(r.statut) }}
+          <button 
+            class="bg-white hover:bg-gray-50 text-gray-600 w-10 h-10 rounded-lg transition-all duration-200 shadow-sm border border-gray-200" 
+            (click)="fermerModalDetails()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <!-- Contenu scrollable -->
+        <div class="overflow-y-auto max-h-[calc(90vh-80px)]">
+          <ng-container *ngIf="reservationSelectionnee as r">
+            <div class="p-6">
+              <!-- Informations principales -->
+              <div class="mb-6">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                      <h4 class="text-lg font-bold text-gray-800 mb-2">{{ r.annonce.titre || 'Annonce' }}</h4>
+                      <div class="flex items-center space-x-2 text-gray-600 mb-3">
+                        <mat-icon class="text-green-500">place</mat-icon>
+                        <span class="text-sm font-medium">{{ getAdresseFormatee(r) }}</span>
+                      </div>
+                      <div class="flex items-center space-x-4 text-sm text-gray-600">
+                        <div class="flex items-center space-x-1">
+                          <mat-icon class="text-blue-500 text-sm">calendar_today</mat-icon>
+                          <span>{{ formaterDate(r.dateArrivee) }} - {{ formaterDate(r.dateDepart) }}</span>
+                        </div>
+                        <div class="flex items-center space-x-1" *ngIf="r.nombreNuits">
+                          <mat-icon class="text-purple-500 text-sm">night_shelter</mat-icon>
+                          <span>{{ r.nombreNuits }} nuit(s)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <span 
+                        class="px-4 py-2 rounded-full text-sm font-bold flex items-center space-x-2" 
+                        [ngClass]="getStatutClass(r.statut)">
+                        <mat-icon class="text-sm">{{ getStatutIcon(r.statut) }}</mat-icon>
+                        <span>{{ getStatutLabel(r.statut) }}</span>
+                      </span>
+                      <div class="mt-2">
+                        <div class="text-2xl font-bold text-green-600">{{ formaterPrix(r.prixTotal) }}</div>
+                        <div class="text-xs text-gray-500">Prix total</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Détails organisés en sections -->
+              <div class="grid gap-6 md:grid-cols-2">
+                <!-- Section: Informations de voyage -->
+                <div class="space-y-4">
+                  <h5 class="text-lg font-bold text-gray-800 flex items-center">
+                    <mat-icon class="mr-2 text-blue-500">flight_takeoff</mat-icon>
+                    Informations de voyage
+                  </h5>
+                  
+                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <mat-icon class="text-blue-500">event_available</mat-icon>
+                      <span class="font-semibold text-blue-800">Date d'arrivée</span>
+                    </div>
+                    <p class="text-blue-900 font-bold">{{ formaterDate(r.dateArrivee) }}</p>
+                  </div>
+
+                  <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <mat-icon class="text-red-500">event_busy</mat-icon>
+                      <span class="font-semibold text-red-800">Date de départ</span>
+                    </div>
+                    <p class="text-red-900 font-bold">{{ formaterDate(r.dateDepart) }}</p>
+                  </div>
+
+                  <div class="bg-green-50 border border-green-200 rounded-lg p-4" *ngIf="r.nombreVoyageurs">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <mat-icon class="text-green-500">groups</mat-icon>
+                      <span class="font-semibold text-green-800">Nombre de voyageurs</span>
+                    </div>
+                    <p class="text-green-900 font-bold">{{ r.nombreVoyageurs }} personne(s)</p>
+                  </div>
+                </div>
+
+                <!-- Section: Informations de paiement -->
+                <div class="space-y-4">
+                  <h5 class="text-lg font-bold text-gray-800 flex items-center">
+                    <mat-icon class="mr-2 text-green-500">payment</mat-icon>
+                    Informations de paiement
+                  </h5>
+                  
+                  <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <mat-icon class="text-green-500">euro</mat-icon>
+                      <span class="font-semibold text-green-800">Prix total</span>
+                    </div>
+                    <p class="text-green-900 font-bold text-xl">{{ formaterPrix(r.prixTotal) }}</p>
+                  </div>
+
+                  <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <mat-icon class="text-purple-500">credit_card</mat-icon>
+                      <span class="font-semibold text-purple-800">Mode de paiement</span>
+                    </div>
+                    <p class="text-purple-900 font-bold">{{ formaterModePaiement(r.modePaiement) }}</p>
+                  </div>
+
+                  <div class="bg-gray-50 border border-gray-200 rounded-lg p-4" *ngIf="r.numeroTransaction">
+                    <div class="flex items-center space-x-2 mb-3">
+                      <mat-icon class="text-gray-500">receipt</mat-icon>
+                      <span class="font-semibold text-gray-800">Numéro de transaction</span>
+                    </div>
+                    <p class="text-gray-900 font-mono text-sm">{{ r.numeroTransaction }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section: Frais supplémentaires -->
+              <div class="mt-6" *ngIf="r.fraisService || r.fraisNettoyage || r.fraisDepot">
+                <h5 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                  <mat-icon class="mr-2 text-orange-500">receipt_long</mat-icon>
+                  Frais supplémentaires
+                </h5>
+                <div class="grid gap-4 md:grid-cols-3">
+                  <div class="bg-orange-50 border border-orange-200 rounded-lg p-4" *ngIf="r.fraisService">
+                    <div class="flex items-center space-x-2 mb-2">
+                      <mat-icon class="text-orange-500 text-sm">build</mat-icon>
+                      <span class="font-semibold text-orange-800 text-sm">Frais de service</span>
+                    </div>
+                    <p class="text-orange-900 font-bold">{{ formaterPrix(r.fraisService) }}</p>
+                  </div>
+                  <div class="bg-cyan-50 border border-cyan-200 rounded-lg p-4" *ngIf="r.fraisNettoyage">
+                    <div class="flex items-center space-x-2 mb-2">
+                      <mat-icon class="text-cyan-500 text-sm">cleaning_services</mat-icon>
+                      <span class="font-semibold text-cyan-800 text-sm">Frais de nettoyage</span>
+                    </div>
+                    <p class="text-cyan-900 font-bold">{{ formaterPrix(r.fraisNettoyage) }}</p>
+                  </div>
+                  <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" *ngIf="r.fraisDepot">
+                    <div class="flex items-center space-x-2 mb-2">
+                      <mat-icon class="text-yellow-500 text-sm">security</mat-icon>
+                      <span class="font-semibold text-yellow-800 text-sm">Dépôt de garantie</span>
+                    </div>
+                    <p class="text-yellow-900 font-bold">{{ formaterPrix(r.fraisDepot) }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section: Informations système -->
+              <div class="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h5 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                  <mat-icon class="mr-2 text-gray-500">info</mat-icon>
+                  Informations système
+                </h5>
+                <div class="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <div class="flex items-center space-x-2 mb-2">
+                      <mat-icon class="text-gray-500 text-sm">schedule</mat-icon>
+                      <span class="font-semibold text-gray-700 text-sm">Date de création</span>
+                    </div>
+                    <p class="text-gray-800 font-medium">{{ formaterDate(r.dateCreation) }}</p>
+                  </div>
+                  <div *ngIf="r.dateConfirmation">
+                    <div class="flex items-center space-x-2 mb-2">
+                      <mat-icon class="text-green-500 text-sm">check_circle</mat-icon>
+                      <span class="font-semibold text-gray-700 text-sm">Date de confirmation</span>
+                    </div>
+                    <p class="text-gray-800 font-medium">{{ formaterDate(r.dateConfirmation) }}</p>
+                  </div>
+                </div>
+              </div>
+          </div>
+          </ng-container>
+        </div>
+
+        <!-- Footer fixe -->
+        <div class="border-t border-gray-200 bg-gray-50 px-6 py-4 sticky bottom-0">
+          <div class="flex items-center justify-end">
+            <div class="flex items-center space-x-3">
+              <button 
+                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors" 
+                (click)="fermerModalDetails()">
+                Fermer
+              </button>
+            </div>
           </div>
         </div>
-        <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
-            <div class="text-xs font-bold text-slate-500">Dates</div>
-            <div class="font-extrabold text-slate-900">{{ formaterDate(r.dateArrivee) }} → {{ formaterDate(r.dateDepart) }}</div>
-          </div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-xs font-bold text-slate-500">Voyageurs</div><div class="font-extrabold text-slate-900">{{ r.nombreVoyageurs || '—' }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-xs font-bold text-slate-500">Nuits</div><div class="font-extrabold text-slate-900">{{ r.nombreNuits || '—' }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-xs font-bold text-slate-500">Mode de paiement</div><div class="font-extrabold text-slate-900">{{ formaterModePaiement(r.modePaiement) }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-xs font-bold text-slate-500">Transaction</div><div class="font-extrabold text-slate-900">{{ r.numeroTransaction || '—' }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-xs font-bold text-slate-500">Prix total</div><div class="font-extrabold text-maroc-vert">{{ formaterPrix(r.prixTotal) }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3" *ngIf="r.fraisService != null"><div class="text-xs font-bold text-slate-500">Frais service</div><div class="font-extrabold text-slate-900">{{ formaterPrix(r.fraisService || 0) }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3" *ngIf="r.fraisNettoyage != null"><div class="text-xs font-bold text-slate-500">Frais nettoyage</div><div class="font-extrabold text-slate-900">{{ formaterPrix(r.fraisNettoyage || 0) }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3" *ngIf="r.fraisDepot != null"><div class="text-xs font-bold text-slate-500">Dépôt</div><div class="font-extrabold text-slate-900">{{ formaterPrix(r.fraisDepot || 0) }}</div></div>
-          <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-xs font-bold text-slate-500">Créée le</div><div class="font-extrabold text-slate-900">{{ formaterDate(r.dateCreation) }}</div></div>
         </div>
-        <div class="mt-3 flex items-center justify-end">
-          <button class="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-800" (click)="fermerModalDetails()">Fermer</button>
-        </div>
-      </ng-container>
     </div>
   </div>
 </div>
