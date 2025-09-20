@@ -534,6 +534,32 @@ export class ReservationsLocataireComponent implements OnInit, OnDestroy {
     return icones[statut as keyof typeof icones] || 'help';
   }
 
+  getStatutIconClass(statut: string): string {
+    const icones = {
+      'EN_ATTENTE': 'fa-clock',
+      'CONFIRMEE': 'fa-check-circle',
+      'EN_COURS': 'fa-play-circle',
+      'TERMINEE': 'fa-flag',
+      'ANNULEE': 'fa-times-circle'
+    };
+    return icones[statut as keyof typeof icones] || 'fa-question-circle';
+  }
+
+  getStatIcon(iconName: string): string {
+    const icones = {
+      'schedule': 'fa-clock',
+      'check_circle': 'fa-check-circle',
+      'play_circle': 'fa-play-circle',
+      'flag': 'fa-flag',
+      'cancel': 'fa-times-circle',
+      'home': 'fa-home',
+      'analytics': 'fa-chart-bar',
+      'list': 'fa-list',
+      'history': 'fa-history'
+    };
+    return icones[iconName as keyof typeof icones] || 'fa-question-circle';
+  }
+
   getStatutClass(statut: string): string {
     const classes = {
       'EN_ATTENTE': 'bg-amber-100 border border-amber-300 text-amber-700',

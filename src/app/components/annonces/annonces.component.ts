@@ -1,17 +1,20 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import * as AOS from 'aos';
 
 @Component({
   selector: 'app-annonces',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ScrollingModule],
   templateUrl: './annonces.component.html',
-  styleUrls: ['./annonces.component.css']
+  styleUrls: ['./annonces.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AnnoncesComponent implements OnInit, AfterViewInit {
   annonces: any[] = [];
@@ -35,10 +38,19 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
   // Propriétés pour le tri
   sortBy = '';
 
+  // Optimisations CDK
+  itemSize = 400; // Hauteur estimée d'une carte d'annonce
+  viewport!: CdkVirtualScrollViewport;
+  
+  // Cache intelligent
+  private imageCache = new Map<string, string>();
+  private loadedImages = new Set<string>();
+
   constructor(
     private router: Router,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -74,14 +86,25 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
 
   async chargerAnnonces(): Promise<void> {
     try {
-    this.isLoading = true;
-    this.errorMessage = '';
+      this.isLoading = true;
+      this.errorMessage = '';
+      this.cdr.markForCheck();
+
+      console.log('🚀 Chargement des annonces depuis l\'API...');
+      const startTime = performance.now();
 
       const response = await this.apiService.getAnnonces().toPromise();
+      
+      const endTime = performance.now();
+      console.log(`⚡ Annonces chargées en ${(endTime - startTime).toFixed(2)}ms`);
       
       if (response) {
         this.annonces = response;
         this.filteredAnnonces = [...this.annonces];
+        
+        // Précharger les images des premières annonces
+        this.preloadImages();
+        
         // Vérifier l'état des favoris pour chaque annonce
         await this.chargerEtatFavoris();
       } else {
@@ -93,6 +116,7 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
       this.errorMessage = 'Erreur lors du chargement des annonces';
     } finally {
       this.isLoading = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -100,12 +124,28 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
     const userId = localStorage.getItem('locataireId') || localStorage.getItem('userId');
     if (!userId) return;
 
-    for (const annonce of this.annonces) {
-      try {
-        const isFavorite = await this.apiService.verifierFavoris(userId, annonce.id).toPromise();
-        this.favorisMap[annonce.id] = isFavorite || false;
-      } catch (error) {
-        console.error(`Erreur lors de la vérification des favoris pour l'annonce ${annonce.id}:`, error);
+    try {
+      // Récupérer tous les favoris du locataire d'un coup
+      const favoris = await this.apiService.getAnnoncesFavoris(userId).toPromise();
+      
+      if (favoris && Array.isArray(favoris)) {
+        // Créer un Set des IDs des favoris pour une recherche rapide
+        const favorisIds = new Set(favoris.map(fav => fav.id));
+        
+        // Mettre à jour le map des favoris
+        for (const annonce of this.annonces) {
+          this.favorisMap[annonce.id] = favorisIds.has(annonce.id);
+        }
+      } else {
+        // Si pas de favoris, initialiser tout à false
+        for (const annonce of this.annonces) {
+          this.favorisMap[annonce.id] = false;
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des favoris:', error);
+      // En cas d'erreur, initialiser tout à false
+      for (const annonce of this.annonces) {
         this.favorisMap[annonce.id] = false;
       }
     }
@@ -120,9 +160,8 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
   }
 
   reserverAnnonce(annonceId: string): void {
-    // TODO: Implémenter la logique de réservation
-    console.log('Réservation de l\'annonce:', annonceId);
-    alert('Fonctionnalité de réservation à implémenter');
+    // Rediriger vers la page de réservation
+    this.router.navigate(['/reserver', annonceId]);
   }
 
   async ajouterFavori(annonceId: string): Promise<void> {
@@ -227,6 +266,8 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
     if (this.sortBy) {
       this.sortAnnonces();
     }
+    
+    this.cdr.markForCheck();
   }
 
   // Méthode de tri des annonces
@@ -330,19 +371,67 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
     return stades.size;
   }
 
-  // Méthode pour obtenir le chemin de l'image
+  // Méthodes d'optimisation CDK
+  private preloadImages(): void {
+    // Précharger les images des 6 premières annonces pour un affichage plus rapide
+    const annoncesToPreload = this.paginatedAnnonces.slice(0, 6);
+    
+    annoncesToPreload.forEach(annonce => {
+      if (annonce.images && annonce.images.length > 0) {
+        const imagePath = this.getImagePath(annonce.images[0]);
+        if (!this.loadedImages.has(imagePath)) {
+          this.preloadImage(imagePath);
+        }
+      }
+    });
+  }
+
+  private preloadImage(imagePath: string): void {
+    if (this.imageCache.has(imagePath)) {
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      this.loadedImages.add(imagePath);
+      this.imageCache.set(imagePath, imagePath);
+      this.cdr.markForCheck();
+    };
+    img.onerror = () => {
+      console.warn(`Erreur de chargement de l'image: ${imagePath}`);
+    };
+    img.src = imagePath;
+  }
+
+  // Méthodes pour la virtualisation CDK
+  onViewportChange(): void {
+    // Cette méthode est appelée quand la vue change dans le virtual scroll
+    this.cdr.markForCheck();
+  }
+
+  getItemSize(index: number): number {
+    // Retourner la taille de l'élément à l'index donné
+    return this.itemSize;
+  }
+
+  // Méthode optimisée pour obtenir le chemin de l'image avec cache
   getImagePath(imagePath: string): string {
-    // Si c'est une image en base64, la retourner directement
+    if (this.imageCache.has(imagePath)) {
+      return this.imageCache.get(imagePath)!;
+    }
+
     if (imagePath.startsWith('data:image/')) {
+      this.imageCache.set(imagePath, imagePath);
       return imagePath;
     }
     
-    // Si c'est un chemin absolu Windows, essayer de le convertir
     if (imagePath.startsWith('C:\\') || imagePath.startsWith('D:\\')) {
-      return `file:///${imagePath.replace(/\\/g, '/')}`;
+      const convertedPath = `file:///${imagePath.replace(/\\/g, '/')}`;
+      this.imageCache.set(imagePath, convertedPath);
+      return convertedPath;
     }
     
-    // Sinon, on suppose que c'est un chemin relatif ou une URL
+    this.imageCache.set(imagePath, imagePath);
     return imagePath;
   }
 

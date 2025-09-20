@@ -1,77 +1,81 @@
-<aside class="fixed left-0 top-0 z-50 h-screen border-r border-slate-200 bg-white/95 backdrop-blur-md text-slate-900 shadow-xl transition-all"
+<aside class="fixed left-0 top-0 z-50 h-screen border-r border-gray-200 bg-white/95 backdrop-blur-md text-gray-900 shadow-xl transition-all"
        [ngClass]="{ 'w-16': isCollapsed, 'w-64': !isCollapsed }"
        (mouseenter)="onMouseEnter()"
        (mouseleave)="onMouseLeave()">
   <!-- Header minimal -->
-  <div class="flex items-center justify-between border-b border-slate-200 p-3">
+  <div class="flex items-center justify-between border-b border-gray-200 p-3">
     <div class="flex items-center gap-3">
-      <div class="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-maroc-vert to-emerald-600 text-white"><i class="fas fa-trophy"></i></div>
+      <div class="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-red-800 to-green-800 text-white"><i class="fas fa-trophy"></i></div>
       <div class="select-none" [ngClass]="{ 'hidden': isCollapsed }">
         <h2 class="m-0 text-sm font-extrabold tracking-tight">CAN 2025</h2>
-        <span class="text-xs text-slate-500">Maroc</span>
+        <span class="text-xs text-gray-500">Maroc</span>
       </div>
     </div>
-    <button class="grid h-8 w-8 place-items-center rounded-md border border-slate-200" (click)="toggleSidebar()" [attr.aria-expanded]="!isCollapsed" aria-label="Basculer">
+    <button class="grid h-8 w-8 place-items-center rounded-md border border-gray-200" (click)="toggleSidebar()" [attr.aria-expanded]="!isCollapsed" aria-label="Basculer">
       <i class="fas" [ngClass]="isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
     </button>
   </div>
 
   <!-- Mini Profil simple -->
-  <div class="flex items-center gap-3 border-b border-slate-200 p-3">
-    <div class="text-lg text-maroc-vert"><i class="fas fa-user-circle"></i></div>
+  <div class="flex items-center gap-3 border-b border-gray-200 p-3">
+    <div class="text-lg text-green-800"><i class="fas fa-user-circle"></i></div>
     <div class="leading-tight" [ngClass]="{ 'hidden': isCollapsed }">
       <span class="block text-sm font-semibold">{{ username }}</span>
-      <span class="block text-xs text-slate-500">{{ isLocataire ? 'Locataire' : 'Locateur' }}</span>
+      <span class="block text-xs text-gray-500">{{ isLocataire ? 'Locataire' : 'Locateur' }}</span>
     </div>
   </div>
 
   <!-- CTA -->
   <div class="p-3">
-    <a *ngIf="!isLocataire" routerLink="/ajouter-annonce" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">
-      <i class="fas fa-plus-circle text-maroc-vert"></i>
+    <a *ngIf="!isLocataire" routerLink="/ajouter-annonce" class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50">
+      <i class="fas fa-plus-circle text-green-800"></i>
       <span [ngClass]="{ 'hidden': isCollapsed }">Nouvelle annonce</span>
     </a>
-    <a *ngIf="isLocataire" routerLink="/annonces" class="mt-2 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">
-      <i class="fas fa-compass text-maroc-rouge"></i>
+    <a *ngIf="isLocataire" routerLink="/annonces" class="mt-2 flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50">
+      <i class="fas fa-compass text-red-800"></i>
       <span [ngClass]="{ 'hidden': isCollapsed }">Explorer</span>
+    </a>
+    <a routerLink="/carte-interactive" class="mt-2 flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50">
+      <i class="fas fa-map-marked-alt text-green-800"></i>
+      <span [ngClass]="{ 'hidden': isCollapsed }">Carte Interactive</span>
     </a>
   </div>
 
   <!-- Navigation -->
   <nav class="flex-1 overflow-y-auto p-2" role="navigation" aria-label="Sidebar principal">
     <ul class="m-0 list-none p-0">
-      <li class="mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Navigation</li>
+      <li class="mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-gray-500" [ngClass]="{ 'hidden': isCollapsed }">Navigation</li>
       <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <a routerLink="/dashboard" [attr.title]="isCollapsed ? 'Dashboard' : null" #rla0="routerLinkActive" routerLinkActive="is-active"
-           class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
-           [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla0.isActive }">
+           class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-gray-700 transition hover:bg-gray-100"
+           [ngClass]="{ 'justify-center': isCollapsed, 'bg-gray-100 text-gray-900': rla0.isActive }">
           <i class="fas fa-home"></i>
           <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Dashboard</span>
         </a>
       </li>
 
       <ng-container *ngIf="isLocataire">
-        <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Locataire</li>
+        <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-gray-500" [ngClass]="{ 'hidden': isCollapsed }">Locataire</li>
         <li routerLinkActive="active">
           <a routerLink="/annonces" [attr.title]="isCollapsed ? 'Explorer' : null" #rla1="routerLinkActive" routerLinkActive="is-active"
-             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
-             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla1.isActive }">
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-gray-700 transition hover:bg-gray-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-gray-100 text-gray-900': rla1.isActive }">
             <i class="fas fa-compass"></i>
             <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Explorer</span>
           </a>
         </li>
         <li routerLinkActive="active">
           <a routerLink="/mes-favoris" [attr.title]="isCollapsed ? 'Favoris' : null" #rla2="routerLinkActive" routerLinkActive="is-active"
-             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
-             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla2.isActive }">
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-gray-700 transition hover:bg-gray-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-gray-100 text-gray-900': rla2.isActive }">
             <i class="fas fa-heart"></i>
             <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Favoris</span>
           </a>
         </li>
         <li routerLinkActive="active">
           <a routerLink="/mes-reservations" [attr.title]="isCollapsed ? 'Réservations' : null" #rla3="routerLinkActive" routerLinkActive="is-active"
-             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
-             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla3.isActive }">
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-gray-700 transition hover:bg-gray-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-gray-100 text-gray-900': rla3.isActive }">
             <i class="fas fa-calendar-check"></i>
             <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Réservations</span>
           </a>
@@ -79,30 +83,30 @@
       </ng-container>
 
       <ng-container *ngIf="!isLocataire">
-        <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Locateur</li>
+        <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-gray-500" [ngClass]="{ 'hidden': isCollapsed }">Locateur</li>
         <li routerLinkActive="active">
           <a routerLink="/mes-annonces" [attr.title]="isCollapsed ? 'Mes annonces' : null" #rla4="routerLinkActive" routerLinkActive="is-active"
-             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
-             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla4.isActive }">
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-gray-700 transition hover:bg-gray-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-gray-100 text-gray-900': rla4.isActive }">
             <i class="fas fa-list-alt"></i>
             <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Mes annonces</span>
           </a>
         </li>
         <li routerLinkActive="active">
           <a routerLink="/reservations-locateur" [attr.title]="isCollapsed ? 'Réservations' : null" #rla5="routerLinkActive" routerLinkActive="is-active"
-             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
-             [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla5.isActive }">
+             class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-gray-700 transition hover:bg-gray-100"
+             [ngClass]="{ 'justify-center': isCollapsed, 'bg-gray-100 text-gray-900': rla5.isActive }">
             <i class="fas fa-calendar-alt"></i>
             <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Réservations</span>
           </a>
         </li>
       </ng-container>
 
-      <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-slate-500" [ngClass]="{ 'hidden': isCollapsed }">Paramètres</li>
+      <li class="mt-3 mb-1 select-none text-[0.68rem] font-bold uppercase tracking-wider text-gray-500" [ngClass]="{ 'hidden': isCollapsed }">Paramètres</li>
       <li routerLinkActive="active">
         <a routerLink="/profile" [attr.title]="isCollapsed ? 'Mon Profil' : null" #rla6="routerLinkActive" routerLinkActive="is-active"
-           class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-slate-700 transition hover:bg-slate-100"
-           [ngClass]="{ 'justify-center': isCollapsed, 'bg-slate-100 text-slate-900': rla6.isActive }">
+           class="group relative flex min-h-[40px] items-center gap-3 rounded-lg px-2 py-2 text-gray-700 transition hover:bg-gray-100"
+           [ngClass]="{ 'justify-center': isCollapsed, 'bg-gray-100 text-gray-900': rla6.isActive }">
           <i class="fas fa-user"></i>
           <span class="text-sm font-semibold" [ngClass]="{ 'hidden': isCollapsed }">Mon Profil</span>
         </a>
@@ -111,8 +115,8 @@
   </nav>
 
   <!-- Footer simple -->
-  <div class="border-t border-slate-200 p-3">
-    <button class="flex w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold text-slate-900 hover:bg-slate-50"
+  <div class="border-t border-gray-200 p-3">
+    <button class="flex w-full items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-extrabold text-gray-900 hover:bg-gray-50"
             (click)="logout()" [attr.title]="isCollapsed ? 'Déconnexion' : null">
       <i class="fas fa-sign-out-alt"></i>
       <span [ngClass]="{ 'hidden': isCollapsed }">Déconnexion</span>

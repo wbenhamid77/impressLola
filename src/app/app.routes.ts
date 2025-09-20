@@ -15,6 +15,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ReservationsLocataireComponent } from './components/reservation-locataire/reservations-locataire.component';
 import { ReservationsLocateurComponent } from './components/reservation-locateur/reservations-locateur.component';
 import { ReservationDetailComponent } from './components/reservation-detail/reservation-detail.component';
+import { PageReservationComponent } from './components/page-reservation/page-reservation.component';
+import { CarteInteractiveComponent } from './components/carte-interactive/carte-interactive.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -37,6 +39,8 @@ export const routes: Routes = [
       { path: 'mes-reservations', component: ReservationsLocataireComponent },
       { path: 'reservations-locateur', component: ReservationsLocateurComponent },
       { path: 'reservation/:id', component: ReservationDetailComponent },
+      { path: 'reserver/:id', component: PageReservationComponent },
+      { path: 'carte-interactive', component: CarteInteractiveComponent },
     ]
   },
   { path: '**', redirectTo: '/login' }

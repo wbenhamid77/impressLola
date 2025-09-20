@@ -25,14 +25,6 @@
     <div *ngIf="error" class="alert alert-danger">
       <i class="fas fa-exclamation-circle"></i>
       {{ error }}
-      <div class="error-actions" style="margin-top: 10px;">
-        <button class="btn btn-secondary btn-sm" (click)="chargerAnnonce()" style="margin-right: 10px;">
-          <i class="fas fa-redo"></i> Réessayer
-        </button>
-        <button *ngIf="error.includes('500')" class="btn btn-primary btn-sm" (click)="synchroniserAvecServeur()">
-          <i class="fas fa-sync"></i> Synchroniser
-        </button>
-      </div>
     </div>
 
     <div *ngIf="success" class="alert alert-success">
@@ -45,510 +37,834 @@
       <p>Chargement de l'annonce...</p>
     </div>
 
-    <form *ngIf="!loading && annonce && annonceForm" [formGroup]="annonceForm" (ngSubmit)="onSubmit()" class="annonce-form">
-      <!-- Informations générales -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-info-circle"></i> Informations générales</h3>
-          <p>Modifiez les informations de base de votre annonce</p>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="titre">Titre de l'annonce *</label>
-            <input 
-              type="text" 
-              id="titre" 
-              formControlName="titre"
-              placeholder="Ex: Maison de charme à 5 minutes du Parc des Princes"
-              class="form-control"
-            >
-            <div *ngIf="annonceForm.get('titre')?.invalid && annonceForm.get('titre')?.touched" class="error-text">
-              Le titre est requis et doit contenir au moins 10 caractères
+    <form *ngIf="!loading && annonce && annonceForm" [formGroup]="annonceForm" (ngSubmit)="onSubmit()">
+      <div class="cards-grid">
+        <!-- Carte: Informations générales -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-user"></i>
+              Informations générales
             </div>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openModal('infos')">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+          </div>
+          <div class="card-content">
+            <div class="preview-field"><span class="label">Titre</span><span class="value">{{ annonceForm.get('titre')?.value }}</span></div>
+            <div class="preview-field"><span class="label">Description</span><span class="value truncate">{{ annonceForm.get('description')?.value }}</span></div>
+            <div class="preview-field"><span class="label">Capacité</span><span class="value">{{ annonceForm.get('capacite')?.value }}</span></div>
+            <div class="preview-field"><span class="label">Chambres</span><span class="value">{{ annonceForm.get('nombreChambres')?.value }}</span></div>
+            <div class="preview-field"><span class="label">Salles de bain</span><span class="value">{{ annonceForm.get('nombreSallesDeBain')?.value }}</span></div>
+            <div class="preview-field"><span class="label">Type</span><span class="value">{{ annonceForm.get('typeMaison')?.value }}</span></div>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="description">Description *</label>
-            <textarea 
-              id="description" 
-              formControlName="description"
-              placeholder="Décrivez votre logement en détail pour les supporters..."
-              rows="4"
-              class="form-control"
-            ></textarea>
-            <div *ngIf="annonceForm.get('description')?.invalid && annonceForm.get('description')?.touched" class="error-text">
-              La description est requise et doit contenir au moins 50 caractères
+        <!-- Carte: Adresse -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-map-marker-alt"></i>
+              Adresse
             </div>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openModal('adresse')">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+          </div>
+          <div class="card-content">
+            <div class="preview-field"><span class="label">Rue</span><span class="value">{{ annonceForm.get('adresse.numero')?.value }} {{ annonceForm.get('adresse.rue')?.value }}</span></div>
+            <div class="preview-field"><span class="label">Ville</span><span class="value">{{ annonceForm.get('adresse.codePostal')?.value }} {{ annonceForm.get('adresse.ville')?.value }}, {{ annonceForm.get('adresse.pays')?.value }}</span></div>
+            <div class="preview-field" *ngIf="annonceForm.get('adresse.complement')?.value"><span class="label">Complément</span><span class="value">{{ annonceForm.get('adresse.complement')?.value }}</span></div>
           </div>
         </div>
-      </div>
 
-      <!-- Adresse -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-map-marker-alt"></i> Adresse</h3>
-          <p>Modifiez l'adresse de votre logement</p>
-        </div>
-        
-        <div formGroupName="adresse">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="rue">Rue *</label>
-              <input 
-                type="text" 
-                id="rue" 
-                formControlName="rue"
-                placeholder="Ex: Rue de la Paix"
-                class="form-control"
-              >
+        <!-- Carte: Tarifs -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-euro-sign"></i>
+              Tarifs
             </div>
-            <div class="form-group">
-              <label for="numero">Numéro *</label>
-              <input 
-                type="text" 
-                id="numero" 
-                formControlName="numero"
-                placeholder="Ex: 28"
-                class="form-control"
-              >
-            </div>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openModal('tarifs')">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
           </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="codePostal">Code postal *</label>
-              <input 
-                type="text" 
-                id="codePostal" 
-                formControlName="codePostal"
-                placeholder="Ex: 75016"
-                class="form-control"
-              >
-            </div>
-            <div class="form-group">
-              <label for="ville">Ville *</label>
-              <input 
-                type="text" 
-                id="ville" 
-                formControlName="ville"
-                placeholder="Ex: Paris"
-                class="form-control"
-              >
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="complement">Complément d'adresse</label>
-              <input 
-                type="text" 
-                id="complement" 
-                formControlName="complement"
-                placeholder="Ex: Maison avec jardin"
-                class="form-control"
-              >
-            </div>
-            <div class="form-group">
-              <label for="pays">Pays *</label>
-              <input 
-                type="text" 
-                id="pays" 
-                formControlName="pays"
-                placeholder="Ex: France"
-                class="form-control"
-              >
-            </div>
+          <div class="card-content">
+            <div class="preview-field"><span class="label">Nuit</span><span class="value">{{ annonceForm.get('prixParNuit')?.value }} €</span></div>
+            <div class="preview-field"><span class="label">Semaine</span><span class="value">{{ annonceForm.get('prixParSemaine')?.value }} €</span></div>
+            <div class="preview-field"><span class="label">Mois</span><span class="value">{{ annonceForm.get('prixParMois')?.value }} €</span></div>
           </div>
         </div>
-      </div>
 
-      <!-- Localisation sur la carte -->
-      <div class="form-section map-section">
-        <div class="section-header">
-          <h3><i class="fas fa-map-marked-alt"></i> Localisation sur la carte</h3>
-          <p class="section-description">Cliquez sur la carte ou déplacez le marqueur pour définir l'emplacement exact de votre logement</p>
+        <!-- Carte: Équipements -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-tools"></i>
+              Équipements
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openModal('equipements')">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+          </div>
+          <div class="card-content">
+            <div class="chips" *ngIf="getEquipementsPreview().length; else noEquip">
+              <span class="chip" *ngFor="let e of getEquipementsPreview()">{{ e }}</span>
+            </div>
+            <ng-template #noEquip>
+              <p class="muted">Aucun équipement renseigné</p>
+            </ng-template>
+          </div>
         </div>
-        
-        <div class="professional-map-container">
-          <!-- Barre de recherche d'adresse -->
-          <div class="map-search-container">
-            <div class="search-input-wrapper">
-              <i class="fas fa-search search-icon"></i>
-              <input 
-                type="text" 
-                [(ngModel)]="searchQuery"
-                [ngModelOptions]="{standalone: true}"
-                (input)="onSearchInput()"
-                placeholder="Rechercher une adresse en France..."
-                class="professional-search-input"
-              >
-              <button class="gps-location-btn" (click)="getCurrentLocation()" title="Utiliser ma position actuelle">
-                <i class="fas fa-crosshairs"></i>
-              </button>
+
+        <!-- Carte: Règles -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-clipboard-list"></i>
+              Règles de la maison
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openModal('regles')">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+          </div>
+          <div class="card-content">
+            <div class="chips" *ngIf="getReglesPreview().length; else noRules">
+              <span class="chip" *ngFor="let r of getReglesPreview()">{{ r }}</span>
+            </div>
+            <ng-template #noRules>
+              <p class="muted">Aucune règle renseignée</p>
+            </ng-template>
+          </div>
         </div>
-        
-            <!-- Résultats de recherche -->
-            <div class="search-results-container" *ngIf="showSearchResults && searchResults.length > 0">
-              <div 
-                class="search-result-item" 
-                *ngFor="let result of searchResults; let i = index"
-                (click)="selectSearchResult(result)"
-                [class.selected]="i === 0"
-              >
-                <div class="result-icon">
-                  <i class="fas fa-map-marker-alt"></i>
+
+        <!-- Carte: Images -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-images"></i>
+              Images
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openModal('images')">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+          </div>
+          <div class="card-content">
+            <div class="existing-images-grid" *ngIf="(annonce?.images?.length || 0) + (selectedImages.length || 0) > 0; else noImgs">
+              <div *ngFor="let image of annonce?.images; let i = index" class="existing-image-item">
+                <img [src]="image" [alt]="'Image ' + (i + 1)" class="existing-image">
+              </div>
+              <div *ngFor="let image of selectedImages; let j = index" class="existing-image-item">
+                <img [src]="image.preview" [alt]="image.name" class="existing-image">
+              </div>
+            </div>
+            <ng-template #noImgs>
+              <p class="muted">Aucune image disponible</p>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Carte: Réservations -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-calendar-check"></i>
+              Réservations
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openModal('reservations')">
+              <i class="fas fa-eye"></i> Voir toutes
+            </button>
+          </div>
+          <div class="card-content">
+            <div class="reservations-summary" *ngIf="reservationsStats; else noReservations">
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <span class="stat-number">{{ reservationsStats.enAttente }}</span>
+                  <span class="stat-label">En attente</span>
                 </div>
-                <div class="result-content">
-                  <div class="result-address">{{ result.address }}</div>
-                  <div class="result-coordinates">Lat: {{ result.lat.toFixed(4) }}, Lng: {{ result.lng.toFixed(4) }}</div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ reservationsStats.confirmees }}</span>
+                  <span class="stat-label">Confirmées</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ reservationsStats.enCours }}</span>
+                  <span class="stat-label">En cours</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ reservationsStats.terminees }}</span>
+                  <span class="stat-label">Terminées</span>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <!-- Carte principale -->
-          <div class="map-wrapper">
-            <!-- Indicateur de chargement -->
-            <div class="map-loading-overlay" *ngIf="!mapInitialized && !mapError">
-              <div class="loading-spinner">
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-              </div>
-              <div class="loading-text">Chargement de la carte...</div>
-            </div>
-            
-            <!-- Message d'erreur -->
-            <div class="map-error-overlay" *ngIf="mapError">
-              <div class="error-content">
-                <i class="fas fa-exclamation-triangle error-icon"></i>
-                <h4>Erreur de chargement</h4>
-                <p>La carte n'a pas pu se charger. Vérifiez votre connexion internet.</p>
-                <button (click)="retryMapLoad()" class="retry-btn">
-                  <i class="fas fa-redo"></i>
-                  Réessayer
-                </button>
-              </div>
-            </div>
-            
-            <!-- Carte interactive -->
-            <div id="map" class="professional-map"></div>
-            
-            <!-- Contrôles de la carte -->
-            <div class="map-controls">
-              <button class="control-btn zoom-in" (click)="zoomIn()" title="Zoom +">
-                <i class="fas fa-plus"></i>
-              </button>
-              <button class="control-btn zoom-out" (click)="zoomOut()" title="Zoom -">
-                <i class="fas fa-minus"></i>
-              </button>
-              <button class="control-btn center-map" (click)="centerMap()" title="Centrer la carte">
-                <i class="fas fa-crosshairs"></i>
-              </button>
-            </div>
-            
-            <!-- Informations de localisation -->
-            <div class="location-info-panel">
-              <div class="info-header">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>Emplacement sélectionné</span>
-              </div>
-              <div class="coordinates-display">
-                <div class="coord-item">
-                  <span class="coord-label">Latitude:</span>
-                  <span class="coord-value" id="lat-display">{{ annonceForm.get('latitude')?.value?.toFixed(6) || '48.8566' }}</span>
-                </div>
-                <div class="coord-item">
-                  <span class="coord-label">Longitude:</span>
-                  <span class="coord-value" id="lng-display">{{ annonceForm.get('longitude')?.value?.toFixed(6) || '2.3522' }}</span>
+              <div class="recent-reservations" *ngIf="recentReservations.length > 0">
+                <h4>Réservations récentes</h4>
+                <div class="reservation-list">
+                  <div *ngFor="let reservation of recentReservations" class="reservation-item">
+                    <div class="reservation-info">
+                      <span class="reservation-dates">{{ formatDate(reservation.dateArrivee) }} - {{ formatDate(reservation.dateDepart) }}</span>
+                      <span class="reservation-guests">{{ reservation.nombreVoyageurs }} personne(s)</span>
+                    </div>
+                    <div class="reservation-actions">
+                      <span class="badge" [ngClass]="getStatusClass(reservation.statut)">{{ formatStatus(reservation.statut) }}</span>
+                      <button type="button" class="btn btn-sm btn-outline-primary" (click)="openReservationDetails(reservation)">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <ng-template #noReservations>
+              <p class="muted">Aucune réservation pour cette annonce</p>
+            </ng-template>
           </div>
         </div>
+
         
-        <!-- Champs de coordonnées cachés -->
-        <div class="hidden-coordinates">
-          <input type="hidden" formControlName="latitude">
-          <input type="hidden" formControlName="longitude">
-        </div>
       </div>
 
-      <!-- Prix -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-euro-sign"></i> Tarifs</h3>
-          <p>Mettez à jour vos tarifs pour la CAF 2025</p>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="prixParNuit">Prix par nuit (€) *</label>
-            <input 
-              type="number" 
-              id="prixParNuit" 
-              formControlName="prixParNuit"
-              placeholder="Ex: 250"
-              class="form-control"
-            >
-          </div>
-          <div class="form-group">
-            <label for="prixParSemaine">Prix par semaine (€) *</label>
-            <input 
-              type="number" 
-              id="prixParSemaine" 
-              formControlName="prixParSemaine"
-              placeholder="Ex: 1600"
-              class="form-control"
-            >
-          </div>
-          <div class="form-group">
-            <label for="prixParMois">Prix par mois (€) *</label>
-            <input 
-              type="number" 
-              id="prixParMois" 
-              formControlName="prixParMois"
-              placeholder="Ex: 5800"
-              class="form-control"
-            >
-          </div>
-        </div>
-      </div>
-
-      <!-- Capacité et caractéristiques -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-home"></i> Caractéristiques</h3>
-          <p>Modifiez les caractéristiques de votre logement</p>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="capacite">Capacité (personnes) *</label>
-            <input 
-              type="number" 
-              id="capacite" 
-              formControlName="capacite"
-              placeholder="Ex: 6"
-              class="form-control"
-            >
-          </div>
-          <div class="form-group">
-            <label for="nombreChambres">Nombre de chambres *</label>
-            <input 
-              type="number" 
-              id="nombreChambres" 
-              formControlName="nombreChambres"
-              placeholder="Ex: 3"
-              class="form-control"
-            >
-          </div>
-          <div class="form-group">
-            <label for="nombreSallesDeBain">Nombre de salles de bain *</label>
-            <input 
-              type="number" 
-              id="nombreSallesDeBain" 
-              formControlName="nombreSallesDeBain"
-              placeholder="Ex: 2"
-              class="form-control"
-            >
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="typeMaison">Type de logement *</label>
-            <select id="typeMaison" formControlName="typeMaison" class="form-control">
-              <option value="MAISON">Maison</option>
-              <option value="APPARTEMENT">Appartement</option>
-              <option value="STUDIO">Studio</option>
-              <option value="VILLA">Villa</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Équipements -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-tools"></i> Équipements disponibles</h3>
-          <p>Sélectionnez les équipements de votre logement</p>
-        </div>
-        <div class="equipements-grid">
-          <div 
-            *ngFor="let equipement of equipementsDisponibles" 
-            class="equipement-item"
-            [class.selected]="isEquipementSelected(equipement)"
-            (click)="toggleEquipement(equipement)"
-          >
-            <i class="fas fa-check"></i>
-            {{ equipement }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Règles -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-clipboard-list"></i> Règles de la maison</h3>
-          <p>Modifiez les règles pour vos locataires</p>
-        </div>
-        <div class="regles-grid">
-          <div 
-            *ngFor="let regle of reglesDisponibles" 
-            class="regle-item"
-            [class.selected]="isRegleSelected(regle)"
-            (click)="toggleRegle(regle)"
-          >
-            <i class="fas fa-check"></i>
-            {{ regle }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Images du logement -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-images"></i> Images du logement</h3>
-          <p>Ajoutez ou modifiez les photos de votre logement</p>
-        </div>
-        
-        <!-- Images existantes -->
-        <div *ngIf="annonce && annonce.images && annonce.images.length > 0" class="existing-images">
-          <h4>Images actuelles</h4>
-          <div class="existing-images-grid">
-            <div *ngFor="let image of annonce.images; let i = index" class="existing-image-item">
-              <img [src]="image" [alt]="'Image ' + (i + 1)" class="existing-image">
-              <button type="button" class="remove-existing-image" (click)="removeExistingImage(i)">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Zone de drag & drop pour nouvelles images -->
-        <div class="image-upload-section">
-          <div 
-            class="image-upload-zone"
-            [class.drag-over]="isDragOver"
-            (dragover)="onDragOver($event)"
-            (dragleave)="onDragLeave($event)"
-            (drop)="onDrop($event)"
-            (click)="fileInput.click()"
-          >
-            <div class="upload-content">
-              <i class="fas fa-cloud-upload-alt"></i>
-              <h4>Glissez-déposez vos images ici</h4>
-              <p>ou cliquez pour sélectionner des fichiers</p>
-              <p class="upload-info">
-                Formats acceptés: JPG, PNG, GIF • Taille max: 5MB • Max 10 images
-              </p>
-            </div>
-            <input 
-              #fileInput
-              type="file" 
-              multiple 
-              accept="image/*"
-              (change)="onFileSelected($event)"
-              style="display: none;"
-            >
-          </div>
-
-          <!-- Erreurs d'images -->
-          <div *ngIf="imageErrors.length > 0" class="image-errors">
-            <div *ngFor="let error of imageErrors" class="error-message">
-              <i class="fas fa-exclamation-triangle"></i>
-              {{ error }}
-            </div>
-          </div>
-
-          <!-- Images sélectionnées -->
-          <div *ngIf="selectedImages.length > 0" class="selected-images">
-            <h4>Nouvelles images à ajouter</h4>
-            <div class="selected-images-grid">
-              <div *ngFor="let image of selectedImages; let i = index" class="selected-image-item">
-                <img [src]="image.preview" [alt]="image.name" class="selected-image">
-                <div class="image-info">
-                  <span class="image-name">{{ image.name }}</span>
-                  <span class="image-size">{{ formatFileSize(image.size) }}</span>
-                </div>
-                <button type="button" class="remove-image" (click)="removeImage(i)">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Informations stade -->
-      <div class="form-section">
-        <div class="section-header">
-          <h3><i class="fas fa-futbol"></i> Proximité stade</h3>
-          <p>Mettez à jour les informations de proximité avec les stades</p>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="stadePlusProche">Stade le plus proche *</label>
-            <input 
-              type="text" 
-              id="stadePlusProche" 
-              formControlName="stadePlusProche"
-              placeholder="Ex: Parc des Princes"
-              class="form-control"
-            >
-          </div>
-          <div class="form-group">
-            <label for="distanceStade">Distance au stade (km) *</label>
-            <input 
-              type="number" 
-              id="distanceStade" 
-              formControlName="distanceStade"
-              placeholder="Ex: 0.3"
-              step="0.1"
-              class="form-control"
-            >
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="adresseStade">Adresse du stade *</label>
-            <input 
-              type="text" 
-              id="adresseStade" 
-              formControlName="adresseStade"
-              placeholder="Ex: 75016 Paris"
-              class="form-control"
-            >
-          </div>
-        </div>
-      </div>
-
-      <!-- Boutons d'action -->
+      <!-- Actions globales -->
       <div class="form-actions">
-        <button 
-          type="submit" 
-          class="btn btn-primary btn-large"
-          [disabled]="annonceForm.invalid || saving"
-        >
+        <button type="submit" class="btn btn-primary btn-large" [disabled]="saving || (!annonceForm.dirty && selectedImages.length === 0)">
           <i class="fas fa-save"></i>
-          {{ saving ? 'Modification en cours...' : 'Sauvegarder les modifications' }}
+          {{ saving ? 'Modification en cours...' : 'Valider toutes les modifications' }}
         </button>
-        
-        <button 
-          type="button" 
-          class="btn btn-secondary"
-          (click)="retourMesAnnonces()"
-        >
+        <button type="button" class="btn btn-secondary" (click)="retourMesAnnonces()">
           <i class="fas fa-times"></i>
           Annuler
         </button>
       </div>
+
+      <!-- Modales -->
+      <!-- Modal: Informations générales -->
+      <div class="im-modal" *ngIf="modal==='infos'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-user"></i> Modifier les informations générales</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body">
+            <div class="form-group">
+              <label for="titre">Titre de l'annonce *</label>
+              <input id="titre" type="text" class="form-control" formControlName="titre" placeholder="Ex: Maison de charme à 5 minutes du Parc des Princes" autofocus>
+              <div *ngIf="annonceForm.get('titre')?.invalid && annonceForm.get('titre')?.touched" class="error-text">Le titre est requis et doit contenir au moins 10 caractères</div>
+            </div>
+            <div class="form-group">
+              <label for="description">Description *</label>
+              <textarea id="description" rows="4" class="form-control" formControlName="description" placeholder="Décrivez votre logement en détail..."></textarea>
+              <div *ngIf="annonceForm.get('description')?.invalid && annonceForm.get('description')?.touched" class="error-text">La description est requise et doit contenir au moins 50 caractères</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="capacite">Capacité (personnes) *</label>
+                <input id="capacite" type="number" class="form-control" formControlName="capacite" placeholder="Ex: 6">
+              </div>
+              <div class="form-group">
+                <label for="nombreChambres">Nombre de chambres *</label>
+                <input id="nombreChambres" type="number" class="form-control" formControlName="nombreChambres" placeholder="Ex: 3">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nombreSallesDeBain">Nombre de salles de bain *</label>
+                <input id="nombreSallesDeBain" type="number" class="form-control" formControlName="nombreSallesDeBain" placeholder="Ex: 2">
+              </div>
+              <div class="form-group">
+                <label for="typeMaison">Type de logement *</label>
+                <select id="typeMaison" class="form-control" formControlName="typeMaison">
+                  <option value="APPARTEMENT">Appartement</option>
+                  <option value="MAISON">Maison</option>
+                  <option value="STUDIO">Studio</option>
+                  <option value="VILLA">Villa</option>
+                  <option value="LOFT">Loft</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()"><i class="fas fa-check"></i> Terminer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Adresse -->
+      <div class="im-modal" *ngIf="modal==='adresse'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-map-marker-alt"></i> Modifier l'adresse</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body" formGroupName="adresse">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="numero">Numéro *</label>
+                <input id="numero" type="text" class="form-control" formControlName="numero" placeholder="Ex: 28" autofocus>
+              </div>
+              <div class="form-group">
+                <label for="rue">Rue *</label>
+                <input id="rue" type="text" class="form-control" formControlName="rue" placeholder="Ex: Rue de la Paix">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="codePostal">Code postal *</label>
+                <input id="codePostal" type="text" class="form-control" formControlName="codePostal" placeholder="Ex: 75016">
+              </div>
+              <div class="form-group">
+                <label for="ville">Ville *</label>
+                <input id="ville" type="text" class="form-control" formControlName="ville" placeholder="Ex: Paris">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="complement">Complément</label>
+                <input id="complement" type="text" class="form-control" formControlName="complement" placeholder="Ex: Maison avec jardin">
+              </div>
+              <div class="form-group">
+                <label for="pays">Pays *</label>
+                <input id="pays" type="text" class="form-control" formControlName="pays" placeholder="Ex: France">
+              </div>
+            </div>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()"><i class="fas fa-check"></i> Terminer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Tarifs -->
+      <div class="im-modal" *ngIf="modal==='tarifs'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-euro-sign"></i> Modifier les tarifs</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="prixParNuit">Prix par nuit (€) *</label>
+                <input id="prixParNuit" type="number" class="form-control" formControlName="prixParNuit" placeholder="Ex: 250" autofocus>
+              </div>
+              <div class="form-group">
+                <label for="prixParSemaine">Prix par semaine (€) *</label>
+                <input id="prixParSemaine" type="number" class="form-control" formControlName="prixParSemaine" placeholder="Ex: 1600">
+              </div>
+              <div class="form-group">
+                <label for="prixParMois">Prix par mois (€) *</label>
+                <input id="prixParMois" type="number" class="form-control" formControlName="prixParMois" placeholder="Ex: 5800">
+              </div>
+            </div>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()"><i class="fas fa-check"></i> Terminer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Équipements -->
+      <div class="im-modal" *ngIf="modal==='equipements'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-tools"></i> Modifier les équipements</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body">
+            <div class="equipements-grid">
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-home"></i> Équipements de Base</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="wifi" [checked]="isEquipementSelected('WiFi')" (change)="toggleEquipement('WiFi')"><label for="wifi">WiFi</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="climatisation" [checked]="isEquipementSelected('Climatisation')" (change)="toggleEquipement('Climatisation')"><label for="climatisation">Climatisation</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="chauffage" [checked]="isEquipementSelected('Chauffage')" (change)="toggleEquipement('Chauffage')"><label for="chauffage">Chauffage</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="ascenseur" [checked]="isEquipementSelected('Ascenseur')" (change)="toggleEquipement('Ascenseur')"><label for="ascenseur">Ascenseur</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="parking" [checked]="isEquipementSelected('Parking')" (change)="toggleEquipement('Parking')"><label for="parking">Parking</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="balcon" [checked]="isEquipementSelected('Balcon')" (change)="toggleEquipement('Balcon')"><label for="balcon">Balcon/Terrasse</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="vue" [checked]="isEquipementSelected('Vue exceptionnelle')" (change)="toggleEquipement('Vue exceptionnelle')"><label for="vue">Vue exceptionnelle</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="securite" [checked]="isEquipementSelected('Système de sécurité')" (change)="toggleEquipement('Système de sécurité')"><label for="securite">Système de sécurité</label></div>
+                </div>
+              </div>
+
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-utensils"></i> Cuisine</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="cuisine_equipee" [checked]="isEquipementSelected('Cuisine équipée')" (change)="toggleEquipement('Cuisine équipée')"><label for="cuisine_equipee">Cuisine équipée</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="micro_ondes" [checked]="isEquipementSelected('Micro-ondes')" (change)="toggleEquipement('Micro-ondes')"><label for="micro_ondes">Micro-ondes</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="lave_vaisselle" [checked]="isEquipementSelected('Lave-vaisselle')" (change)="toggleEquipement('Lave-vaisselle')"><label for="lave_vaisselle">Lave-vaisselle</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="refrigerateur" [checked]="isEquipementSelected('Réfrigérateur')" (change)="toggleEquipement('Réfrigérateur')"><label for="refrigerateur">Réfrigérateur</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="cafetiere" [checked]="isEquipementSelected('Cafetière')" (change)="toggleEquipement('Cafetière')"><label for="cafetiere">Cafetière</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="bouilloire" [checked]="isEquipementSelected('Bouilloire')" (change)="toggleEquipement('Bouilloire')"><label for="bouilloire">Bouilloire</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="mixeur" [checked]="isEquipementSelected('Mixeur')" (change)="toggleEquipement('Mixeur')"><label for="mixeur">Mixeur</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="grill" [checked]="isEquipementSelected('Grill')" (change)="toggleEquipement('Grill')"><label for="grill">Grill</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="ustensiles" [checked]="isEquipementSelected('Ustensiles de cuisine')" (change)="toggleEquipement('Ustensiles de cuisine')"><label for="ustensiles">Ustensiles de cuisine</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="vaisselle" [checked]="isEquipementSelected('Vaisselle complète')" (change)="toggleEquipement('Vaisselle complète')"><label for="vaisselle">Vaisselle complète</label></div>
+                </div>
+              </div>
+
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-bath"></i> Salle de Bain</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="salle_bain_privee" [checked]="isEquipementSelected('Salle de bain privée')" (change)="toggleEquipement('Salle de bain privée')"><label for="salle_bain_privee">Salle de bain privée</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="douche" [checked]="isEquipementSelected('Douche')" (change)="toggleEquipement('Douche')"><label for="douche">Douche</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="bain" [checked]="isEquipementSelected('Baignoire')" (change)="toggleEquipement('Baignoire')"><label for="bain">Baignoire</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="serviettes" [checked]="isEquipementSelected('Serviettes fournies')" (change)="toggleEquipement('Serviettes fournies')"><label for="serviettes">Serviettes fournies</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="seche_cheveux" [checked]="isEquipementSelected('Sèche-cheveux')" (change)="toggleEquipement('Sèche-cheveux')"><label for="seche_cheveux">Sèche-cheveux</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="produits_hygiene" [checked]="isEquipementSelected('Produits d\'hygiène')" (change)="toggleEquipement('Produits d\'hygiène')"><label for="produits_hygiene">Produits d'hygiène</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="peignoir" [checked]="isEquipementSelected('Peignoir')" (change)="toggleEquipement('Peignoir')"><label for="peignoir">Peignoir</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="chaussons" [checked]="isEquipementSelected('Chaussons')" (change)="toggleEquipement('Chaussons')"><label for="chaussons">Chaussons</label></div>
+                </div>
+              </div>
+
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-bed"></i> Chambres</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="linge_maison" [checked]="isEquipementSelected('Linge de maison')" (change)="toggleEquipement('Linge de maison')"><label for="linge_maison">Linge de maison</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="oreillers" [checked]="isEquipementSelected('Oreillers')" (change)="toggleEquipement('Oreillers')"><label for="oreillers">Oreillers</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="couvertures" [checked]="isEquipementSelected('Couvertures')" (change)="toggleEquipement('Couvertures')"><label for="couvertures">Couvertures</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="armoire" [checked]="isEquipementSelected('Armoire/Penderie')" (change)="toggleEquipement('Armoire/Penderie')"><label for="armoire">Armoire/Penderie</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="lit_bebe" [checked]="isEquipementSelected('Lit bébé disponible')" (change)="toggleEquipement('Lit bébé disponible')"><label for="lit_bebe">Lit bébé</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="lit_supplementaire" [checked]="isEquipementSelected('Lit supplémentaire')" (change)="toggleEquipement('Lit supplémentaire')"><label for="lit_supplementaire">Lit supplémentaire</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="table_chevet" [checked]="isEquipementSelected('Table de chevet')" (change)="toggleEquipement('Table de chevet')"><label for="table_chevet">Table de chevet</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="lampe_chevet" [checked]="isEquipementSelected('Lampe de chevet')" (change)="toggleEquipement('Lampe de chevet')"><label for="lampe_chevet">Lampe de chevet</label></div>
+                </div>
+              </div>
+
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-tv"></i> Divertissement</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="tv" [checked]="isEquipementSelected('Télévision')" (change)="toggleEquipement('Télévision')"><label for="tv">Télévision</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="netflix" [checked]="isEquipementSelected('Netflix/Streaming')" (change)="toggleEquipement('Netflix/Streaming')"><label for="netflix">Netflix/Streaming</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="jeux" [checked]="isEquipementSelected('Jeux de société')" (change)="toggleEquipement('Jeux de société')"><label for="jeux">Jeux de société</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="livres" [checked]="isEquipementSelected('Livres')" (change)="toggleEquipement('Livres')"><label for="livres">Livres</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="musique" [checked]="isEquipementSelected('Système audio')" (change)="toggleEquipement('Système audio')"><label for="musique">Système audio</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="console_jeux" [checked]="isEquipementSelected('Console de jeux')" (change)="toggleEquipement('Console de jeux')"><label for="console_jeux">Console de jeux</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="projecteur" [checked]="isEquipementSelected('Projecteur')" (change)="toggleEquipement('Projecteur')"><label for="projecteur">Projecteur</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="karaoke" [checked]="isEquipementSelected('Karaoké')" (change)="toggleEquipement('Karaoké')"><label for="karaoke">Karaoké</label></div>
+                </div>
+              </div>
+
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-tree"></i> Extérieur</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="jardin" [checked]="isEquipementSelected('Jardin')" (change)="toggleEquipement('Jardin')"><label for="jardin">Jardin</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="barbecue" [checked]="isEquipementSelected('Barbecue')" (change)="toggleEquipement('Barbecue')"><label for="barbecue">Barbecue</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="piscine" [checked]="isEquipementSelected('Piscine')" (change)="toggleEquipement('Piscine')"><label for="piscine">Piscine</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="terrasse" [checked]="isEquipementSelected('Terrasse')" (change)="toggleEquipement('Terrasse')"><label for="terrasse">Terrasse</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="hamac" [checked]="isEquipementSelected('Hamac')" (change)="toggleEquipement('Hamac')"><label for="hamac">Hamac</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="parasol" [checked]="isEquipementSelected('Parasol')" (change)="toggleEquipement('Parasol')"><label for="parasol">Parasol</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="chaises_longues" [checked]="isEquipementSelected('Chaises longues')" (change)="toggleEquipement('Chaises longues')"><label for="chaises_longues">Chaises longues</label></div>
+                </div>
+              </div>
+
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-wheelchair"></i> Accessibilité</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="accessible" [checked]="isEquipementSelected('Accessible aux personnes à mobilité réduite')" (change)="toggleEquipement('Accessible aux personnes à mobilité réduite')"><label for="accessible">Accessible PMR</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="rampe" [checked]="isEquipementSelected('Rampe d\'accès')" (change)="toggleEquipement('Rampe d\'accès')"><label for="rampe">Rampe d'accès</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="ascenseur_accessible" [checked]="isEquipementSelected('Ascenseur accessible')" (change)="toggleEquipement('Ascenseur accessible')"><label for="ascenseur_accessible">Ascenseur accessible</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="salle_bain_accessible" [checked]="isEquipementSelected('Salle de bain accessible')" (change)="toggleEquipement('Salle de bain accessible')"><label for="salle_bain_accessible">Salle de bain accessible</label></div>
+                </div>
+              </div>
+
+              <div class="equipment-category">
+                <h4 class="category-title"><i class="fas fa-concierge-bell"></i> Services</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="conciergerie" [checked]="isEquipementSelected('Service de conciergerie')" (change)="toggleEquipement('Service de conciergerie')"><label for="conciergerie">Conciergerie</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="petit_dejeuner" [checked]="isEquipementSelected('Petit-déjeuner inclus')" (change)="toggleEquipement('Petit-déjeuner inclus')"><label for="petit_dejeuner">Petit-déjeuner</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="transfert" [checked]="isEquipementSelected('Service de transfert')" (change)="toggleEquipement('Service de transfert')"><label for="transfert">Transfert</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="guide" [checked]="isEquipementSelected('Guide touristique')" (change)="toggleEquipement('Guide touristique')"><label for="guide">Guide</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="menage" [checked]="isEquipementSelected('Ménage')" (change)="toggleEquipement('Ménage')"><label for="menage">Ménage</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="cuisinier" [checked]="isEquipementSelected('Cuisinier privé')" (change)="toggleEquipement('Cuisinier privé')"><label for="cuisinier">Cuisinier privé</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="chauffeur" [checked]="isEquipementSelected('Chauffeur privé')" (change)="toggleEquipement('Chauffeur privé')"><label for="chauffeur">Chauffeur privé</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="massage" [checked]="isEquipementSelected('Massage')" (change)="toggleEquipement('Massage')"><label for="massage">Massage</label></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()"><i class="fas fa-check"></i> Terminer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Règles -->
+      <div class="im-modal" *ngIf="modal==='regles'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-clipboard-list"></i> Modifier les règles</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body">
+            <div class="regles-grid">
+              <!-- Règles Générales -->
+              <div class="rule-category">
+                <h4 class="category-title"><i class="fas fa-info-circle"></i> Règles Générales</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="pas_fumeur" [checked]="isRegleSelected('Pas de tabac')" (change)="toggleRegle('Pas de tabac')"><label for="pas_fumeur">Non-fumeur</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="pas_animaux" [checked]="isRegleSelected('Pas d\'animaux')" (change)="toggleRegle('Pas d\'animaux')"><label for="pas_animaux">Animaux non autorisés</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="animaux_autorises" [checked]="isRegleSelected('Animaux autorisés')" (change)="toggleRegle('Animaux autorisés')"><label for="animaux_autorises">Animaux autorisés</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="pas_fete" [checked]="isRegleSelected('Pas de fête')" (change)="toggleRegle('Pas de fête')"><label for="pas_fete">Pas de fêtes/événements</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="calme" [checked]="isRegleSelected('Respect des voisins')" (change)="toggleRegle('Respect des voisins')"><label for="calme">Respect du calme</label></div>
+                </div>
+              </div>
+
+              <!-- Horaires -->
+              <div class="rule-category">
+                <h4 class="category-title"><i class="fas fa-clock"></i> Horaires</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="check_in_flexible" [checked]="isRegleSelected('Arrivée flexible')" (change)="toggleRegle('Arrivée flexible')"><label for="check_in_flexible">Check-in flexible</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="check_out_10h" [checked]="isRegleSelected('Départ avant 10h')" (change)="toggleRegle('Départ avant 10h')"><label for="check_out_10h">Check-out avant 10h</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="check_out_11h" [checked]="isRegleSelected('Départ avant 11h')" (change)="toggleRegle('Départ avant 11h')"><label for="check_out_11h">Check-out avant 11h</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="check_out_12h" [checked]="isRegleSelected('Départ avant 12h')" (change)="toggleRegle('Départ avant 12h')"><label for="check_out_12h">Check-out avant 12h</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="couvre_feu" [checked]="isRegleSelected('Couvre-feu à 22h')" (change)="toggleRegle('Couvre-feu à 22h')"><label for="couvre_feu">Couvre-feu à 22h</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="silence_nuit" [checked]="isRegleSelected('Silence de nuit')" (change)="toggleRegle('Silence de nuit')"><label for="silence_nuit">Silence de nuit (22h-7h)</label></div>
+                </div>
+              </div>
+
+              <!-- Sécurité -->
+              <div class="rule-category">
+                <h4 class="category-title"><i class="fas fa-shield-alt"></i> Sécurité</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="camera" [checked]="isRegleSelected('Caméras de surveillance')" (change)="toggleRegle('Caméras de surveillance')"><label for="camera">Caméras de surveillance</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="detecteur_fumee" [checked]="isRegleSelected('Détecteur de fumée')" (change)="toggleRegle('Détecteur de fumée')"><label for="detecteur_fumee">Détecteur de fumée</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="extincteur" [checked]="isRegleSelected('Extincteur')" (change)="toggleRegle('Extincteur')"><label for="extincteur">Extincteur</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="coffre_fort" [checked]="isRegleSelected('Coffre-fort')" (change)="toggleRegle('Coffre-fort')"><label for="coffre_fort">Coffre-fort</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="gardien" [checked]="isRegleSelected('Gardien 24h/24')" (change)="toggleRegle('Gardien 24h/24')"><label for="gardien">Gardien 24h/24</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="interphone" [checked]="isRegleSelected('Interphone')" (change)="toggleRegle('Interphone')"><label for="interphone">Interphone</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="digicode" [checked]="isRegleSelected('Digicode')" (change)="toggleRegle('Digicode')"><label for="digicode">Digicode</label></div>
+                </div>
+              </div>
+
+              <!-- Nettoyage -->
+              <div class="rule-category">
+                <h4 class="category-title"><i class="fas fa-broom"></i> Nettoyage</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="nettoyage_inclus" [checked]="isRegleSelected('Nettoyage inclus')" (change)="toggleRegle('Nettoyage inclus')"><label for="nettoyage_inclus">Nettoyage inclus</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="linge_fourni" [checked]="isRegleSelected('Linge de maison fourni')" (change)="toggleRegle('Linge de maison fourni')"><label for="linge_fourni">Linge de maison fourni</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="menage_fin_sejour" [checked]="isRegleSelected('Ménage de fin de séjour')" (change)="toggleRegle('Ménage de fin de séjour')"><label for="menage_fin_sejour">Ménage de fin de séjour</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="linge_propre" [checked]="isRegleSelected('Linge propre à laisser')" (change)="toggleRegle('Linge propre à laisser')"><label for="linge_propre">Linge propre à laisser</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="nettoyage_quotidien" [checked]="isRegleSelected('Nettoyage quotidien')" (change)="toggleRegle('Nettoyage quotidien')"><label for="nettoyage_quotidien">Nettoyage quotidien</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="changement_linge" [checked]="isRegleSelected('Changement de linge')" (change)="toggleRegle('Changement de linge')"><label for="changement_linge">Changement de linge</label></div>
+                </div>
+              </div>
+
+              <!-- Restrictions -->
+              <div class="rule-category">
+                <h4 class="category-title"><i class="fas fa-ban"></i> Restrictions</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="pas_cuisine" [checked]="isRegleSelected('Cuisine non autorisée')" (change)="toggleRegle('Cuisine non autorisée')"><label for="pas_cuisine">Cuisine non autorisée</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="pas_lavage" [checked]="isRegleSelected('Machine à laver non autorisée')" (change)="toggleRegle('Machine à laver non autorisée')"><label for="pas_lavage">Machine à laver non autorisée</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="pas_enfants" [checked]="isRegleSelected('Enfants non autorisés')" (change)="toggleRegle('Enfants non autorisés')"><label for="pas_enfants">Enfants non autorisés</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="pas_etudiants" [checked]="isRegleSelected('Étudiants non autorisés')" (change)="toggleRegle('Étudiants non autorisés')"><label for="pas_etudiants">Étudiants non autorisés</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="pas_travailleurs" [checked]="isRegleSelected('Travailleurs non autorisés')" (change)="toggleRegle('Travailleurs non autorisés')"><label for="pas_travailleurs">Travailleurs non autorisés</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="pas_photographie" [checked]="isRegleSelected('Photographie interdite')" (change)="toggleRegle('Photographie interdite')"><label for="pas_photographie">Photographie interdite</label></div>
+                </div>
+              </div>
+
+              <!-- Services Inclus -->
+              <div class="rule-category">
+                <h4 class="category-title"><i class="fas fa-gift"></i> Services Inclus</h4>
+                <div class="checkbox-group">
+                  <div class="checkbox-item"><input type="checkbox" id="wifi_gratuit" [checked]="isRegleSelected('WiFi gratuit')" (change)="toggleRegle('WiFi gratuit')"><label for="wifi_gratuit">WiFi gratuit</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="electricite_incluse" [checked]="isRegleSelected('Électricité incluse')" (change)="toggleRegle('Électricité incluse')"><label for="electricite_incluse">Électricité incluse</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="eau_incluse" [checked]="isRegleSelected('Eau incluse')" (change)="toggleRegle('Eau incluse')"><label for="eau_incluse">Eau incluse</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="chauffage_inclus" [checked]="isRegleSelected('Chauffage inclus')" (change)="toggleRegle('Chauffage inclus')"><label for="chauffage_inclus">Chauffage inclus</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="parking_gratuit" [checked]="isRegleSelected('Parking gratuit')" (change)="toggleRegle('Parking gratuit')"><label for="parking_gratuit">Parking gratuit</label></div>
+                  <div class="checkbox-item"><input type="checkbox" id="menage_inclus" [checked]="isRegleSelected('Ménage inclus')" (change)="toggleRegle('Ménage inclus')"><label for="menage_inclus">Ménage inclus</label></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()"><i class="fas fa-check"></i> Terminer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Proximité stade -->
+      <div class="im-modal" *ngIf="modal==='stade'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-futbol"></i> Modifier la proximité du stade</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="stadePlusProche">Stade le plus proche *</label>
+                <input id="stadePlusProche" type="text" class="form-control" formControlName="stadePlusProche" placeholder="Ex: Parc des Princes">
+              </div>
+              <div class="form-group">
+                <label for="distanceStade">Distance au stade (km) *</label>
+                <input id="distanceStade" type="number" step="0.1" class="form-control" formControlName="distanceStade" placeholder="Ex: 0.3">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="adresseStade">Adresse du stade *</label>
+              <input id="adresseStade" type="text" class="form-control" formControlName="adresseStade" placeholder="Ex: 75016 Paris">
+            </div>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()"><i class="fas fa-check"></i> Terminer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Images -->
+      <div class="im-modal" *ngIf="modal==='images'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-images"></i> Gérer les images</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body">
+            <!-- Images existantes -->
+            <div *ngIf="annonce && annonce.images && annonce.images.length > 0" class="existing-images">
+              <h4>Images actuelles</h4>
+              <div class="existing-images-grid">
+                <div *ngFor="let image of annonce.images; let i = index" class="existing-image-item">
+                  <img [src]="image" [alt]="'Image ' + (i + 1)" class="existing-image">
+                  <button type="button" class="remove-existing-image" (click)="removeExistingImage(i)">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zone d'upload -->
+            <div class="image-upload-section">
+              <div 
+                class="image-upload-zone"
+                [class.drag-over]="isDragOver"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event)"
+                (click)="fileInput.click()"
+              >
+                <div class="upload-content">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <h4>Glissez-déposez vos images ici</h4>
+                  <p>ou cliquez pour sélectionner des fichiers</p>
+                  <p class="upload-info">
+                    Formats: JPG, PNG, GIF • Max: 5MB • 10 images
+                  </p>
+                </div>
+                <input 
+                  #fileInput
+                  type="file" 
+                  multiple 
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
+                  style="display: none;"
+                >
+              </div>
+
+              <!-- Erreurs d'images -->
+              <div *ngIf="imageErrors.length > 0" class="image-errors">
+                <div *ngFor="let error of imageErrors" class="error-message">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  {{ error }}
+                </div>
+              </div>
+
+              <!-- Images sélectionnées -->
+              <div *ngIf="selectedImages.length > 0" class="selected-images">
+                <h4>Nouvelles images à ajouter</h4>
+                <div class="selected-images-grid">
+                  <div *ngFor="let image of selectedImages; let i = index" class="selected-image-item">
+                    <img [src]="image.preview" [alt]="image.name" class="selected-image">
+                    <div class="image-info">
+                      <span class="image-name">{{ image.name }}</span>
+                      <span class="image-size">{{ formatFileSize(image.size) }}</span>
+                    </div>
+                    <button type="button" class="remove-image" (click)="removeImage(i)">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()"><i class="fas fa-check"></i> Terminer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Réservations -->
+      <div class="im-modal" *ngIf="modal==='reservations'">
+        <div class="im-modal-dialog large">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-calendar-check"></i> Gestion des réservations</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body">
+            <!-- Filtres -->
+            <div class="reservations-filters">
+              <div class="filter-group">
+                <label>Statut :</label>
+                <select [(ngModel)]="reservationFilter" (change)="filterReservations()">
+                  <option value="TOUS">Tous</option>
+                  <option value="EN_ATTENTE">En attente</option>
+                  <option value="CONFIRMEE">Confirmées</option>
+                  <option value="EN_COURS">En cours</option>
+                  <option value="TERMINEE">Terminées</option>
+                  <option value="ANNULEE">Annulées</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label>Période :</label>
+                <select [(ngModel)]="reservationPeriodFilter" (change)="filterReservations()">
+                  <option value="TOUTES">Toutes</option>
+                  <option value="FUTURES">Futures</option>
+                  <option value="PASSEES">Passées</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Liste des réservations -->
+            <div class="reservations-list" *ngIf="filteredReservations.length > 0; else noReservationsFound">
+              <div *ngFor="let reservation of filteredReservations" class="reservation-card">
+                <div class="reservation-header">
+                  <div class="reservation-info">
+                    <h4>Réservation #{{ reservation.id.substring(0, 8) }}</h4>
+                    <div class="reservation-dates">
+                      <i class="fas fa-calendar"></i>
+                      {{ formatDate(reservation.dateArrivee) }} - {{ formatDate(reservation.dateDepart) }}
+                    </div>
+                    <div class="reservation-guests">
+                      <i class="fas fa-users"></i>
+                      {{ reservation.nombreVoyageurs }} personne(s)
+                    </div>
+                  </div>
+                  <div class="reservation-status">
+                    <span class="badge" [ngClass]="getStatusClass(reservation.statut)">{{ formatStatus(reservation.statut) }}</span>
+                  </div>
+                </div>
+                
+                <div class="reservation-actions">
+                  <button type="button" class="btn btn-sm btn-outline-primary" (click)="viewReservationDetails(reservation)">
+                    <i class="fas fa-eye"></i> Détails
+                  </button>
+                  
+                  <!-- Actions selon le statut -->
+                  <ng-container [ngSwitch]="reservation.statut">
+                    <button *ngSwitchCase="'EN_ATTENTE'" type="button" class="btn btn-sm btn-success" (click)="confirmReservation(reservation)">
+                      <i class="fas fa-check"></i> Confirmer
+                    </button>
+                    <button *ngSwitchCase="'EN_ATTENTE'" type="button" class="btn btn-sm btn-danger" (click)="cancelReservation(reservation)">
+                      <i class="fas fa-times"></i> Refuser
+                    </button>
+                    
+                    <button *ngSwitchCase="'CONFIRMEE'" type="button" class="btn btn-sm btn-info" (click)="startReservation(reservation)">
+                      <i class="fas fa-play"></i> Mettre en cours
+                    </button>
+                    <button *ngSwitchCase="'CONFIRMEE'" type="button" class="btn btn-sm btn-warning" (click)="cancelReservation(reservation)">
+                      <i class="fas fa-ban"></i> Annuler
+                    </button>
+                    
+                    <button *ngSwitchCase="'EN_COURS'" type="button" class="btn btn-sm btn-primary" (click)="endReservation(reservation)">
+                      <i class="fas fa-stop"></i> Terminer
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <ng-template #noReservationsFound>
+              <div class="no-reservations">
+                <i class="fas fa-calendar-times"></i>
+                <p>Aucune réservation trouvée pour les critères sélectionnés</p>
+              </div>
+            </ng-template>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Fermer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Détails de réservation -->
+      <div class="im-modal" *ngIf="modal==='reservation-details'">
+        <div class="im-modal-dialog">
+          <div class="im-modal-header">
+            <div class="im-modal-title"><i class="fas fa-info-circle"></i> Détails de la réservation</div>
+            <button type="button" class="btn btn-danger btn-icon" aria-label="Fermer" (click)="closeModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="im-modal-body" *ngIf="selectedReservation">
+            <div class="reservation-details">
+              <div class="detail-section">
+                <h4>Informations générales</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <label>ID Réservation :</label>
+                    <span>{{ selectedReservation.id }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Statut :</label>
+                    <span class="badge" [ngClass]="getStatusClass(selectedReservation.statut)">{{ formatStatus(selectedReservation.statut) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Date de création :</label>
+                    <span>{{ formatDate(selectedReservation.dateCreation || '') }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section">
+                <h4>Période de séjour</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <label>Date d'arrivée :</label>
+                    <span>{{ formatDate(selectedReservation.dateArrivee) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Date de départ :</label>
+                    <span>{{ formatDate(selectedReservation.dateDepart) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Durée :</label>
+                    <span>{{ calculateDuration(selectedReservation.dateArrivee, selectedReservation.dateDepart) }} jour(s)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section">
+                <h4>Détails du séjour</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <label>Nombre de voyageurs :</label>
+                    <span>{{ selectedReservation.nombreVoyageurs }}</span>
+                  </div>
+                  <div class="detail-item" *ngIf="selectedReservation.montantTotal">
+                    <label>Prix total :</label>
+                    <span>{{ selectedReservation.montantTotal }} €</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section" *ngIf="selectedReservation.messageProprietaire">
+                <h4>Message du propriétaire</h4>
+                <p class="cancellation-reason">{{ selectedReservation.messageProprietaire }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="im-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fas fa-times"></i> Fermer</button>
+            <button type="button" class="btn btn-primary" (click)="openModal('reservations')"><i class="fas fa-arrow-left"></i> Retour aux réservations</button>
+          </div>
+        </div>
+      </div>
+
     </form>
   </div>
-</div> 
+</div>
+
+

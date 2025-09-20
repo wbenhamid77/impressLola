@@ -1,0 +1,402 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <!-- Header Professionnel Ultra-Moderne -->
+  <header class="relative bg-gradient-to-r from-red-800 via-red-700 to-green-800 text-white shadow-2xl overflow-hidden">
+    <!-- Motifs décoratifs en arrière-plan -->
+    <div class="absolute inset-0 opacity-20">
+      <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white to-transparent"></div>
+      <div class="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 left-10 w-32 h-32 bg-white rounded-full blur-2xl"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-white rounded-full blur-3xl opacity-30"></div>
+    </div>
+    
+    <div class="relative mx-auto max-w-7xl px-6 py-12">
+      <div class="text-center">
+        <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-6">
+          <i class="fas fa-map-marked-alt text-2xl"></i>
+          <span class="text-lg font-semibold">Carte Interactive</span>
+        </div>
+        <h1 class="text-5xl lg:text-6xl font-black text-white mb-6 leading-tight drop-shadow-2xl">
+          Explorez les Annonces
+        </h1>
+        <p class="text-white/90 text-xl max-w-3xl mx-auto leading-relaxed">
+          Découvrez tous les logements disponibles sur une carte interactive, filtrez par stade et trouvez votre hébergement idéal pour la CAN 2025
+        </p>
+        <div class="flex items-center justify-center gap-8 mt-8">
+          <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+            <i class="fas fa-home text-red-300"></i>
+            <span class="text-sm font-semibold">{{ annonces.length }} Annonces</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+            <i class="fas fa-futbol text-green-300"></i>
+            <span class="text-sm font-semibold">{{ stades.length }} Stades</span>
+          </div>
+          <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+            <i class="fas fa-filter text-yellow-300"></i>
+            <span class="text-sm font-semibold">Filtres Avancés</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filtres Professionnels Ultra-Modernes -->
+  <div class="bg-white shadow-2xl border-b border-gray-200 relative">
+    <!-- Effet de brillance -->
+    <div class="absolute inset-0 bg-gradient-to-r from-red-50 via-transparent to-green-50 opacity-50"></div>
+    
+    <div class="relative mx-auto max-w-7xl px-6 py-8">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Filtres de Recherche</h2>
+        <p class="text-gray-600">Affinez votre recherche pour trouver le logement parfait</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <!-- Filtre par Stade -->
+        <div class="lg:col-span-2">
+          <label class="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-red-800 to-red-900 rounded-lg flex items-center justify-center mr-3">
+              <i class="fas fa-futbol text-white text-sm"></i>
+            </div>
+            Stade de Référence
+          </label>
+          <select 
+            [(ngModel)]="stadeSelectionne" 
+            (change)="filtrerParStade()"
+            class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-800 focus:border-red-800 text-gray-700 font-medium transition-all duration-200 hover:border-gray-300">
+            <option value="">Tous les stades</option>
+            <option *ngFor="let stade of stades" [value]="stade.id">
+              {{ stade.nom }} - {{ stade.ville }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Rayon de recherche -->
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-green-800 to-green-900 rounded-lg flex items-center justify-center mr-3">
+              <i class="fas fa-ruler text-white text-sm"></i>
+            </div>
+            Rayon (km)
+          </label>
+          <select 
+            [(ngModel)]="rayonFiltre" 
+            (change)="filtrerParStade()"
+            class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-800 focus:border-green-800 text-gray-700 font-medium transition-all duration-200 hover:border-gray-300">
+            <option value="5">5 km</option>
+            <option value="10">10 km</option>
+            <option value="20">20 km</option>
+            <option value="50">50 km</option>
+          </select>
+        </div>
+
+        <!-- Filtre par Prix -->
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-red-800 to-red-900 rounded-lg flex items-center justify-center mr-3">
+              <i class="fas fa-euro-sign text-white text-sm"></i>
+            </div>
+            Prix Maximum
+          </label>
+          <input 
+            type="number" 
+            [(ngModel)]="prixMax" 
+            (change)="appliquerFiltres()"
+            placeholder="Prix maximum"
+            class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-800 focus:border-red-800 text-gray-700 font-medium transition-all duration-200 hover:border-gray-300">
+        </div>
+
+        <!-- Filtre par Type -->
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-green-800 to-green-900 rounded-lg flex items-center justify-center mr-3">
+              <i class="fas fa-home text-white text-sm"></i>
+            </div>
+            Type de Logement
+          </label>
+          <select 
+            [(ngModel)]="typeMaison" 
+            (change)="appliquerFiltres()"
+            class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-800 focus:border-green-800 text-gray-700 font-medium transition-all duration-200 hover:border-gray-300">
+            <option value="">Tous les types</option>
+            <option value="APPARTEMENT">Appartement</option>
+            <option value="MAISON">Maison</option>
+            <option value="VILLA">Villa</option>
+            <option value="STUDIO">Studio</option>
+            <option value="CHAMBRE">Chambre</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Boutons d'action améliorés -->
+      <div class="flex justify-between items-center mt-8 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
+            <i class="fas fa-info-circle text-blue-600"></i>
+            <span class="text-sm font-semibold text-gray-700">
+              {{ annoncesFiltrees.length }} annonce{{ annoncesFiltrees.length > 1 ? 's' : '' }} trouvée{{ annoncesFiltrees.length > 1 ? 's' : '' }}
+            </span>
+          </div>
+          <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
+            <i class="fas fa-map-marker-alt text-red-600"></i>
+            <span class="text-sm font-semibold text-gray-700">Maroc</span>
+          </div>
+        </div>
+        <button 
+          (click)="reinitialiserFiltres()"
+          class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-6 py-3 rounded-xl font-bold transition-all duration-200 flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+          <i class="fas fa-undo"></i>
+          Réinitialiser les Filtres
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu Principal -->
+  <div class="flex h-screen">
+    <!-- Carte -->
+    <div class="flex-1 relative">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="text-center">
+          <div class="w-16 h-16 border-4 border-red-300 border-t-red-800 rounded-full animate-spin mx-auto mb-4"></div>
+          <p class="text-gray-600 font-medium">Chargement de la carte...</p>
+        </div>
+      </div>
+
+      <!-- Erreur -->
+      <div *ngIf="errorMessage" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="text-center">
+          <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Erreur de chargement</h3>
+          <p class="text-gray-600 mb-4">{{ errorMessage }}</p>
+          <button 
+            (click)="chargerDonnees()"
+            class="bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200">
+            <i class="fas fa-redo mr-2"></i>
+            Réessayer
+          </button>
+        </div>
+      </div>
+
+      <!-- Carte Leaflet -->
+      <div id="carte-interactive" class="w-full h-full"></div>
+    </div>
+
+    <!-- Panneau des Annonces Ultra-Moderne -->
+    <div class="w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto relative">
+      <!-- Header du panneau -->
+      <div class="sticky top-0 bg-gradient-to-r from-red-800 to-green-800 text-white p-6 shadow-lg">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold flex items-center gap-3">
+            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+              <i class="fas fa-list text-white"></i>
+            </div>
+            Annonces Proches
+          </h2>
+          <div class="bg-white/20 rounded-full px-3 py-1 text-sm font-bold">
+            {{ annoncesFiltrees.length }}/{{ annonces.length }}
+          </div>
+        </div>
+        <p class="text-white/90 text-sm">
+          <span *ngIf="annoncesFiltrees.length === annonces.length">Toutes les annonces</span>
+          <span *ngIf="annoncesFiltrees.length < annonces.length">{{ annoncesFiltrees.length }} annonce{{ annoncesFiltrees.length > 1 ? 's' : '' }} filtrée{{ annoncesFiltrees.length > 1 ? 's' : '' }}</span>
+        </p>
+      </div>
+
+
+      <div class="p-6 space-y-4">
+        <!-- Annonce sélectionnée -->
+        <div *ngIf="annonceSelectionnee" class="bg-white rounded-3xl p-6 border-2 border-gray-200 shadow-2xl relative overflow-hidden mb-6">
+          <!-- Header avec gradient -->
+          <div class="bg-gradient-to-r from-red-800 via-red-700 to-green-800 rounded-t-3xl -m-6 mb-4 p-4 text-white">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                  <i class="fas fa-star text-yellow-300 text-xl"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-lg">{{ annonceSelectionnee.titre }}</h3>
+                  <p class="text-sm opacity-90 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    {{ annonceSelectionnee.adresse?.ville || 'Ville non spécifiée' }}
+                  </p>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-bold">{{ formaterPrix(annonceSelectionnee.prixParNuit) }}</div>
+                <div class="text-sm opacity-90">par nuit</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Image ou icône par défaut -->
+          <div class="relative mb-4">
+            <div class="w-full h-48 rounded-2xl overflow-hidden shadow-lg">
+              <img *ngIf="annonceSelectionnee.images?.[0]" 
+                   [src]="getImagePath(annonceSelectionnee.images?.[0])" 
+                   [alt]="annonceSelectionnee.titre"
+                   class="w-full h-full object-cover"
+                   (error)="onImageError($event)">
+              <div *ngIf="!annonceSelectionnee.images?.[0]" 
+                   class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="w-20 h-20 mx-auto mb-3 rounded-2xl shadow-lg flex items-center justify-center text-4xl" 
+                       [class]="getTypeMaisonColor(annonceSelectionnee.typeMaison)">
+                    <i [class]="getTypeMaisonIcon(annonceSelectionnee.typeMaison)"></i>
+                  </div>
+                  <p class="text-gray-600 font-medium">Image non disponible</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informations détaillées -->
+          <div class="space-y-4">
+            <!-- Badges d'information -->
+            <div class="flex flex-wrap gap-2">
+              <span [class]="getTypeMaisonColor(annonceSelectionnee.typeMaison) + ' px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2'">
+                <i [class]="getTypeMaisonIcon(annonceSelectionnee.typeMaison) + ' text-sm'"></i>
+                {{ getTypeMaisonLabel(annonceSelectionnee.typeMaison) }}
+              </span>
+              <span [class]="getCapaciteColor(annonceSelectionnee.capacite) + ' px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2'">
+                <i [class]="getCapaciteIcon(annonceSelectionnee.capacite) + ' text-sm'"></i>
+                {{ annonceSelectionnee.capacite }} pers.
+              </span>
+              <span [class]="getChambresColor(annonceSelectionnee.nombreChambres) + ' px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2'">
+                <i [class]="getChambresIcon(annonceSelectionnee.nombreChambres) + ' text-sm'"></i>
+                {{ annonceSelectionnee.nombreChambres }} ch.
+              </span>
+            </div>
+
+            <!-- Description -->
+            <p class="text-gray-600 text-sm leading-relaxed">{{ annonceSelectionnee.description }}</p>
+
+            <!-- Note et avis -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="flex items-center">
+                  <i class="fas fa-star text-yellow-500"></i>
+                  <i class="fas fa-star text-yellow-500"></i>
+                  <i class="fas fa-star text-yellow-500"></i>
+                  <i class="fas fa-star text-yellow-500"></i>
+                  <i class="fas fa-star text-gray-300"></i>
+                </div>
+                <span class="text-sm text-gray-600 font-medium">{{ annonceSelectionnee.noteMoyenne || 'N/A' }}</span>
+                <span class="text-xs text-gray-500">({{ annonceSelectionnee.nombreAvis || 0 }} avis)</span>
+              </div>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+
+            <!-- Bouton d'action -->
+            <button 
+              (click)="voirDetailsAnnonce(annonceSelectionnee.id)"
+              class="w-full bg-gradient-to-r from-red-800 to-green-800 text-white py-3 rounded-xl font-bold text-lg hover:from-red-900 hover:to-green-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+              <i class="fas fa-eye mr-2"></i>
+              Voir les détails
+            </button>
+          </div>
+        </div>
+
+        <!-- Liste des annonces -->
+        <div *ngFor="let annonce of annoncesFiltrees.slice(0, 15)" 
+             class="bg-white rounded-2xl p-4 border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer group relative overflow-hidden mb-4"
+             [class.bg-gradient-to-r]="annonce.id === annonceSelectionnee?.id"
+             [class.from-red-50]="annonce.id === annonceSelectionnee?.id"
+             [class.to-green-50]="annonce.id === annonceSelectionnee?.id"
+             [class.border-red-300]="annonce.id === annonceSelectionnee?.id"
+             [class.shadow-lg]="annonce.id === annonceSelectionnee?.id"
+             (click)="selectionnerAnnonce(annonce)">
+          
+          <!-- Indicateur de sélection -->
+          <div *ngIf="annonce.id === annonceSelectionnee?.id" 
+               class="absolute top-3 right-3 w-6 h-6 bg-gradient-to-r from-red-800 to-green-800 rounded-full flex items-center justify-center">
+            <i class="fas fa-check text-white text-xs"></i>
+          </div>
+          
+          <div class="flex items-start gap-4">
+            <!-- Image ou icône par défaut -->
+            <div class="w-24 h-24 rounded-xl overflow-hidden shadow-md flex-shrink-0">
+              <img *ngIf="annonce.images?.[0]" 
+                   [src]="getImagePath(annonce.images?.[0])" 
+                   [alt]="annonce.titre"
+                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                   (error)="onImageError($event)">
+              <div *ngIf="!annonce.images?.[0]" 
+                   class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div class="text-center">
+                  <div class="w-12 h-12 mx-auto mb-2 rounded-lg shadow-sm flex items-center justify-center text-2xl" 
+                       [class]="getTypeMaisonColor(annonce.typeMaison)">
+                    <i [class]="getTypeMaisonIcon(annonce.typeMaison)"></i>
+                  </div>
+                  <p class="text-xs text-gray-500 font-medium">Pas d'image</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              <!-- Titre et localisation -->
+              <div class="mb-3">
+                <h3 class="font-bold text-gray-800 text-base mb-1 group-hover:text-red-800 transition-colors duration-200 truncate">
+                  {{ annonce.titre }}
+                </h3>
+                <p class="text-gray-600 text-sm flex items-center">
+                  <i class="fas fa-map-marker-alt text-red-600 mr-2 text-xs"></i>
+                  {{ annonce.adresse?.ville || 'Ville non spécifiée' }}
+                </p>
+              </div>
+              
+              <!-- Badges d'information -->
+              <div class="flex flex-wrap gap-1.5 mb-3">
+                <span [class]="getTypeMaisonColor(annonce.typeMaison) + ' px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1'">
+                  <i [class]="getTypeMaisonIcon(annonce.typeMaison) + ' text-xs'"></i>
+                  {{ getTypeMaisonLabel(annonce.typeMaison) }}
+                </span>
+                <span [class]="getCapaciteColor(annonce.capacite) + ' px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1'">
+                  <i [class]="getCapaciteIcon(annonce.capacite) + ' text-xs'"></i>
+                  {{ annonce.capacite }} pers.
+                </span>
+                <span [class]="getChambresColor(annonce.nombreChambres) + ' px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1'">
+                  <i [class]="getChambresIcon(annonce.nombreChambres) + ' text-xs'"></i>
+                  {{ annonce.nombreChambres }} ch.
+                </span>
+              </div>
+              
+              <!-- Prix et note -->
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-red-800 text-lg flex items-center gap-1">
+                    <i [class]="getPrixIcon(annonce.prixParNuit) + ' ' + getPrixColor(annonce.prixParNuit) + ' text-sm'"></i>
+                    {{ formaterPrix(annonce.prixParNuit) }}
+                  </span>
+                  <span class="text-xs text-gray-500">/nuit</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
+                    <i class="fas fa-star text-yellow-500 text-sm"></i>
+                    <span class="text-sm text-gray-600 font-semibold">{{ annonce.noteMoyenne || 'N/A' }}</span>
+                  </div>
+                  <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message si aucune annonce -->
+        <div *ngIf="annoncesFiltrees.length === 0" class="text-center py-12">
+          <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-search text-gray-400 text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-700 mb-2">Aucune annonce trouvée</h3>
+          <p class="text-gray-500 text-sm mb-4">Essayez de modifier vos filtres de recherche</p>
+          <button 
+            (click)="reinitialiserFiltres()"
+            class="bg-gradient-to-r from-red-800 to-green-800 text-white px-6 py-3 rounded-xl font-bold transition-all duration-200 hover:shadow-lg">
+            <i class="fas fa-undo mr-2"></i>
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

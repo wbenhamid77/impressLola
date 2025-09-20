@@ -41,6 +41,21 @@ export class ModifierAnnonceComponent implements OnInit, AfterViewInit, OnDestro
   maxImages = 10;
   allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
 
+  // Propriétés pour les modales
+  modal: string | null = null;
+  
+  // Formulaires pour les équipements et règles
+  equipementsForm!: FormGroup;
+  reglesForm!: FormGroup;
+  
+  // Propriétés pour les réservations
+  reservationsStats: any = null;
+  recentReservations: any[] = [];
+  filteredReservations: any[] = [];
+  selectedReservation: any = null;
+  reservationFilter = 'TOUS';
+  reservationPeriodFilter = 'TOUTES';
+
   equipementsDisponibles = [
     'WiFi', 'Climatisation', 'Chauffage', 'Ascenseur', 'Parking', 'Balcon', 
     'Cuisine équipée', 'Micro-ondes', 'Lave-vaisselle', 'Réfrigérateur', 
@@ -348,6 +363,12 @@ export class ModifierAnnonceComponent implements OnInit, AfterViewInit, OnDestro
       latitude: [this.annonce.latitude || 0, Validators.required],
       longitude: [this.annonce.longitude || 0, Validators.required]
     });
+
+    // Initialiser les formulaires des équipements et règles
+    this.initialiserFormulairesEquipementsRegles();
+
+    // Charger les données de réservations
+    this.chargerDonneesReservations();
 
     console.log('Formulaire initialisé:', this.annonceForm.value);
   }
@@ -697,5 +718,244 @@ export class ModifierAnnonceComponent implements OnInit, AfterViewInit, OnDestro
   retryMapLoad(): void {
     this.mapError = false;
     this.initMap();
+  }
+
+  // Méthodes pour les modales
+  openModal(modalType: string): void {
+    this.modal = modalType;
+  }
+
+  closeModal(): void {
+    this.modal = null;
+  }
+
+  // Méthodes pour les équipements et règles
+  initialiserFormulairesEquipementsRegles(): void {
+    // Initialiser le formulaire des équipements
+    this.equipementsForm = this.fb.group({
+      wifi: [this.isEquipementSelected('WiFi')],
+      climatisation: [this.isEquipementSelected('Climatisation')],
+      chauffage: [this.isEquipementSelected('Chauffage')],
+      ascenseur: [this.isEquipementSelected('Ascenseur')],
+      parking: [this.isEquipementSelected('Parking')],
+      balcon: [this.isEquipementSelected('Balcon')],
+      vue: [this.isEquipementSelected('Vue exceptionnelle')],
+      securite: [this.isEquipementSelected('Système de sécurité')],
+      cuisine_equipee: [this.isEquipementSelected('Cuisine équipée')],
+      micro_ondes: [this.isEquipementSelected('Micro-ondes')],
+      lave_vaisselle: [this.isEquipementSelected('Lave-vaisselle')],
+      refrigerateur: [this.isEquipementSelected('Réfrigérateur')],
+      cafetiere: [this.isEquipementSelected('Cafetière')],
+      bouilloire: [this.isEquipementSelected('Bouilloire')],
+      mixeur: [this.isEquipementSelected('Mixeur')],
+      grill: [this.isEquipementSelected('Grill')],
+      ustensiles: [this.isEquipementSelected('Ustensiles de cuisine')],
+      vaisselle: [this.isEquipementSelected('Vaisselle complète')],
+      salle_bain_privee: [this.isEquipementSelected('Salle de bain privée')],
+      douche: [this.isEquipementSelected('Douche')],
+      bain: [this.isEquipementSelected('Baignoire')],
+      serviettes: [this.isEquipementSelected('Serviettes fournies')],
+      seche_cheveux: [this.isEquipementSelected('Sèche-cheveux')],
+      produits_hygiene: [this.isEquipementSelected('Produits d\'hygiène')],
+      peignoir: [this.isEquipementSelected('Peignoir')],
+      chaussons: [this.isEquipementSelected('Chaussons')],
+      linge_maison: [this.isEquipementSelected('Linge de maison')],
+      oreillers: [this.isEquipementSelected('Oreillers')],
+      couvertures: [this.isEquipementSelected('Couvertures')],
+      armoire: [this.isEquipementSelected('Armoire/Penderie')],
+      lit_bebe: [this.isEquipementSelected('Lit bébé disponible')],
+      lit_supplementaire: [this.isEquipementSelected('Lit supplémentaire')],
+      table_chevet: [this.isEquipementSelected('Table de chevet')],
+      lampe_chevet: [this.isEquipementSelected('Lampe de chevet')],
+      tv: [this.isEquipementSelected('Télévision')],
+      netflix: [this.isEquipementSelected('Netflix/Streaming')],
+      jeux: [this.isEquipementSelected('Jeux de société')],
+      livres: [this.isEquipementSelected('Livres')],
+      musique: [this.isEquipementSelected('Système audio')],
+      console_jeux: [this.isEquipementSelected('Console de jeux')],
+      projecteur: [this.isEquipementSelected('Projecteur')],
+      karaoke: [this.isEquipementSelected('Karaoké')],
+      jardin: [this.isEquipementSelected('Jardin')],
+      barbecue: [this.isEquipementSelected('Barbecue')],
+      piscine: [this.isEquipementSelected('Piscine')],
+      terrasse: [this.isEquipementSelected('Terrasse')],
+      hamac: [this.isEquipementSelected('Hamac')],
+      parasol: [this.isEquipementSelected('Parasol')],
+      chaises_longues: [this.isEquipementSelected('Chaises longues')],
+      accessible: [this.isEquipementSelected('Accessible aux personnes à mobilité réduite')],
+      rampe: [this.isEquipementSelected('Rampe d\'accès')],
+      ascenseur_accessible: [this.isEquipementSelected('Ascenseur accessible')],
+      salle_bain_accessible: [this.isEquipementSelected('Salle de bain accessible')],
+      conciergerie: [this.isEquipementSelected('Service de conciergerie')],
+      petit_dejeuner: [this.isEquipementSelected('Petit-déjeuner inclus')],
+      transfert: [this.isEquipementSelected('Service de transfert')],
+      guide: [this.isEquipementSelected('Guide touristique')],
+      menage: [this.isEquipementSelected('Ménage')],
+      cuisinier: [this.isEquipementSelected('Cuisinier privé')],
+      chauffeur: [this.isEquipementSelected('Chauffeur privé')],
+      massage: [this.isEquipementSelected('Massage')]
+    });
+
+    // Initialiser le formulaire des règles
+    this.reglesForm = this.fb.group({
+      pas_fumeur: [this.isRegleSelected('Pas de tabac')],
+      pas_animaux: [this.isRegleSelected('Pas d\'animaux')],
+      animaux_autorises: [this.isRegleSelected('Animaux autorisés')],
+      pas_fete: [this.isRegleSelected('Pas de fête')],
+      calme: [this.isRegleSelected('Respect des voisins')],
+      check_in_flexible: [this.isRegleSelected('Arrivée flexible')],
+      check_out_10h: [this.isRegleSelected('Départ avant 10h')],
+      check_out_11h: [this.isRegleSelected('Départ avant 11h')],
+      check_out_12h: [this.isRegleSelected('Départ avant 12h')],
+      couvre_feu: [this.isRegleSelected('Couvre-feu à 22h')],
+      silence_nuit: [this.isRegleSelected('Silence de nuit')],
+      camera: [this.isRegleSelected('Caméras de surveillance')],
+      detecteur_fumee: [this.isRegleSelected('Détecteur de fumée')],
+      extincteur: [this.isRegleSelected('Extincteur')],
+      coffre_fort: [this.isRegleSelected('Coffre-fort')],
+      gardien: [this.isRegleSelected('Gardien 24h/24')],
+      interphone: [this.isRegleSelected('Interphone')],
+      digicode: [this.isRegleSelected('Digicode')],
+      nettoyage_inclus: [this.isRegleSelected('Nettoyage inclus')],
+      linge_fourni: [this.isRegleSelected('Linge de maison fourni')],
+      menage_fin_sejour: [this.isRegleSelected('Ménage de fin de séjour')],
+      linge_propre: [this.isRegleSelected('Linge propre à laisser')],
+      nettoyage_quotidien: [this.isRegleSelected('Nettoyage quotidien')],
+      changement_linge: [this.isRegleSelected('Changement de linge')],
+      pas_cuisine: [this.isRegleSelected('Cuisine non autorisée')],
+      pas_lavage: [this.isRegleSelected('Machine à laver non autorisée')],
+      pas_enfants: [this.isRegleSelected('Enfants non autorisés')],
+      pas_etudiants: [this.isRegleSelected('Étudiants non autorisés')],
+      pas_travailleurs: [this.isRegleSelected('Travailleurs non autorisés')],
+      pas_photographie: [this.isRegleSelected('Photographie interdite')],
+      wifi_gratuit: [this.isRegleSelected('WiFi gratuit')],
+      electricite_incluse: [this.isRegleSelected('Électricité incluse')],
+      eau_incluse: [this.isRegleSelected('Eau incluse')],
+      chauffage_inclus: [this.isRegleSelected('Chauffage inclus')],
+      parking_gratuit: [this.isRegleSelected('Parking gratuit')],
+      menage_inclus: [this.isRegleSelected('Ménage inclus')]
+    });
+  }
+
+  getEquipementsPreview(): string[] {
+    const equipements = this.annonceForm.get('equipements')?.value || [];
+    return Array.isArray(equipements) ? equipements.slice(0, 5) : [];
+  }
+
+  getReglesPreview(): string[] {
+    const regles = this.annonceForm.get('regles')?.value || [];
+    return Array.isArray(regles) ? regles.slice(0, 5) : [];
+  }
+
+  // Méthodes pour les réservations
+  chargerDonneesReservations(): void {
+    // Simuler des données de réservations pour l'instant
+    this.reservationsStats = {
+      enAttente: 2,
+      confirmees: 5,
+      enCours: 1,
+      terminees: 8
+    };
+
+    this.recentReservations = [
+      {
+        id: 'res-001',
+        dateArrivee: '2024-01-15',
+        dateDepart: '2024-01-20',
+        nombreVoyageurs: 4,
+        statut: 'CONFIRMEE'
+      },
+      {
+        id: 'res-002',
+        dateArrivee: '2024-01-25',
+        dateDepart: '2024-01-28',
+        nombreVoyageurs: 2,
+        statut: 'EN_ATTENTE'
+      }
+    ];
+
+    this.filteredReservations = [...this.recentReservations];
+  }
+
+  filterReservations(): void {
+    let filtered = [...this.recentReservations];
+
+    if (this.reservationFilter !== 'TOUS') {
+      filtered = filtered.filter(r => r.statut === this.reservationFilter);
+    }
+
+    if (this.reservationPeriodFilter === 'FUTURES') {
+      const today = new Date();
+      filtered = filtered.filter(r => new Date(r.dateArrivee) >= today);
+    } else if (this.reservationPeriodFilter === 'PASSEES') {
+      const today = new Date();
+      filtered = filtered.filter(r => new Date(r.dateDepart) < today);
+    }
+
+    this.filteredReservations = filtered;
+  }
+
+  formatDate(date: string): string {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('fr-FR');
+  }
+
+  getStatusClass(statut: string): string {
+    const classes: { [key: string]: string } = {
+      'EN_ATTENTE': 'badge-warning',
+      'CONFIRMEE': 'badge-success',
+      'EN_COURS': 'badge-info',
+      'TERMINEE': 'badge-secondary',
+      'ANNULEE': 'badge-danger'
+    };
+    return classes[statut] || 'badge-secondary';
+  }
+
+  formatStatus(statut: string): string {
+    const statuses: { [key: string]: string } = {
+      'EN_ATTENTE': 'En attente',
+      'CONFIRMEE': 'Confirmée',
+      'EN_COURS': 'En cours',
+      'TERMINEE': 'Terminée',
+      'ANNULEE': 'Annulée'
+    };
+    return statuses[statut] || statut;
+  }
+
+  openReservationDetails(reservation: any): void {
+    this.selectedReservation = reservation;
+    this.modal = 'reservation-details';
+  }
+
+  viewReservationDetails(reservation: any): void {
+    this.openReservationDetails(reservation);
+  }
+
+  confirmReservation(reservation: any): void {
+    console.log('Confirmation de la réservation:', reservation.id);
+    // TODO: Implémenter la logique de confirmation
+  }
+
+  cancelReservation(reservation: any): void {
+    console.log('Annulation de la réservation:', reservation.id);
+    // TODO: Implémenter la logique d'annulation
+  }
+
+  startReservation(reservation: any): void {
+    console.log('Début de la réservation:', reservation.id);
+    // TODO: Implémenter la logique de début
+  }
+
+  endReservation(reservation: any): void {
+    console.log('Fin de la réservation:', reservation.id);
+    // TODO: Implémenter la logique de fin
+  }
+
+  calculateDuration(dateArrivee: string, dateDepart: string): number {
+    if (!dateArrivee || !dateDepart) return 0;
+    const arrivee = new Date(dateArrivee);
+    const depart = new Date(dateDepart);
+    const diffTime = depart.getTime() - arrivee.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 } 

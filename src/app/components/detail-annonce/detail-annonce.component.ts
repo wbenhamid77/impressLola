@@ -494,6 +494,30 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
   }
 
   // Méthodes pour la galerie interactive
+  getMiniatures(): any[] {
+    if (!this.annonce || !this.annonce.images) {
+      return [];
+    }
+    
+    return this.annonce.images.map((image: string, index: number) => ({
+      src: this.getImagePath(image),
+      index: index,
+      isActive: index === this.currentImageIndex
+    }));
+  }
+
+  getModalMiniatures(): any[] {
+    if (!this.annonce || !this.annonce.images) {
+      return [];
+    }
+    
+    return this.annonce.images.map((image: string, index: number) => ({
+      src: this.getImagePath(image),
+      index: index,
+      isActive: index === this.modalImageIndex
+    }));
+  }
+
   goToImage(index: number): void {
     this.currentImageIndex = index;
   }
@@ -641,6 +665,17 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
       'CHAMBRE': 'Chambre'
     };
     return types[type] || type;
+  }
+
+  // Méthode pour formater le prix
+  formaterPrix(prix: number): string {
+    if (!prix || prix === 0) return 'Prix non disponible';
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'MAD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(prix);
   }
 
   // Méthode pour obtenir le badge de statut

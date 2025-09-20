@@ -1,197 +1,391 @@
-<!-- Annonces – Refonte Tailwind -->
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200">
+<!-- Annonces – Design Simple et Professionnel -->
+<div class="min-h-screen bg-white">
 
-  
-  <!-- En‑tête -->
-  <header class="relative border-b-4 border-maroc-dor bg-gradient-to-r from-maroc-rouge to-maroc-vert text-slate-900">
-    <div class="relative mx-auto max-w-6xl space-y-4 px-6 py-6">
-      <button class="inline-flex items-center gap-2 rounded-lg border border-white/40 bg-white/80 px-3 py-2 font-semibold text-slate-900 hover:bg-white" (click)="retourAccueil()"><i class="fas fa-arrow-left"></i> Retour</button>
-
-      <div class="rounded-2xl border border-white/60 bg-white/90 p-5 text-center backdrop-blur">
-        <div class="mx-auto inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-maroc-dor to-yellow-300 px-4 py-1 font-extrabold text-slate-900"><i class="fas fa-trophy"></i> CAN 2025 – Maroc</div>
-        <h1 class="mt-2 text-3xl font-extrabold text-slate-900">
-          <span *ngIf="estLocataire()">Logements CAN 2025</span>
-          <span *ngIf="estLocateur()">Explorer les Annonces</span>
-        </h1>
-        <p class="text-slate-600">
-          <span *ngIf="estLocataire()">Découvrez {{ annonces.length }} logements de qualité près des stades</span>
-          <span *ngIf="estLocateur()">Consultez {{ annonces.length }} annonces pour vous inspirer et comparer</span>
-        </p>
+  <!-- En‑tête Simple -->
+  <header class="bg-white border-b border-gray-200 py-6">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="flex items-center justify-between mb-6">
+        <button 
+          class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          (click)="retourAccueil()">
+          <i class="fas fa-arrow-left"></i>
+          <span>Retour</span>
+        </button>
+        
+        <div class="text-center">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">
+            <i class="fas fa-home text-red-800 mr-3"></i>
+            <span *ngIf="estLocataire()">Logements CAN 2025</span>
+            <span *ngIf="estLocateur()">Explorer les Annonces</span>
+          </h1>
+          <p class="text-gray-600">
+            <span *ngIf="estLocataire()">Découvrez {{ annonces.length }} logements de qualité près des stades</span>
+            <span *ngIf="estLocateur()">Consultez {{ annonces.length }} annonces pour vous inspirer et comparer</span>
+          </p>
+        </div>
+        
+        <div class="w-24"></div> <!-- Spacer pour centrer le titre -->
       </div>
 
-      <div class="flex flex-wrap items-center justify-center gap-2">
-        <div class="rounded-xl border border-black/5 bg-white px-3 py-1.5 font-semibold text-slate-900"><i class="fas fa-home"></i> {{ annonces.length }} logements</div>
-        <div class="rounded-xl border border-black/5 bg-white px-3 py-1.5 font-semibold text-slate-900"><i class="fas fa-futbol"></i> 12 stades</div>
-        <div class="rounded-xl border border-black/5 bg-white px-3 py-1.5 font-semibold text-slate-900"><i class="fas fa-city"></i> 6 villes</div>
+      <!-- Statistiques simples -->
+      <div class="flex justify-center gap-6">
+        <div class="flex items-center gap-2 px-4 py-2 bg-red-900 rounded-lg border border-red-800">
+          <i class="fas fa-home text-red-100"></i>
+          <span class="font-semibold text-red-100">{{ annonces.length }} logements</span>
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 bg-green-900 rounded-lg border border-green-800">
+          <i class="fas fa-futbol text-green-100"></i>
+          <span class="font-semibold text-green-100">12 stades</span>
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
+          <i class="fas fa-city text-gray-600"></i>
+          <span class="font-semibold text-gray-700">6 villes</span>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="mx-auto max-w-6xl px-6 py-6">
+  <main class="container mx-auto px-4 max-w-7xl py-8">
     <!-- Loading -->
-    <section *ngIf="isLoading" class="text-center">
-      <div class="mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-maroc-rouge"></div>
-      <h3 class="text-lg font-bold text-slate-900">Recherche en cours…</h3>
-      <p class="text-slate-600">Nous sélectionnons les meilleurs logements pour vous.</p>
+    <section *ngIf="isLoading" class="text-center py-12">
+      <div class="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-red-800"></div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Chargement en cours...</h3>
+      <p class="text-gray-600">Nous sélectionnons les meilleurs logements pour vous.</p>
     </section>
 
     <!-- Error -->
-    <section *ngIf="errorMessage && !isLoading" class="mx-auto max-w-lg rounded-2xl border border-red-200 bg-white p-6 text-center shadow">
-      <i class="fas fa-exclamation-triangle text-4xl text-red-500"></i>
-      <h3 class="mt-3 text-lg font-bold text-slate-900">Erreur de chargement</h3>
-      <p class="text-slate-600">{{ errorMessage }}</p>
-      <button class="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-maroc-rouge to-maroc-vert px-4 py-2 font-bold text-slate-900" (click)="chargerAnnonces()"><i class="fas fa-redo"></i> Réessayer</button>
+    <section *ngIf="errorMessage && !isLoading" class="max-w-lg mx-auto bg-red-900 border border-red-800 rounded-lg p-6 text-center">
+      <i class="fas fa-exclamation-triangle text-4xl text-red-100 mb-4"></i>
+      <h3 class="text-lg font-semibold text-red-100 mb-2">Erreur de chargement</h3>
+      <p class="text-red-200 mb-4">{{ errorMessage }}</p>
+      <button 
+        class="inline-flex items-center gap-2 bg-red-800 hover:bg-red-700 text-red-100 px-6 py-2 rounded-lg font-semibold transition-colors"
+        (click)="chargerAnnonces()">
+        <i class="fas fa-redo"></i> 
+        Réessayer
+      </button>
     </section>
 
     <!-- Message informatif pour locateurs -->
-    <section *ngIf="estLocateur() && !isLoading && !errorMessage" class="mb-6 rounded-2xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
+    <section *ngIf="estLocateur() && !isLoading && !errorMessage" class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
       <div class="flex items-center gap-3">
-        <div class="flex-shrink-0">
-          <i class="fas fa-info-circle text-blue-500 text-xl"></i>
-        </div>
+        <i class="fas fa-info-circle text-blue-500 text-xl"></i>
         <div>
-          <h3 class="text-lg font-bold text-blue-800">Mode Exploration</h3>
-          <p class="text-blue-700 text-sm">En tant que locateur, vous pouvez consulter les autres annonces pour vous inspirer, mais vous ne pouvez pas réserver. Utilisez cette page pour comparer les prix et les descriptions.</p>
+          <h3 class="text-lg font-semibold text-blue-800">Mode Exploration</h3>
+          <p class="text-blue-700 text-sm">En tant que locateur, vous pouvez consulter les autres annonces pour vous inspirer, mais vous ne pouvez pas réserver.</p>
         </div>
       </div>
     </section>
 
     <!-- Filtres -->
-    <section *ngIf="!isLoading && !errorMessage" class="rounded-2xl border border-slate-200 bg-white p-6 shadow">
-      <h3 class="mb-4 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-search"></i> Rechercher et filtrer</h3>
+    <section *ngIf="!isLoading && !errorMessage" class="bg-white border border-gray-200 rounded-lg p-6 mb-8">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <i class="fas fa-search text-red-800"></i>
+        Rechercher et filtrer
+      </h3>
 
-      <div class="relative mx-auto mb-4 max-w-2xl">
-        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        <input class="w-full rounded-xl border-2 border-slate-200 bg-white px-10 py-2 text-sm focus:border-maroc-rouge focus:outline-none focus:ring-2 focus:ring-maroc-rouge/10" type="text" placeholder="Ville, stade, type…" [(ngModel)]="searchTerm" (ngModelChange)="filterAnnonces()"/>
-        <button *ngIf="searchTerm" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:text-slate-700" (click)="clearSearch()" aria-label="Effacer"><i class="fas fa-times"></i></button>
+      <!-- Barre de recherche -->
+      <div class="relative mb-6">
+        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        <input 
+          class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800 outline-none"
+          type="text" 
+          placeholder="Rechercher par ville, stade, type..." 
+          [(ngModel)]="searchTerm" 
+          (ngModelChange)="filterAnnonces()"/>
+        <button 
+          *ngIf="searchTerm" 
+          class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          (click)="clearSearch()">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <label class="flex flex-col gap-1 text-sm text-slate-600">
-          <span class="font-semibold"><i class="fas fa-building text-maroc-rouge"></i> Type</span>
-          <select class="rounded-lg border-2 border-slate-200 bg-white px-3 py-2" [(ngModel)]="selectedType" (change)="filterAnnonces()">
-            <option value="">Tous</option>
-            <option value="Appartement">Appartement</option>
-            <option value="Maison">Maison</option>
-            <option value="Villa">Villa</option>
-            <option value="Studio">Studio</option>
+      <!-- Filtres -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-building text-red-800 mr-1"></i>
+            Type
+          </label>
+          <select 
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800"
+            [(ngModel)]="selectedType" 
+            (change)="filterAnnonces()">
+            <option value="">Tous les types</option>
+            <option value="APPARTEMENT">Appartement</option>
+            <option value="MAISON">Maison</option>
+            <option value="VILLA">Villa</option>
+            <option value="STUDIO">Studio</option>
           </select>
-        </label>
-        <label class="flex flex-col gap-1 text-sm text-slate-600">
-          <span class="font-semibold"><i class="fas fa-euro-sign text-maroc-rouge"></i> Prix max</span>
-          <select class="rounded-lg border-2 border-slate-200 bg-white px-3 py-2" [(ngModel)]="selectedPrice" (change)="filterAnnonces()">
-            <option value="">Tous</option>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-euro-sign text-green-800 mr-1"></i>
+            Prix max
+          </label>
+          <select 
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+            [(ngModel)]="selectedPrice" 
+            (change)="filterAnnonces()">
+            <option value="">Tous les prix</option>
             <option value="50">50€/nuit</option>
             <option value="100">100€/nuit</option>
             <option value="200">200€/nuit</option>
             <option value="500">500€/nuit</option>
           </select>
-        </label>
-        <label class="flex flex-col gap-1 text-sm text-slate-600">
-          <span class="font-semibold"><i class="fas fa-users text-maroc-rouge"></i> Capacité</span>
-          <select class="rounded-lg border-2 border-slate-200 bg-white px-3 py-2" [(ngModel)]="selectedCapacity" (change)="filterAnnonces()">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-users text-red-800 mr-1"></i>
+            Capacité
+          </label>
+          <select 
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800"
+            [(ngModel)]="selectedCapacity" 
+            (change)="filterAnnonces()">
             <option value="">Toutes</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="4">4</option>
-            <option value="6">6+</option>
+            <option value="1">1 personne</option>
+            <option value="2">2 personnes</option>
+            <option value="4">4 personnes</option>
+            <option value="6">6+ personnes</option>
           </select>
-        </label>
-        <label class="flex flex-col gap-1 text-sm text-slate-600">
-          <span class="font-semibold"><i class="fas fa-futbol text-maroc-rouge"></i> Stade</span>
-          <select class="rounded-lg border-2 border-slate-200 bg-white px-3 py-2" [(ngModel)]="selectedStade" (change)="filterAnnonces()">
-            <option value="">Tous</option>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-futbol text-green-800 mr-1"></i>
+            Stade
+          </label>
+          <select 
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-800 focus:border-green-800"
+            [(ngModel)]="selectedStade" 
+            (change)="filterAnnonces()">
+            <option value="">Tous les stades</option>
             <option value="Mohammed V">Stade Mohammed V</option>
             <option value="Ibn Batouta">Stade Ibn Batouta</option>
             <option value="Adrar">Stade Adrar</option>
           </select>
-        </label>
+        </div>
       </div>
 
-      <div class="mt-3 flex items-center justify-between gap-3">
-        <button class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 font-semibold text-slate-800 hover:border-slate-400" (click)="clearAllFilters()"><i class="fas fa-eraser"></i> Effacer tout</button>
-        <div class="flex items-center gap-3">
-          <label class="flex items-center gap-2 text-sm font-medium text-slate-700">Trier
-            <select class="rounded-md border-2 border-slate-200 bg-white px-2 py-1" [(ngModel)]="sortBy" (change)="sortAnnonces()">
+      <!-- Actions -->
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <button 
+          class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          (click)="clearAllFilters()">
+          <i class="fas fa-eraser"></i>
+          Effacer tout
+        </button>
+        
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-medium text-gray-700">Trier:</label>
+            <select 
+              class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-red-800"
+              [(ngModel)]="sortBy" 
+              (change)="sortAnnonces()">
               <option value="prix-asc">Prix croissant</option>
               <option value="prix-desc">Prix décroissant</option>
               <option value="note-desc">Meilleures notes</option>
               <option value="distance">Distance du stade</option>
             </select>
-          </label>
-          <div class="flex rounded-full bg-slate-100 p-1">
-            <button class="h-9 w-9 rounded-full text-slate-700 hover:bg-white hover:shadow " [class.bg-white]="viewMode==='grid'" [class.shadow]="viewMode==='grid'" (click)="setViewMode('grid')"><i class="fas fa-th-large"></i></button>
-            <button class="h-9 w-9 rounded-full text-slate-700 hover:bg-white hover:shadow " [class.bg-white]="viewMode==='list'" [class.shadow]="viewMode==='list'" (click)="setViewMode('list')"><i class="fas fa-list"></i></button>
           </div>
-          <span class="text-sm text-slate-600"><strong>{{ filteredAnnonces.length }}</strong> logement(s)</span>
+          
+          <div class="flex bg-gray-100 rounded-lg p-1">
+            <button 
+              class="p-2 rounded-md transition-colors"
+              [class.bg-white]="viewMode==='grid'"
+              [class.shadow-sm]="viewMode==='grid'"
+              (click)="setViewMode('grid')">
+              <i class="fas fa-th-large"></i>
+            </button>
+            <button 
+              class="p-2 rounded-md transition-colors"
+              [class.bg-white]="viewMode==='list'"
+              [class.shadow-sm]="viewMode==='list'"
+              (click)="setViewMode('list')">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+          
+          <span class="text-sm text-gray-600">
+            <strong>{{ filteredAnnonces.length }}</strong> logement(s)
+          </span>
         </div>
       </div>
     </section>
 
-    <!-- Cartes -->
-    <section *ngIf="!isLoading && !errorMessage" class="mt-6">
-      <div [ngClass]="viewMode==='grid' ? 'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3' : 'flex flex-col gap-4'">
-        <article class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow transition hover:-translate-y-1 hover:shadow-xl" *ngFor="let annonce of filteredAnnonces; trackBy: trackByAnnonceId" (click)="voirDetails(annonce.id)">
-          <div class="relative h-56 overflow-hidden">
-            <img *ngIf="annonce.images && annonce.images.length>0" [src]="getImagePath(annonce.images[0])" [alt]="annonce.titre" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition"/>
-            <div *ngIf="!annonce.images || annonce.images.length===0" class="grid h-full w-full place-items-center bg-slate-100 text-slate-500"><i class="fas fa-home text-3xl"></i> Aucune photo</div>
-            <div class="absolute left-3 top-3 rounded-full bg-maroc-rouge/90 px-3 py-1 text-xs font-bold text-white">{{ getTypeMaisonLabel(annonce.typeMaison) }}</div>
-            <div class="absolute right-3 top-3 rounded-full bg-maroc-vert/95 px-3 py-1 text-xs font-bold text-white">{{ formaterPrix(annonce.prixParNuit) }}/nuit</div>
-            <button class="absolute bottom-3 right-3 grid h-9 w-9 place-items-center rounded-full bg-white text-rose-600 shadow hover:text-rose-700" [class.bg-gradient-to-r]="isFavori(annonce.id)" [class.from-maroc-rouge]="isFavori(annonce.id)" [class.to-maroc-vert]="isFavori(annonce.id)" (click)="ajouterAuxFavoris(annonce.id); $event.stopPropagation()" aria-label="Favori"><i class="fas fa-heart"></i></button>
+    <!-- Cartes avec Virtual Scrolling CDK -->
+    <section *ngIf="!isLoading && !errorMessage">
+      <cdk-virtual-scroll-viewport 
+        [itemSize]="itemSize"
+        class="viewport-height"
+        (scrolledIndexChange)="onViewportChange()"
+      >
+        <div [ngClass]="viewMode==='grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'flex flex-col gap-4'">
+          <article 
+            class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            *cdkVirtualFor="let annonce of paginatedAnnonces; trackBy: trackByAnnonceId" 
+            (click)="voirDetails(annonce.id)">
+          
+          <!-- Image -->
+          <div class="relative h-48 overflow-hidden rounded-t-lg">
+            <img 
+              *ngIf="annonce.images && annonce.images.length > 0" 
+              [src]="getImagePath(annonce.images[0])" 
+              [alt]="annonce.titre" 
+              loading="lazy" 
+              class="h-full w-full object-cover hover:scale-105 transition-transform duration-300"/>
+            <div 
+              *ngIf="!annonce.images || annonce.images.length === 0" 
+              class="h-full w-full bg-gray-100 flex items-center justify-center">
+              <i class="fas fa-home text-4xl text-gray-400"></i>
+            </div>
+            
+            <!-- Badges -->
+            <div class="absolute top-3 left-3">
+              <span class="bg-red-800 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                {{ getTypeMaisonLabel(annonce.typeMaison) }}
+              </span>
+            </div>
+            <div class="absolute top-3 right-3">
+              <span class="bg-green-800 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                {{ formaterPrix(annonce.prixParNuit) }}/nuit
+              </span>
+            </div>
+            
+            <!-- Bouton favori -->
+            <button 
+              class="absolute bottom-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow"
+              [class.bg-red-800]="isFavori(annonce.id)"
+              [class.text-white]="isFavori(annonce.id)"
+              [class.text-red-800]="!isFavori(annonce.id)"
+              (click)="ajouterAuxFavoris(annonce.id); $event.stopPropagation()">
+              <i class="fas fa-heart text-sm"></i>
+            </button>
           </div>
+          
+          <!-- Contenu -->
           <div class="p-4">
-            <h3 class="truncate text-lg font-extrabold text-slate-900">{{ annonce.titre || 'Logement CAN 2025' }}</h3>
-            <div class="mt-1 flex items-center gap-2 text-slate-600"><i class="fas fa-map-marker-alt text-maroc-rouge"></i> {{ annonce.adresse?.ville || 'Ville' }}, {{ annonce.adresse?.pays || 'Maroc' }}</div>
-            <div class="mt-2 flex flex-wrap gap-3 text-slate-800">
-              <span class="inline-flex items-center gap-1"><i class="fas fa-bed text-maroc-rouge"></i> {{ annonce.nombreChambres }} ch.</span>
-              <span class="inline-flex items-center gap-1"><i class="fas fa-users text-maroc-rouge"></i> {{ annonce.capacite }} pers.</span>
-              <span *ngIf="annonce.stadePlusProche" class="inline-flex items-center gap-1"><i class="fas fa-futbol text-maroc-rouge"></i> {{ annonce.stadePlusProche }}</span>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2 truncate">
+              {{ annonce.titre || 'Logement CAN 2025' }}
+            </h3>
+            
+            <div class="flex items-center gap-2 text-gray-600 mb-3">
+              <i class="fas fa-map-marker-alt text-red-800"></i>
+              <span class="text-sm">{{ annonce.adresse?.ville || 'Ville' }}, {{ annonce.adresse?.pays || 'Maroc' }}</span>
             </div>
-            <div *ngIf="annonce.noteMoyenne" class="mt-2 flex items-center gap-2 text-slate-600">
-              <span class="text-maroc-dor"><span *ngFor="let s of getNoteEtoiles(annonce.noteMoyenne)">{{ s }}</span></span>
-              <span class="font-medium">{{ annonce.noteMoyenne }}/5</span>
+            
+            <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+              <span class="flex items-center gap-1">
+                <i class="fas fa-bed text-red-800"></i>
+                {{ annonce.nombreChambres }} ch.
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="fas fa-users text-green-800"></i>
+                {{ annonce.capacite }} pers.
+              </span>
+              <span *ngIf="annonce.stadePlusProche" class="flex items-center gap-1">
+                <i class="fas fa-futbol text-green-800"></i>
+                {{ annonce.stadePlusProche }}
+              </span>
+            </div>
+            
+            <!-- Note -->
+            <div *ngIf="annonce.noteMoyenne" class="flex items-center gap-2 mb-4">
+              <div class="flex text-yellow-400">
+                <span *ngFor="let etoile of getNoteEtoiles(annonce.noteMoyenne)">{{ etoile }}</span>
+              </div>
+              <span class="text-sm text-gray-600">{{ annonce.noteMoyenne }}/5</span>
             </div>
           </div>
-          <div class="border-t bg-gradient-to-b from-maroc-vert/5 to-maroc-rouge/5 p-4">
+          
+          <!-- Actions -->
+          <div class="border-t border-gray-100 p-4">
             <!-- Boutons pour locataire -->
             <div *ngIf="estLocataire()" class="flex gap-2">
-              <button class="flex-1 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-maroc-rouge to-maroc-vert px-4 py-2 font-bold text-slate-900" (click)="voirDetails(annonce.id); $event.stopPropagation()">
-                <i class="fas fa-eye"></i> Voir détails
+              <button 
+                class="flex-1 bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                (click)="voirDetails(annonce.id); $event.stopPropagation()">
+                <i class="fas fa-eye"></i>
+                Voir détails
               </button>
-              <button class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-maroc-vert to-emerald-600 px-4 py-2 font-bold text-white" (click)="voirDetails(annonce.id); $event.stopPropagation()">
-                <i class="fas fa-calendar-check"></i> Réserver
+              <button 
+                class="bg-green-800 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                (click)="reserverAnnonce(annonce.id); $event.stopPropagation()">
+                <i class="fas fa-calendar-check"></i>
+                Réserver
               </button>
             </div>
             
             <!-- Boutons pour locateur -->
             <div *ngIf="estLocateur()" class="flex gap-2">
-              <button class="flex-1 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 font-bold text-white" (click)="voirDetails(annonce.id); $event.stopPropagation()">
-                <i class="fas fa-eye"></i> Voir détails
+              <button 
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                (click)="voirDetails(annonce.id); $event.stopPropagation()">
+                <i class="fas fa-eye"></i>
+                Voir détails
               </button>
-              <button class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-gray-500 to-gray-600 px-4 py-2 font-bold text-white cursor-not-allowed opacity-50" disabled>
-                <i class="fas fa-ban"></i> Non disponible
+              <button 
+                class="bg-gray-400 text-white px-4 py-2 rounded-lg font-semibold cursor-not-allowed opacity-50 flex items-center justify-center gap-2"
+                disabled>
+                <i class="fas fa-ban"></i>
+                Non disponible
               </button>
             </div>
           </div>
         </article>
-      </div>
+        </div>
+      </cdk-virtual-scroll-viewport>
     </section>
 
     <!-- État vide -->
-    <section *ngIf="!isLoading && !errorMessage && filteredAnnonces.length===0" class="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center shadow">
-      <i class="fas fa-search text-5xl text-slate-300"></i>
-      <h3 class="mt-3 text-lg font-bold text-slate-900">Aucun logement trouvé</h3>
-      <p class="text-slate-600">Essayez d’élargir vos filtres pour voir plus de résultats.</p>
-      <button class="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-maroc-rouge to-maroc-vert px-4 py-2 font-bold text-slate-900" (click)="clearAllFilters()"><i class="fas fa-eraser"></i> Effacer les filtres</button>
+    <section *ngIf="!isLoading && !errorMessage && filteredAnnonces.length === 0" class="text-center py-12">
+      <div class="max-w-md mx-auto">
+        <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucun logement trouvé</h3>
+        <p class="text-gray-600 mb-6">Essayez d'élargir vos filtres pour voir plus de résultats.</p>
+        <button 
+          class="inline-flex items-center gap-2 bg-red-800 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          (click)="clearAllFilters()">
+          <i class="fas fa-eraser"></i>
+          Effacer les filtres
+        </button>
+      </div>
     </section>
 
     <!-- Pagination -->
-    <section *ngIf="filteredAnnonces.length>0" class="mt-6 flex items-center justify-center gap-2">
-      <button class="inline-flex items-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-2 text-slate-700 disabled:opacity-50" [disabled]="currentPage===1" (click)="changePage(currentPage-1)"><i class="fas fa-chevron-left"></i> Précédent</button>
+    <section *ngIf="filteredAnnonces.length > 0" class="mt-8 flex items-center justify-center gap-2">
+      <button 
+        class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="currentPage === 1" 
+        (click)="changePage(currentPage - 1)">
+        <i class="fas fa-chevron-left"></i>
+        Précédent
+      </button>
+      
       <div class="flex gap-1">
-        <button *ngFor="let page of getPageNumbers()" class="h-10 w-10 rounded-xl border-2 border-slate-200 bg-white text-slate-700" [ngClass]="{'bg-gradient-to-r from-maroc-rouge to-maroc-vert border-transparent text-slate-900': page===currentPage}" (click)="changePage(page)">{{ page }}</button>
+        <button 
+          *ngFor="let page of getPageNumbers()" 
+          class="w-10 h-10 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+          [class.bg-red-800]="page === currentPage"
+          [class.border-red-800]="page === currentPage"
+          [class.text-white]="page === currentPage"
+          (click)="changePage(page)">
+          {{ page }}
+        </button>
       </div>
-      <button class="inline-flex items-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-2 text-slate-700 disabled:opacity-50" [disabled]="currentPage===totalPages" (click)="changePage(currentPage+1)">Suivant <i class="fas fa-chevron-right"></i></button>
+      
+      <button 
+        class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="currentPage === totalPages" 
+        (click)="changePage(currentPage + 1)">
+        Suivant
+        <i class="fas fa-chevron-right"></i>
+      </button>
     </section>
   </main>
 </div>

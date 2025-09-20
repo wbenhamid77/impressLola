@@ -1,112 +1,321 @@
-<div *ngIf="annonce" class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200">
-  <!-- Header / Hero -->
-  <header class="bg-gradient-to-r from-maroc-vert to-emerald-700 text-white shadow">
-    <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between gap-4">
-      <button class="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-3 py-2 font-semibold hover:bg-white/20" (click)="retourAnnonces()">
-        <i class="fas fa-arrow-left"></i> Retour
+<div *ngIf="annonce" class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <!-- Header Professionnel Ultra-Moderne -->
+  <header class="relative bg-gradient-to-r from-red-800 via-red-700 to-green-800 text-white shadow-2xl overflow-hidden">
+    <!-- Motifs décoratifs en arrière-plan -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white to-transparent"></div>
+      <div class="absolute top-10 right-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 left-10 w-24 h-24 bg-white rounded-full blur-2xl"></div>
+    </div>
+    
+    <div class="relative mx-auto max-w-7xl px-6 py-8">
+      <!-- Barre de navigation supérieure -->
+      <div class="flex items-center justify-between mb-6">
+        <button class="inline-flex items-center gap-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm px-4 py-3 font-semibold hover:bg-white/20 transition-all duration-200 shadow-lg hover:shadow-xl" (click)="retourAnnonces()">
+          <i class="fas fa-arrow-left text-lg"></i>
+          <span>Retour aux annonces</span>
+        </button>
+        
+        <div class="flex items-center gap-4">
+          <!-- Badge de statut professionnel -->
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm px-4 py-2 text-sm font-bold">
+            <div class="w-2 h-2 rounded-full" [ngClass]="annonce.estActive ? 'bg-green-400' : 'bg-red-400'"></div>
+            <i class="fas" [ngClass]="annonce.estActive ? 'fa-check-circle' : 'fa-times-circle'"></i>
+            <span>{{ annonce.estActive ? 'Disponible' : 'Indisponible' }}</span>
+          </div>
+          
+          <!-- Actions rapides -->
+          <div class="flex items-center gap-2">
+            <button class="w-10 h-10 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200" title="Partager">
+              <i class="fas fa-share-alt"></i>
+            </button>
+            <button class="w-10 h-10 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200" title="Favoris">
+              <i class="fas fa-heart"></i>
       </button>
-      <div class="text-center">
-        <h1 class="m-0 text-2xl font-extrabold drop-shadow">{{ annonce.titre }}</h1>
-        <div class="mt-1 flex items-center justify-center gap-2 text-white/90"><i class="fas fa-map-marker-alt text-yellow-300"></i><span>{{ annonce.adresse?.numero }} {{ annonce.adresse?.rue }}, {{ annonce.adresse?.codePostal }} {{ annonce.adresse?.ville }}, {{ annonce.adresse?.pays }}</span></div>
+          </div>
+        </div>
       </div>
-      <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-semibold">
-        <i class="fas" [ngClass]="annonce.estActive ? 'fa-check-circle' : 'fa-times-circle'"></i>
-        <span>{{ annonce.estActive ? 'Disponible' : 'Indisponible' }}</span>
+      
+      <!-- Contenu principal du header -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+        <!-- Informations principales -->
+        <div class="lg:col-span-2">
+          <div class="mb-4">
+            <div class="inline-flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-sm px-4 py-2 text-sm font-semibold mb-4">
+              <i class="fas fa-home text-green-300"></i>
+              <span>{{ getTypeMaisonLabel(annonce.typeMaison) }}</span>
+            </div>
+            <h1 class="text-4xl lg:text-5xl font-black text-white mb-4 leading-tight drop-shadow-lg">
+              {{ annonce.titre }}
+            </h1>
+            <div class="flex items-center gap-3 text-white/90 text-lg">
+              <i class="fas fa-map-marker-alt text-red-300 text-xl"></i>
+              <span class="font-medium">{{ annonce.adresse?.numero }} {{ annonce.adresse?.rue }}, {{ annonce.adresse?.codePostal }} {{ annonce.adresse?.ville }}, {{ annonce.adresse?.pays }}</span>
+            </div>
+          </div>
+          
+          <!-- Informations clés -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-bed text-white"></i>
+                </div>
+                <div>
+                  <div class="text-white/80 text-sm">Chambres</div>
+                  <div class="text-white font-bold text-lg">{{ annonce.nombreChambres || 0 }}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-users text-white"></i>
+                </div>
+                <div>
+                  <div class="text-white/80 text-sm">Capacité</div>
+                  <div class="text-white font-bold text-lg">{{ annonce.capacite || 0 }}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-star text-white"></i>
+                </div>
+                <div>
+                  <div class="text-white/80 text-sm">Note</div>
+                  <div class="text-white font-bold text-lg">{{ annonce.noteMoyenne || 'N/A' }}/5</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-comments text-white"></i>
+                </div>
+                <div>
+                  <div class="text-white/80 text-sm">Avis</div>
+                  <div class="text-white font-bold text-lg">{{ annonce.nombreAvis || 0 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Prix et actions -->
+        <div class="lg:col-span-1">
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl">
+            <div class="text-center mb-6">
+              <div class="text-white/80 text-sm font-semibold mb-2">Prix par nuit</div>
+              <div class="text-4xl font-black text-white mb-2">{{ formaterPrix(annonce.prixParNuit) }}</div>
+              <div class="text-white/70 text-sm">Toutes taxes comprises</div>
+            </div>
+            
+            <div class="space-y-3">
+              <button class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3">
+                <i class="fas fa-calendar-check text-lg"></i>
+                <span>Réserver maintenant</span>
+              </button>
+              
+              <button class="w-full border border-white/30 bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3">
+                <i class="fas fa-heart text-lg"></i>
+                <span>Ajouter aux favoris</span>
+              </button>
+              
+              <button class="w-full border border-white/30 bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3">
+                <i class="fas fa-share-alt text-lg"></i>
+                <span>Partager</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="mx-auto max-w-6xl px-4 py-6">
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+  <main class="mx-auto max-w-7xl px-6 py-8">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
       <!-- Colonne principale -->
-      <div class="lg:col-span-2 space-y-6">
-        <!-- Galerie avec lightbox -->
-        <section *ngIf="annonce.images?.length; else galleryFallback" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Galerie professionnelle -->
+        <section *ngIf="annonce.images?.length; else galleryFallback" class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
           <div class="relative">
-            <img class="h-96 w-full cursor-zoom-in object-cover" [src]="getImagePath(annonce.images[currentImageIndex])" alt="Photo principale" loading="lazy" appImageFallback (click)="openImageModal(currentImageIndex)" />
-            <div class="absolute bottom-3 right-3 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700">
-              <i class="fas fa-images"></i>
+            <img class="h-96 w-full cursor-zoom-in object-cover" [src]="getImagePath(annonce.images[currentImageIndex])" alt="Photo principale" loading="lazy" appImageFallback />
+            <div class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-xl bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-gray-800 shadow-lg">
+              <i class="fas fa-images text-red-800"></i>
               {{ currentImageIndex + 1 }} / {{ annonce.images.length }}
-              <button class="ms-2 rounded-md bg-slate-900 px-2 py-0.5 text-white" title="Plein écran" (click)="openImageModal(currentImageIndex)"><i class="fas fa-expand"></i></button>
+              <button class="ml-2 rounded-lg bg-gradient-to-r from-red-800 to-red-900 px-3 py-1 text-white hover:from-red-900 hover:to-red-900 transition-all duration-200" title="Plein écran" (click)="openImageModal(currentImageIndex)">
+                <i class="fas fa-expand"></i>
+              </button>
             </div>
           </div>
-          <div class="flex gap-2 overflow-x-auto border-t p-3" *ngIf="annonce.images.length > 1">
-            <img *ngFor="let image of annonce.images; let i = index"
-                 [src]="getImagePath(image)"
-                 alt="Miniature"
-                 loading="lazy"
-                 class="h-16 w-24 cursor-pointer rounded-lg object-cover ring-2 ring-transparent hover:ring-maroc-vert"
-                 [ngClass]="{ 'ring-maroc-vert': i === currentImageIndex }"
-                 (click)="goToImage(i)" />
+          <div class="flex gap-3 overflow-x-auto border-t border-gray-200 p-4" *ngIf="getMiniatures().length > 0">
+            <div *ngFor="let miniature of getMiniatures()" 
+                 class="h-20 w-28 cursor-pointer rounded-xl ring-2 ring-transparent hover:ring-red-800 transition-all duration-200"
+                 [ngClass]="{ 'ring-red-800 shadow-lg': miniature.isActive }"
+                 (click)="goToImage(miniature.index)">
+              <img [src]="miniature.src"
+                   alt="Miniature"
+                   loading="lazy"
+                   class="h-full w-full rounded-xl object-cover" />
+            </div>
           </div>
         </section>
         <ng-template #galleryFallback>
-          <section class="grid h-72 place-items-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow text-slate-500">
-            <i class="fas fa-camera text-3xl"></i>
-            <span>Aucune photo disponible</span>
+          <section class="grid h-72 place-items-center overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl text-gray-500">
+            <div class="text-center">
+              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
+              <span class="text-lg font-medium">Aucune photo disponible</span>
+            </div>
           </section>
         </ng-template>
 
         <!-- Informations clés -->
-        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
-          <div class="border-b bg-slate-50 p-4">
-            <h2 class="m-0 flex items-center gap-2 text-xl font-bold text-maroc-vert"><i class="fas fa-info-circle"></i> Informations</h2>
+        <section class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+          <div class="border-b border-gray-200 p-6">
+            <h2 class="m-0 flex items-center gap-3 text-xl font-bold text-gray-800">
+              <div class="w-8 h-8 bg-gradient-to-r from-red-800 to-red-900 rounded-lg flex items-center justify-center">
+                <i class="fas fa-info-circle text-white text-sm"></i>
+              </div>
+              Informations clés
+            </h2>
           </div>
-          <div class="p-5">
+          <div class="p-6">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div class="flex items-center gap-3 rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3"><i class="fas fa-home text-maroc-rouge"></i><span class="font-semibold">{{ getTypeMaisonLabel(annonce.typeMaison) }}</span></div>
-              <div class="flex items-center gap-3 rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3"><i class="fas fa-bed text-maroc-rouge"></i><span class="font-semibold">{{ annonce.nombreChambres || 0 }} chambre{{ (annonce.nombreChambres||0)>1?'s':'' }}</span></div>
-              <div class="flex items-center gap-3 rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3"><i class="fas fa-users text-maroc-rouge"></i><span class="font-semibold">{{ annonce.capacite || 0 }} personne{{ (annonce.capacite||0)>1?'s':'' }}</span></div>
-              <div *ngIf="annonce.nombreAvis>0" class="flex items-center gap-3 rounded-lg border-l-4 border-maroc-vert bg-emerald-50 p-3"><i class="fas fa-star text-yellow-400"></i><span class="font-semibold">{{ annonce.noteMoyenne }}/5 ({{ annonce.nombreAvis }} avis)</span></div>
+              <div class="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 hover:bg-gray-100 transition-colors duration-200">
+                <div class="w-10 h-10 bg-gradient-to-r from-green-700 to-green-800 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-home text-white text-sm"></i>
+                </div>
+                <div>
+                  <div class="text-gray-600 text-sm font-medium">Type de logement</div>
+                  <div class="font-bold text-gray-800">{{ getTypeMaisonLabel(annonce.typeMaison) }}</div>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 hover:bg-gray-100 transition-colors duration-200">
+                <div class="w-10 h-10 bg-gradient-to-r from-red-700 to-red-800 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-bed text-white text-sm"></i>
+                </div>
+                <div>
+                  <div class="text-gray-600 text-sm font-medium">Chambres</div>
+                  <div class="font-bold text-gray-800">{{ annonce.nombreChambres || 0 }} chambre{{ (annonce.nombreChambres||0)>1?'s':'' }}</div>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 hover:bg-gray-100 transition-colors duration-200">
+                <div class="w-10 h-10 bg-gradient-to-r from-green-700 to-green-800 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-users text-white text-sm"></i>
+                </div>
+                <div>
+                  <div class="text-gray-600 text-sm font-medium">Capacité</div>
+                  <div class="font-bold text-gray-800">{{ annonce.capacite || 0 }} personne{{ (annonce.capacite||0)>1?'s':'' }}</div>
+                </div>
+              </div>
+              
+              <div *ngIf="annonce.nombreAvis>0" class="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 hover:bg-gray-100 transition-colors duration-200">
+                <div class="w-10 h-10 bg-gradient-to-r from-red-700 to-red-800 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-star text-white text-sm"></i>
+                </div>
+                <div>
+                  <div class="text-gray-600 text-sm font-medium">Note moyenne</div>
+                  <div class="font-bold text-gray-800">{{ annonce.noteMoyenne }}/5 ({{ annonce.nombreAvis }} avis)</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         <!-- Description -->
-        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
-          <div class="border-b bg-slate-50 p-4">
-            <h2 class="m-0 flex items-center gap-2 text-xl font-bold text-maroc-vert"><i class="fas fa-align-left"></i> Description</h2>
+        <section class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+          <div class="border-b border-gray-200 p-6">
+            <h2 class="m-0 flex items-center gap-3 text-xl font-bold text-gray-800">
+              <div class="w-8 h-8 bg-gradient-to-r from-green-800 to-green-900 rounded-lg flex items-center justify-center">
+                <i class="fas fa-align-left text-white text-sm"></i>
+              </div>
+              Description
+            </h2>
           </div>
-          <div class="p-5"><p class="m-0 text-slate-700">{{ annonce.description || 'Aucune description disponible pour ce logement.' }}</p></div>
+          <div class="p-6">
+            <p class="m-0 text-gray-700 leading-relaxed">{{ annonce.description || 'Aucune description disponible pour ce logement.' }}</p>
+          </div>
         </section>
 
         <!-- Équipements -->
-        <section *ngIf="annonce.equipements?.length" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
-          <div class="flex items-center justify-between border-b bg-slate-50 p-4">
-            <h2 class="m-0 flex items-center gap-2 text-xl font-bold text-maroc-vert"><i class="fas fa-tools"></i> Équipements</h2>
-            <span class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">{{ annonce.equipements.length }} éléments</span>
+        <section *ngIf="annonce.equipements?.length" class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+          <div class="flex items-center justify-between border-b border-gray-200 p-6">
+            <h2 class="m-0 flex items-center gap-3 text-xl font-bold text-gray-800">
+              <div class="w-8 h-8 bg-gradient-to-r from-red-800 to-red-900 rounded-lg flex items-center justify-center">
+                <i class="fas fa-tools text-white text-sm"></i>
+              </div>
+              Équipements
+            </h2>
+            <span class="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-800">{{ annonce.equipements.length }} éléments</span>
           </div>
-          <div class="p-5">
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2" *ngFor="let e of annonce.equipements"><i class="fas fa-check text-emerald-600"></i><span>{{ e }}</span></div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              <div class="inline-flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 hover:bg-gray-100 transition-colors duration-200" *ngFor="let e of annonce.equipements">
+                <div class="w-5 h-5 bg-gradient-to-r from-green-600 to-green-700 rounded-full flex items-center justify-center">
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span class="font-medium text-gray-800 text-sm">{{ e }}</span>
+              </div>
             </div>
           </div>
         </section>
 
         <!-- Localisation -->
-        <section *ngIf="annonce.latitude && annonce.longitude" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
-          <div class="flex items-center justify-between border-b bg-slate-50 p-4">
-            <h2 class="m-0 flex items-center gap-2 text-xl font-bold text-maroc-vert"><i class="fas fa-map-marker-alt"></i> Localisation</h2>
-            <span class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">Emplacement exact</span>
+        <section *ngIf="annonce.latitude && annonce.longitude" class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+          <div class="flex items-center justify-between border-b border-gray-200 p-6">
+            <h2 class="m-0 flex items-center gap-3 text-xl font-bold text-gray-800">
+              <div class="w-8 h-8 bg-gradient-to-r from-green-800 to-green-900 rounded-lg flex items-center justify-center">
+                <i class="fas fa-map-marker-alt text-white text-sm"></i>
+              </div>
+              Localisation
+            </h2>
+            <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800">Emplacement exact</span>
           </div>
           <div class="p-0">
             <div class="rounded-2xl shadow">
-              <div class="bg-slate-100 p-4">
-                <div class="mb-2 flex items-start gap-3"><i class="fas fa-map-pin text-maroc-rouge"></i><div><strong class="text-maroc-vert">Adresse</strong><div>{{ annonce.adresse?.rue || 'Rue non spécifiée' }}, {{ annonce.adresse?.codePostal || '' }} {{ annonce.adresse?.ville || 'Ville' }}, {{ annonce.adresse?.pays || 'Maroc' }}</div></div></div>
-                <div class="mb-2 flex items-start gap-3" *ngIf="getStadePlusProche()">
-                  <i class="fas fa-futbol text-maroc-rouge"></i>
+              <div class="bg-gray-50 p-6">
+                <div class="mb-4 flex items-start gap-4">
+                  <div class="w-8 h-8 bg-gradient-to-r from-red-700 to-red-800 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-map-pin text-white text-sm"></i>
+                  </div>
                   <div>
-                    <strong class="text-maroc-vert">Stade le plus proche</strong>
-                    <div class="flex items-center gap-2">
-                      <span>{{ getStadePlusProche()?.nom }} ({{ formatDistance(getStadePlusProche()?.distance || 0) }})</span>
-                      <button class="rounded-lg border border-slate-300 bg-white px-3 py-1 text-sm font-semibold text-slate-800 hover:bg-slate-50" (click)="ouvrirPopupStade(getStadePlusProche()!)">
-                        <i class="fas fa-info-circle"></i>
+                    <strong class="text-gray-800">Adresse complète</strong>
+                    <div class="text-gray-600 mt-1">{{ annonce.adresse?.rue || 'Rue non spécifiée' }}, {{ annonce.adresse?.codePostal || '' }} {{ annonce.adresse?.ville || 'Ville' }}, {{ annonce.adresse?.pays || 'Maroc' }}</div>
+                  </div>
+                </div>
+                
+                <div class="mb-4 flex items-start gap-4" *ngIf="getStadePlusProche()">
+                  <div class="w-8 h-8 bg-gradient-to-r from-green-700 to-green-800 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-futbol text-white text-sm"></i>
+                  </div>
+                  <div class="flex-1">
+                    <strong class="text-gray-800">Stade le plus proche</strong>
+                    <div class="flex items-center gap-3 mt-2">
+                      <span class="text-gray-600">{{ getStadePlusProche()?.nom }} ({{ formatDistance(getStadePlusProche()?.distance || 0) }})</span>
+                      <button class="rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm font-semibold text-gray-800 hover:bg-gray-50 transition-colors duration-200" (click)="ouvrirPopupStade(getStadePlusProche()!)">
+                        <i class="fas fa-info-circle mr-1"></i>
                         Détails
                       </button>
                     </div>
                   </div>
                 </div>
-                <div class="flex items-start gap-3"><i class="fas fa-crosshairs text-maroc-rouge"></i><div><strong class="text-maroc-vert">GPS</strong><div>{{ annonce.latitude }}, {{ annonce.longitude }}</div></div></div>
+                
+                <div class="flex items-start gap-4">
+                  <div class="w-8 h-8 bg-gradient-to-r from-red-700 to-red-800 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-crosshairs text-white text-sm"></i>
+                  </div>
+                  <div>
+                    <strong class="text-gray-800">Coordonnées GPS</strong>
+                    <div class="text-gray-600 mt-1 font-mono text-sm">{{ annonce.latitude }}, {{ annonce.longitude }}</div>
+                  </div>
+                </div>
               </div>
               <div class="relative h-80 w-full bg-slate-200">
                 <div id="location-map" class="absolute inset-0"></div>
@@ -116,9 +325,13 @@
                   <h4 class="m-0">Carte indisponible</h4>
                   <p class="m-0 text-slate-600">Impossible d'afficher la carte pour cette localisation.</p>
                   <small>Coordonnées: {{ annonce.latitude }}, {{ annonce.longitude }}</small>
-                  <div class="mt-3 flex gap-2">
-                    <button class="rounded-lg bg-gradient-to-r from-maroc-vert to-emerald-600 px-3 py-2 font-semibold text-white" (click)="rechargerCarte()"><i class="fas fa-redo"></i> Réessayer</button>
-                    <button class="rounded-lg border border-slate-300 bg-white px-3 py-2 font-semibold text-slate-800" (click)="diagnosticDOM()"><i class="fas fa-bug"></i> Diagnostic</button>
+                  <div class="mt-3 flex gap-3">
+                    <button class="rounded-lg bg-gradient-to-r from-green-700 to-green-800 px-4 py-2 font-semibold text-white hover:from-green-800 hover:to-green-900 transition-all duration-200 shadow-lg hover:shadow-xl" (click)="rechargerCarte()">
+                      <i class="fas fa-redo mr-2"></i> Réessayer
+                    </button>
+                    <button class="rounded-lg border border-gray-300 bg-white px-4 py-2 font-semibold text-gray-800 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md" (click)="diagnosticDOM()">
+                      <i class="fas fa-bug mr-2"></i> Diagnostic
+                    </button>
                   </div>
                 </div>
               </div>
@@ -127,27 +340,45 @@
         </section>
 
         <!-- Stades à proximité -->
-        <section *ngIf="getStadePlusProche() || getAutresStades().length > 0" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
-          <div class="flex items-center justify-between border-b bg-slate-50 p-4">
-            <h2 class="m-0 flex items-center gap-2 text-xl font-bold text-maroc-vert"><i class="fas fa-futbol"></i> Stades à proximité</h2>
-            <span class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600" *ngIf="getStadePlusProche()">Stade le plus proche: {{ getStadePlusProche()?.nom }}</span>
+        <section *ngIf="getStadePlusProche() || getAutresStades().length > 0" class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+          <div class="flex items-center justify-between border-b border-gray-200 p-6">
+            <h2 class="m-0 flex items-center gap-3 text-xl font-bold text-gray-800">
+              <div class="w-8 h-8 bg-gradient-to-r from-red-800 to-red-900 rounded-lg flex items-center justify-center">
+                <i class="fas fa-futbol text-white text-sm"></i>
+              </div>
+              Stades à proximité
+            </h2>
+            <span class="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-800" *ngIf="getStadePlusProche()">Stade principal: {{ getStadePlusProche()?.nom }}</span>
           </div>
-          <div class="p-5 space-y-3">
-            <div class="flex cursor-pointer items-center gap-3 rounded-lg border border-maroc-vert/30 bg-emerald-50 p-3 hover:shadow" *ngIf="getStadePlusProche()" (click)="ouvrirPopupStade(getStadePlusProche()!)">
-              <div class="grid h-12 w-12 place-items-center rounded-full bg-maroc-vert text-white"><i class="fas fa-trophy"></i></div>
-              <div class="flex-1"><div class="font-bold text-maroc-vert">{{ getStadePlusProche()?.nom }}</div><div class="text-slate-600">{{ getStadePlusProche()?.ville }} • {{ formatDistance(getStadePlusProche()?.distance || 0) }}</div></div>
-              <div class="rounded-full bg-yellow-300 px-3 py-1 text-sm font-bold text-slate-900">Principal</div>
+          <div class="p-6 space-y-3">
+            <div class="flex cursor-pointer items-center gap-4 rounded-lg border border-green-200 bg-green-50 p-4 hover:bg-green-100 transition-colors duration-200" *ngIf="getStadePlusProche()" (click)="ouvrirPopupStade(getStadePlusProche()!)">
+              <div class="w-10 h-10 bg-gradient-to-r from-green-700 to-green-800 rounded-lg flex items-center justify-center">
+                <i class="fas fa-trophy text-white text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <div class="font-bold text-gray-800">{{ getStadePlusProche()?.nom }}</div>
+                <div class="text-gray-600 text-sm">{{ getStadePlusProche()?.ville }} • {{ formatDistance(getStadePlusProche()?.distance || 0) }}</div>
+              </div>
+              <div class="rounded-full bg-yellow-500 px-3 py-1 text-sm font-bold text-white">Principal</div>
             </div>
+            
             <div class="space-y-2">
-              <div class="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 hover:shadow" *ngFor="let stade of getAutresStades()">
-                <div class="grid h-10 w-10 place-items-center rounded-full bg-maroc-rouge text-white"><i class="fas fa-map-marker-alt"></i></div>
-                <div class="flex-1"><div class="font-semibold text-slate-900">{{ stade.nom }}</div><div class="text-slate-600">{{ stade.ville }} • {{ formatDistance(stade.distance) }}</div></div>
-                <button class="rounded-lg border border-slate-300 bg-white px-3 py-2 font-semibold text-slate-800" (click)="ouvrirPopupStade(stade)"><i class="fas fa-info-circle"></i> Détails</button>
+              <div class="flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-3 hover:bg-gray-50 transition-colors duration-200" *ngFor="let stade of getAutresStades()">
+                <div class="w-8 h-8 bg-gradient-to-r from-red-700 to-red-800 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-gray-800">{{ stade.nom }}</div>
+                  <div class="text-gray-600 text-sm">{{ stade.ville }} • {{ formatDistance(stade.distance) }}</div>
+                </div>
+                <button class="rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm font-semibold text-gray-800 hover:bg-gray-50 transition-colors duration-200" (click)="ouvrirPopupStade(stade)">
+                  <i class="fas fa-info-circle mr-1"></i> Détails
+                </button>
               </div>
             </div>
             <div class="grid place-items-center" *ngIf="getNombreStadesRestants() > 0">
-              <button class="rounded-xl bg-gradient-to-r from-maroc-rouge to-maroc-vert px-4 py-2 font-bold text-slate-900" (click)="basculerAffichageStades()">
-                <i class="fas" [ngClass]="afficherTousLesStades ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              <button class="rounded-lg bg-gradient-to-r from-red-700 to-green-800 px-4 py-2 font-semibold text-white hover:from-red-800 hover:to-green-900 transition-all duration-200" (click)="basculerAffichageStades()">
+                <i class="fas mr-2" [ngClass]="afficherTousLesStades ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 <span *ngIf="!afficherTousLesStades">Voir {{ getNombreStadesRestants() }} stade{{ getNombreStadesRestants() > 1 ? 's' : '' }} de plus</span>
                 <span *ngIf="afficherTousLesStades">Voir moins de stades</span>
               </button>
@@ -203,7 +434,7 @@
           <div class="border-b bg-slate-50 p-4"><h2 class="m-0 flex items-center gap-2 text-lg font-bold text-slate-900"><i class="fas fa-calendar-alt"></i> Calendrier</h2></div>
           <div class="p-4">
             <div *ngIf="estLocataire()">
-              <app-calendrier-locataire [annonceId]="annonce.id" [dateArrivee]="dateArriveeSelectionnee" [dateDepart]="dateDepartSelectionnee" (dateArriveeChange)="onDateArriveeChange($event)" (dateDepartChange)="onDateDepartChange($event)"></app-calendrier-locataire>
+              <app-calendrier-locataire [annonceId]="annonce.id" [dateArrivee]="dateArriveeSelectionnee || ''" [dateDepart]="dateDepartSelectionnee || ''" (dateArriveeChange)="onDateArriveeChange($event)" (dateDepartChange)="onDateDepartChange($event)"></app-calendrier-locataire>
             </div>
             <div *ngIf="estLocateur()">
               <app-calendrier-locateur [annonceId]="annonce.id"></app-calendrier-locateur>
@@ -245,7 +476,7 @@
   <app-locateur-popup></app-locateur-popup>
   <app-stade-popup></app-stade-popup>
   <app-tous-stades-popup></app-tous-stades-popup>
-  <app-reservation-popup #reservationPopup [annonceId]="annonce?.id" [capaciteMax]="annonce?.capacite || 1" (closed)="onReservationClosed()" (confirmed)="onReservationConfirmed()"></app-reservation-popup>
+  
 
   <!-- Lightbox images -->
   <div class="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" *ngIf="isModalOpen" (click)="closeImageModal()">
@@ -256,14 +487,17 @@
       <div class="grid place-items-center bg-black">
         <img class="max-h-[80vh] w-auto object-contain" [src]="getImagePath(annonce.images[modalImageIndex])" alt="Image agrandie" />
       </div>
-      <div class="flex gap-2 overflow-x-auto border-t bg-white/90 p-3">
-        <img *ngFor="let image of annonce.images; let i = index"
-             [src]="getImagePath(image)"
-             alt="Miniature"
-             class="h-14 w-20 cursor-pointer rounded-md object-cover ring-2 ring-transparent hover:ring-maroc-vert"
-             [ngClass]="{ 'ring-maroc-vert': i === modalImageIndex }"
-             (click)="goToModalImage(i)" />
+      <div *ngFor="let miniature of getModalMiniatures()" 
+           class="h-16 w-24 cursor-pointer rounded-lg ring-2 ring-transparent hover:ring-maroc-vert"
+           [class.ring-maroc-vert]="miniature.isActive"
+           (click)="goToModalImage(miniature.index)">
+        <img 
+          [src]="miniature.src"
+          alt="Miniature"
+          loading="lazy"
+          class="h-full w-full rounded-lg object-cover" />
       </div>
+      
     </div>
   </div>
 </div>

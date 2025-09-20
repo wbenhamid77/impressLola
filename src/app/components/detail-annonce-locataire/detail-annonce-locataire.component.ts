@@ -272,20 +272,7 @@ export class DetailAnnonceLocataireComponent implements OnInit, AfterViewInit, O
 
   // Ouvrir la réservation avec les dates pré-sélectionnées
   ouvrirReservationAvecDates(): void {
-    if (this.dateArriveeSelectionnee && this.dateDepartSelectionnee) {
-      console.log('🎯 Ouverture de la réservation avec dates:', this.dateArriveeSelectionnee, this.dateDepartSelectionnee);
-      
-      // Ouvrir le popup de réservation avec les dates pré-remplies
-      if (this.reservationPopup) {
-        this.reservationPopup.openWithDates(this.dateArriveeSelectionnee, this.dateDepartSelectionnee);
-      } else {
-        // Fallback si le ViewChild n'est pas encore disponible
-        this.simulerReservation();
-      }
-    } else {
-      console.log('⚠️ Dates non sélectionnées');
-      alert('Veuillez sélectionner vos dates de séjour');
-    }
+    this.router.navigate(['/reserver', this.annonce?.id]);
   }
 
   // Simulation de réservation pour la démo

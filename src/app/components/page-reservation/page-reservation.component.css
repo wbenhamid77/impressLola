@@ -1,0 +1,96 @@
+/* Styles simples et professionnels pour le calendrier de réservation */
+.jour {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.jour:hover {
+  background-color: #f3f4f6;
+}
+
+.jour-disponible {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+.jour-disponible:hover {
+  background-color: #f3f4f6;
+}
+
+.jour-en-attente {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.jour-confirme {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.jour-en-cours {
+  background-color: #fce7f3;
+  color: #be185d;
+}
+
+.jour-selectionne {
+  background-color: #22c55e;
+  color: white;
+  font-weight: bold;
+}
+
+.jour-periode {
+  background-color: #f0fdf4;
+  color: #166534;
+}
+
+.jour-passe {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  opacity: 0.6;
+}
+
+.hors-mois {
+  background-color: #f9fafb;
+  color: #d1d5db;
+  opacity: 0.4;
+}
+
+.aujourd-hui {
+  border: 2px solid #22c55e;
+}
+
+/* Animation pour les boutons */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Styles pour les formulaires */
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+}
+
+/* Animation de chargement */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .grid-cols-7 {
+    grid-template-columns: repeat(7, 1fr);
+  }
+  
+  .aspect-square {
+    aspect-ratio: 1;
+  }
+}

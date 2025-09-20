@@ -3,6 +3,30 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Annonce, CreateAnnonceRequest } from '../models/annonce.model';
 
+export interface Stade {
+  id: string;
+  nom: string;
+  ville: string;
+  latitude: number;
+  longitude: number;
+  capacite: number;
+  description: string;
+  adresseComplete?: string;
+  images?: string[];
+  estActif?: boolean;
+  dateCreation?: string;
+  dateModification?: string | null;
+  surfaceMetresCarres?: number;
+  categories?: string[];
+  categoriesPlaces?: any[];
+  prixMin?: number;
+  prixMax?: number;
+  imagesBlob?: any[];
+  surfaceType?: string | null;
+  dimensions?: string | null;
+  siteWeb?: string | null;
+}
+
 export interface AnnonceStadeDistance {
   id: string;
   stade: {
@@ -138,6 +162,13 @@ export class ApiService {
   // Récupérer toutes les annonces
   getAnnonces(): Observable<Annonce[]> {
     return this.http.get<Annonce[]>(`${this.baseUrl}/annonces`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Récupérer tous les stades
+  getStades(): Observable<Stade[]> {
+    return this.http.get<Stade[]>(`${this.baseUrl}/stades`, {
       headers: this.getAuthHeaders()
     });
   }

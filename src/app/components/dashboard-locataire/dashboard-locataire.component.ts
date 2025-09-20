@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,14 +6,17 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { LocateurPopupService } from '../../services/locateur-popup.service';
 import { LocateurPopupComponent } from '../locateur-popup/locateur-popup.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import * as AOS from 'aos';
 
 @Component({
   selector: 'app-dashboard-locataire',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocateurPopupComponent],
+  imports: [CommonModule, FormsModule, ScrollingModule],
   templateUrl: './dashboard-locataire.component.html',
-  styleUrl: './dashboard-locataire.component.css'
+  styleUrl: './dashboard-locataire.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardLocataireComponent implements OnInit, AfterViewInit {
   username = '';
@@ -25,8 +28,32 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
   isLoading = false;
   errorMessage = '';
   
+  // Optimisations d'affichage avec CDK
+  annoncesToShow: any[] = [];
+  private readonly ITEMS_PER_PAGE = 12;
+  currentPage = 1; // Commencer à la page 1
+  totalPages = 0;
+  isLoadMoreVisible = false;
+  
+  // Virtual scrolling
+  itemSize = 400; // Hauteur estimée d'une carte d'annonce
+  viewport!: CdkVirtualScrollViewport;
+  
+  // Skeleton loader optimisé
+  skeletonItems = Array(12).fill(0);
+  
+  // Cache intelligent
+  private imageCache = new Map<string, string>();
+  private loadedImages = new Set<string>();
+  
   // Propriétés pour les favoris
   favorisMap: { [key: string]: boolean } = {};
+  favorisLoading: { [key: string]: boolean } = {};
+  
+  // Cache pour optimiser les performances
+  private annoncesCache: any[] = [];
+  private cacheTimestamp: number = 0;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   
   // Propriétés pour la recherche et filtres
   searchTerm = '';
@@ -34,17 +61,135 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
   selectedPrice = '';
   selectedCapacity = '';
   showFilters = false;
+  
+  // Debounce pour la recherche
+  private searchTimeout: any;
 
   constructor(
     private router: Router,
     private apiService: ApiService,
     private authService: AuthService,
-    private locateurPopupService: LocateurPopupService
+    private locateurPopupService: LocateurPopupService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.initializeDashboard();
-    this.chargerAnnonces();
+    
+    // AFFICHAGE IMMÉDIAT - Initialiser avec des données de démonstration
+    this.initialiserAffichageImmediat();
+    
+    // Chargement des vraies données en arrière-plan
+    this.chargerAnnoncesRapide();
+  }
+
+  // Initialisation immédiate pour affichage instantané
+  private initialiserAffichageImmediat(): void {
+    // Créer des annonces de démonstration pour affichage immédiat
+    this.annoncesToShow = [
+      {
+        id: 'demo-1',
+        titre: 'Chargement des annonces...',
+        prixParNuit: 0,
+        capacite: 0,
+        nombreChambres: 0,
+        typeMaison: 'APPARTEMENT',
+        images: [],
+        adresse: { ville: 'Chargement...', pays: 'Maroc' },
+        noteMoyenne: 0,
+        nombreAvis: 0,
+        estActive: true
+      },
+      {
+        id: 'demo-2',
+        titre: 'Chargement des annonces...',
+        prixParNuit: 0,
+        capacite: 0,
+        nombreChambres: 0,
+        typeMaison: 'MAISON',
+        images: [],
+        adresse: { ville: 'Chargement...', pays: 'Maroc' },
+        noteMoyenne: 0,
+        nombreAvis: 0,
+        estActive: true
+      },
+      {
+        id: 'demo-3',
+        titre: 'Chargement des annonces...',
+        prixParNuit: 0,
+        capacite: 0,
+        nombreChambres: 0,
+        typeMaison: 'STUDIO',
+        images: [],
+        adresse: { ville: 'Chargement...', pays: 'Maroc' },
+        noteMoyenne: 0,
+        nombreAvis: 0,
+        estActive: true
+      }
+    ];
+    
+    this.totalPages = 1;
+    this.isLoadMoreVisible = false;
+    this.cdr.markForCheck();
+  }
+
+  // Méthode de chargement ultra-rapide
+  async chargerAnnoncesRapide(): Promise<void> {
+    try {
+      // Chargement en parallèle du cache et de l'API
+      const cachePromise = this.isCacheValid() ? Promise.resolve(this.annoncesCache) : Promise.resolve(null);
+      const apiPromise = this.apiService.getAnnonces().toPromise();
+
+      // Utiliser le cache si disponible, sinon attendre l'API
+      const [cachedData, apiData] = await Promise.allSettled([cachePromise, apiPromise]);
+      
+      let annoncesData = null;
+      
+      if (cachedData.status === 'fulfilled' && cachedData.value) {
+        console.log('⚡ Utilisation du cache ultra-rapide');
+        annoncesData = cachedData.value;
+      } else if (apiData.status === 'fulfilled' && apiData.value) {
+        console.log('⚡ Chargement API ultra-rapide');
+        annoncesData = apiData.value;
+        // Mettre à jour le cache
+        this.annoncesCache = [...apiData.value];
+        this.cacheTimestamp = Date.now();
+      }
+
+      if (annoncesData && annoncesData.length > 0) {
+        this.annonces = annoncesData;
+        this.filteredAnnonces = [...annoncesData];
+        
+        // Calculer le nombre total de pages
+        this.totalPages = Math.ceil(this.filteredAnnonces.length / this.ITEMS_PER_PAGE);
+        
+        // REMPLACEMENT IMMÉDIAT des annonces de démonstration - Page 1
+        this.currentPage = 1;
+        this.loadPage(1);
+        
+        // Forcer l'affichage immédiat
+        this.isLoading = false;
+        this.cdr.markForCheck();
+        
+        // Charger le reste en arrière-plan
+        setTimeout(() => {
+          this.preloadImages();
+          this.chargerEtatFavoris().catch(console.error);
+        }, 100);
+      } else {
+        // Garder les annonces de démonstration si pas de données
+        this.annonces = [];
+        this.filteredAnnonces = [];
+        this.totalPages = 1;
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }
+    } catch (error) {
+      console.error('Erreur chargement rapide:', error);
+      // Garder les annonces de démonstration en cas d'erreur
+      this.isLoading = false;
+      this.cdr.markForCheck();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -68,44 +213,266 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
 
   async chargerAnnonces(): Promise<void> {
     try {
+      // Vérifier le cache d'abord
+      if (this.isCacheValid()) {
+        console.log('📦 Utilisation du cache pour les annonces');
+        this.annonces = [...this.annoncesCache];
+        this.filteredAnnonces = [...this.annonces];
+        this.loadPage(1);
+        this.cdr.markForCheck();
+        
+        // Charger les favoris en arrière-plan
+        this.chargerEtatFavoris().catch(error => {
+          console.error('Erreur lors du chargement des favoris:', error);
+        });
+        return;
+      }
+
       this.isLoading = true;
       this.errorMessage = '';
+      this.cdr.markForCheck();
 
+      console.log('🚀 Chargement des annonces depuis l\'API...');
+      const startTime = performance.now();
+      
+      // Chargement immédiat des premières annonces
       const response = await this.apiService.getAnnonces().toPromise();
+      
+      const endTime = performance.now();
+      console.log(`⚡ Annonces chargées en ${(endTime - startTime).toFixed(2)}ms`);
       
       if (response) {
         this.annonces = response;
         this.filteredAnnonces = [...this.annonces];
-        // Vérifier l'état des favoris pour chaque annonce
-        await this.chargerEtatFavoris();
+        
+        // Mettre à jour le cache
+        this.annoncesCache = [...response];
+        this.cacheTimestamp = Date.now();
+        
+        // AFFICHAGE IMMÉDIAT - Charger seulement les 6 premières annonces
+        this.annoncesToShow = this.filteredAnnonces.slice(0, 6);
+        this.isLoadMoreVisible = this.filteredAnnonces.length > 6;
+        
+        // Forcer l'affichage immédiat
+        this.cdr.markForCheck();
+        
+        // Précharger les images des premières annonces
+        setTimeout(() => {
+          this.preloadImages();
+        }, 0);
+        
+        // Charger les favoris en arrière-plan (non bloquant)
+        setTimeout(() => {
+          this.chargerEtatFavoris().catch(error => {
+            console.error('Erreur lors du chargement des favoris:', error);
+          });
+        }, 100);
+        
+        // Charger le reste des annonces progressivement
+        setTimeout(() => {
+          this.loadPage(1);
+        }, 200);
+        
       } else {
         this.annonces = [];
         this.filteredAnnonces = [];
+        this.annoncesToShow = [];
       }
     } catch (error) {
       console.error('Erreur lors du chargement des annonces:', error);
       this.errorMessage = 'Erreur lors du chargement des annonces';
+      
+      // En cas d'erreur, essayer d'utiliser le cache s'il existe
+      if (this.annoncesCache.length > 0) {
+        console.log('🔄 Utilisation du cache en cas d\'erreur');
+        this.annonces = [...this.annoncesCache];
+        this.filteredAnnonces = [...this.annonces];
+        this.annoncesToShow = this.filteredAnnonces.slice(0, 6);
+        this.isLoadMoreVisible = this.filteredAnnonces.length > 6;
+        this.errorMessage = 'Données mises en cache (connexion limitée)';
+        this.cdr.markForCheck();
+      }
     } finally {
       this.isLoading = false;
+      this.cdr.markForCheck();
     }
+  }
+
+  private isCacheValid(): boolean {
+    return this.annoncesCache.length > 0 && 
+           (Date.now() - this.cacheTimestamp) < this.CACHE_DURATION;
+  }
+
+  // Nouvelle méthode de pagination classique
+  loadPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    
+    this.currentPage = page;
+    const startIndex = (page - 1) * this.ITEMS_PER_PAGE;
+    const endIndex = startIndex + this.ITEMS_PER_PAGE;
+    
+    this.annoncesToShow = this.filteredAnnonces.slice(startIndex, endIndex);
+    
+    console.log(`📄 Page ${page} chargée: ${this.annoncesToShow.length} annonces`);
+    this.cdr.markForCheck();
+    
+    // Précharger les images des nouvelles annonces
+    setTimeout(() => {
+      this.preloadImages();
+    }, 50);
+  }
+
+  private preloadImages(): void {
+    // Précharger les images des 6 premières annonces pour un affichage plus rapide
+    const annoncesToPreload = this.annoncesToShow.slice(0, 6);
+    
+    annoncesToPreload.forEach(annonce => {
+      if (annonce.images && annonce.images.length > 0) {
+        const imagePath = this.getImagePath(annonce.images[0]);
+        if (!this.loadedImages.has(imagePath)) {
+          this.preloadImage(imagePath);
+        }
+      }
+    });
+  }
+
+  private preloadImage(imagePath: string): void {
+    if (this.imageCache.has(imagePath)) {
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      this.loadedImages.add(imagePath);
+      this.imageCache.set(imagePath, imagePath);
+      this.cdr.markForCheck();
+    };
+    img.onerror = () => {
+      console.warn(`Erreur de chargement de l'image: ${imagePath}`);
+    };
+    img.src = imagePath;
+  }
+
+  // Méthodes de pagination classique
+  goToPage(page: number): void {
+    this.loadPage(page);
+  }
+
+  goToNextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.loadPage(this.currentPage + 1);
+    }
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage > 1) {
+      this.loadPage(this.currentPage - 1);
+    }
+  }
+
+  goToFirstPage(): void {
+    this.loadPage(1);
+  }
+
+  goToLastPage(): void {
+    this.loadPage(this.totalPages);
+  }
+
+  // Générer les numéros de pages à afficher
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    const halfRange = Math.floor(maxVisiblePages / 2);
+    
+    let startPage = Math.max(1, this.currentPage - halfRange);
+    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
+  }
+
+  // Méthodes pour la virtualisation CDK
+  onViewportChange(): void {
+    // Cette méthode est appelée quand la vue change dans le virtual scroll
+    this.cdr.markForCheck();
+  }
+
+  getItemSize(index: number): number {
+    // Retourner la taille de l'élément à l'index donné
+    return this.itemSize;
+  }
+
+  // Méthode optimisée pour obtenir le chemin de l'image avec cache
+  getImagePath(imagePath: string): string {
+    if (this.imageCache.has(imagePath)) {
+      return this.imageCache.get(imagePath)!;
+    }
+
+    if (imagePath.startsWith('data:image/')) {
+      this.imageCache.set(imagePath, imagePath);
+      return imagePath;
+    }
+    
+    if (imagePath.startsWith('C:\\') || imagePath.startsWith('D:\\')) {
+      const convertedPath = `file:///${imagePath.replace(/\\/g, '/')}`;
+      this.imageCache.set(imagePath, convertedPath);
+      return convertedPath;
+    }
+    
+    this.imageCache.set(imagePath, imagePath);
+    return imagePath;
   }
 
   async chargerEtatFavoris(): Promise<void> {
     const userId = localStorage.getItem('locataireId') || localStorage.getItem('userId');
     if (!userId) return;
 
-    for (const annonce of this.annonces) {
-      try {
-        const isFavorite = await this.apiService.verifierFavoris(userId, annonce.id).toPromise();
-        this.favorisMap[annonce.id] = isFavorite || false;
-      } catch (error) {
-        console.error(`Erreur lors de la vérification des favoris pour l'annonce ${annonce.id}:`, error);
+    try {
+      // Récupérer tous les favoris du locataire d'un coup
+      const favoris = await this.apiService.getAnnoncesFavoris(userId).toPromise();
+      
+      if (favoris && Array.isArray(favoris)) {
+        // Créer un Set des IDs des favoris pour une recherche rapide
+        const favorisIds = new Set(favoris.map(fav => fav.id));
+        
+        // Mettre à jour le map des favoris
+        for (const annonce of this.annonces) {
+          this.favorisMap[annonce.id] = favorisIds.has(annonce.id);
+        }
+      } else {
+        // Si pas de favoris, initialiser tout à false
+        for (const annonce of this.annonces) {
+          this.favorisMap[annonce.id] = false;
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des favoris:', error);
+      // En cas d'erreur, initialiser tout à false
+      for (const annonce of this.annonces) {
         this.favorisMap[annonce.id] = false;
       }
     }
   }
 
   filterAnnonces(): void {
+    // Debounce pour la recherche (éviter trop d'appels)
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    
+    this.searchTimeout = setTimeout(() => {
+      this.performFilter();
+    }, 300); // 300ms de délai
+  }
+
+  private performFilter(): void {
     this.filteredAnnonces = this.annonces.filter(annonce => {
       const matchesSearch = !this.searchTerm || 
         annonce.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -128,6 +495,14 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
 
       return matchesSearch && matchesType && matchesPrice && matchesCapacity;
     });
+    
+    // Recalculer le nombre total de pages
+    this.totalPages = Math.ceil(this.filteredAnnonces.length / this.ITEMS_PER_PAGE);
+    
+    // Recharger la première page après filtrage
+    this.currentPage = 1;
+    this.loadPage(1);
+    this.cdr.markForCheck();
   }
 
   clearFilters(): void {
@@ -136,6 +511,9 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
     this.selectedPrice = '';
     this.selectedCapacity = '';
     this.filteredAnnonces = [...this.annonces];
+    this.totalPages = Math.ceil(this.filteredAnnonces.length / this.ITEMS_PER_PAGE);
+    this.currentPage = 1;
+    this.loadPage(1);
   }
 
   // Statistiques pour les locataires
@@ -159,18 +537,7 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
     return Object.values(this.favorisMap).filter(favori => favori).length;
   }
 
-  // Méthodes utilitaires
-  getImagePath(imagePath: string): string {
-    if (imagePath.startsWith('data:image/')) {
-      return imagePath;
-    }
-    
-    if (imagePath.startsWith('C:\\') || imagePath.startsWith('D:\\')) {
-      return `file:///${imagePath.replace(/\\/g, '/')}`;
-    }
-    
-    return imagePath;
-  }
+  // Méthodes utilitaires optimisées
 
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
@@ -237,8 +604,7 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
   }
 
   reserverAnnonce(annonceId: string): void {
-    // TODO: Implémenter la logique de réservation
-    console.log('Réservation de l\'annonce:', annonceId);
+    this.router.navigate(['/reserver', annonceId]);
   }
 
   async ajouterFavori(annonceId: string): Promise<void> {
@@ -248,18 +614,30 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    // Éviter les appels multiples simultanés
+    if (this.favorisLoading[annonceId]) {
+      return;
+    }
+
     try {
+      this.favorisLoading[annonceId] = true;
+      
       if (this.favorisMap[annonceId]) {
         // Retirer des favoris
         await this.apiService.retirerDesFavoris(userId, annonceId).toPromise();
         this.favorisMap[annonceId] = false;
+        console.log(`Annonce ${annonceId} retirée des favoris`);
       } else {
         // Ajouter aux favoris
         await this.apiService.ajouterAuxFavoris(userId, annonceId).toPromise();
         this.favorisMap[annonceId] = true;
+        console.log(`Annonce ${annonceId} ajoutée aux favoris`);
       }
     } catch (error) {
       console.error('Erreur lors de la gestion des favoris:', error);
+      // En cas d'erreur, ne pas changer l'état visuel
+    } finally {
+      this.favorisLoading[annonceId] = false;
     }
   }
 
