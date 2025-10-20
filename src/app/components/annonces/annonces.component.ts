@@ -416,23 +416,43 @@ export class AnnoncesComponent implements OnInit, AfterViewInit {
 
   // Méthode optimisée pour obtenir le chemin de l'image avec cache
   getImagePath(imagePath: string): string {
+    if (!imagePath) {
+      return '/assets/images/morocco-can2025/morocco-flag.png';
+    }
+
     if (this.imageCache.has(imagePath)) {
       return this.imageCache.get(imagePath)!;
     }
 
+    // Si c'est déjà une URL complète
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      this.imageCache.set(imagePath, imagePath);
+      return imagePath;
+    }
+    
+    // Si c'est un chemin de fichier local
+    if (imagePath.startsWith('/')) {
+      this.imageCache.set(imagePath, imagePath);
+      return imagePath;
+    }
+    
+    // Si c'est une image base64
     if (imagePath.startsWith('data:image/')) {
       this.imageCache.set(imagePath, imagePath);
       return imagePath;
     }
     
+    // Si c'est un chemin Windows
     if (imagePath.startsWith('C:\\') || imagePath.startsWith('D:\\')) {
       const convertedPath = `file:///${imagePath.replace(/\\/g, '/')}`;
       this.imageCache.set(imagePath, convertedPath);
       return convertedPath;
     }
     
-    this.imageCache.set(imagePath, imagePath);
-    return imagePath;
+    // Essayer l'API locale d'abord
+    const apiPath = `http://localhost:8080/api/images/${imagePath}`;
+    this.imageCache.set(imagePath, apiPath);
+    return apiPath;
   }
 
   // Méthode pour gérer les erreurs de chargement d'images

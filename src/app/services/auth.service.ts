@@ -70,6 +70,16 @@ export class AuthService {
     return localStorage.getItem('locateurId');
   }
 
+  getCurrentUser(): { id: string; type: string } | null {
+    const userId = localStorage.getItem('userId') || localStorage.getItem('locataireId') || localStorage.getItem('locateurId');
+    const userType = localStorage.getItem('userType');
+    
+    if (userId && userType) {
+      return { id: userId, type: userType };
+    }
+    return null;
+  }
+
   getLocataireId(): string | null {
     // 🔍 DEBUG : Vérifier toutes les sources possibles
     const locataireId = localStorage.getItem('locataireId');

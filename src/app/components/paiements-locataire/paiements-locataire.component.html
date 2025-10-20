@@ -1,0 +1,331 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <!-- En-tête -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Mes Paiements</h1>
+        <p class="text-gray-600 mt-2">Gérez vos paiements de réservations</p>
+      </div>
+      <button 
+        (click)="chargerPaiements()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+        <i class="fas fa-sync-alt mr-2"></i>
+        Actualiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Alertes pour paiements en attente -->
+  <div *ngIf="paiementsEnAttente.length > 0" class="mb-6">
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-yellow-800">
+            {{ paiementsEnAttente.length }} paiement(s) en attente
+          </h3>
+          <div class="mt-2 text-sm text-yellow-700">
+            <p>Vous avez {{ paiementsEnAttente.length }} paiement(s) en attente. Effectuez le paiement dans les 24 heures pour confirmer votre réservation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div *ngIf="stats" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-100 rounded-lg">
+          <i class="fas fa-credit-card text-blue-600 text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Total Paiements</p>
+          <p class="text-2xl font-bold text-gray-900">{{ stats.totalPaiements }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-3 bg-yellow-100 rounded-lg">
+          <i class="fas fa-clock text-yellow-600 text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">En Attente</p>
+          <p class="text-2xl font-bold text-gray-900">{{ stats.paiementsEnAttente }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-100 rounded-lg">
+          <i class="fas fa-check-circle text-green-600 text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Payés</p>
+          <p class="text-2xl font-bold text-gray-900">{{ stats.paiementsPayes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-3 bg-green-100 rounded-lg">
+          <i class="fas fa-money-bill-wave text-green-600 text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Montant Total</p>
+          <p class="text-2xl font-bold text-gray-900">{{ formaterMontant(stats.montantTotal) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Filtres</h3>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+        <select 
+          [(ngModel)]="statutFiltre" 
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="">Tous les statuts</option>
+          <option *ngFor="let statut of StatutPaiement | keyvalue" [value]="statut.value">
+            {{ statut.key }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+        <select 
+          [(ngModel)]="typeFiltre" 
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="">Tous les types</option>
+          <option *ngFor="let type of TypePaiement | keyvalue" [value]="type.value">
+            {{ type.key }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Mode</label>
+        <select 
+          [(ngModel)]="modeFiltre" 
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="">Tous les modes</option>
+          <option *ngFor="let mode of ModePaiement | keyvalue" [value]="mode.value">
+            {{ mode.key }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex items-end space-x-2">
+        <button 
+          (click)="appliquerFiltres()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <i class="fas fa-filter mr-2"></i>
+          Filtrer
+        </button>
+        <button 
+          (click)="reinitialiserFiltres()"
+          class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+          <i class="fas fa-times mr-2"></i>
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des paiements -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">Mes Paiements</h3>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="p-8 text-center">
+      <div class="w-8 h-8 border-4 border-blue-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-gray-600">Chargement des paiements...</p>
+    </div>
+
+    <!-- Erreur -->
+    <div *ngIf="errorMessage" class="p-6 bg-red-50 border-l-4 border-red-400">
+      <div class="flex">
+        <i class="fas fa-exclamation-triangle text-red-400 mr-3"></i>
+        <p class="text-red-700">{{ errorMessage }}</p>
+      </div>
+    </div>
+
+    <!-- Tableau des paiements -->
+    <div *ngIf="!isLoading && !errorMessage" class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th 
+              (click)="trier('montant')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Montant
+              <i class="fas fa-sort ml-1"></i>
+            </th>
+            <th 
+              (click)="trier('statut')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Statut
+              <i class="fas fa-sort ml-1"></i>
+            </th>
+            <th 
+              (click)="trier('typePaiement')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Type
+              <i class="fas fa-sort ml-1"></i>
+            </th>
+            <th 
+              (click)="trier('modePaiement')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Mode
+              <i class="fas fa-sort ml-1"></i>
+            </th>
+            <th 
+              (click)="trier('dateCreation')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Date Création
+              <i class="fas fa-sort ml-1"></i>
+            </th>
+            <th 
+              (click)="trier('dateEcheance')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Échéance
+              <i class="fas fa-sort ml-1"></i>
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let paiement of getPaiementsPagination()" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900">
+                {{ formaterMontant(paiement.montant) }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" 
+                    [class]="getStatutColor(paiement.statut)">
+                <i [class]="getStatutIcon(paiement.statut)" class="mr-1"></i>
+                {{ paiement.statut }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ paiement.typePaiement }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <i [class]="getModePaiementIcon(paiement.modePaiement)" class="mr-2"></i>
+              {{ paiement.modePaiement }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ paiement.dateCreation | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <div class="flex items-center">
+                <span [class]="isPaiementExpire(paiement) ? 'text-red-600' : 'text-gray-900'">
+                  {{ paiement.dateEcheance | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+                <span *ngIf="paiement.statut === 'EN_ATTENTE' && !isPaiementExpire(paiement)" 
+                      class="ml-2 text-xs text-orange-600">
+                  ({{ getTempsRestant(paiement).heures }}h {{ getTempsRestant(paiement).minutes }}m)
+                </span>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <div class="flex space-x-2">
+                <!-- Actions selon le statut -->
+                <button 
+                  *ngIf="paiement.statut === 'EN_ATTENTE'"
+                  (click)="effectuerPaiement(paiement)"
+                  class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm transition-colors">
+                  <i class="fas fa-credit-card mr-1"></i>
+                  Payer
+                </button>
+                
+                <button 
+                  *ngIf="paiement.statut === 'EN_COURS'"
+                  class="bg-blue-600 text-white px-3 py-1 rounded-md text-sm cursor-not-allowed">
+                  <i class="fas fa-spinner mr-1"></i>
+                  En cours...
+                </button>
+                
+                <button 
+                  *ngIf="paiement.statut === 'PAYE'"
+                  class="bg-green-100 text-green-800 px-3 py-1 rounded-md text-sm cursor-not-allowed">
+                  <i class="fas fa-check mr-1"></i>
+                  Payé
+                </button>
+                
+                <button 
+                  *ngIf="paiement.statut === 'ECHEC'"
+                  (click)="effectuerPaiement(paiement)"
+                  class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm transition-colors">
+                  <i class="fas fa-redo mr-1"></i>
+                  Réessayer
+                </button>
+                
+                <button 
+                  *ngIf="paiement.statut === 'EXPIRE'"
+                  class="bg-gray-100 text-gray-800 px-3 py-1 rounded-md text-sm cursor-not-allowed">
+                  <i class="fas fa-exclamation-triangle mr-1"></i>
+                  Expiré
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div *ngIf="getTotalPages() > 1" class="px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-700">
+            Affichage de {{ (currentPage - 1) * itemsPerPage + 1 }} à 
+            {{ Math.min(currentPage * itemsPerPage, getPaiementsFiltres().length) }} 
+            sur {{ getPaiementsFiltres().length }} résultats
+          </div>
+          <div class="flex space-x-2">
+            <button 
+              (click)="changerPage(currentPage - 1)"
+              [disabled]="currentPage === 1"
+              class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+              Précédent
+            </button>
+            <span 
+              *ngFor="let page of [].constructor(getTotalPages()); let i = index"
+              (click)="changerPage(i + 1)"
+              class="px-3 py-1 border border-gray-300 rounded-md text-sm cursor-pointer hover:bg-gray-50"
+              [class]="currentPage === i + 1 ? 'bg-blue-600 text-white border-blue-600' : ''">
+              {{ i + 1 }}
+            </span>
+            <button 
+              (click)="changerPage(currentPage + 1)"
+              [disabled]="currentPage === getTotalPages()"
+              class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+              Suivant
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aucun paiement -->
+    <div *ngIf="!isLoading && !errorMessage && getPaiementsFiltres().length === 0" class="p-8 text-center">
+      <i class="fas fa-credit-card text-gray-400 text-4xl mb-4"></i>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun paiement trouvé</h3>
+      <p class="text-gray-600">Aucun paiement ne correspond à vos critères de recherche.</p>
+    </div>
+  </div>
+</div>

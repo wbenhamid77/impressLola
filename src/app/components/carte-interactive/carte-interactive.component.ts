@@ -1,8 +1,9 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { ImageService } from '../../services/image.service';
 
 // Déclarations de types pour Leaflet
 declare var L: any;
@@ -46,7 +47,8 @@ interface Stade {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './carte-interactive.component.html',
-  styleUrls: ['./carte-interactive.component.css']
+  styleUrls: ['./carte-interactive.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestroy {
   // Propriétés pour la carte Leaflet
@@ -75,9 +77,17 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
   isLoading = true;
   errorMessage = '';
 
+  // Optimisations de performance
+  private filterTimeout: any = null;
+  private markerUpdateTimeout: any = null;
+  private isUpdatingMarkers = false;
+  private maxMarkersPerUpdate = 50; // Limite pour éviter les blocages
+
   constructor(
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private imageService: ImageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -88,16 +98,11 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
     this.initialiserCarte();
   }
 
-  ngOnDestroy(): void {
-    if (this.map) {
-      this.map.remove();
-    }
-  }
-
   async chargerDonnees(): Promise<void> {
     try {
       this.isLoading = true;
       this.errorMessage = '';
+      this.cdr.markForCheck();
 
       // Charger les annonces et les stades en parallèle
       const [annoncesResponse, stadesResponse] = await Promise.all([
@@ -126,6 +131,7 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
       }
 
       this.isLoading = false;
+      this.cdr.markForCheck();
       
       // Attendre un peu avant d'ajouter les marqueurs
       setTimeout(() => {
@@ -139,6 +145,7 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
       this.annoncesFiltrees = [...this.annonces];
       this.stades = this.getDonneesTestStades();
       this.isLoading = false;
+      this.cdr.markForCheck();
       console.log('Utilisation des données de test suite à une erreur');
     }
   }
@@ -152,7 +159,7 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
         prixParNuit: 500,
         latitude: 33.5731,
         longitude: -7.5898, // Casablanca
-        images: ['villa1.jpg'],
+        images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=300&fit=crop'],
         typeMaison: 'VILLA',
         nombreChambres: 4,
         capacite: 8,
@@ -169,7 +176,7 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
         prixParNuit: 300,
         latitude: 31.6295,
         longitude: -7.9811, // Marrakech
-        images: ['appart1.jpg'],
+        images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop'],
         typeMaison: 'APPARTEMENT',
         nombreChambres: 2,
         capacite: 4,
@@ -186,7 +193,7 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
         prixParNuit: 200,
         latitude: 34.0209,
         longitude: -6.8416, // Rabat
-        images: ['studio1.jpg'],
+        images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop'],
         typeMaison: 'STUDIO',
         nombreChambres: 1,
         capacite: 2,
@@ -203,7 +210,7 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
         prixParNuit: 400,
         latitude: 34.0331,
         longitude: -5.0003, // Fès
-        images: ['maison1.jpg'],
+        images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop'],
         typeMaison: 'MAISON',
         nombreChambres: 3,
         capacite: 6,
@@ -211,6 +218,23 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
         nombreAvis: 15,
         adresse: { numero: '321', rue: 'Rue de la Médina', ville: 'Fès', codePostal: '30000', pays: 'Maroc' },
         equipements: ['WiFi', 'Parking', 'Jardin'],
+        estActive: true
+      },
+      {
+        id: '5',
+        titre: 'Chambre simple Agadir',
+        description: 'Chambre simple près de la plage',
+        prixParNuit: 150,
+        latitude: 30.4278,
+        longitude: -9.5981, // Agadir
+        images: [], // Pas d'image pour tester le fallback
+        typeMaison: 'CHAMBRE',
+        nombreChambres: 1,
+        capacite: 2,
+        noteMoyenne: 3.8,
+        nombreAvis: 3,
+        adresse: { numero: '555', rue: 'Boulevard de la Corniche', ville: 'Agadir', codePostal: '80000', pays: 'Maroc' },
+        equipements: ['WiFi', 'Vue mer'],
         estActive: true
       }
     ];
@@ -310,11 +334,25 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ajouterMarqueursCarte(): void {
-    if (!this.map || !this.mapInitialized || !this.markerGroup) {
-      console.log('Carte non initialisée, impossible d\'ajouter les marqueurs');
+    if (!this.map || !this.mapInitialized || !this.markerGroup || this.isUpdatingMarkers) {
+      console.log('Carte non initialisée ou mise à jour en cours, impossible d\'ajouter les marqueurs');
       return;
     }
 
+    // Annuler la mise à jour précédente si elle existe
+    if (this.markerUpdateTimeout) {
+      clearTimeout(this.markerUpdateTimeout);
+    }
+
+    this.isUpdatingMarkers = true;
+
+    // Utiliser requestAnimationFrame pour éviter les blocages
+    this.markerUpdateTimeout = setTimeout(() => {
+      this.performMarkerUpdate();
+    }, 100);
+  }
+
+  private performMarkerUpdate(): void {
     try {
       // Nettoyer les marqueurs existants
       this.markerGroup.clearLayers();
@@ -323,76 +361,152 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
 
       console.log(`Ajout de ${this.annoncesFiltrees.length} marqueurs d'annonces`);
 
-      // Ajouter les marqueurs des annonces
-      this.annoncesFiltrees.forEach((annonce, index) => {
-        if (annonce.latitude && annonce.longitude && !isNaN(annonce.latitude) && !isNaN(annonce.longitude)) {
-          try {
-            const marker = L.marker([annonce.latitude, annonce.longitude], {
-              icon: this.creerIconeAnnonce()
-            });
-
-            marker.bindPopup(this.creerPopupAnnonce(annonce));
-            
-            marker.on('click', () => {
-              this.selectionnerAnnonce(annonce);
-            });
-            
-            this.markers.push(marker);
-            this.markerGroup.addLayer(marker);
-            console.log(`Marqueur annonce ${index + 1} ajouté: ${annonce.titre}`);
-          } catch (error) {
-            console.error(`Erreur lors de l'ajout du marqueur annonce ${index + 1}:`, error);
-          }
-        } else {
-          console.warn(`Annonce ${index + 1} invalide:`, annonce);
-        }
-      });
-
-      // Ajouter les marqueurs des stades
-      this.stades.forEach((stade, index) => {
-        if (stade.latitude && stade.longitude && !isNaN(stade.latitude) && !isNaN(stade.longitude)) {
-          try {
-            const marker = L.marker([stade.latitude, stade.longitude], {
-              icon: this.creerIconeStade()
-            });
-
-            marker.bindPopup(this.creerPopupStade(stade));
-            
-            this.stadeMarkers.push(marker);
-            this.markerGroup.addLayer(marker);
-            console.log(`Marqueur stade ${index + 1} ajouté: ${stade.nom}`);
-          } catch (error) {
-            console.error(`Erreur lors de l'ajout du marqueur stade ${index + 1}:`, error);
-          }
-        } else {
-          console.warn(`Stade ${index + 1} invalide:`, stade);
-        }
-      });
-
-      // Ajuster la vue pour afficher tous les marqueurs
-      if (this.markers.length > 0) {
-        const group = new L.featureGroup(this.markers);
-        const bounds = group.getBounds();
-        if (bounds.isValid()) {
-          this.map.fitBounds(bounds.pad(0.3)); // Plus d'espace autour des marqueurs
-          console.log(`Vue ajustée pour ${this.markers.length} marqueurs`);
-        } else {
-          // Si les bounds ne sont pas valides, centrer sur le Maroc avec un zoom approprié
-          this.map.setView([31.6295, -7.9811], 5);
-          console.log('Centrage sur le Maroc avec zoom 5');
-        }
-      } else {
-        console.log('Aucun marqueur valide à afficher');
-        // Garder la vue centrée sur le Maroc
-        this.map.setView([31.6295, -7.9811], 5);
-      }
+      // Ajouter les marqueurs par lots pour éviter les blocages
+      this.addMarkersInBatches();
 
     } catch (error) {
       console.error('Erreur lors de l\'ajout des marqueurs:', error);
+      this.isUpdatingMarkers = false;
     }
   }
 
-  creerIconeAnnonce(): any {
+  private addMarkersInBatches(): void {
+    const annoncesValides = this.annoncesFiltrees.filter(annonce => 
+      annonce.latitude && annonce.longitude && !isNaN(annonce.latitude) && !isNaN(annonce.longitude)
+    );
+
+    const stadesValides = this.stades.filter(stade => 
+      stade.latitude && stade.longitude && !isNaN(stade.latitude) && !isNaN(stade.longitude)
+    );
+
+    let currentIndex = 0;
+    const batchSize = Math.min(this.maxMarkersPerUpdate, 20);
+
+    const addBatch = () => {
+      const endIndex = Math.min(currentIndex + batchSize, annoncesValides.length);
+      
+      // Ajouter les marqueurs d'annonces pour ce lot
+      for (let i = currentIndex; i < endIndex; i++) {
+        const annonce = annoncesValides[i];
+        try {
+          const marker = L.marker([annonce.latitude, annonce.longitude], {
+            icon: this.creerIconeAnnonce(annonce)
+          });
+
+          marker.bindPopup(this.creerPopupAnnonce(annonce));
+          
+          marker.on('click', () => {
+            this.selectionnerAnnonce(annonce);
+          });
+          
+          this.markers.push(marker);
+          this.markerGroup.addLayer(marker);
+        } catch (error) {
+          console.error(`Erreur lors de l'ajout du marqueur annonce ${i + 1}:`, error);
+        }
+      }
+
+      currentIndex = endIndex;
+
+      // Si il reste des annonces, continuer avec le prochain lot
+      if (currentIndex < annoncesValides.length) {
+        requestAnimationFrame(addBatch);
+      } else {
+        // Ajouter les marqueurs de stades
+        this.addStadeMarkers();
+        this.finalizeMapView();
+      }
+    };
+
+    // Démarrer l'ajout par lots
+    if (annoncesValides.length > 0) {
+      addBatch();
+    } else {
+      this.addStadeMarkers();
+      this.finalizeMapView();
+    }
+  }
+
+  private addStadeMarkers(): void {
+    this.stades.forEach((stade, index) => {
+      if (stade.latitude && stade.longitude && !isNaN(stade.latitude) && !isNaN(stade.longitude)) {
+        try {
+          const marker = L.marker([stade.latitude, stade.longitude], {
+            icon: this.creerIconeStade()
+          });
+
+          marker.bindPopup(this.creerPopupStade(stade));
+          
+          this.stadeMarkers.push(marker);
+          this.markerGroup.addLayer(marker);
+        } catch (error) {
+          console.error(`Erreur lors de l'ajout du marqueur stade ${index + 1}:`, error);
+        }
+      }
+    });
+  }
+
+  private finalizeMapView(): void {
+    // Ajuster la vue pour afficher tous les marqueurs
+    if (this.markers.length > 0) {
+      const group = new L.featureGroup(this.markers);
+      const bounds = group.getBounds();
+      if (bounds.isValid()) {
+        this.map.fitBounds(bounds.pad(0.3));
+        console.log(`Vue ajustée pour ${this.markers.length} marqueurs`);
+      } else {
+        this.map.setView([31.6295, -7.9811], 5);
+        console.log('Centrage sur le Maroc avec zoom 5');
+      }
+    } else {
+      console.log('Aucun marqueur valide à afficher');
+      this.map.setView([31.6295, -7.9811], 5);
+    }
+
+    this.isUpdatingMarkers = false;
+    this.cdr.markForCheck();
+  }
+
+  creerIconeAnnonce(annonce?: Annonce): any {
+    // Si on a une annonce avec une image, créer une icône avec image
+    if (annonce && annonce.images && annonce.images.length > 0) {
+      return L.divIcon({
+        html: `
+          <div style="
+            width: 40px; 
+            height: 40px; 
+            border: 3px solid #ffffff; 
+            border-radius: 50%; 
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            position: relative;
+          ">
+            <img src="${this.getImagePath(annonce.images[0])}" 
+                 alt="${annonce.titre}"
+                 style="width: 100%; height: 100%; object-fit: cover;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="
+              width: 100%; 
+              height: 100%; 
+              background: #dc2626; 
+              display: none; 
+              align-items: center; 
+              justify-content: center;
+              position: absolute;
+              top: 0;
+              left: 0;
+            ">
+              <i class="fas fa-home" style="color: white; font-size: 16px;"></i>
+            </div>
+          </div>
+        `,
+        className: 'custom-marker-annonce-with-image',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
+      });
+    }
+    
+    // Icône par défaut sans image
     return L.divIcon({
       html: `
         <div style="
@@ -439,11 +553,55 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   creerPopupAnnonce(annonce: Annonce): string {
+    const hasImage = annonce.images && annonce.images.length > 0;
+    const imageUrl = hasImage ? this.getImagePath(annonce.images?.[0]) : '';
+    
     return `
       <div class="popup-annonce" style="min-width: 300px; max-width: 350px;">
-        <div class="popup-image" style="margin-bottom: 12px;">
-          <img src="${this.getImagePath(annonce.images?.[0])}" alt="${annonce.titre}"
-               style="width: 100%; height: 150px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div class="popup-image" style="margin-bottom: 12px; position: relative;">
+          ${hasImage ? `
+            <img src="${imageUrl}" alt="${annonce.titre}"
+                 style="width: 100%; height: 150px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="
+              width: 100%; 
+              height: 150px; 
+              background: linear-gradient(135deg, #f3f4f6, #e5e7eb); 
+              border-radius: 12px; 
+              display: none; 
+              align-items: center; 
+              justify-content: center;
+              position: absolute;
+              top: 0;
+              left: 0;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            ">
+              <div style="text-align: center; color: #6b7280;">
+                <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                  <i class="fas fa-home" style="color: white; font-size: 18px;"></i>
+                </div>
+                <p style="margin: 0; font-size: 12px; font-weight: 500;">Image non disponible</p>
+              </div>
+            </div>
+          ` : `
+            <div style="
+              width: 100%; 
+              height: 150px; 
+              background: linear-gradient(135deg, #f3f4f6, #e5e7eb); 
+              border-radius: 12px; 
+              display: flex; 
+              align-items: center; 
+              justify-content: center;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            ">
+              <div style="text-align: center; color: #6b7280;">
+                <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                  <i class="fas fa-home" style="color: white; font-size: 18px;"></i>
+                </div>
+                <p style="margin: 0; font-size: 12px; font-weight: 500;">Pas d'image</p>
+              </div>
+            </div>
+          `}
         </div>
         <div class="popup-content">
           <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: bold; color: #1f2937; line-height: 1.3;">${annonce.titre}</h3>
@@ -502,6 +660,18 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   filtrerParStade(): void {
+    // Annuler le filtre précédent
+    if (this.filterTimeout) {
+      clearTimeout(this.filterTimeout);
+    }
+
+    // Appliquer le filtre avec debounce
+    this.filterTimeout = setTimeout(() => {
+      this.performStadeFilter();
+    }, 300);
+  }
+
+  private performStadeFilter(): void {
     if (!this.stadeSelectionne) {
       this.annoncesFiltrees = [...this.annonces];
     } else {
@@ -524,6 +694,18 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   appliquerFiltres(): void {
+    // Annuler le filtre précédent
+    if (this.filterTimeout) {
+      clearTimeout(this.filterTimeout);
+    }
+
+    // Appliquer les filtres avec debounce
+    this.filterTimeout = setTimeout(() => {
+      this.performFilters();
+    }, 200);
+  }
+
+  private performFilters(): void {
     let annoncesFiltrees = [...this.annoncesFiltrees];
 
     // Filtre par prix
@@ -542,6 +724,7 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
 
     this.annoncesFiltrees = annoncesFiltrees;
     this.ajouterMarqueursCarte();
+    this.cdr.markForCheck();
   }
 
   calculerDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -556,6 +739,14 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   reinitialiserFiltres(): void {
+    // Annuler les timeouts en cours
+    if (this.filterTimeout) {
+      clearTimeout(this.filterTimeout);
+    }
+    if (this.markerUpdateTimeout) {
+      clearTimeout(this.markerUpdateTimeout);
+    }
+
     this.stadeSelectionne = '';
     this.rayonFiltre = 10;
     this.prixMin = 0;
@@ -563,11 +754,32 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
     this.typeMaison = '';
     this.annoncesFiltrees = [...this.annonces];
     this.ajouterMarqueursCarte();
+    this.cdr.markForCheck();
+  }
+
+  ngOnDestroy(): void {
+    // Nettoyer les timeouts
+    if (this.filterTimeout) {
+      clearTimeout(this.filterTimeout);
+    }
+    if (this.markerUpdateTimeout) {
+      clearTimeout(this.markerUpdateTimeout);
+    }
+
+    // Nettoyer la carte
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
+
+    // Nettoyer les marqueurs
+    this.markers = [];
+    this.stadeMarkers = [];
+    this.markerGroup = null;
   }
 
   getImagePath(imageName: string | undefined): string {
-    if (!imageName) return '';
-    return `http://localhost:8080/api/images/${imageName}`;
+    return this.imageService.getImagePath(imageName);
   }
 
   formaterPrix(prix: number): string {
@@ -658,8 +870,11 @@ export class CarteInteractiveComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onImageError(event: any): void {
-    console.log('Erreur de chargement d\'image, utilisation de l\'icône par défaut');
-    // L'image sera automatiquement remplacée par l'icône par défaut grâce à la logique *ngIf dans le template
+    this.imageService.onImageError(event);
+  }
+
+  onImageLoad(event: any): void {
+    this.imageService.onImageLoad(event);
   }
 
 }

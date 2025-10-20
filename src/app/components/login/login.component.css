@@ -1,2 +1,199 @@
-/* Login (minimal): la mise en forme est gérée via Tailwind dans le template */
+/* Login Component - Design Simple et Professionnel */
 
+/* Styles pour occuper toute la largeur - Pleine page */
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* Reset global pour la page de login */
+:host * {
+  box-sizing: border-box;
+}
+
+/* Styles pour les icônes FontAwesome */
+:host .fas {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+/* Animation pour le spinner */
+:host .fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Styles pour le scroll personnalisé élégant */
+:host ::ng-deep .overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #dc2626 transparent;
+  scroll-behavior: smooth;
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar-track {
+  background: linear-gradient(to bottom, transparent, rgba(220, 38, 38, 0.1), transparent);
+  border-radius: 4px;
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #dc2626, #b91c1c);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #b91c1c, #991b1b);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(to bottom, #991b1b, #7f1d1d);
+}
+
+/* Animation de scroll fluide */
+:host ::ng-deep .overflow-y-auto {
+  scroll-padding-top: 2rem;
+}
+
+/* Effet de fade sur les bords */
+:host ::ng-deep .overflow-y-auto::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, rgba(248, 250, 252, 0.8), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+:host ::ng-deep .overflow-y-auto::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to top, rgba(248, 250, 252, 0.8), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Styles pour le formulaire fixe */
+:host ::ng-deep .lg\:fixed {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  height: 100vh !important;
+  width: 33.333333% !important;
+  z-index: 20 !important;
+  background: white !important;
+}
+
+/* S'assurer que la section gauche a la bonne largeur */
+:host ::ng-deep .lg\:w-2\/3 {
+  width: 66.666667% !important;
+}
+
+/* Améliorer le scroll de la section gauche */
+:host ::ng-deep .overflow-y-auto {
+  height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #dc2626 transparent !important;
+  max-height: 100vh !important;
+}
+
+/* Forcer la visibilité du scroll */
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar {
+  width: 8px !important;
+  display: block !important;
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(220, 38, 38, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #dc2626, #b91c1c) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+:host ::ng-deep .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #b91c1c, #991b1b) !important;
+}
+
+/* Améliorer l'expérience de scroll */
+:host ::ng-deep .overflow-y-auto {
+  scrollbar-gutter: stable;
+  padding-right: 8px;
+}
+
+/* S'assurer que le contenu de gauche ne déborde pas */
+:host ::ng-deep .lg\:w-2\/3 {
+  max-width: 66.666667% !important;
+  overflow: hidden !important;
+}
+
+/* Améliorer la lisibilité du contenu scrollable */
+:host ::ng-deep .overflow-y-auto .p-16 {
+  padding-bottom: 4rem !important;
+}
+
+/* Forcer le scroll à être visible */
+:host ::ng-deep #scrollContainer {
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+/* S'assurer que le contenu dépasse pour forcer le scroll */
+:host ::ng-deep #scrollContainer .p-16 {
+  min-height: 120vh !important;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  :host .hidden.lg\:flex {
+    display: none !important;
+  }
+  
+  :host .lg\:w-1\/2 {
+    width: 100% !important;
+  }
+  
+  :host .lg\:fixed {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  :host .lg\:w-2\/3 {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

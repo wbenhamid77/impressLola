@@ -1,77 +1,579 @@
-<div class="fixed inset-0 grid place-items-center overflow-hidden bg-slate-900 text-white">
-  <div class="mx-auto grid w-[min(1120px,96vw)] grid-cols-1 gap-5 md:grid-cols-[1.2fr,1fr]">
-    <section class="grid gap-3 rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur">
-      <div class="relative h-44 overflow-hidden rounded-xl bg-white/5">
-        <div class="absolute left-2 top-2 inline-flex items-center gap-2 rounded-full border border-black/10 bg-gradient-to-r from-maroc-dor to-yellow-300 px-3 py-1 font-extrabold text-slate-900">CAN 2025</div>
-        <img *ngIf="canImageUrl" [src]="canImageUrl" [alt]="canImageAlt" (error)="onImageError()" class="absolute inset-0 m-auto max-h-full max-w-[80%] object-contain drop-shadow-2xl" />
-      </div>
-      <h2 class="m-0 text-xl font-extrabold">Bienvenue — Maroc, CAN 2025</h2>
-      <p class="m-0 opacity-90">Une plateforme moderne pour réserver et gérer vos locations en toute confiance pendant la CAN 2025.</p>
-      <ul class="m-0 grid list-none gap-2 p-0">
-        <li class="relative pl-6 before:absolute before:left-0 before:top-2 before:h-2.5 before:w-2.5 before:rounded-full before:bg-gradient-to-br before:from-maroc-vert before:to-maroc-dor">Sécurité renforcée et authentification fiable</li>
-        <li class="relative pl-6 before:absolute before:left-0 before:top-2 before:h-2.5 before:w-2.5 before:rounded-full before:bg-gradient-to-br before:from-maroc-vert before:to-maroc-dor">Tableau de bord clair, suivi en temps réel</li>
-        <li class="relative pl-6 before:absolute before:left-0 before:top-2 before:h-2.5 before:w-2.5 before:rounded-full before:bg-gradient-to-br before:from-maroc-vert before:to-maroc-dor">Support prioritaire et assistance locale</li>
-      </ul>
-
-      <div class="mt-2 grid w-fit grid-flow-col gap-2">
-        <div class="rounded-xl border border-white/15 bg-white/10 p-2 text-center">
-          <div class="text-lg font-extrabold text-maroc-dor">10k+</div>
-          <div class="opacity-90">Biens disponibles</div>
-        </div>
-        <div class="rounded-xl border border-white/15 bg-white/10 p-2 text-center">
-          <div class="text-lg font-extrabold text-maroc-dor">24/7</div>
-          <div class="opacity-90">Support dédié</div>
-        </div>
-        <div class="rounded-xl border border-white/15 bg-white/10 p-2 text-center">
-          <div class="text-lg font-extrabold text-maroc-dor">4.8★</div>
-          <div class="opacity-90">Satisfaction moyenne</div>
+<!-- Page de connexion professionnelle moderne -->
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex relative">
+  <!-- Section gauche - Informations premium avec scroll (plus grande) -->
+  <div class="hidden lg:flex lg:w-2/3 relative h-screen">
+    <!-- Background avec pattern subtil -->
+    <div class="absolute inset-0 bg-gradient-to-br from-red-900/5 via-transparent to-green-900/5"></div>
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-20 w-32 h-32 bg-red-800/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-20 w-40 h-40 bg-green-800/20 rounded-full blur-3xl"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl"></div>
+    </div>
+    
+    <!-- Zone de scroll -->
+    <div class="relative z-10 w-full h-full overflow-y-auto" id="scrollContainer">
+      <!-- Indicateur de scroll -->
+      <div class="fixed top-4 right-1/3 z-30 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg border border-gray-200/50">
+        <div class="w-2 h-8 bg-gray-200 rounded-full relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full bg-gradient-to-b from-red-600 to-green-600 rounded-full transition-all duration-300" id="scrollIndicator"></div>
         </div>
       </div>
-
-      <div class="mt-3 grid w-fit grid-flow-col gap-2">
-        <button type="button" class="rounded-xl bg-gradient-to-r from-maroc-vert to-maroc-dor px-4 py-2 font-bold text-slate-900" (click)="navigateExplore()">Découvrir les offres</button>
-        <button type="button" class="rounded-xl border border-white/25 px-4 py-2 font-semibold text-white hover:bg-white/10" (click)="navigateSupport()">Contacter le support</button>
-      </div>
-    </section>
-
-    <div class="relative w-[min(420px,90vw)] place-self-center rounded-2xl border border-white/20 bg-white/10 p-7 shadow-2xl backdrop-blur-md md:w-auto">
-      <div class="mb-4 text-center">
-        <div class="mb-3 h-1 w-full rounded bg-gradient-to-r from-maroc-rouge via-maroc-dor to-maroc-vert"></div>
-        <h1 class="m-0 text-2xl font-bold">ImpressLola</h1>
-        <p class="m-0 opacity-85">Location au Maroc — CAN 2025</p>
-      </div>
-
-      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
-        <div class="mt-3 grid gap-2">
-          <label for="email" class="text-sm opacity-95">Email</label>
-          <input id="email" type="email" name="email" required autocomplete="email" [(ngModel)]="email" placeholder="nom@exemple.com"
-                 class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2" />
+      
+      <div class="p-16">
+        <div class="max-w-3xl">
+        <!-- Header premium -->
+        <div class="mb-12">
+          <div class="flex items-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-red-800 via-red-700 to-green-800 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
+              <i class="fas fa-trophy text-white text-2xl"></i>
+            </div>
+            <div>
+              <h1 class="text-4xl font-black text-gray-900 tracking-tight">ImpressLola</h1>
+              <p class="text-xl text-gray-600 font-medium">CAN 2025 • Maroc</p>
+            </div>
+          </div>
+          
+          <h2 class="text-3xl font-bold text-gray-900 mb-6 leading-tight">
+            Bienvenue au <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-800 to-green-800">Maroc</span>
+          </h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-8">
+            La plateforme de location immobilière la plus innovante du Maroc pour la CAN 2025. 
+            Découvrez des hébergements d'exception, des expériences authentiques et un service 
+            premium dans le royaume chérifien.
+          </p>
         </div>
 
-        <div class="mt-3 grid gap-2">
-          <label for="password" class="text-sm opacity-95">Mot de passe</label>
-          <div class="grid grid-cols-[1fr,auto] items-center gap-2">
-            <input id="password" [type]="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" [(ngModel)]="password" placeholder="Votre mot de passe"
-                   class="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/70 outline-none ring-maroc-dor focus:border-maroc-dor/60 focus:bg-white/15 focus:ring-2" />
-            <button type="button" (click)="togglePasswordVisibility()" aria-label="Afficher/masquer le mot de passe"
-                    class="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white transition hover:bg-white/15">{{ showPassword ? 'Masquer' : 'Afficher' }}</button>
+        <!-- Processus étape par étape -->
+        <div class="mb-12">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-red-800 to-green-800 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-star text-white text-sm"></i>
+            </div>
+            Comment ça marche ?
+          </h3>
+          <div class="space-y-8">
+            <div class="flex items-start group">
+              <div class="w-12 h-12 bg-gradient-to-r from-red-800 to-red-700 rounded-xl flex items-center justify-center text-white text-lg font-bold mr-6 flex-shrink-0 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                1
+              </div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-gray-900 mb-3">Inscription rapide</h4>
+                <p class="text-gray-600 leading-relaxed">
+                  Créez votre compte en 30 secondes avec votre email. Vérification instantanée 
+                  et accès immédiat à votre espace personnel sécurisé avec toutes les fonctionnalités.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start group">
+              <div class="w-12 h-12 bg-gradient-to-r from-green-800 to-green-700 rounded-xl flex items-center justify-center text-white text-lg font-bold mr-6 flex-shrink-0 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                2
+              </div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-gray-900 mb-3">Découverte intelligente</h4>
+                <p class="text-gray-600 leading-relaxed">
+                  Explorez plus de 500 biens premium sélectionnés près des stades. Filtres avancés 
+                  par prix, localisation, équipements et disponibilité pour votre séjour parfait.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start group">
+              <div class="w-12 h-12 bg-gradient-to-r from-gray-700 to-gray-800 rounded-xl flex items-center justify-center text-white text-lg font-bold mr-6 flex-shrink-0 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                3
+              </div>
+              <div class="flex-1">
+                <h4 class="text-xl font-bold text-gray-900 mb-3">Réservation sécurisée</h4>
+                <p class="text-gray-600 leading-relaxed">
+                  Paiement 100% sécurisé avec confirmation instantanée. Suivi en temps réel, 
+                  notifications par email et SMS, et support client disponible 24/7.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="mt-4">
-          <button class="w-full rounded-xl bg-gradient-to-r from-maroc-vert to-maroc-dor px-4 py-3 font-extrabold text-slate-900 disabled:opacity-70" type="submit" [disabled]="isLoading">
-            <span *ngIf="!isLoading">Se connecter</span>
-            <span *ngIf="isLoading" class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black/70 align-middle" aria-label="Chargement"></span>
+        <!-- Statistiques impressionnantes -->
+        <div class="mb-12">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-green-800 to-green-700 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-chart-line text-white text-sm"></i>
+            </div>
+            Nos performances
+          </h3>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-red-800 to-red-700 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-home text-white"></i>
+                </div>
+                <div>
+                  <div class="text-3xl font-black text-gray-900">500+</div>
+                  <div class="text-sm text-gray-600 font-medium">Biens premium</div>
+                </div>
+              </div>
+              <p class="text-gray-600 text-sm">Sélectionnés avec soin</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-green-800 to-green-700 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-headset text-white"></i>
+                </div>
+                <div>
+                  <div class="text-3xl font-black text-gray-900">24/7</div>
+                  <div class="text-sm text-gray-600 font-medium">Support client</div>
+                </div>
+              </div>
+              <p class="text-gray-600 text-sm">Assistance continue</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-star text-white"></i>
+                </div>
+                <div>
+                  <div class="text-3xl font-black text-gray-900">4.9/5</div>
+                  <div class="text-sm text-gray-600 font-medium">Note moyenne</div>
+                </div>
+              </div>
+              <p class="text-gray-600 text-sm">Satisfaction client</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-shield-alt text-white"></i>
+                </div>
+                <div>
+                  <div class="text-3xl font-black text-gray-900">100%</div>
+                  <div class="text-sm text-gray-600 font-medium">Sécurisé</div>
+                </div>
+              </div>
+              <p class="text-gray-600 text-sm">Paiements protégés</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section CAN 2025 premium -->
+        <div class="bg-gradient-to-r from-red-50 via-white to-green-50 rounded-3xl p-8 border border-red-200/50 shadow-xl mb-12">
+          <div class="flex items-center mb-6">
+            <div class="w-14 h-14 bg-gradient-to-r from-red-800 via-red-700 to-green-800 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+              <i class="fas fa-futbol text-white text-xl"></i>
+            </div>
+            <div>
+              <h4 class="text-2xl font-bold text-gray-900">CAN 2025</h4>
+              <p class="text-gray-600 font-medium">Coupe d'Afrique des Nations</p>
+            </div>
+          </div>
+          <p class="text-gray-700 leading-relaxed mb-4">
+            Vivez l'expérience unique de la CAN 2025 au Maroc avec nos hébergements 
+            de qualité situés près des stades et des sites touristiques.
+          </p>
+          <div class="flex items-center text-sm text-gray-600">
+            <i class="fas fa-calendar-alt mr-2"></i>
+            <span class="font-semibold">Du 21 décembre 2025 au 18 janvier 2026</span>
+          </div>
+        </div>
+
+        <!-- Nouvelles fonctionnalités -->
+        <div class="mb-12">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-rocket text-white text-sm"></i>
+            </div>
+            Fonctionnalités exclusives
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-map-marked-alt text-white"></i>
+                </div>
+                <h4 class="text-lg font-bold text-gray-900">Géolocalisation intelligente</h4>
+              </div>
+              <p class="text-gray-600 text-sm">Trouvez des hébergements à proximité des stades et attractions principales</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-gradient-to-r from-orange-600 to-orange-700 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-mobile-alt text-white"></i>
+                </div>
+                <h4 class="text-lg font-bold text-gray-900">App mobile native</h4>
+              </div>
+              <p class="text-gray-600 text-sm">Application mobile disponible sur iOS et Android</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-gradient-to-r from-teal-600 to-teal-700 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-language text-white"></i>
+                </div>
+                <h4 class="text-lg font-bold text-gray-900">Multilingue</h4>
+              </div>
+              <p class="text-gray-600 text-sm">Interface disponible en français, arabe et anglais</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-gradient-to-r from-pink-600 to-pink-700 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-heart text-white"></i>
+                </div>
+                <h4 class="text-lg font-bold text-gray-900">Favoris personnalisés</h4>
+              </div>
+              <p class="text-gray-600 text-sm">Sauvegardez vos biens préférés pour un accès rapide</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Témoignages clients -->
+        <div class="mb-12">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-quote-left text-white text-sm"></i>
+            </div>
+            Témoignages clients
+          </h3>
+          <div class="space-y-6">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
+              <div class="flex items-center mb-4">
+                <div class="flex text-yellow-400 mr-3">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="text-gray-600 font-semibold">Ahmed M.</span>
+                <span class="text-gray-400 ml-2">•</span>
+                <span class="text-gray-500 text-sm ml-2">Casablanca</span>
+              </div>
+              <p class="text-gray-700 italic leading-relaxed">
+                "Service exceptionnel ! J'ai trouvé un appartement parfait à 5 minutes du stade. 
+                L'équipe est très réactive et professionnelle. Je recommande vivement !"
+              </p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
+              <div class="flex items-center mb-4">
+                <div class="flex text-yellow-400 mr-3">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="text-gray-600 font-semibold">Fatima K.</span>
+                <span class="text-gray-400 ml-2">•</span>
+                <span class="text-gray-500 text-sm ml-2">Rabat</span>
+              </div>
+              <p class="text-gray-700 italic leading-relaxed">
+                "Plateforme très intuitive et sécurisée. Le processus de réservation est fluide 
+                et le support client excellent. Parfait pour la CAN 2025 !"
+              </p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
+              <div class="flex items-center mb-4">
+                <div class="flex text-yellow-400 mr-3">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="text-gray-600 font-semibold">Youssef B.</span>
+                <span class="text-gray-400 ml-2">•</span>
+                <span class="text-gray-500 text-sm ml-2">Marrakech</span>
+              </div>
+              <p class="text-gray-700 italic leading-relaxed">
+                "Qualité des biens au top ! Photos fidèles, descriptions précises. 
+                L'application mobile est parfaite pour gérer mes réservations en déplacement."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations pratiques -->
+        <div class="bg-gradient-to-r from-blue-50 via-white to-green-50 rounded-3xl p-8 border border-blue-200/50 shadow-xl mb-12">
+          <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-info-circle text-white text-sm"></i>
+            </div>
+            Informations pratiques
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-clock text-blue-600 mr-2"></i>
+                Horaires d'ouverture
+              </h4>
+              <p class="text-gray-600 text-sm">Support client 24/7</p>
+              <p class="text-gray-600 text-sm">Réservations en ligne 24h/24</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-credit-card text-green-600 mr-2"></i>
+                Moyens de paiement
+              </h4>
+              <p class="text-gray-600 text-sm">Carte bancaire, PayPal, virement</p>
+              <p class="text-gray-600 text-sm">Paiement sécurisé SSL</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-undo text-purple-600 mr-2"></i>
+                Politique d'annulation
+              </h4>
+              <p class="text-gray-600 text-sm">Annulation gratuite jusqu'à 48h</p>
+              <p class="text-gray-600 text-sm">Remboursement sous 5 jours</p>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-phone text-red-600 mr-2"></i>
+                Contact
+              </h4>
+              <p class="text-gray-600 text-sm">+212 5XX-XXXXXX</p>
+              <p class="text-gray-600 text-sm">support&#64;impresslola.ma</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section supplémentaire pour forcer le scroll -->
+        <div class="mb-12">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-map text-white text-sm"></i>
+            </div>
+            Villes desservies
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 text-center">
+              <i class="fas fa-city text-red-600 text-2xl mb-2"></i>
+              <h4 class="font-bold text-gray-900">Casablanca</h4>
+              <p class="text-gray-600 text-sm">Stade Mohammed V</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 text-center">
+              <i class="fas fa-city text-green-600 text-2xl mb-2"></i>
+              <h4 class="font-bold text-gray-900">Rabat</h4>
+              <p class="text-gray-600 text-sm">Stade Moulay Abdellah</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 text-center">
+              <i class="fas fa-city text-blue-600 text-2xl mb-2"></i>
+              <h4 class="font-bold text-gray-900">Marrakech</h4>
+              <p class="text-gray-600 text-sm">Stade de Marrakech</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 text-center">
+              <i class="fas fa-city text-purple-600 text-2xl mb-2"></i>
+              <h4 class="font-bold text-gray-900">Agadir</h4>
+              <p class="text-gray-600 text-sm">Stade Adrar</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 text-center">
+              <i class="fas fa-city text-orange-600 text-2xl mb-2"></i>
+              <h4 class="font-bold text-gray-900">Tanger</h4>
+              <p class="text-gray-600 text-sm">Stade Ibn Batouta</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-gray-200/50 text-center">
+              <i class="fas fa-city text-pink-600 text-2xl mb-2"></i>
+              <h4 class="font-bold text-gray-900">Fès</h4>
+              <p class="text-gray-600 text-sm">Stade de Fès</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mb-12">
+          <h3 class="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <div class="w-8 h-8 bg-gradient-to-r from-yellow-600 to-yellow-700 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-question-circle text-white text-sm"></i>
+            </div>
+            Questions fréquentes
+          </h3>
+          <div class="space-y-4">
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200/50">
+              <h4 class="font-bold text-gray-900 mb-2">Comment réserver un hébergement ?</h4>
+              <p class="text-gray-600 text-sm">C'est simple ! Créez votre compte, explorez nos offres, sélectionnez votre hébergement et confirmez votre réservation en quelques clics.</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200/50">
+              <h4 class="font-bold text-gray-900 mb-2">Puis-je annuler ma réservation ?</h4>
+              <p class="text-gray-600 text-sm">Oui, vous pouvez annuler gratuitement jusqu'à 48h avant votre arrivée. Le remboursement est effectué sous 5 jours ouvrés.</p>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-200/50">
+              <h4 class="font-bold text-gray-900 mb-2">Les paiements sont-ils sécurisés ?</h4>
+              <p class="text-gray-600 text-sm">Absolument ! Tous nos paiements sont protégés par un cryptage SSL et nous acceptons les principales cartes bancaires et PayPal.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer final -->
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-3xl p-8 border border-gray-200/50 shadow-xl text-center">
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Prêt pour la CAN 2025 ?</h3>
+          <p class="text-gray-600 mb-6">Rejoignez des milliers de supporters qui nous font confiance pour leur hébergement au Maroc</p>
+          <div class="flex items-center justify-center space-x-8 text-sm text-gray-500">
+            <div class="flex items-center">
+              <i class="fas fa-users text-red-600 mr-2"></i>
+              <span>10,000+ utilisateurs</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-star text-yellow-500 mr-2"></i>
+              <span>4.9/5 étoiles</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-shield-alt text-green-600 mr-2"></i>
+              <span>100% sécurisé</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section droite - Formulaire fixe et compact -->
+  <div class="w-full lg:w-1/3 lg:fixed lg:right-0 lg:top-0 lg:h-screen flex items-center justify-center p-6 lg:p-8 z-20 bg-white">
+    <!-- Background subtil -->
+    <div class="absolute inset-0 bg-gradient-to-br from-white via-slate-50/50 to-white"></div>
+    
+    <div class="relative z-10 w-full max-w-sm">
+      <!-- Card principale compacte -->
+      <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 p-6">
+        <!-- En-tête compact -->
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-gradient-to-br from-red-800 via-red-700 to-green-800 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <i class="fas fa-user-lock text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Connexion</h2>
+          <p class="text-gray-600">Accédez à votre espace</p>
+        </div>
+
+        <!-- Formulaire compact -->
+        <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-5">
+          <!-- Champ Email -->
+          <div class="space-y-1">
+            <label for="email" class="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <i class="fas fa-envelope text-gray-400 text-sm"></i>
+              </div>
+              <input id="email" 
+                     type="email" 
+                     name="email" 
+                     required 
+                     autocomplete="email" 
+                     [(ngModel)]="email" 
+                     placeholder="votre@email.com"
+                     class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800/20 focus:border-red-800 outline-none transition-all duration-300 bg-gray-50/50 hover:bg-white text-sm">
+            </div>
+          </div>
+
+          <!-- Champ Mot de passe -->
+          <div class="space-y-1">
+            <label for="password" class="block text-sm font-medium text-gray-700">
+              Mot de passe
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <i class="fas fa-lock text-gray-400 text-sm"></i>
+              </div>
+              <input id="password" 
+                     [type]="showPassword ? 'text' : 'password'" 
+                     name="password" 
+                     required 
+                     autocomplete="current-password" 
+                     [(ngModel)]="password" 
+                     placeholder="Votre mot de passe"
+                     class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800/20 focus:border-red-800 outline-none transition-all duration-300 bg-gray-50/50 hover:bg-white text-sm">
+              <button type="button" 
+                      (click)="togglePasswordVisibility()" 
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200">
+                <i class="fas text-sm" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div *ngIf="infoMessage" class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-blue-500 text-sm"></i>
+              </div>
+              <div class="ml-2">
+                <p class="text-xs font-medium text-blue-800">{{ infoMessage }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message d'erreur compact -->
+          <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 rounded-lg p-3">
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-red-500 text-sm"></i>
+              </div>
+              <div class="ml-2">
+                <p class="text-xs font-medium text-red-800">{{ errorMessage }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions de vérification -->
+          <div *ngIf="promptResend" class="flex items-center justify-between">
+            <button type="button"
+                    (click)="resendVerification()"
+                    [disabled]="resendInProgress || !email"
+                    class="text-xs font-semibold text-red-800 hover:text-red-900 disabled:opacity-50">
+              <span *ngIf="!resendInProgress">Renvoyer le token</span>
+              <span *ngIf="resendInProgress"><i class="fas fa-spinner fa-spin mr-1"></i>Envoi...</span>
+            </button>
+            <span class="text-[11px] text-gray-500">Vérifiez votre courrier indésirable</span>
+          </div>
+
+          <!-- Bouton de connexion compact -->
+          <button type="submit" 
+                  [disabled]="isLoading"
+                  class="group w-full bg-gradient-to-r from-red-800 via-red-700 to-green-800 text-white py-3 px-4 rounded-lg font-semibold text-sm hover:shadow-lg transform hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-red-800/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all duration-300 relative overflow-hidden">
+            <span *ngIf="!isLoading" class="flex items-center justify-center relative z-10">
+              <i class="fas fa-sign-in-alt mr-2 text-sm"></i>
+              Se connecter
+            </span>
+            <span *ngIf="isLoading" class="flex items-center justify-center relative z-10">
+              <i class="fas fa-spinner fa-spin mr-2 text-sm"></i>
+              Connexion...
+            </span>
           </button>
-        </div>
 
-        <div class="mt-3 rounded-lg border border-rose-300/40 bg-rose-900/20 px-3 py-2 text-rose-100" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
+          <!-- Lien d'inscription compact -->
+          <div class="text-center pt-3">
+            <p class="text-gray-600 text-sm">
+              Pas encore de compte ? 
+              <a class="text-red-800 hover:text-red-900 font-semibold cursor-pointer transition-colors duration-200 hover:underline" 
+                 (click)="navigateToInscription()">
+                Créer un compte
+              </a>
+            </p>
+          </div>
+        </form>
 
-        <div class="mt-3 flex items-center justify-center gap-2 text-sm">
-          <span>Pas de compte ?</span>
-          <a class="cursor-pointer text-maroc-dor underline" (click)="navigateToInscription()">Créer un compte</a>
+        <!-- Footer compact -->
+        <div class="mt-6 pt-4 border-t border-gray-200/50">
+          <div class="flex items-center justify-center space-x-4 text-xs text-gray-500">
+            <div class="flex items-center">
+              <i class="fas fa-shield-alt text-green-600 mr-1"></i>
+              <span>100% Sécurisé</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-headset text-red-600 mr-1"></i>
+              <span>Support 24/7</span>
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
+
+      <!-- Informations compactes -->
+      <div class="mt-4 text-center">
+        <div class="flex items-center justify-center space-x-4 text-xs text-gray-500">
+          <div class="flex items-center">
+            <i class="fas fa-calendar-alt text-red-800 mr-1"></i>
+            <span>CAN 2025 • Maroc</span>
+          </div>
+          <div class="w-1 h-1 bg-gray-300 rounded-full"></div>
+          <div class="flex items-center">
+            <i class="fas fa-trophy text-green-800 mr-1"></i>
+            <span>Premium</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

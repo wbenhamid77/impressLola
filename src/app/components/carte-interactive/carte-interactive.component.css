@@ -6,17 +6,36 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  /* Optimisations de performance */
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* Styles pour les marqueurs personnalisés */
 .custom-marker-annonce {
   background: transparent !important;
   border: none !important;
+  /* Optimisations de performance */
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .custom-marker-stade {
   background: transparent !important;
   border: none !important;
+  /* Optimisations de performance */
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Optimisations pour les marqueurs avec images */
+.custom-marker-annonce-with-image img {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* Styles pour les popups Leaflet */
@@ -151,4 +170,47 @@
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Optimisations de performance pour les états de chargement */
+.loading-overlay {
+  will-change: opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.loading-spinner {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Optimisations pour les cartes d'annonces */
+.annonce-card {
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Optimisations pour les animations */
+@keyframes spin {
+  from {
+    transform: translateZ(0) rotate(0deg);
+  }
+  to {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Optimisations pour les transitions */
+.transition-all {
+  will-change: transform, opacity, box-shadow;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }

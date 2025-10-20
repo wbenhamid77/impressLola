@@ -156,9 +156,9 @@
     <!-- Carte -->
     <div class="flex-1 relative">
       <!-- Loading -->
-      <div *ngIf="isLoading" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div *ngIf="isLoading" class="loading-overlay absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
         <div class="text-center">
-          <div class="w-16 h-16 border-4 border-red-300 border-t-red-800 rounded-full animate-spin mx-auto mb-4"></div>
+          <div class="loading-spinner w-16 h-16 border-4 border-red-300 border-t-red-800 rounded-full animate-spin mx-auto mb-4"></div>
           <p class="text-gray-600 font-medium">Chargement de la carte...</p>
         </div>
       </div>
@@ -231,14 +231,26 @@
 
           <!-- Image ou icône par défaut -->
           <div class="relative mb-4">
-            <div class="w-full h-48 rounded-2xl overflow-hidden shadow-lg">
+            <div class="w-full h-48 rounded-2xl overflow-hidden shadow-lg relative">
               <img *ngIf="annonceSelectionnee.images?.[0]" 
                    [src]="getImagePath(annonceSelectionnee.images?.[0])" 
                    [alt]="annonceSelectionnee.titre"
                    class="w-full h-full object-cover"
-                   (error)="onImageError($event)">
+                   (error)="onImageError($event)"
+                   (load)="onImageLoad($event)">
               <div *ngIf="!annonceSelectionnee.images?.[0]" 
                    class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="w-20 h-20 mx-auto mb-3 rounded-2xl shadow-lg flex items-center justify-center text-4xl" 
+                       [class]="getTypeMaisonColor(annonceSelectionnee.typeMaison)">
+                    <i [class]="getTypeMaisonIcon(annonceSelectionnee.typeMaison)"></i>
+                  </div>
+                  <p class="text-gray-600 font-medium">Image non disponible</p>
+                </div>
+              </div>
+              <!-- Fallback pour les erreurs d'image -->
+              <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center absolute top-0 left-0"
+                   style="display: none;">
                 <div class="text-center">
                   <div class="w-20 h-20 mx-auto mb-3 rounded-2xl shadow-lg flex items-center justify-center text-4xl" 
                        [class]="getTypeMaisonColor(annonceSelectionnee.typeMaison)">
@@ -315,12 +327,13 @@
           
           <div class="flex items-start gap-4">
             <!-- Image ou icône par défaut -->
-            <div class="w-24 h-24 rounded-xl overflow-hidden shadow-md flex-shrink-0">
+            <div class="w-24 h-24 rounded-xl overflow-hidden shadow-md flex-shrink-0 relative">
               <img *ngIf="annonce.images?.[0]" 
                    [src]="getImagePath(annonce.images?.[0])" 
                    [alt]="annonce.titre"
                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                   (error)="onImageError($event)">
+                   (error)="onImageError($event)"
+                   (load)="onImageLoad($event)">
               <div *ngIf="!annonce.images?.[0]" 
                    class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <div class="text-center">
@@ -329,6 +342,17 @@
                     <i [class]="getTypeMaisonIcon(annonce.typeMaison)"></i>
                   </div>
                   <p class="text-xs text-gray-500 font-medium">Pas d'image</p>
+                </div>
+              </div>
+              <!-- Fallback pour les erreurs d'image -->
+              <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 absolute top-0 left-0"
+                   style="display: none;">
+                <div class="text-center">
+                  <div class="w-12 h-12 mx-auto mb-2 rounded-lg shadow-sm flex items-center justify-center text-2xl" 
+                       [class]="getTypeMaisonColor(annonce.typeMaison)">
+                    <i [class]="getTypeMaisonIcon(annonce.typeMaison)"></i>
+                  </div>
+                  <p class="text-xs text-gray-500 font-medium">Image non disponible</p>
                 </div>
               </div>
             </div>

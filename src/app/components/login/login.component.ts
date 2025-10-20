@@ -1,9 +1,10 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
+import { firstValueFrom } from 'rxjs';
 import * as AOS from 'aos';
 
 @Component({
@@ -16,22 +17,35 @@ import * as AOS from 'aos';
 export class LoginComponent implements OnInit, AfterViewInit {
   email: string = '';
   password: string = '';
+  verificationToken: string = '';
   isLoading: boolean = false;
   errorMessage: string = '';
+  infoMessage: string = '';
   showPassword: boolean = false;
   formPosition: 'left' | 'right' | 'center' = 'center';
-  // URL optionnelle d'une image CAN 2025 à afficher dans la page login
-  canImageUrl: string = 'assets/images/afcon/can.png';
-  canImageAlt: string = 'CAF Africa Cup of Nations Morocco 2025';
+  resendInProgress: boolean = false;
+  promptResend: boolean = false;
+  // URLs des images professionnelles
+  moroccoFlagUrl: string = 'assets/images/morocco-can2025/morocco-flag.png';
+  canLogoUrl: string = 'assets/images/afcon/can.png';
+  backgroundImageUrl: string = 'assets/design/backgrounds/afcon-morocco.webp';
+  can2025LogoUrl: string = 'assets/design/backgrounds/CAN-2025_logo.webp';
 
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // Initialisation si nécessaire
+    // Pré-remplir le token depuis l'URL si présent (?verifyToken=... ou ?verificationToken=...)
+    const qp = this.route.snapshot.queryParamMap;
+    const tokenFromUrl = qp.get('verifyToken') || qp.get('verificationToken');
+    if (tokenFromUrl) {
+      this.verificationToken = this.cleanToken(tokenFromUrl);
+      // On conserve l'URL telle quelle, sans la nettoyer
+    }
   }
 
   ngAfterViewInit(): void {
@@ -42,11 +56,43 @@ export class LoginComponent implements OnInit, AfterViewInit {
       mirror: false,
       offset: 100,
     });
+    
+    // Initialiser l'indicateur de scroll
+    this.initScrollIndicator();
   }
 
-  onImageError(): void {
-    // Si l'image distante échoue, on masque en vidant l'URL
-    this.canImageUrl = '';
+  private initScrollIndicator(): void {
+    const scrollContainer = document.getElementById('scrollContainer');
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    
+    if (scrollContainer && scrollIndicator) {
+      scrollContainer.addEventListener('scroll', () => {
+        const scrollTop = scrollContainer.scrollTop;
+        const scrollHeight = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+        const scrollPercentage = (scrollTop / scrollHeight) * 100;
+        
+        scrollIndicator.style.height = `${scrollPercentage}%`;
+      });
+    }
+  }
+
+  onImageError(imageType: string): void {
+    console.warn(`Erreur de chargement de l'image: ${imageType}`);
+    // Les images ont des fallbacks CSS, donc pas besoin de masquer
+  }
+
+  private cleanToken(token?: string | null): string {
+    if (!token) return '';
+    let t = token.toString().trim();
+    // Supprime les quotes encadrantes éventuelles
+    if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
+      t = t.slice(1, -1);
+    }
+    // Supprime le préfixe Bearer s'il existe
+    if (t.toLowerCase().startsWith('bearer ')) {
+      t = t.slice(7).trim();
+    }
+    return t;
   }
 
   async onSubmit(): Promise<void> {
@@ -57,57 +103,75 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     this.isLoading = true;
     this.errorMessage = '';
+    this.infoMessage = '';
 
     try {
       console.log('Tentative de connexion avec:', this.email);
-      
-      // Appel à l'API de connexion
-      const response = await this.apiService.connexion(this.email, this.password).toPromise();
-      
+
+      // Utilise firstValueFrom au lieu de toPromise()
+      const tokenToSend = this.cleanToken(this.verificationToken);
+      const response = await firstValueFrom(this.apiService.connexion(this.email, this.password, tokenToSend || undefined));
+
       console.log('Réponse de l\'API:', response);
-      
+
       if (response && response.token) {
-        // Stockage du token et connexion
-        localStorage.setItem('authToken', response.token);
-        localStorage.setItem('userEmail', response.email);
-        localStorage.setItem('userType', response.role);
-        localStorage.setItem('userNom', response.nom);
-        localStorage.setItem('userPrenom', response.prenom);
-        
+        // Nettoyage du token pour s'assurer que la valeur stockée est exacte
+        const token = this.cleanToken(response.token);
+        const refreshToken = this.cleanToken(response.refreshToken ?? '');
+
+        // Stockage du token et autres infos
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('userEmail', response.email ?? '');
+        localStorage.setItem('userType', response.role ?? '');
+        localStorage.setItem('userNom', response.nom ?? '');
+        localStorage.setItem('userPrenom', response.prenom ?? '');
+        localStorage.setItem('expirationDate', response.expirationDate ? String(response.expirationDate) : '');
+
         // Stocker l'userId selon le rôle
         if (response.role === 'LOCATEUR') {
-          localStorage.setItem('locateurId', response.userId);
+          localStorage.setItem('locateurId', response.userId ?? '');
         } else if (response.role === 'LOCATAIRE') {
-          localStorage.setItem('locataireId', response.userId);
+          localStorage.setItem('locataireId', response.userId ?? '');
         }
-        
+
         console.log('Données stockées dans localStorage:');
         console.log('- Token:', localStorage.getItem('authToken'));
+        console.log('- RefreshToken:', localStorage.getItem('refreshToken'));
         console.log('- Email:', localStorage.getItem('userEmail'));
         console.log('- Role:', localStorage.getItem('userType'));
         console.log('- User ID:', response.userId);
         console.log('- Locateur ID:', localStorage.getItem('locateurId'));
         console.log('- Locataire ID:', localStorage.getItem('locataireId'));
-        
+
         this.authService.setAuthenticated(true);
-        
-        // Redirection selon le type d'utilisateur
-        if (response.role === 'LOCATAIRE') {
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.router.navigate(['/dashboard']);
-        }
+
+        // Redirection
+        this.router.navigate(['/dashboard']);
+        // Réinitialiser l'état de vérification
+        this.promptResend = false;
       } else {
         this.errorMessage = 'Email ou mot de passe incorrect';
       }
     } catch (error: any) {
       console.error('Erreur de connexion:', error);
-      if (error.status === 401) {
+      if (error?.status === 401) {
         this.errorMessage = 'Email ou mot de passe incorrect';
-      } else if (error.status === 0) {
+      } else if (error?.status === 0) {
         this.errorMessage = 'Impossible de se connecter au serveur. Vérifiez votre connexion.';
       } else {
-        this.errorMessage = error.error?.message || 'Une erreur est survenue lors de la connexion';
+        const message: string = error?.error?.message || 'Une erreur est survenue lors de la connexion';
+        this.errorMessage = message;
+        // Gestion des cas d'email non vérifié et token invalide/expiré
+        const lower = message.toLowerCase();
+        if (lower.includes('email non vérifié')) {
+          this.promptResend = true;
+          this.infoMessage = 'Votre email n\'est pas vérifié. Ouvrez le lien de vérification reçu par email ou renvoyez un nouveau lien.';
+        }
+        if (lower.includes('token de vérification invalide') || lower.includes('expiré')) {
+          this.promptResend = true;
+          this.infoMessage = 'Le lien de vérification est invalide ou expiré. Renvoyez un nouveau lien.';
+        }
       }
     } finally {
       this.isLoading = false;
@@ -129,4 +193,23 @@ export class LoginComponent implements OnInit, AfterViewInit {
   navigateSupport(): void {
     this.router.navigate(['/support']);
   }
-} 
+
+  async resendVerification(): Promise<void> {
+    if (!this.email) {
+      this.errorMessage = 'Veuillez saisir votre email pour renvoyer le token.';
+      return;
+    }
+    this.resendInProgress = true;
+    this.errorMessage = '';
+    this.infoMessage = '';
+    try {
+      await firstValueFrom(this.apiService.resendVerificationToken(this.email));
+      this.infoMessage = 'Un nouveau token de vérification a été envoyé à votre email.';
+    } catch (e: any) {
+      this.errorMessage = e?.error?.message || 'Impossible de renvoyer le token. Réessayez plus tard.';
+    } finally {
+      this.resendInProgress = false;
+    }
+  }
+
+}

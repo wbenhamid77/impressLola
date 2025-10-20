@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { 
   Reservation, 
   RecapitulatifRequest, 
@@ -10,6 +10,8 @@ import {
   DisponibiliteResponse,
   PeriodeIndisponible
 } from '../models/reservation.model';
+import { PaiementService } from './paiement.service';
+import { TypePaiement, ModePaiement } from '../models/paiement.model';
 
 export interface PeriodeReservee {
   dateDebut: string;
@@ -44,7 +46,8 @@ export class ReservationService {
   private readonly API_BASE_URL = 'http://localhost:8083';
   private readonly API_RESERVATIONS_URL = 'http://localhost:8083';
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private paiementService = inject(PaiementService);
 
   // ===== CRÉATION DE RÉSERVATIONS =====
 
@@ -82,7 +85,38 @@ export class ReservationService {
     console.log('✅ Confirmation de réservation:', id);
     
     return this.http.put<Reservation>(url, {})
-      .pipe(catchError(this.handleError));
+      .pipe(
+        switchMap((reservation: Reservation) => {
+          // Créer automatiquement un paiement après confirmation
+          return this.creerPaiementAutomatique(reservation).pipe(
+            map(() => reservation)
+          );
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  /**
+   * Crée automatiquement un paiement lors de la confirmation d'une réservation
+   */
+  private creerPaiementAutomatique(reservation: Reservation): Observable<any> {
+    const paiementRequest = {
+      reservationId: reservation.id,
+      montant: reservation.montantTotal || 0,
+      typePaiement: TypePaiement.TOTAL,
+      modePaiement: ModePaiement.CARTE_BANCAIRE,
+      description: `Paiement pour réservation ${reservation.id}`
+    };
+
+    console.log('💳 Création automatique du paiement:', paiementRequest);
+    
+    return this.paiementService.creerPaiement(paiementRequest).pipe(
+      catchError((error: any) => {
+        console.error('❌ Erreur lors de la création du paiement:', error);
+        // Ne pas faire échouer la confirmation de réservation si le paiement échoue
+        return throwError(() => new Error('Erreur lors de la création du paiement'));
+      })
+    );
   }
 
   /**
@@ -469,4 +503,6 @@ export class ReservationService {
     };
     return classes[statut] || 'badge-secondary';
   }
-} 
+}
+
+export type { Reservation };

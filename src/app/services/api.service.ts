@@ -152,10 +152,22 @@ export class ApiService {
     });
   }
 
-  connexion(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, {
+  connexion(email: string, password: string, verificationToken?: string): Observable<LoginResponse> {
+    const body: any = {
       email: email,
       password: password
+    };
+    if (verificationToken && verificationToken.trim().length > 0) {
+      body.verificationToken = verificationToken.trim();
+    }
+    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, body);
+  }
+
+  // Demander la réexpédition du token de vérification par email
+  resendVerificationToken(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/resend-verification-token`, { email }, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      responseType: 'text'
     });
   }
 
