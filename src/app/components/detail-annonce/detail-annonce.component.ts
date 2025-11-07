@@ -1,3 +1,4 @@
+
 import { Component, OnInit, HostListener, AfterViewInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule, NgIfContext } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -37,6 +38,14 @@ export class DetailAnnonceComponent implements OnInit, AfterViewInit, OnDestroy 
   stadesProches: StadeAvecDistance[] = [];
   stadesDistancesApi: AnnonceStadeDistance[] = [];
   afficherTousLesStades = false;
+  // Données dérivées/cachées pour éviter le recalcul dans le template
+  miniatures: Array<{ src: string; index: number }> = [];
+  modalMiniatures: Array<{ src: string; index: number }> = [];
+  stadePlusProche: StadeAvecDistance | null = null;
+  autresStades: StadeAvecDistance[] = [];
+  nombreStadesRestants = 0;
+  isLocataireUser = false;
+  isLocateurUser = false;
   
   // Propriétés pour la carte
   private map: any = null;
@@ -64,6 +73,10 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
   ) {}
 
   ngOnInit(): void {
+    // Mémoriser le type d'utilisateur une seule fois
+    const userType = localStorage.getItem('userType');
+    this.isLocataireUser = userType === 'LOCATAIRE';
+    this.isLocateurUser = userType === 'LOCATEUR';
     this.chargerDetailAnnonce();
   }
 
@@ -146,6 +159,9 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
       
       if (response) {
         this.annonce = response;
+        // Mettre à jour les galeries une seule fois
+        this.updateMiniatures();
+        this.updateModalMiniatures();
 
         // Récupérer les distances depuis le backend
         const distancesApi = await this.apiService.getAnnonceDistances(annonceId).toPromise();
@@ -154,6 +170,8 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
         } else {
           this.stadesProches = [];
         }
+        // Mettre à jour les données dérivées liées aux stades
+        this.updateStadesComputed();
         
         // Marquer que les données sont prêtes pour la carte
         console.log('📊 Données de l\'annonce chargées, coordonnées disponibles');
@@ -168,9 +186,17 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
       } else {
         this.errorMessage = 'Annonce non trouvée';
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors du chargement de l\'annonce:', error);
-      this.errorMessage = 'Erreur lors du chargement de l\'annonce';
+      if (error?.status === 404) {
+        this.errorMessage = 'Annonce non trouvée';
+      } else if (error?.status === 401) {
+        this.errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+      } else if (error?.status === 0) {
+        this.errorMessage = 'Serveur injoignable. Vérifiez votre connexion.';
+      } else {
+        this.errorMessage = 'Erreur lors du chargement de l\'annonce';
+      }
     } finally {
       this.isLoading = false;
     }
@@ -178,6 +204,12 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
 
   retourAnnonces(): void {
     this.router.navigate(['/annonces']);
+  }
+
+  // Navigation vers la page de réservation (même logique que le dashboard)
+  reserverAnnonce(annonceId: string): void {
+    if (!annonceId) { return; }
+    this.router.navigate(['/reserver', annonceId]);
   }
 
   // Méthode pour diagnostiquer l'état du DOM
@@ -392,6 +424,40 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
     return imagePath;
   }
 
+  // ===== Données dérivées/cachées =====
+  private updateMiniatures(): void {
+    if (!this.annonce?.images?.length) {
+      this.miniatures = [];
+      return;
+    }
+    this.miniatures = this.annonce.images.map((image: string, index: number) => ({
+      src: this.getImagePath(image),
+      index
+    }));
+  }
+
+  private updateModalMiniatures(): void {
+    if (!this.annonce?.images?.length) {
+      this.modalMiniatures = [];
+      return;
+    }
+    this.modalMiniatures = this.annonce.images.map((image: string, index: number) => ({
+      src: this.getImagePath(image),
+      index
+    }));
+  }
+
+  private updateStadesComputed(): void {
+    this.stadePlusProche = this.stadesProches.length > 0 ? this.stadesProches[0] : null;
+    const autres = this.stadesProches.slice(1);
+    this.autresStades = (this.afficherTousLesStades || autres.length <= 4) ? autres : autres.slice(0, 4);
+    this.nombreStadesRestants = Math.max(0, autres.length - 4);
+  }
+
+  // Helpers ngFor
+  trackByIndex(index: number): number { return index; }
+  trackByStadeId(index: number, item: StadeAvecDistance): string { return item.id; }
+
   // Méthode pour gérer les erreurs de chargement d'images
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
@@ -495,31 +561,18 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
 
   // Méthodes pour la galerie interactive
   getMiniatures(): any[] {
-    if (!this.annonce || !this.annonce.images) {
-      return [];
-    }
-    
-    return this.annonce.images.map((image: string, index: number) => ({
-      src: this.getImagePath(image),
-      index: index,
-      isActive: index === this.currentImageIndex
-    }));
+    // Conservé pour compatibilité mais renvoie désormais la version mémorisée
+    return this.miniatures;
   }
 
   getModalMiniatures(): any[] {
-    if (!this.annonce || !this.annonce.images) {
-      return [];
-    }
-    
-    return this.annonce.images.map((image: string, index: number) => ({
-      src: this.getImagePath(image),
-      index: index,
-      isActive: index === this.modalImageIndex
-    }));
+    // Conservé pour compatibilité mais renvoie désormais la version mémorisée
+    return this.modalMiniatures;
   }
 
   goToImage(index: number): void {
     this.currentImageIndex = index;
+    // pas besoin de recalculer miniatures, la classe active dépend de currentImageIndex
   }
 
   previousImage(): void {
@@ -864,24 +917,22 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
   }
 
   getStadePlusProche(): StadeAvecDistance | null {
-    return this.stadesProches.length > 0 ? this.stadesProches[0] : null;
+    // Conservé pour compatibilité mais renvoie désormais la version mémorisée
+    return this.stadePlusProche;
   }
 
   getAutresStades(): StadeAvecDistance[] {
-    const autresStades = this.stadesProches.slice(1); // Tous les stades sauf le premier
-    if (this.afficherTousLesStades || autresStades.length <= 4) {
-      return autresStades; // Afficher tous si demandé ou s'il y en a 4 ou moins
-    }
-    return autresStades.slice(0, 4); // Sinon afficher seulement les 4 premiers
+    // Conservé pour compatibilité mais renvoie désormais la version mémorisée
+    return this.autresStades;
   }
 
   getNombreStadesRestants(): number {
-    const autresStades = this.stadesProches.slice(1);
-    return Math.max(0, autresStades.length - 4);
+    return this.nombreStadesRestants;
   }
 
   basculerAffichageStades(): void {
     this.afficherTousLesStades = !this.afficherTousLesStades;
+    this.updateStadesComputed();
   }
 
   // Méthode pour recharger la carte en cas d'erreur
@@ -961,16 +1012,14 @@ notFoundTpl: TemplateRef<NgIfContext<any>> | null | undefined;
    * Vérifie si l'utilisateur connecté est un locataire
    */
   estLocataire(): boolean {
-    const userType = localStorage.getItem('userType');
-    return userType === 'LOCATAIRE';
+    return this.isLocataireUser;
   }
 
   /**
    * Vérifie si l'utilisateur connecté est un locateur
    */
   estLocateur(): boolean {
-    const userType = localStorage.getItem('userType');
-    return userType === 'LOCATEUR';
+    return this.isLocateurUser;
   }
 
   /**

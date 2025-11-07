@@ -194,6 +194,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/support']);
   }
 
+  navigateForgotPassword(): void {
+    this.router.navigate(['/forgot-password']);
+  }
+
   async resendVerification(): Promise<void> {
     if (!this.email) {
       this.errorMessage = 'Veuillez saisir votre email pour renvoyer le token.';

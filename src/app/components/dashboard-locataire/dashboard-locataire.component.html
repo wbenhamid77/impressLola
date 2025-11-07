@@ -355,6 +355,15 @@
           </div>
         </div>
 
+        <!-- État vide global (aucune annonce) -->
+        <div *ngIf="!isLoading && annonces.length === 0" class="text-center py-16">
+          <div class="w-24 h-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-box-open text-4xl text-gray-400"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800 mb-2">Il n'y a rien pour le moment</h3>
+          <p class="text-gray-600">Revenez plus tard pour voir de nouvelles annonces.</p>
+        </div>
+
         <!-- Affichage immédiat des annonces - TOUJOURS VISIBLE -->
         <div *ngIf="annoncesToShow.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div 
@@ -530,19 +539,29 @@
           </p>
         </div>
         
-        <!-- État vide moderne -->
-        <div *ngIf="filteredAnnonces.length === 0 && !isLoading" class="text-center py-16">
+        <!-- État vide avec filtres/recherche (des annonces existent mais aucune ne correspond) -->
+        <div *ngIf="filteredAnnonces.length === 0 && annonces.length > 0 && !isLoading" class="text-center py-16">
           <div class="w-24 h-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
             <i class="fas fa-search text-4xl text-gray-400"></i>
           </div>
-          <h3 class="text-2xl font-bold text-gray-800 mb-4">Aucun logement trouvé</h3>
-          <p class="text-gray-600 mb-8 max-w-md mx-auto">Aucun logement ne correspond à vos critères de recherche. Essayez de modifier vos filtres.</p>
-          <button 
-            class="bg-gradient-to-r from-red-800 to-red-900 hover:from-red-900 hover:to-red-700 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2 mx-auto"
-            (click)="clearFilters()">
-            <i class="fas fa-eraser"></i>
-            <span>Effacer les filtres</span>
-          </button>
+          <h3 class="text-2xl font-bold text-gray-800 mb-4" *ngIf="searchTerm && searchTerm.length > 0">Aucun résultat pour « {{ searchTerm }} »</h3>
+          <h3 class="text-2xl font-bold text-gray-800 mb-4" *ngIf="!searchTerm || searchTerm.length === 0">Aucun logement trouvé</h3>
+          <p class="text-gray-600 mb-8 max-w-md mx-auto" *ngIf="searchTerm && searchTerm.length > 0">Essayez un autre mot-clé ou effacez la recherche.</p>
+          <p class="text-gray-600 mb-8 max-w-md mx-auto" *ngIf="!searchTerm || searchTerm.length === 0">Aucun logement ne correspond à vos critères. Essayez de modifier vos filtres.</p>
+          <div class="flex items-center justify-center gap-3">
+            <button *ngIf="searchTerm && searchTerm.length > 0"
+                    class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                    (click)="searchTerm=''; filterAnnonces()">
+              <i class="fas fa-times"></i>
+              <span>Effacer la recherche</span>
+            </button>
+            <button *ngIf="!searchTerm || searchTerm.length === 0"
+                    class="bg-gradient-to-r from-red-800 to-red-900 hover:from-red-900 hover:to-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                    (click)="clearFilters()">
+              <i class="fas fa-eraser"></i>
+              <span>Effacer les filtres</span>
+            </button>
+          </div>
         </div>
       </section>
     </div>

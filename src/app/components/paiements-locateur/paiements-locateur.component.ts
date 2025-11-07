@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, firstValueFrom } from 'rxjs';
 import { PaiementService } from '../../services/paiement.service';
 import { AuthService } from '../../services/auth.service';
 import { Paiement, StatutPaiement, TypePaiement, ModePaiement, PaiementStats } from '../../models/paiement.model';
+import { TransactionInstructionDTO } from '../../models/transaction-instruction.model';
+import { ApiService, SoldeResponse } from '../../services/api.service';
 
 @Component({
   selector: 'app-paiements-locateur',
@@ -18,8 +20,21 @@ export class PaiementsLocateurComponent implements OnInit, OnDestroy {
   paiements: Paiement[] = [];
   paiementsEnAttente: Paiement[] = [];
   stats: PaiementStats | null = null;
+  encaissements: TransactionInstructionDTO[] = [];
+  solde: SoldeResponse | null = null;
   isLoading = false;
   errorMessage = '';
+  // Remboursements UI state
+  refundModalOpen = false;
+  refundLoading = false;
+  refundError = '';
+  refundSuccess = '';
+  selectedPaiementForRefund: Paiement | null = null;
+  generatedInstructions: TransactionInstructionDTO[] = [];
+  refundPendingByReservation: { [reservationId: string]: boolean } = {};
+  // Affichage raison remboursement
+  reasonModalOpen = false;
+  reasonPaiement: Paiement | null = null;
   
   // Filtres
   statutFiltre: StatutPaiement | '' = '';
@@ -38,12 +53,15 @@ export class PaiementsLocateurComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private paiementService = inject(PaiementService);
+  private apiService = inject(ApiService);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   ngOnInit(): void {
     this.chargerPaiements();
     this.chargerStats();
+    this.chargerEncaissementsEtSolde();
+    this.refreshPendingRefunds();
   }
 
   ngOnDestroy(): void {
@@ -92,6 +110,25 @@ export class PaiementsLocateurComponent implements OnInit, OnDestroy {
         error: (error: any) => {
           console.error('Erreur lors du chargement des statistiques:', error);
         }
+      });
+  }
+
+  chargerEncaissementsEtSolde(): void {
+    const userId = this.authService.getCurrentUser()?.id;
+    if (!userId) return;
+    this.apiService.getEncaissementsLocateur(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (list: TransactionInstructionDTO[]) => {
+          this.encaissements = Array.isArray(list) ? list : [];
+        },
+        error: () => {}
+      });
+    this.apiService.getSoldeLocateur(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (solde: SoldeResponse) => { this.solde = solde; },
+        error: () => {}
       });
   }
 
@@ -215,26 +252,138 @@ export class PaiementsLocateurComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ===== Remboursements (instructions) =====
   rembourserPaiement(paiement: Paiement): void {
-    const numeroRemboursement = prompt('Numéro de remboursement:');
-    const raisonRemboursement = prompt('Raison du remboursement:');
+    this.openRefund(paiement);
+  }
 
-    if (numeroRemboursement && raisonRemboursement) {
-      this.paiementService.rembourserPaiement(paiement.id, {
-        numeroRemboursement,
-        raisonRemboursement
-      })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.chargerPaiements();
-        },
-        error: (error: any) => {
-          console.error('Erreur lors du remboursement:', error);
-          this.errorMessage = 'Erreur lors du remboursement';
-        }
-      });
+  openRefund(paiement: Paiement): void {
+    this.selectedPaiementForRefund = paiement;
+    this.generatedInstructions = [];
+    this.refundError = '';
+    this.refundSuccess = '';
+    this.refundModalOpen = true;
+  }
+
+  closeRefund(): void {
+    this.refundModalOpen = false;
+    this.selectedPaiementForRefund = null;
+    this.generatedInstructions = [];
+    this.refundError = '';
+    this.refundSuccess = '';
+  }
+
+  async generateRefund(): Promise<void> {
+    if (!this.selectedPaiementForRefund) return;
+    this.refundLoading = true;
+    this.refundError = '';
+    this.refundSuccess = '';
+    try {
+      const reservationId = this.selectedPaiementForRefund.reservationId;
+      const instructions = await firstValueFrom(this.apiService.genererRemboursementReservation(reservationId));
+      this.generatedInstructions = instructions || [];
+      // Indiquer visuellement que le paiement est en cours de remboursement côté locateur
+      this.refundPendingByReservation[reservationId] = this.generatedInstructions.some(i => i.statut === 'PENDING');
+      this.chargerPaiements();
+      this.refundSuccess = this.generatedInstructions.length === 0
+        ? 'Aucune instruction générée (annulation < 24h)'
+        : `${this.generatedInstructions.length} instruction(s) générée(s).`;
+    } catch (e: any) {
+      this.refundError = e?.error?.message || 'Erreur lors de la génération du remboursement';
+    } finally {
+      this.refundLoading = false;
     }
+  }
+
+  async executeInstruction(instruction: TransactionInstructionDTO): Promise<void> {
+    const reference = prompt('Référence de virement (ex: VIR-2025-000123):');
+    if (!reference) return;
+    try {
+      const updated = await firstValueFrom(this.apiService.executerInstruction(instruction.id, reference));
+      this.generatedInstructions = this.generatedInstructions.map(i => i.id === updated.id ? updated : i);
+      this.refundSuccess = 'Instruction marquée EXECUTED';
+    } catch (e: any) {
+      this.refundError = e?.error?.message || 'Erreur lors de l\'exécution de l\'instruction';
+    }
+  }
+
+  async cancelInstruction(instruction: TransactionInstructionDTO): Promise<void> {
+    const notes = prompt('Motif d\'annulation:');
+    if (!notes) return;
+    try {
+      const updated = await firstValueFrom(this.apiService.annulerInstruction(instruction.id, notes));
+      this.generatedInstructions = this.generatedInstructions.map(i => i.id === updated.id ? updated : i);
+      this.refundSuccess = 'Instruction marquée CANCELLED';
+    } catch (e: any) {
+      this.refundError = e?.error?.message || 'Erreur lors de l\'annulation de l\'instruction';
+    }
+  }
+
+  async executeAllInstructions(): Promise<void> {
+    const pending = this.generatedInstructions.filter(i => i.statut === 'PENDING');
+    if (pending.length === 0) {
+      this.refundSuccess = 'Aucune instruction en attente';
+      return;
+    }
+    const baseRef = this.generateAutoReference();
+    this.refundLoading = true;
+    this.refundError = '';
+    this.refundSuccess = '';
+    try {
+      for (let idx = 0; idx < pending.length; idx++) {
+        const instr = pending[idx];
+        const updated = await firstValueFrom(this.apiService.executerInstruction(instr.id, baseRef));
+        this.generatedInstructions = this.generatedInstructions.map(i => i.id === updated.id ? updated : i);
+      }
+      this.refundSuccess = 'Toutes les instructions ont été exécutées';
+      // Recharger les paiements pour que le statut REMBOURSE remonte
+      this.chargerPaiements();
+    } catch (e: any) {
+      this.refundError = e?.error?.message || 'Erreur lors de l\'exécution des instructions';
+    } finally {
+      this.refundLoading = false;
+    }
+  }
+
+  hasPendingInstructions(): boolean {
+    return this.generatedInstructions.some(i => i.statut === 'PENDING');
+  }
+
+  private generateAutoReference(): string {
+    const now = new Date();
+    const y = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mi = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    const rand = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+    return `VIR-${y}${mm}${dd}-${hh}${mi}${ss}-${rand}`;
+  }
+
+  private refreshPendingRefunds(): void {
+    firstValueFrom(this.apiService.listerInstructionsEnAttente())
+      .then(list => {
+        const map: { [reservationId: string]: boolean } = {};
+        (list || []).forEach(i => {
+          if (i.reservationId) {
+            map[i.reservationId] = true;
+          }
+        });
+        this.refundPendingByReservation = map;
+      })
+      .catch(() => {});
+  }
+
+  // ===== Raison remboursement (locateur) =====
+  openReason(paiement: Paiement): void {
+    this.reasonPaiement = paiement;
+    this.reasonModalOpen = true;
+  }
+
+  closeReason(): void {
+    this.reasonModalOpen = false;
+    this.reasonPaiement = null;
   }
 
   // Méthodes utilitaires

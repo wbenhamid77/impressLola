@@ -36,8 +36,8 @@ export class AppComponent implements OnInit {
   }
 
   private updateHostClass(currentUrl: string): void {
-    // Ne pas appliquer les classes sidebar sur les pages de login et register
-    if (currentUrl === '/login' || currentUrl === '/register') {
+    // Ne pas appliquer les classes sidebar sur les pages publiques (auth)
+    if (currentUrl === '/login' || currentUrl === '/register' || currentUrl.startsWith('/forgot-password')) {
       this.hostClass = '';
       return;
     }

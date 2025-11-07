@@ -483,6 +483,13 @@
             </div>
           </div>
 
+          <!-- Lien mot de passe oublié -->
+          <div class="flex justify-end -mt-1">
+            <button type="button" (click)="navigateForgotPassword()" class="text-xs text-red-800 hover:text-red-900 font-semibold hover:underline">
+              Mot de passe oublié ?
+            </button>
+          </div>
+
           <!-- Messages -->
           <div *ngIf="infoMessage" class="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <div class="flex items-start">

@@ -76,61 +76,9 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initializeDashboard();
     
-    // AFFICHAGE IMMÉDIAT - Initialiser avec des données de démonstration
-    this.initialiserAffichageImmediat();
-    
-    // Chargement des vraies données en arrière-plan
+    // Activer l'état de chargement et récupérer les données
+    this.isLoading = true;
     this.chargerAnnoncesRapide();
-  }
-
-  // Initialisation immédiate pour affichage instantané
-  private initialiserAffichageImmediat(): void {
-    // Créer des annonces de démonstration pour affichage immédiat
-    this.annoncesToShow = [
-      {
-        id: 'demo-1',
-        titre: 'Chargement des annonces...',
-        prixParNuit: 0,
-        capacite: 0,
-        nombreChambres: 0,
-        typeMaison: 'APPARTEMENT',
-        images: [],
-        adresse: { ville: 'Chargement...', pays: 'Maroc' },
-        noteMoyenne: 0,
-        nombreAvis: 0,
-        estActive: true
-      },
-      {
-        id: 'demo-2',
-        titre: 'Chargement des annonces...',
-        prixParNuit: 0,
-        capacite: 0,
-        nombreChambres: 0,
-        typeMaison: 'MAISON',
-        images: [],
-        adresse: { ville: 'Chargement...', pays: 'Maroc' },
-        noteMoyenne: 0,
-        nombreAvis: 0,
-        estActive: true
-      },
-      {
-        id: 'demo-3',
-        titre: 'Chargement des annonces...',
-        prixParNuit: 0,
-        capacite: 0,
-        nombreChambres: 0,
-        typeMaison: 'STUDIO',
-        images: [],
-        adresse: { ville: 'Chargement...', pays: 'Maroc' },
-        noteMoyenne: 0,
-        nombreAvis: 0,
-        estActive: true
-      }
-    ];
-    
-    this.totalPages = 1;
-    this.isLoadMoreVisible = false;
-    this.cdr.markForCheck();
   }
 
   // Méthode de chargement ultra-rapide
@@ -177,16 +125,18 @@ export class DashboardLocataireComponent implements OnInit, AfterViewInit {
           this.chargerEtatFavoris().catch(console.error);
         }, 100);
       } else {
-        // Garder les annonces de démonstration si pas de données
+        // Aucune donnée: n'afficher aucune carte
         this.annonces = [];
         this.filteredAnnonces = [];
+        this.annoncesToShow = [];
         this.totalPages = 1;
         this.isLoading = false;
         this.cdr.markForCheck();
       }
     } catch (error) {
       console.error('Erreur chargement rapide:', error);
-      // Garder les annonces de démonstration en cas d'erreur
+      // En cas d'erreur, n'afficher aucune carte de démo
+      this.annoncesToShow = [];
       this.isLoading = false;
       this.cdr.markForCheck();
     }

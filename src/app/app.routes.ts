@@ -19,10 +19,13 @@ import { PageReservationComponent } from './components/page-reservation/page-res
 import { CarteInteractiveComponent } from './components/carte-interactive/carte-interactive.component';
 import { PaiementsLocateurComponent } from './components/paiements-locateur/paiements-locateur.component';
 import { PaiementsLocataireComponent } from './components/paiements-locataire/paiements-locataire.component';
+import { FinancesLocateurComponent } from './components/finances-locateur/finances-locateur.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'register', component: RegisterComponent },
   {
     path: '',
@@ -45,6 +48,7 @@ export const routes: Routes = [
       { path: 'carte-interactive', component: CarteInteractiveComponent },
       { path: 'paiements-locateur', component: PaiementsLocateurComponent },
       { path: 'paiements-locataire', component: PaiementsLocataireComponent },
+      { path: 'finances-locateur', component: FinancesLocateurComponent },
     ]
   },
   { path: '**', redirectTo: '/login' }

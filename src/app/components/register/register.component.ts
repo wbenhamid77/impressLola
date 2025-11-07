@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
@@ -53,6 +53,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
       numeroSiret: [''],
       raisonSociale: [''],
       adresseProfessionnelle: [''],
+      iban: [''],
+      bic: [''],
+      titulaireNom: [''],
+      banque: [''],
+      ribDefaut: [true],
       
       // Champs spécifiques au locataire
       profession: [''],
@@ -179,6 +184,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
       // Valider les champs locateur
       this.registerForm.get('description')?.setValidators([Validators.required, Validators.minLength(20)]);
       this.registerForm.get('adresseProfessionnelle')?.setValidators([Validators.required]);
+      this.registerForm.get('iban')?.setValidators([Validators.required, this.ibanValidator()]);
+      this.registerForm.get('bic')?.setValidators([Validators.required, this.bicValidator()]);
+      this.registerForm.get('titulaireNom')?.setValidators([Validators.required]);
+      this.registerForm.get('banque')?.setValidators([Validators.required]);
       
       // Supprimer la validation des champs locataire
       this.registerForm.get('profession')?.clearValidators();
@@ -195,6 +204,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
       // Supprimer la validation des champs locateur
       this.registerForm.get('description')?.clearValidators();
       this.registerForm.get('adresseProfessionnelle')?.clearValidators();
+      this.registerForm.get('iban')?.clearValidators();
+      this.registerForm.get('bic')?.clearValidators();
+      this.registerForm.get('titulaireNom')?.clearValidators();
+      this.registerForm.get('banque')?.clearValidators();
     }
     
     // Mettre à jour la validation
@@ -204,6 +217,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registerForm.get('revenuAnnuel')?.updateValueAndValidity();
     this.registerForm.get('employeur')?.updateValueAndValidity();
     this.registerForm.get('dateEmbauche')?.updateValueAndValidity();
+    this.registerForm.get('iban')?.updateValueAndValidity();
+    this.registerForm.get('bic')?.updateValueAndValidity();
+    this.registerForm.get('titulaireNom')?.updateValueAndValidity();
+    this.registerForm.get('banque')?.updateValueAndValidity();
   }
 
   passwordMatchValidator(group: FormGroup) {
@@ -285,7 +302,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
           };
 
           console.log('Création locateur:', locateurData);
-          await this.apiService.inscrireLocateur(locateurData).toPromise();
+          const createdLocateur: any = await this.apiService.inscrireLocateur(locateurData).toPromise();
+          try {
+            // Créer le RIB par défaut du locateur si présent
+            if (createdLocateur && createdLocateur.id && formData.iban && formData.bic && formData.titulaireNom && formData.banque) {
+              await this.apiService.creerRib({
+                type: 'LOCATEUR',
+                locateurId: createdLocateur.id,
+                iban: String(formData.iban).replace(/\s+/g, '').toUpperCase(),
+                bic: String(formData.bic).toUpperCase(),
+                titulaireNom: formData.titulaireNom,
+                banque: formData.banque,
+                defautCompte: !!formData.ribDefaut
+              }).toPromise();
+            }
+          } catch (ribErr) {
+            console.warn('RIB locateur non créé lors de l\'inscription', ribErr);
+          }
           
         } else {
           // Création d'un locataire
@@ -338,6 +371,25 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else {
       this.error = 'Veuillez corriger les erreurs dans le formulaire.';
     }
+  }
+
+  // ===== Validators RIB =====
+  private ibanValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const value = (control.value || '').toString().replace(/\s+/g, '').toUpperCase();
+      if (!value) return null;
+      const basicPattern = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$/;
+      return basicPattern.test(value) ? null : { ibanInvalid: true };
+    };
+  }
+
+  private bicValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const value = (control.value || '').toString().toUpperCase();
+      if (!value) return null;
+      const pattern = /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/;
+      return pattern.test(value) ? null : { bicInvalid: true };
+    };
   }
 
   goToLogin(): void {

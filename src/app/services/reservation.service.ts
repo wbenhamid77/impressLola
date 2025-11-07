@@ -10,8 +10,9 @@ import {
   DisponibiliteResponse,
   PeriodeIndisponible
 } from '../models/reservation.model';
-import { PaiementService } from './paiement.service';
+
 import { TypePaiement, ModePaiement } from '../models/paiement.model';
+import { PaiementService } from './paiement.service';
 
 export interface PeriodeReservee {
   dateDebut: string;

@@ -2,6 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Annonce, CreateAnnonceRequest } from '../models/annonce.model';
+import { RibDTO, CreateRibRequest } from '../models/rib.model';
+import { TransactionInstructionDTO } from '../models/transaction-instruction.model';
+
+export interface SoldeResponse {
+  entrees: number; // total des montants reçus (EXECUTED) vers les RIBs du sujet
+  sorties: number; // total des montants envoyés (EXECUTED) depuis les RIBs du sujet
+  net: number;     // entrees - sorties
+}
 
 export interface Stade {
   id: string;
@@ -134,6 +142,15 @@ export class ApiService {
     });
   }
 
+  private getOptionalAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('authToken');
+    const headers: { [key: string]: string } = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    return new HttpHeaders(headers);
+  }
+
   // Inscription locataire
   inscrireLocataire(locataire: Locataire): Observable<any> {
     return this.http.post(`${this.baseUrl}/locataires`, locataire, {
@@ -185,15 +202,19 @@ export class ApiService {
     });
   }
 
-  // Méthode pour récupérer une annonce par ID sans token automatique
+  // Méthode pour récupérer une annonce par ID avec en-têtes facultatifs
   getAnnonceById(id: string): Observable<Annonce> {
     console.log('Appel API getAnnonceById:', `${this.baseUrl}/annonces/${id}`);
-    return this.http.get<Annonce>(`${this.baseUrl}/annonces/${id}`);
+    return this.http.get<Annonce>(`${this.baseUrl}/annonces/${id}`, {
+      headers: this.getOptionalAuthHeaders()
+    });
   }
 
   // Distances des stades pour une annonce donnée
   getAnnonceDistances(id: string): Observable<AnnonceStadeDistance[]> {
-    return this.http.get<AnnonceStadeDistance[]>(`${this.baseUrl}/annonces/${id}/distances`);
+    return this.http.get<AnnonceStadeDistance[]>(`${this.baseUrl}/annonces/${id}/distances`, {
+      headers: this.getOptionalAuthHeaders()
+    });
   }
 
   creerAnnonce(annonce: CreateAnnonceRequest): Observable<Annonce> {
@@ -216,6 +237,145 @@ export class ApiService {
         'Content-Type': 'application/json'
       }),
       observe: 'response'
+    });
+  }
+
+  // ===== RIBS =====
+
+  creerRib(request: CreateRibRequest): Observable<RibDTO> {
+    return this.http.post<RibDTO>(`${this.baseUrl}/ribs`, request, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  definirRibDefaut(ribId: string): Observable<RibDTO> {
+    return this.http.post<RibDTO>(`${this.baseUrl}/ribs/${ribId}/defaut`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getRibPlateformeDefaut(): Observable<RibDTO> {
+    return this.http.get<RibDTO>(`${this.baseUrl}/ribs/platform/default`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getRibsLocateur(locateurId: string): Observable<RibDTO[]> {
+    return this.http.get<RibDTO[]>(`${this.baseUrl}/ribs/locateur/${locateurId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getRibsLocataire(locataireId: string): Observable<RibDTO[]> {
+    return this.http.get<RibDTO[]>(`${this.baseUrl}/ribs/locataire/${locataireId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ===== PAIEMENTS =====
+
+  creerPaiement(request: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/paiements`, request, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  confirmerPaiement(paiementId: string, request: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/paiements/${paiementId}/confirmer`, request, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getPaiementById(paiementId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/paiements/${paiementId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getPaiementsByReservation(reservationId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/paiements/reservation/${reservationId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ===== INSTRUCTIONS DE TRANSACTION (PAYOUTS/REMBOURSEMENTS) =====
+
+  genererSplitPaiement(paiementId: string): Observable<TransactionInstructionDTO[]> {
+    return this.http.post<TransactionInstructionDTO[]>(`${this.baseUrl}/payouts/generate/split/${paiementId}`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getInstructionsByPaiement(paiementId: string): Observable<TransactionInstructionDTO[]> {
+    return this.http.get<TransactionInstructionDTO[]>(`${this.baseUrl}/payouts/paiement/${paiementId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  genererRemboursementReservation(reservationId: string, raisonRemboursement?: string): Observable<TransactionInstructionDTO[]> {
+    const body = raisonRemboursement && raisonRemboursement.trim().length > 0
+      ? { raisonRemboursement: raisonRemboursement.trim() }
+      : {};
+    return this.http.post<TransactionInstructionDTO[]>(`${this.baseUrl}/payouts/generate/remboursement/${reservationId}`, body, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  listerInstructionsEnAttente(): Observable<TransactionInstructionDTO[]> {
+    return this.http.get<TransactionInstructionDTO[]>(`${this.baseUrl}/payouts/pending`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  executerInstruction(instructionId: string, reference: string): Observable<TransactionInstructionDTO> {
+    return this.http.post<TransactionInstructionDTO>(`${this.baseUrl}/payouts/${instructionId}/executer`, { reference }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  annulerInstruction(instructionId: string, notes: string): Observable<TransactionInstructionDTO> {
+    return this.http.post<TransactionInstructionDTO>(`${this.baseUrl}/payouts/${instructionId}/annuler`, { notes }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ===== ENCAISSEMENTS (EXECUTED reçus par les RIBs) =====
+
+  getEncaissementsLocataire(locataireId: string): Observable<TransactionInstructionDTO[]> {
+    return this.http.get<TransactionInstructionDTO[]>(`${this.baseUrl}/payouts/encaissements/locataire/${locataireId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getEncaissementsLocateur(locateurId: string): Observable<TransactionInstructionDTO[]> {
+    return this.http.get<TransactionInstructionDTO[]>(`${this.baseUrl}/payouts/encaissements/locateur/${locateurId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getEncaissementsPlateforme(): Observable<TransactionInstructionDTO[]> {
+    return this.http.get<TransactionInstructionDTO[]>(`${this.baseUrl}/payouts/encaissements/plateforme`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ===== SOLDES (entrées, sorties, net) =====
+
+  getSoldeLocataire(locataireId: string): Observable<SoldeResponse> {
+    return this.http.get<SoldeResponse>(`${this.baseUrl}/payouts/solde/locataire/${locataireId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getSoldeLocateur(locateurId: string): Observable<SoldeResponse> {
+    return this.http.get<SoldeResponse>(`${this.baseUrl}/payouts/solde/locateur/${locateurId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getSoldePlateforme(): Observable<SoldeResponse> {
+    return this.http.get<SoldeResponse>(`${this.baseUrl}/payouts/solde/plateforme`, {
+      headers: this.getAuthHeaders()
     });
   }
 
@@ -304,6 +464,31 @@ export class ApiService {
   modifierProfil(utilisateurId: string, profileData: UpdateProfileRequest): Observable<any> {
     return this.http.put(`${this.baseUrl}/profil/${utilisateurId}`, profileData, {
       headers: this.getAuthHeaders(),
+      responseType: 'text'
+    });
+  }
+
+  // ===== API MOT DE PASSE OUBLIÉ =====
+  
+  // Envoyer le code de réinitialisation (6 chiffres)
+  envoyerCodeReinitialisation(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/password/send-code`, { email }, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      responseType: 'text'
+    });
+  }
+
+  // Vérifier le code de réinitialisation
+  verifierCodeReinitialisation(email: string, code: string): Observable<{ valid: boolean }> {
+    return this.http.post<{ valid: boolean }>(`${this.baseUrl}/auth/password/verify-code`, { email, code }, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
+  // Réinitialiser le mot de passe
+  reinitialiserMotDePasse(email: string, code: string, nouveauMotDePasse: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/password/reset`, { email, code, nouveauMotDePasse }, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       responseType: 'text'
     });
   }

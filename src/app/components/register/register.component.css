@@ -1,3 +1,56 @@
+:host {
+  --can-red: #991b1b;
+  --can-green: #166534;
+}
+
+.form-input-basic {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  padding: 0.75rem 1rem;
+  color: #111827; /* gray-900 */
+}
+.form-input-basic::placeholder { color: #9ca3af; }
+.form-input-basic:focus {
+  outline: none;
+  border-color: var(--can-red);
+  box-shadow: 0 0 0 2px rgba(153, 27, 27, 0.25);
+}
+.input-error {
+  border-color: #ef4444 !important; /* red-500 */
+  box-shadow: 0 0 0 1px #ef4444 !important;
+}
+.hint-error { margin-top: 0.25rem; font-size: 0.75rem; color: #b91c1c; }
+
+.select-card {
+  cursor: pointer;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease;
+}
+.select-card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-1px); }
+
+.btn-primary {
+  background-image: linear-gradient(to right, var(--can-red), var(--can-green));
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+}
+.btn-primary:hover { filter: brightness(1.05); box-shadow: 0 8px 24px rgba(22,101,52,0.15), 0 8px 24px rgba(153,27,27,0.15); }
+.btn-primary:disabled { opacity: .6; }
+
+.btn-secondary {
+  border: 1px solid #d1d5db; /* gray-300 */
+  color: #374151; /* gray-700 */
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  background: #fff;
+}
 /* ================================ */
 /* Variables CSS - Thème CAN 2025  */
 /* ================================ */

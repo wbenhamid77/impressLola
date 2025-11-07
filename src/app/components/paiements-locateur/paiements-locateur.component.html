@@ -66,6 +66,53 @@
     </div>
   </div>
 
+  <!-- Solde et Encaissements -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="md:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">Solde</h3>
+        <button (click)="chargerEncaissementsEtSolde()" class="text-sm text-blue-600 hover:underline">Rafraîchir</button>
+      </div>
+      <div *ngIf="solde; else soldeLoadingL" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-4 rounded-lg bg-green-50 border border-green-100">
+          <div class="text-xs text-gray-600 mb-1">Entrées</div>
+          <div class="text-xl font-semibold text-gray-900">{{ formaterMontant(solde!.entrees) }}</div>
+        </div>
+        <div class="p-4 rounded-lg bg-red-50 border border-red-100">
+          <div class="text-xs text-gray-600 mb-1">Sorties</div>
+          <div class="text-xl font-semibold text-gray-900">{{ formaterMontant(solde!.sorties) }}</div>
+        </div>
+        <div class="p-4 rounded-lg bg-blue-50 border border-blue-100">
+          <div class="text-xs text-gray-600 mb-1">Net</div>
+          <div class="text-xl font-semibold text-gray-900">{{ formaterMontant(solde!.net) }}</div>
+        </div>
+      </div>
+      <ng-template #soldeLoadingL>
+        <div class="text-sm text-gray-500">Chargement du solde...</div>
+      </ng-template>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">Derniers encaissements</h3>
+        <span class="text-xs text-gray-500">EXECUTED</span>
+      </div>
+      <div class="space-y-3 max-h-64 overflow-auto pr-1" *ngIf="encaissements && encaissements.length > 0; else noEncL">
+        <div *ngFor="let e of encaissements | slice:0:6" class="p-3 border border-gray-200 rounded-lg">
+          <div class="flex items-center justify-between">
+            <div class="text-sm font-medium text-gray-900">{{ e.type }}</div>
+            <div class="text-sm font-semibold text-gray-900">{{ formaterMontant(e.montant) }}</div>
+          </div>
+          <div class="text-xs text-gray-500 truncate">Ref: {{ e.reference || '—' }}</div>
+          <div class="text-xs text-gray-500">{{ e.dateExecution ? (e.dateExecution | date:'dd/MM/yyyy HH:mm') : (e.dateCreation | date:'dd/MM/yyyy HH:mm') }}</div>
+        </div>
+      </div>
+      <ng-template #noEncL>
+        <div class="text-sm text-gray-500">Aucun encaissement.</div>
+      </ng-template>
+    </div>
+  </div>
+
   <!-- Filtres -->
   <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
     <h3 class="text-lg font-semibold text-gray-900 mb-4">Filtres</h3>
@@ -119,6 +166,19 @@
           <i class="fas fa-times mr-2"></i>
           Reset
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Information remboursement -->
+  <div class="mb-6 rounded-xl border border-purple-200 bg-purple-50 p-4">
+    <div class="flex items-start gap-3">
+      <div class="mt-0.5 text-purple-600">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <div>
+        <div class="font-semibold text-purple-800">Politique de remboursement</div>
+        <div class="text-sm text-purple-800/90">Selon l'heure d'annulation avant l'arrivée: <span class="font-medium">0% &lt;24h</span>, <span class="font-medium">50% entre 24–48h</span>, <span class="font-medium">100% ≥48h</span>. Les virements sont exécutés manuellement via des instructions. Assurez-vous d'avoir un RIB locateur par défaut.</div>
       </div>
     </div>
   </div>
@@ -184,9 +244,6 @@
               Échéance
               <i class="fas fa-sort ml-1"></i>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -197,11 +254,19 @@
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" 
-                    [class]="getStatutColor(paiement.statut)">
-                <i [class]="getStatutIcon(paiement.statut)" class="mr-1"></i>
-                {{ paiement.statut }}
-              </span>
+              <ng-container *ngIf="paiement.statut === 'PAYE' && refundPendingByReservation[paiement.reservationId]; else normalStatutLocateur">
+                <span (click)="openReason(paiement)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:underline">
+                  <i class="fas fa-undo mr-1"></i>
+                  REMBOURSÉ
+                </span>
+              </ng-container>
+              <ng-template #normalStatutLocateur>
+                <span (click)="(paiement.raisonRemboursement || paiement.statut === 'REMBOURSE') ? openReason(paiement) : null" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" 
+                      [class]="getStatutColor(paiement.statut) + ' ' + ((paiement.raisonRemboursement || paiement.statut === 'REMBOURSE') ? 'cursor-pointer hover:underline' : '')">
+                  <i [class]="getStatutIcon(paiement.statut)" class="mr-1"></i>
+                  {{ paiement.statut }}
+                </span>
+              </ng-template>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ paiement.typePaiement }}
@@ -224,38 +289,7 @@
                 </span>
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <div class="flex space-x-2">
-                <!-- Actions selon le statut -->
-                <button 
-                  *ngIf="paiement.statut === 'EN_ATTENTE'"
-                  (click)="marquerEnCours(paiement)"
-                  class="text-blue-600 hover:text-blue-900">
-                  <i class="fas fa-play"></i>
-                </button>
-                
-                <button 
-                  *ngIf="paiement.statut === 'EN_COURS'"
-                  (click)="marquerEchec(paiement)"
-                  class="text-red-600 hover:text-red-900">
-                  <i class="fas fa-times"></i>
-                </button>
-                
-                <button 
-                  *ngIf="paiement.statut === 'PAYE'"
-                  (click)="rembourserPaiement(paiement)"
-                  class="text-purple-600 hover:text-purple-900">
-                  <i class="fas fa-undo"></i>
-                </button>
-                
-                <button 
-                  *ngIf="paiement.statut !== 'PAYE' && paiement.statut !== 'REMBOURSE'"
-                  (click)="annulerPaiement(paiement)"
-                  class="text-gray-600 hover:text-gray-900">
-                  <i class="fas fa-ban"></i>
-                </button>
-              </div>
-            </td>
+            
           </tr>
         </tbody>
       </table>
@@ -298,6 +332,29 @@
       <i class="fas fa-credit-card text-gray-400 text-4xl mb-4"></i>
       <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun paiement trouvé</h3>
       <p class="text-gray-600">Aucun paiement ne correspond à vos critères de recherche.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Raison Remboursement -->
+<div *ngIf="reasonModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+  <div class="w-[min(520px,95vw)] bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="p-6">
+      <div class="flex items-start justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900">Raison du remboursement</h3>
+        <button (click)="closeReason()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="text-sm text-gray-700" *ngIf="reasonPaiement?.raisonRemboursement; else noReason">
+        {{ reasonPaiement?.raisonRemboursement }}
+      </div>
+      <ng-template #noReason>
+        <div class="text-sm text-gray-500 italic">Aucune raison fournie.</div>
+      </ng-template>
+      <div class="mt-4 text-xs text-gray-500">
+        Statut: {{ reasonPaiement?.statut }}<span *ngIf="reasonPaiement?.dateRemboursement"> • Remboursé le {{ reasonPaiement?.dateRemboursement | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
     </div>
   </div>
 </div>
